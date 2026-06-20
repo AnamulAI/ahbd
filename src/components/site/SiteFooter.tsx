@@ -48,11 +48,13 @@ export function SiteFooter() {
           <div>
             <Link
               to="/"
-              className="inline-block font-mono text-lg font-semibold text-white"
+              aria-label="AnamDev home"
+              className="inline-block font-mono text-base font-bold tracking-tight transition-colors"
             >
-              <span className="text-[color:var(--primary)]">{"{"}</span>
-              Anam Dev
-              <span className="text-[color:var(--primary)]">{"}"}</span>
+              <span className="text-muted-foreground">{"{"}</span>
+              <span className="text-white">Anam</span>
+              <span className="text-[color:var(--primary)]">Dev</span>
+              <span className="text-muted-foreground">{"}"}</span>
             </Link>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
               Building authority brands through AI-powered podcasts and modern
