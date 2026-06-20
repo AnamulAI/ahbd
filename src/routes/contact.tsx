@@ -437,15 +437,8 @@ function ProcessSection() {
 
 function ClosingCTA({ onSend }: { onSend: () => void }) {
   return (
-    <section className="relative overflow-hidden">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10"
-        style={{
-          background:
-            "radial-gradient(40% 60% at 30% 50%, rgba(59,130,246,0.25), transparent 70%), radial-gradient(40% 60% at 70% 50%, rgba(249,115,22,0.18), transparent 70%)",
-        }}
-      />
+    <section className="section-glow-cta">
+
       <div className="mx-auto max-w-3xl px-4 py-28 text-center sm:px-6 sm:py-36">
         <Eyebrow>// ready when you are</Eyebrow>
         <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
