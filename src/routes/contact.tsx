@@ -530,31 +530,36 @@ function ContactPage() {
 
       <main>
         {/* HERO */}
-        <section className="mx-auto max-w-4xl px-4 pt-24 pb-16 text-center sm:px-6 sm:pt-32 sm:pb-24">
-          <Eyebrow>// let's connect</Eyebrow>
-          <h1 className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-6xl">
-            Let's Build Something
-            <br />
-            <span className="text-gradient-vo">Worth Talking About</span>
-          </h1>
-          <p className="mx-auto mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
-            Have a project in mind? Want to discuss AI podcast content, a modern
-            website, or both? I'd love to hear what you're working on.
-          </p>
+        <section className="section-glow-hero">
+          <div className="mx-auto max-w-4xl px-4 pt-24 pb-16 text-center sm:px-6 sm:pt-32 sm:pb-24">
+            <Eyebrow>// let's connect</Eyebrow>
+            <h1 className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-6xl">
+              Let's Build Something
+              <br />
+              <span className="text-gradient-vo">Worth Talking About</span>
+            </h1>
+            <p className="mx-auto mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
+              Have a project in mind? Want to discuss AI podcast content, a modern
+              website, or both? I'd love to hear what you're working on.
+            </p>
+          </div>
         </section>
 
         {/* MAIN GRID */}
-        <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6 sm:pb-32">
-          <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr]">
-            <ContactForm formRef={formRef} />
-            <div className="space-y-6">
-              <QuickContact />
-              <SocialsCard />
-              <LocationCard />
-              <StatusCallout />
+        <section className="section-glow-subtle">
+          <div className="mx-auto max-w-6xl px-4 pb-24 sm:px-6 sm:pb-32">
+            <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr]">
+              <ContactForm formRef={formRef} />
+              <div className="space-y-6">
+                <QuickContact />
+                <SocialsCard />
+                <LocationCard />
+                <StatusCallout />
+              </div>
             </div>
           </div>
         </section>
+
 
         <div className="h-px bg-white/5" />
 
