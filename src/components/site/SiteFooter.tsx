@@ -22,7 +22,7 @@ const legal: FooterLink[] = [
 
 function LinkCol({ title, links }: { title: string; links: FooterLink[] }) {
   return (
-    <div>
+    <div className="max-md:text-center">
       <h3 className="text-sm font-semibold text-white">{title}</h3>
       <ul className="mt-4 space-y-2.5">
         {links.map((l) => (
@@ -44,7 +44,7 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-white/5 bg-background/80">
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-10 max-md:text-center sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <Link
               to="/"
@@ -56,7 +56,7 @@ export function SiteFooter() {
               <span className="text-[color:var(--primary)]">Dev</span>
               <span className="text-muted-foreground">{"}"}</span>
             </Link>
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
+            <p className="mx-auto mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground max-md:mx-auto sm:mx-0">
               Building authority brands through AI-powered podcasts and modern
               websites.
             </p>
@@ -68,7 +68,7 @@ export function SiteFooter() {
 
         <div className="my-10 h-px bg-white/5" />
 
-        <div className="flex flex-col items-center justify-between gap-3 text-xs text-muted-foreground sm:flex-row">
+        <div className="flex flex-col items-center justify-center gap-3 text-center text-xs text-muted-foreground md:flex-row md:justify-between md:text-left">
           <p>© 2026 Mohammad Anamul Hoque. All rights reserved.</p>
           <p>Built with ❤️ &amp; AI</p>
         </div>
