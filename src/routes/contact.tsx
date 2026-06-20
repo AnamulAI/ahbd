@@ -202,10 +202,10 @@ function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | nu
           <Button
             type="submit"
             disabled={submitting}
-            className="group h-12 w-full rounded-full bg-[color:var(--orange)] px-6 text-sm font-semibold text-black shadow-[0_10px_40px_-10px_var(--orange-glow)] hover:brightness-110 sm:w-auto"
+            className="group h-12 w-full rounded-full bg-[color:var(--orange)] px-6 text-sm font-semibold text-black shadow-[0_10px_40px_-10px_var(--orange-glow)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_18px_50px_-10px_var(--orange-glow)] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100 sm:w-auto"
           >
             {submitting ? "Sending..." : "Send Message"}
-            <ArrowRight className="ml-1 h-4 w-4 transition group-hover:translate-x-0.5" />
+            <ArrowRight className="ml-1 h-4 w-4 transition group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
           </Button>
           <p className="mt-3 text-xs text-muted-foreground">
             Typical response within 24 hours.
