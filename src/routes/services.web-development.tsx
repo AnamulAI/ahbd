@@ -214,16 +214,20 @@ function HeroSection({ onSamplesClick }: { onSamplesClick: () => void }) {
           })}
         </div>
 
-        <div className="mt-8 flex max-w-4xl flex-wrap items-center justify-center gap-2">
-          {TECH_STACK.map((t) => (
-            <span
-              key={t}
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-muted-foreground"
-            >
-              <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--primary)]" />
-              {t}
-            </span>
-          ))}
+        <div className="mt-8 w-full max-w-5xl">
+          <div className="tech-marquee overflow-hidden">
+            <div className="tech-marquee-track">
+              {[...TECH_STACK, ...TECH_STACK].map((t, i) => (
+                <span
+                  key={`${t}-${i}`}
+                  className="inline-flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-1.5 text-xs font-medium text-white/85"
+                >
+                  <BrandIcon name={t} size={14} />
+                  {t}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
