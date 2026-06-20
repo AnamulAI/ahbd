@@ -402,13 +402,15 @@ function ProcessSection() {
     },
   ];
   return (
-    <section className="section-glow-mid mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
-      <div className="text-center">
-        <Eyebrow>// how it works</Eyebrow>
-        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-          Simple <span className="text-[color:var(--orange)]">3-Step</span> Process
-        </h2>
-      </div>
+    <section className="section-glow-mid">
+      <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
+        <div className="text-center">
+          <Eyebrow>// how it works</Eyebrow>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+            Simple <span className="text-[color:var(--orange)]">3-Step</span> Process
+          </h2>
+        </div>
+
       <div className="mt-12 grid gap-5 md:grid-cols-3">
         {steps.map((s) => {
           const Icon = s.icon;
