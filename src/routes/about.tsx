@@ -52,80 +52,57 @@ function Eyebrow({ children, center = false }: { children: React.ReactNode; cent
 function HeroSection() {
   return (
     <section className="section-glow-hero">
-      <div className="mx-auto grid max-w-6xl gap-12 px-4 pt-20 pb-16 sm:px-6 sm:pt-28 sm:pb-24 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-16">
-        <div className="max-lg:text-center">
-          <Eyebrow>// about anam dev</Eyebrow>
-          <h1 className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">
-            I Help Brands Build Stronger Authority
-            <br />
-            and a <span className="text-gradient-vo">Sharper Digital Presence</span>
-          </h1>
-          <p className="mx-auto mt-6 max-w-xl text-base text-muted-foreground sm:text-lg lg:mx-0">
-            Through AI-powered podcast content and modern websites, I help
-            service-based brands become more credible, more visible, and more
-            trusted — without adding unnecessary complexity.
-          </p>
+      <div className="mx-auto flex max-w-6xl flex-col items-center px-4 pt-20 pb-16 text-center sm:px-6 sm:pt-28 sm:pb-24">
+        <Eyebrow>// ABOUT ANAM DEV</Eyebrow>
+        <h1 className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">
+          I Help Brands Build Stronger Authority
+          <br />
+          and a <span className="text-gradient-vo">Sharper Digital Presence</span>
+        </h1>
+        <p className="mt-6 max-w-[650px] text-base text-muted-foreground sm:text-lg">
+          Through AI-powered podcast content and modern websites, I help
+          service-based brands become more credible, more visible, and more
+          trusted — without adding unnecessary complexity.
+        </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3 max-lg:justify-center">
-            <Link
-              to="/contact"
-              className="group inline-flex h-12 items-center gap-2 rounded-full bg-[color:var(--orange)] px-6 text-sm font-semibold text-black shadow-[0_12px_40px_-12px_var(--orange-glow)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_20px_55px_-12px_var(--orange-glow)] hover:brightness-110 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100"
-            >
-              Discuss Your Project
-              <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
-            </Link>
-            <Link
-              to="/services"
-              className="inline-flex h-12 items-center gap-2 rounded-full border border-[color:var(--primary)]/50 px-6 text-sm font-semibold text-white transition-all duration-200 hover:border-[color:var(--primary)] hover:bg-[color:var(--primary)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)] motion-reduce:transition-none"
-            >
-              View Services
-            </Link>
-          </div>
-
-          <div className="mt-10 flex flex-wrap gap-3 max-lg:justify-center">
-            {[
-              { icon: Calendar, num: "5+", label: "Years Experience" },
-              { icon: Trophy, num: "100+", label: "Projects Delivered" },
-              { icon: Briefcase, num: "3", label: "Active Services" },
-            ].map((s) => {
-              const Icon = s.icon;
-              return (
-                <div
-                  key={s.label}
-                  className="card-elevated inline-flex items-center gap-3 rounded-full px-4 py-2"
-                >
-                  <span className="grid h-8 w-8 place-items-center rounded-full bg-[color:var(--primary)]/15">
-                    <Icon className="h-4 w-4 text-[color:var(--primary)]" />
-                  </span>
-                  <div className="text-sm">
-                    <span className="font-semibold text-white">{s.num}</span>{" "}
-                    <span className="text-muted-foreground">{s.label}</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <Link
+            to="/contact"
+            className="group inline-flex h-12 items-center gap-2 rounded-full bg-[color:var(--orange)] px-6 text-sm font-semibold text-black shadow-[0_12px_40px_-12px_var(--orange-glow)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_20px_55px_-12px_var(--orange-glow)] hover:brightness-110 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100"
+          >
+            Discuss Your Project
+            <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
+          </Link>
+          <Link
+            to="/services"
+            className="inline-flex h-12 items-center gap-2 rounded-full border border-[color:var(--primary)]/50 px-6 text-sm font-semibold text-white transition-all duration-200 hover:border-[color:var(--primary)] hover:bg-[color:var(--primary)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)] motion-reduce:transition-none"
+          >
+            View Services
+          </Link>
         </div>
 
-        {/* Code card */}
-        <div className="card-elevated card-elevated-hover overflow-hidden">
-          <div className="flex items-center gap-2 border-b border-white/10 bg-black/30 px-4 py-2.5">
-            <span className="flex gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-red-500/80" />
-              <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/80" />
-              <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/80" />
-            </span>
-            <span className="ml-2 font-mono text-xs text-muted-foreground">
-              brand.ts
-            </span>
-          </div>
-          <pre className="overflow-x-auto p-6 font-mono text-sm leading-relaxed text-white/90">
-{`const `}<span className="text-[color:var(--primary)]">brand</span>{` = {
-  `}<span className="text-[color:var(--orange)]">by</span>{`: `}<span className="text-emerald-300">"Anam Dev"</span>{`,
-  `}<span className="text-[color:var(--orange)]">focus</span>{`: `}<span className="text-emerald-300">"Authority · Websites · AI"</span>{`,
-  `}<span className="text-[color:var(--orange)]">ready</span>{`: `}<span className="text-[color:var(--primary)]">true</span>{`
-}`}
-          </pre>
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+          {[
+            { icon: Calendar, num: "5+", label: "Years Experience" },
+            { icon: Trophy, num: "100+", label: "Projects Delivered" },
+            { icon: Briefcase, num: "3", label: "Active Services" },
+          ].map((s) => {
+            const Icon = s.icon;
+            return (
+              <div
+                key={s.label}
+                className="card-elevated inline-flex items-center gap-3 rounded-full px-4 py-2"
+              >
+                <span className="grid h-8 w-8 place-items-center rounded-full bg-[color:var(--primary)]/15">
+                  <Icon className="h-4 w-4 text-[color:var(--primary)]" />
+                </span>
+                <div className="text-sm">
+                  <span className="font-semibold text-white">{s.num}</span>{" "}
+                  <span className="text-muted-foreground">{s.label}</span>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
