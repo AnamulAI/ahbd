@@ -12,10 +12,20 @@ import {
   CheckCircle2,
   Rocket,
   ArrowRight,
-  ArrowLeft,
   ChevronUp,
   Send,
   CalendarDays,
+  Code2,
+  Cpu,
+  Mic,
+  Sparkles,
+  Clock,
+  Zap,
+  Terminal,
+  Globe,
+  Users,
+  Layers,
+  PenTool,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -53,67 +63,122 @@ export const Route = createFileRoute("/contact")({
 });
 
 type ServiceValue = "web_development" | "ai_integrator" | "ai_podcast";
-
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-function Eyebrow({ children }: { children: React.ReactNode }) {
+/* ---------- Floating Pill Nav (uupm.cc style) ---------- */
+function FloatingNav({ onTalk }: { onTalk: () => void }) {
+  const links = [
+    { label: "Home", href: "/" },
+    { label: "Services", href: "/#services" },
+    { label: "About", href: "/#about" },
+    { label: "Contact", href: "/contact" },
+  ];
   return (
-    <div className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
-      {children}
+    <div className="pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4">
+      <nav className="pointer-events-auto flex w-full max-w-5xl items-center justify-between gap-3 rounded-full border border-white/10 bg-[color:var(--surface)]/70 px-3 py-2 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.6)] backdrop-blur-xl sm:px-4">
+        <Link to="/" className="flex items-center gap-2 px-2">
+          <span className="grid h-7 w-7 place-items-center rounded-md bg-gradient-to-br from-[color:var(--primary)] to-[color:var(--orange)] text-[10px] font-bold text-black">
+            AD
+          </span>
+          <span className="font-mono text-sm font-bold tracking-tight">
+            <span className="text-muted-foreground">{"{"}</span>
+            <span className="text-white">Anam</span>
+            <span className="text-[color:var(--primary)]">Dev</span>
+            <span className="text-muted-foreground">{"}"}</span>
+          </span>
+        </Link>
+        <div className="hidden items-center gap-1 md:flex">
+          {links.map((l) => (
+            <a
+              key={l.label}
+              href={l.href}
+              className="rounded-full px-4 py-2 text-sm text-muted-foreground transition hover:bg-white/5 hover:text-white"
+            >
+              {l.label}
+            </a>
+          ))}
+        </div>
+        <button
+          onClick={onTalk}
+          className="inline-flex h-10 items-center gap-2 rounded-full bg-[color:var(--primary)] px-4 text-sm font-semibold text-white shadow-[0_8px_30px_-8px_oklch(0.62_0.19_255/55%)] transition hover:brightness-110"
+        >
+          <Sparkles className="h-4 w-4" />
+          <span>Let's Talk</span>
+        </button>
+      </nav>
     </div>
   );
 }
 
-function Logo() {
+/* ---------- Pill Badge Row (chips like Claude Code / Cursor etc) ---------- */
+function ChannelPills() {
+  const pills = [
+    { icon: Mail, label: "Email", color: "text-[color:var(--primary)]" },
+    { icon: MessageCircle, label: "WhatsApp", color: "text-emerald-400" },
+    { icon: CalendarDays, label: "Calendly", color: "text-[color:var(--primary)]" },
+    { icon: Github, label: "GitHub", color: "text-white" },
+    { icon: Linkedin, label: "LinkedIn", color: "text-[color:var(--primary)]" },
+    { icon: Facebook, label: "Facebook", color: "text-[color:var(--primary)]" },
+    { icon: Globe, label: "Remote", color: "text-[color:var(--orange)]" },
+  ];
   return (
-    <Link
-      to="/"
-      aria-label="AnamDev home"
-      className="font-mono text-base font-bold tracking-tight"
-    >
-      <span className="text-muted-foreground">{"{"}</span>
-      <span className="text-white">Anam</span>
-      <span className="text-[color:var(--primary)]">Dev</span>
-      <span className="text-muted-foreground">{"}"}</span>
-    </Link>
+    <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+      {pills.map((p) => {
+        const Icon = p.icon;
+        return (
+          <span
+            key={p.label}
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[color:var(--surface)]/70 px-3 py-1.5 text-xs font-medium text-white/90 backdrop-blur"
+          >
+            <Icon className={`h-3.5 w-3.5 ${p.color}`} />
+            {p.label}
+          </span>
+        );
+      })}
+    </div>
   );
 }
 
-function TopNav({ onTalk }: { onTalk: () => void }) {
+/* ---------- Stat-style Quick Contact cards ---------- */
+function QuickStatCards() {
+  const items = [
+    { icon: Mail, value: "24h", label: "Email Reply", href: "mailto:hello@anamulhoque.com" },
+    { icon: MessageCircle, value: "1:1", label: "WhatsApp Chat", href: "https://wa.me/8801777768353" },
+    { icon: CalendarDays, value: "30m", label: "Intro Call", href: "https://cal.com/anamulhoque.com" },
+    { icon: MapPin, value: "BD", label: "Chattogram", href: "#" },
+    { icon: Clock, value: "GMT+6", label: "Timezone", href: "#" },
+    { icon: Zap, value: "Open", label: "For Projects", href: "#contact-form" },
+  ];
   return (
-    <header className="sticky top-0 z-40 border-b border-white/5 bg-background/70 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link
-          to="/"
-          className="group inline-flex h-11 items-center gap-2 rounded-full px-2 text-sm text-muted-foreground transition hover:text-white"
-        >
-          <ArrowLeft className="h-4 w-4 transition group-hover:-translate-x-0.5" />
-          <span className="hidden sm:inline">Back to Home</span>
-        </Link>
-        <Logo />
-        <button
-          onClick={onTalk}
-          className="inline-flex h-11 items-center gap-2 rounded-full bg-[color:var(--orange)] px-4 text-sm font-semibold text-black shadow-[0_8px_30px_-8px_var(--orange-glow)] transition hover:brightness-110"
-        >
-          <MessageCircle className="h-4 w-4" />
-          <span>Let's Talk</span>
-        </button>
-      </div>
-    </header>
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+      {items.map((it) => {
+        const Icon = it.icon;
+        return (
+          <a
+            key={it.label}
+            href={it.href}
+            target={it.href.startsWith("http") ? "_blank" : undefined}
+            rel="noopener noreferrer"
+            className="group flex flex-col items-center justify-center gap-2 rounded-2xl border border-white/10 bg-[color:var(--surface)]/60 px-4 py-6 text-center transition hover:border-[color:var(--primary)]/40 hover:bg-[color:var(--surface-2)]/70"
+          >
+            <Icon className="h-5 w-5 text-[color:var(--primary)] transition group-hover:scale-110" />
+            <div className="text-2xl font-bold text-white">{it.value}</div>
+            <div className="text-xs text-muted-foreground">{it.label}</div>
+          </a>
+        );
+      })}
+    </div>
   );
 }
 
+/* ---------- Contact Form ---------- */
 function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | null> }) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [service, setService] = useState<ServiceValue | "">("");
   const [brief, setBrief] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [errors, setErrors] = useState<{
-    fullName?: string;
-    email?: string;
-    service?: string;
-  }>({});
+  const [errors, setErrors] = useState<{ fullName?: string; email?: string; service?: string }>({});
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -148,19 +213,32 @@ function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | nu
 
   return (
     <div
+      id="contact-form"
       ref={formRef}
-      className="rounded-2xl border border-white/10 bg-[color:var(--surface)]/80 p-6 shadow-[0_20px_60px_-30px_rgba(59,130,246,0.45)] backdrop-blur sm:p-8"
+      className="relative overflow-hidden rounded-3xl border border-white/10 bg-[color:var(--surface)]/70 p-6 backdrop-blur-xl sm:p-10"
     >
-      <Eyebrow>// send a message</Eyebrow>
-      <h2 className="mt-2 text-2xl font-semibold text-white sm:text-3xl">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 opacity-60"
+        style={{
+          background:
+            "radial-gradient(40% 40% at 0% 0%, oklch(0.62 0.19 255 / 18%), transparent 60%), radial-gradient(40% 40% at 100% 100%, oklch(0.74 0.18 50 / 14%), transparent 60%)",
+        }}
+      />
+      <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
+        <Terminal className="h-3.5 w-3.5" />
+        send a message
+      </div>
+      <h2 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
         Tell me about your project
       </h2>
+      <p className="mt-2 text-sm text-muted-foreground">
+        No long forms. Just the essentials so we can start the conversation.
+      </p>
 
-      <form onSubmit={onSubmit} className="mt-8 space-y-5" noValidate>
+      <form onSubmit={onSubmit} className="mt-8 grid gap-5 sm:grid-cols-2" noValidate>
         <div className="space-y-2">
-          <Label htmlFor="full_name" className="text-sm text-white/90">
-            Full Name
-          </Label>
+          <Label htmlFor="full_name" className="text-sm text-white/90">Full Name</Label>
           <Input
             id="full_name"
             value={fullName}
@@ -168,17 +246,13 @@ function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | nu
             placeholder="Your full name"
             autoComplete="name"
             aria-invalid={!!errors.fullName}
-            className="h-12 border-white/10 bg-background/60 text-white placeholder:text-white/30 focus-visible:ring-[color:var(--primary)]"
+            className="h-12 rounded-xl border-white/10 bg-background/60 text-white placeholder:text-white/30 focus-visible:ring-[color:var(--primary)]"
           />
-          {errors.fullName && (
-            <p className="text-xs text-red-400">{errors.fullName}</p>
-          )}
+          {errors.fullName && <p className="text-xs text-red-400">{errors.fullName}</p>}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email" className="text-sm text-white/90">
-            Email Address
-          </Label>
+          <Label htmlFor="email" className="text-sm text-white/90">Email Address</Label>
           <Input
             id="email"
             type="email"
@@ -187,285 +261,140 @@ function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | nu
             placeholder="you@example.com"
             autoComplete="email"
             aria-invalid={!!errors.email}
-            className="h-12 border-white/10 bg-background/60 text-white placeholder:text-white/30 focus-visible:ring-[color:var(--primary)]"
+            className="h-12 rounded-xl border-white/10 bg-background/60 text-white placeholder:text-white/30 focus-visible:ring-[color:var(--primary)]"
           />
-          {errors.email && (
-            <p className="text-xs text-red-400">{errors.email}</p>
-          )}
+          {errors.email && <p className="text-xs text-red-400">{errors.email}</p>}
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="service" className="text-sm text-white/90">
-            Service Interest
-          </Label>
+        <div className="space-y-2 sm:col-span-2">
+          <Label htmlFor="service" className="text-sm text-white/90">Service Interest</Label>
           <Select value={service} onValueChange={(v) => setService(v as ServiceValue)}>
             <SelectTrigger
               id="service"
               aria-invalid={!!errors.service}
-              className="h-12 border-white/10 bg-background/60 text-left text-white data-[placeholder]:text-white/30 focus-visible:ring-[color:var(--primary)]"
+              className="h-12 rounded-xl border-white/10 bg-background/60 text-left text-white data-[placeholder]:text-white/30 focus-visible:ring-[color:var(--primary)]"
             >
               <SelectValue placeholder="Select a service" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="web_development">
-                Web Development — Websites & Web Apps
-              </SelectItem>
-              <SelectItem value="ai_integrator">
-                AI Integrator — Business Automation & AI Solutions
-              </SelectItem>
-              <SelectItem value="ai_podcast">
-                AI Podcast — AI-Powered Podcast Production
-              </SelectItem>
+              <SelectItem value="web_development">Web Development — Websites & Web Apps</SelectItem>
+              <SelectItem value="ai_integrator">AI Integrator — Business Automation & AI Solutions</SelectItem>
+              <SelectItem value="ai_podcast">AI Podcast — AI-Powered Podcast Production</SelectItem>
             </SelectContent>
           </Select>
-          {errors.service && (
-            <p className="text-xs text-red-400">{errors.service}</p>
-          )}
+          {errors.service && <p className="text-xs text-red-400">{errors.service}</p>}
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="brief" className="text-sm text-white/90">
-            Project Brief
-          </Label>
+        <div className="space-y-2 sm:col-span-2">
+          <Label htmlFor="brief" className="text-sm text-white/90">Project Brief</Label>
           <Textarea
             id="brief"
             value={brief}
             onChange={(e) => setBrief(e.target.value)}
             placeholder="Tell me a bit about your project or goals..."
             rows={5}
-            className="resize-y border-white/10 bg-background/60 text-white placeholder:text-white/30 focus-visible:ring-[color:var(--primary)]"
+            className="resize-y rounded-xl border-white/10 bg-background/60 text-white placeholder:text-white/30 focus-visible:ring-[color:var(--primary)]"
           />
         </div>
 
-        <div className="pt-2">
+        <div className="flex flex-col gap-3 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs text-muted-foreground">
+            <Clock className="mr-1 inline h-3.5 w-3.5" />
+            Typical response within 24 hours.
+          </p>
           <Button
             type="submit"
             disabled={submitting}
-            className="group h-12 w-full rounded-full bg-[color:var(--orange)] px-6 text-sm font-semibold text-black shadow-[0_10px_40px_-10px_var(--orange-glow)] hover:brightness-110 sm:w-auto"
+            className="group h-12 rounded-full bg-[color:var(--primary)] px-6 text-sm font-semibold text-white shadow-[0_10px_40px_-10px_oklch(0.62_0.19_255/55%)] hover:brightness-110"
           >
+            <Send className="mr-1 h-4 w-4" />
             {submitting ? "Sending..." : "Send Message"}
             <ArrowRight className="ml-1 h-4 w-4 transition group-hover:translate-x-0.5" />
           </Button>
-          <p className="mt-3 text-xs text-muted-foreground">
-            Typical response within 24 hours.
-          </p>
         </div>
       </form>
     </div>
   );
 }
 
-type QuickItem = {
-  icon: React.ComponentType<{ className?: string }>;
-  iconBg: string;
-  iconColor: string;
-  label: string;
-  value: string;
-  href: string;
-  external?: boolean;
-};
-
-function QuickContact() {
-  const items: QuickItem[] = [
-    {
-      icon: Mail,
-      iconBg: "bg-[color:var(--primary)]/15",
-      iconColor: "text-[color:var(--primary)]",
-      label: "Drop me an email",
-      value: "hello@anamulhoque.com",
-      href: "mailto:hello@anamulhoque.com",
-    },
-    {
-      icon: MessageCircle,
-      iconBg: "bg-emerald-500/15",
-      iconColor: "text-emerald-400",
-      label: "Chat on WhatsApp",
-      value: "+880 1777-768353",
-      href: "https://wa.me/8801777768353",
-      external: true,
-    },
-    {
-      icon: CalendarDays,
-      iconBg: "bg-[color:var(--primary)]/15",
-      iconColor: "text-[color:var(--primary)]",
-      label: "Book a free intro call",
-      value: "Schedule on Calendly",
-      href: "https://cal.com/anamulhoque.com",
-      external: true,
-    },
-  ];
-
-  return (
-    <div>
-      <Eyebrow>// quick contact</Eyebrow>
-      <div className="mt-4 space-y-3">
-        {items.map((it) => {
-          const Icon = it.icon;
-          return (
-            <a
-              key={it.value}
-              href={it.href}
-              target={it.external ? "_blank" : undefined}
-              rel={it.external ? "noopener noreferrer" : undefined}
-              className="group flex min-h-[64px] items-center gap-4 rounded-xl border border-white/10 bg-[color:var(--surface)]/70 p-4 transition hover:border-[color:var(--primary)]/40 hover:bg-[color:var(--surface-2)]/80"
-            >
-              <span
-                className={`grid h-11 w-11 place-items-center rounded-lg ${it.iconBg}`}
-              >
-                <Icon className={`h-5 w-5 ${it.iconColor}`} />
-              </span>
-              <div className="min-w-0 flex-1">
-                <div className="text-xs text-muted-foreground">{it.label}</div>
-                <div className="truncate text-sm font-semibold text-white">
-                  {it.value}
-                </div>
-              </div>
-              <ArrowRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-white" />
-            </a>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function SocialsCard() {
-  const socials = [
-    { icon: Github, name: "GitHub", handle: "@AnamulAI", href: "https://github.com/AnamulAI" },
-    { icon: Linkedin, name: "LinkedIn", handle: "in/helloenamul", href: "https://linkedin.com/in/helloenamul" },
-    { icon: Facebook, name: "Facebook", handle: "@helloenamul", href: "https://facebook.com/helloenamul" },
-  ];
-  return (
-    <div className="overflow-hidden rounded-xl border border-white/10 bg-[color:var(--surface)]/80">
-      <div className="flex items-center gap-2 border-b border-white/10 bg-black/30 px-4 py-2.5">
-        <span className="flex gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-red-500/80" />
-          <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/80" />
-          <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/80" />
-        </span>
-        <span className="ml-2 font-mono text-xs text-muted-foreground">
-          social-links.jsx
-        </span>
-      </div>
-      <div className="p-5">
-        <Eyebrow>// connect with me</Eyebrow>
-        <div className="mt-4 space-y-3">
-          {socials.map((s) => {
-            const Icon = s.icon;
-            return (
-              <a
-                key={s.name}
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex min-h-[56px] items-center gap-3 rounded-lg border border-transparent px-2 py-2 transition hover:border-white/10 hover:bg-white/[0.03]"
-              >
-                <span className="grid h-10 w-10 place-items-center rounded-md bg-white/5 text-white/90 group-hover:text-[color:var(--primary)]">
-                  <Icon className="h-5 w-5" />
-                </span>
-                <div className="min-w-0">
-                  <div className="text-sm font-semibold text-white">{s.name}</div>
-                  <div className="font-mono text-xs text-muted-foreground">
-                    {s.handle}
-                  </div>
-                </div>
-              </a>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function LocationCard() {
-  return (
-    <div className="rounded-xl border border-white/10 bg-[color:var(--surface)]/70 p-5">
-      <Eyebrow>// location</Eyebrow>
-      <div className="mt-4 flex items-start gap-3">
-        <span className="grid h-10 w-10 place-items-center rounded-lg bg-[color:var(--primary)]/15">
-          <MapPin className="h-5 w-5 text-[color:var(--primary)]" />
-        </span>
-        <div>
-          <div className="text-sm font-semibold text-white">
-            Chattogram, Bangladesh
-          </div>
-          <div className="mt-0.5 text-xs text-muted-foreground">
-            Available for remote work worldwide
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function StatusCallout() {
-  return (
-    <div className="rounded-xl border border-[color:var(--primary)]/40 bg-[color:var(--primary)]/10 p-5 shadow-[0_0_0_1px_rgba(59,130,246,0.15),0_20px_60px_-30px_rgba(59,130,246,0.4)]">
-      <div className="flex items-start gap-3">
-        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-emerald-500/15">
-          <CheckCircle2 className="h-5 w-5 text-emerald-400" />
-        </span>
-        <div>
-          <div className="text-sm font-semibold text-white">
-            Currently Accepting Projects
-          </div>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Open for new website and podcast projects. Let's discuss your goals.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ProcessSection() {
+/* ---------- How It Works — vertical timeline cards ---------- */
+function HowItWorks() {
   const steps = [
     {
       n: "01",
       icon: MessageCircle,
       title: "You Reach Out",
       body: "Share your project idea or goals — no lengthy brief needed to start.",
+      chips: ["Email", "WhatsApp", "Form"],
     },
     {
       n: "02",
       icon: Calendar,
       title: "We Have a Quick Chat",
-      body: "A short call or message exchange to understand your needs and see if we're a good fit.",
+      body: "A short call or message exchange to understand your needs and confirm fit.",
+      chips: ["30-min call", "Async OK", "Free"],
     },
     {
       n: "03",
+      icon: PenTool,
+      title: "Scope & Proposal",
+      body: "I share a clear plan: deliverables, timeline, and transparent pricing.",
+      chips: ["Fixed scope", "Milestones", "Clear pricing"],
+    },
+    {
+      n: "04",
       icon: Rocket,
       title: "We Start Building",
-      body: "Once aligned, we move into a clear, focused execution plan.",
+      body: "Focused execution with regular updates and clean handover.",
+      chips: ["Weekly updates", "Live preview", "Handover"],
     },
   ];
   return (
-    <section className="mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
+    <section className="mx-auto max-w-4xl px-4 py-24 sm:px-6 sm:py-32">
       <div className="text-center">
-        <Eyebrow>// how it works</Eyebrow>
-        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-          Simple <span className="text-[color:var(--orange)]">3-Step</span> Process
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[color:var(--surface)]/70 px-3 py-1.5 text-xs font-mono uppercase tracking-[0.18em] text-[color:var(--primary)]">
+          <Layers className="h-3.5 w-3.5" /> how it works
+        </div>
+        <h2 className="mt-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">
+          From <span className="text-gradient-vo">Hello</span> to{" "}
+          <span className="text-[color:var(--orange)]">Launch</span>
         </h2>
+        <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
+          A calm, predictable process designed for serious projects.
+        </p>
       </div>
-      <div className="mt-12 grid gap-5 md:grid-cols-3">
+
+      <div className="relative mt-14 space-y-4">
+        <div
+          aria-hidden
+          className="absolute left-6 top-4 bottom-4 hidden w-px bg-gradient-to-b from-[color:var(--primary)]/60 via-white/10 to-[color:var(--orange)]/40 sm:block"
+        />
         {steps.map((s) => {
           const Icon = s.icon;
           return (
             <div
               key={s.n}
-              className="group rounded-2xl border border-white/10 bg-[color:var(--surface)]/70 p-6 transition hover:border-[color:var(--primary)]/40 hover:shadow-[0_20px_60px_-30px_rgba(59,130,246,0.45)]"
+              className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[color:var(--surface)]/70 p-5 transition hover:border-[color:var(--primary)]/40 sm:pl-20"
             >
-              <span className="grid h-12 w-12 place-items-center rounded-xl border border-[color:var(--primary)]/40 bg-[color:var(--primary)]/10">
-                <Icon className="h-5 w-5 text-[color:var(--primary)]" />
+              <span className="absolute left-4 top-5 hidden h-8 w-8 place-items-center rounded-lg border border-[color:var(--primary)]/40 bg-background/60 sm:grid">
+                <Icon className="h-4 w-4 text-[color:var(--primary)]" />
               </span>
-              <div className="mt-5 font-mono text-xs text-[color:var(--primary)]">
-                {s.n}
+              <div className="flex items-center justify-between gap-3">
+                <div className="font-mono text-xs text-[color:var(--primary)]">// step {s.n}</div>
+                <Icon className="h-4 w-4 text-[color:var(--primary)] sm:hidden" />
               </div>
               <h3 className="mt-1 text-lg font-semibold text-white">{s.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                {s.body}
-              </p>
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {s.chips.map((c) => (
+                  <span
+                    key={c}
+                    className="rounded-md border border-white/10 bg-background/40 px-2 py-1 font-mono text-[11px] text-white/70"
+                  >
+                    {c}
+                  </span>
+                ))}
+              </div>
             </div>
           );
         })}
@@ -474,6 +403,37 @@ function ProcessSection() {
   );
 }
 
+/* ---------- Socials strip ---------- */
+function SocialStrip() {
+  const socials = [
+    { icon: Github, name: "GitHub", href: "https://github.com/AnamulAI" },
+    { icon: Linkedin, name: "LinkedIn", href: "https://linkedin.com/in/helloenamul" },
+    { icon: Facebook, name: "Facebook", href: "https://facebook.com/helloenamul" },
+    { icon: Mail, name: "Email", href: "mailto:hello@anamulhoque.com" },
+    { icon: MessageCircle, name: "WhatsApp", href: "https://wa.me/8801777768353" },
+  ];
+  return (
+    <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-2">
+      {socials.map((s) => {
+        const Icon = s.icon;
+        return (
+          <a
+            key={s.name}
+            href={s.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[color:var(--surface)]/60 px-4 py-2 text-sm text-white/80 transition hover:border-[color:var(--primary)]/40 hover:text-white"
+          >
+            <Icon className="h-4 w-4" />
+            {s.name}
+          </a>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ---------- Closing CTA ---------- */
 function ClosingCTA({ onSend }: { onSend: () => void }) {
   return (
     <section className="relative overflow-hidden">
@@ -482,54 +442,60 @@ function ClosingCTA({ onSend }: { onSend: () => void }) {
         className="pointer-events-none absolute inset-0 -z-10"
         style={{
           background:
-            "radial-gradient(40% 60% at 30% 50%, rgba(59,130,246,0.25), transparent 70%), radial-gradient(40% 60% at 70% 50%, rgba(249,115,22,0.18), transparent 70%)",
+            "radial-gradient(40% 60% at 30% 50%, oklch(0.62 0.19 255 / 25%), transparent 70%), radial-gradient(40% 60% at 70% 50%, oklch(0.74 0.18 50 / 18%), transparent 70%)",
         }}
       />
       <div className="mx-auto max-w-3xl px-4 py-28 text-center sm:px-6 sm:py-36">
-        <Eyebrow>// ready when you are</Eyebrow>
-        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
-          No Long Forms. No Complicated Process.
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[color:var(--surface)]/70 px-3 py-1.5 text-xs font-mono uppercase tracking-[0.18em] text-[color:var(--primary)]">
+          <Sparkles className="h-3.5 w-3.5" /> ready when you are
+        </div>
+        <h2 className="mt-4 text-4xl font-bold tracking-tight text-white sm:text-6xl">
+          No long forms. <br />
+          <span className="text-gradient-vo">No complicated process.</span>
         </h2>
         <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground">
           Just send a message and let's figure out the best next step together.
         </p>
-        <div className="mt-8">
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Button
             onClick={onSend}
-            className="group h-14 rounded-full bg-[color:var(--orange)] px-8 text-base font-semibold text-black shadow-[0_20px_60px_-15px_var(--orange-glow)] hover:brightness-110"
+            className="group h-12 rounded-full bg-[color:var(--primary)] px-6 text-sm font-semibold text-white shadow-[0_15px_50px_-15px_oklch(0.62_0.19_255/55%)] hover:brightness-110"
           >
+            <Send className="mr-1 h-4 w-4" />
             Send a Message
-            <ArrowRight className="ml-1 h-5 w-5 transition group-hover:translate-x-0.5" />
+            <ArrowRight className="ml-1 h-4 w-4 transition group-hover:translate-x-0.5" />
           </Button>
+          <a
+            href="https://cal.com/anamulhoque.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-12 items-center gap-2 rounded-full border border-white/10 bg-[color:var(--surface)]/70 px-6 text-sm font-semibold text-white transition hover:border-[color:var(--primary)]/40"
+          >
+            <CalendarDays className="h-4 w-4" />
+            Book a Call
+          </a>
         </div>
       </div>
     </section>
   );
 }
 
+/* ---------- Footer ---------- */
 function SiteFooter() {
   const links = [
     { label: "Home", href: "/" },
-    { label: "About", href: "/about" },
-    { label: "AI Podcast", href: "/services#ai-podcast" },
-    { label: "Web Development", href: "/services#web-development" },
-    { label: "AI Automation", href: "/services#ai-automation" },
-    { label: "Blog", href: "/blog" },
+    { label: "About", href: "/#about" },
+    { label: "AI Podcast", href: "/#ai-podcast" },
+    { label: "Web Development", href: "/#web-development" },
+    { label: "AI Automation", href: "/#ai-automation" },
     { label: "Contact", href: "/contact" },
   ];
   return (
     <footer className="border-t border-white/5 bg-background/60">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-        <nav
-          aria-label="Footer"
-          className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3"
-        >
+        <nav aria-label="Footer" className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
           {links.map((l) => (
-            <a
-              key={l.label}
-              href={l.href}
-              className="text-sm text-muted-foreground transition hover:text-[color:var(--primary)]"
-            >
+            <a key={l.label} href={l.href} className="text-sm text-muted-foreground transition hover:text-[color:var(--primary)]">
               {l.label}
             </a>
           ))}
@@ -557,13 +523,14 @@ function ScrollToTop() {
     <button
       aria-label="Scroll to top"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      className="fixed bottom-6 right-6 z-40 grid h-12 w-12 place-items-center rounded-full bg-[color:var(--orange)] text-black shadow-[0_15px_40px_-10px_var(--orange-glow)] transition hover:brightness-110"
+      className="fixed bottom-6 right-6 z-40 grid h-12 w-12 place-items-center rounded-full bg-[color:var(--primary)] text-white shadow-[0_15px_40px_-10px_oklch(0.62_0.19_255/55%)] transition hover:brightness-110"
     >
       <ChevronUp className="h-5 w-5" />
     </button>
   );
 }
 
+/* ---------- Page ---------- */
 function ContactPage() {
   const formRef = useRef<HTMLDivElement | null>(null);
   const scrollToForm = () => {
@@ -571,40 +538,96 @@ function ContactPage() {
   };
 
   return (
-    <div className="min-h-dvh bg-background text-foreground">
-      <TopNav onTalk={scrollToForm} />
+    <div className="relative min-h-dvh overflow-x-hidden bg-background text-foreground">
+      {/* ambient radial glows */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[900px]"
+        style={{
+          background:
+            "radial-gradient(45% 50% at 20% 30%, oklch(0.62 0.19 255 / 28%), transparent 65%), radial-gradient(45% 50% at 85% 25%, oklch(0.74 0.18 50 / 22%), transparent 65%)",
+        }}
+      />
 
-      <main>
+      <FloatingNav onTalk={scrollToForm} />
+
+      <main className="pt-28">
         {/* HERO */}
-        <section className="mx-auto max-w-4xl px-4 pt-20 pb-12 text-center sm:px-6 sm:pt-28 sm:pb-16">
-          <Eyebrow>// let's connect</Eyebrow>
-          <h1 className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-6xl">
-            Let's Build Something
+        <section className="mx-auto max-w-5xl px-4 pt-12 pb-10 text-center sm:px-6 sm:pt-20">
+          <ChannelPills />
+          <h1 className="mt-10 text-5xl font-bold leading-[1.02] tracking-tight text-white sm:text-7xl">
+            <span className="text-gradient-vo">Let's Build Something</span>
             <br />
-            <span className="text-gradient-vo">Worth Talking About</span>
+            Worth <span className="text-[color:var(--orange)]">Talking</span> About
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
-            Have a project in mind? Want to discuss AI podcast content, a modern
-            website, or both? I'd love to hear what you're working on.
+          <p className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground sm:text-lg">
+            Have a project in mind? Want to discuss an AI podcast, a modern website,
+            or business automation? I'd love to hear what you're working on.
           </p>
+
+          {/* terminal cue */}
+          <div className="mx-auto mt-8 inline-flex items-center gap-3 rounded-xl border border-white/10 bg-black/40 px-5 py-3 font-mono text-sm shadow-[0_10px_40px_-15px_rgba(0,0,0,0.6)] backdrop-blur">
+            <span className="text-[color:var(--orange)]">$</span>
+            <span className="text-white/90">anam --connect</span>
+            <span className="ml-1 inline-block h-4 w-1.5 animate-pulse bg-[color:var(--primary)]" />
+          </div>
+
+          {/* primary actions */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Button
+              onClick={scrollToForm}
+              className="group h-12 rounded-full bg-[color:var(--primary)] px-6 text-sm font-semibold text-white shadow-[0_10px_40px_-10px_oklch(0.62_0.19_255/55%)] hover:brightness-110"
+            >
+              Send a Message
+              <ArrowRight className="ml-1 h-4 w-4 transition group-hover:translate-x-0.5" />
+            </Button>
+            <a
+              href="https://cal.com/anamulhoque.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-12 items-center gap-2 rounded-full border border-white/10 bg-[color:var(--surface)]/70 px-6 text-sm font-semibold text-white transition hover:border-[color:var(--primary)]/40"
+            >
+              <CalendarDays className="h-4 w-4" />
+              Book Intro Call
+            </a>
+          </div>
+
+          {/* status pill */}
+          <div className="mt-8 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs text-emerald-300">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+            </span>
+            Currently accepting projects
+          </div>
         </section>
 
-        {/* MAIN GRID */}
-        <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
-          <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr]">
-            <ContactForm formRef={formRef} />
-            <div className="space-y-6">
-              <QuickContact />
-              <SocialsCard />
-              <LocationCard />
-              <StatusCallout />
+        {/* QUICK STAT CARDS */}
+        <section className="mx-auto max-w-5xl px-4 pb-16 sm:px-6 sm:pb-24">
+          <QuickStatCards />
+        </section>
+
+        <div className="h-px bg-white/5" />
+
+        {/* CONTACT FORM */}
+        <section className="mx-auto max-w-3xl px-4 py-20 sm:px-6 sm:py-28">
+          <div className="mb-8 text-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[color:var(--surface)]/70 px-3 py-1.5 text-xs font-mono uppercase tracking-[0.18em] text-[color:var(--primary)]">
+              <Mail className="h-3.5 w-3.5" /> get in touch
             </div>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-5xl">
+              Start the <span className="text-gradient-vo">Conversation</span>
+            </h2>
+          </div>
+          <ContactForm formRef={formRef} />
+          <div className="mt-10">
+            <SocialStrip />
           </div>
         </section>
 
         <div className="h-px bg-white/5" />
 
-        <ProcessSection />
+        <HowItWorks />
 
         <div className="h-px bg-white/5" />
 
