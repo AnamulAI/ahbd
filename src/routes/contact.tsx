@@ -278,7 +278,11 @@ function QuickContact() {
               </span>
               <div className="min-w-0 flex-1">
                 <div className="text-xs text-muted-foreground">{it.label}</div>
-                <div className="truncate text-sm font-semibold text-white">
+                <div className="break-words text-sm font-semibold leading-snug text-white">
+                  {it.value}
+                </div>
+              </div>
+              <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-[color:var(--primary)] motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
                   {it.value}
                 </div>
               </div>
