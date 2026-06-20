@@ -36,7 +36,7 @@ function Index() {
         </p>
         <Link
           to="/contact"
-          className="mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-[color:var(--orange)] px-6 text-sm font-semibold text-black shadow-[0_15px_40px_-10px_var(--orange-glow)] transition hover:brightness-110"
+          className="mt-8 inline-flex h-12 items-center gap-2 rounded-full btn-gradient px-6 text-sm font-semibold text-black shadow-[0_15px_40px_-10px_var(--vo-glow)] transition hover:brightness-110"
         >
           Get in touch
           <ArrowRight className="h-4 w-4" />
