@@ -71,7 +71,11 @@ export function SiteFooter() {
 
         <div className="flex flex-col items-center justify-center gap-3 text-center text-xs text-muted-foreground md:flex-row md:justify-between md:text-left">
           <p>© 2026 Mohammad Anamul Hoque. All rights reserved.</p>
-          <p>Built with ❤️ &amp; AI</p>
+          <p className="inline-flex items-center gap-1.5">
+            Built with
+            <Heart className="h-3.5 w-3.5 text-[color:var(--orange)]" aria-hidden="true" strokeWidth={2} />
+            &amp; AI
+          </p>
         </div>
       </div>
     </footer>
