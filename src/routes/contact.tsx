@@ -466,42 +466,6 @@ function ClosingCTA({ onSend }: { onSend: () => void }) {
   );
 }
 
-function SiteFooter() {
-  const links = [
-    { label: "Home", href: "/" },
-    { label: "About", href: "/about" },
-    { label: "AI Podcast", href: "/services#ai-podcast" },
-    { label: "Web Development", href: "/services#web-development" },
-    { label: "AI Automation", href: "/services#ai-automation" },
-    { label: "Blog", href: "/blog" },
-    { label: "Contact", href: "/contact" },
-  ];
-  return (
-    <footer className="border-t border-white/5 bg-background/60">
-      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-        <nav
-          aria-label="Footer"
-          className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3"
-        >
-          {links.map((l) => (
-            <a
-              key={l.label}
-              href={l.href}
-              className="text-sm text-muted-foreground transition-colors duration-200 hover:text-[color:var(--primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)]/50 rounded motion-reduce:transition-none"
-            >
-              {l.label}
-            </a>
-          ))}
-        </nav>
-        <div className="my-8 h-px bg-white/5" />
-        <div className="flex flex-col items-center justify-between gap-3 text-xs text-muted-foreground sm:flex-row">
-          <p>© 2026 Mohammad Anamul Hoque. All rights reserved.</p>
-          <p>Built with ❤️ &amp; AI</p>
-        </div>
-      </div>
-    </footer>
-  );
-}
 
 function ScrollToTop() {
   const [show, setShow] = useState(false);
