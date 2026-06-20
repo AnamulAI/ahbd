@@ -32,6 +32,7 @@ import {
 
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { BrandIcon, brandColor } from "@/components/site/BrandIcon";
 
 import {
   Accordion,
@@ -213,16 +214,20 @@ function HeroSection({ onSamplesClick }: { onSamplesClick: () => void }) {
           })}
         </div>
 
-        <div className="mt-8 flex max-w-4xl flex-wrap items-center justify-center gap-2">
-          {TECH_STACK.map((t) => (
-            <span
-              key={t}
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-muted-foreground"
-            >
-              <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--primary)]" />
-              {t}
-            </span>
-          ))}
+        <div className="mt-8 w-full max-w-5xl">
+          <div className="tech-marquee overflow-hidden">
+            <div className="tech-marquee-track">
+              {[...TECH_STACK, ...TECH_STACK].map((t, i) => (
+                <span
+                  key={`${t}-${i}`}
+                  className="inline-flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-1.5 text-xs font-medium text-white/85"
+                >
+                  <BrandIcon name={t} size={14} />
+                  {t}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -638,12 +643,12 @@ function ProcessSection() {
 }
 
 const SAMPLE_PROJECTS = [
-  { slug: "saas-landing", category: "SaaS", title: "SaaS Landing Page", desc: "Conversion-focused landing built for product launch and signup growth." },
-  { slug: "agency-website", category: "Agency", title: "Agency Website", desc: "Full multi-page site with services, case studies, and team pages." },
-  { slug: "ecommerce-interface", category: "Ecommerce", title: "Ecommerce Interface", desc: "Modern product catalog with smooth checkout flow." },
-  { slug: "service-business-website", category: "Business", title: "Service Business Website", desc: "Local service brand with booking and contact integration." },
-  { slug: "dashboard-ui", category: "Web App", title: "Dashboard UI", desc: "Internal tool dashboard with charts and clean data views." },
-  { slug: "portfolio-website", category: "Portfolio", title: "Portfolio Website", desc: "Personal brand portfolio with project showcase layout." },
+  { slug: "saas-landing", category: "Landing Page", title: "SaaS Landing Page", desc: "Conversion-focused landing built for product launch and signup growth.", tech: ["React", "Next.js", "Tailwind CSS"] },
+  { slug: "agency-website", category: "Business Site", title: "Agency Website", desc: "Full multi-page site with services, case studies, and team pages.", tech: ["WordPress", "Figma"] },
+  { slug: "ecommerce-interface", category: "Ecommerce", title: "Ecommerce Interface", desc: "Modern product catalog with smooth checkout flow.", tech: ["Next.js", "TypeScript", "Stripe"] },
+  { slug: "service-business-website", category: "Business Site", title: "Service Business Website", desc: "Local service brand with booking and contact integration.", tech: ["Webflow", "Figma"] },
+  { slug: "dashboard-ui", category: "Web App", title: "Dashboard UI", desc: "Internal tool dashboard with charts and clean data views.", tech: ["React", "TypeScript", "Supabase"] },
+  { slug: "portfolio-website", category: "Portfolio", title: "Portfolio Website", desc: "Personal brand portfolio with project showcase layout.", tech: ["Framer", "Figma"] },
 ];
 
 function ProjectsSection({
@@ -664,10 +669,10 @@ function ProjectsSection({
           {SAMPLE_PROJECTS.map((p) => (
             <article
               key={p.slug}
-              className="card-elevated card-elevated-hover overflow-hidden"
+              className="card-glow card-elevated card-elevated-hover overflow-hidden"
             >
               <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-[color:var(--primary)]/15 via-white/[0.03] to-[color:var(--orange)]/15">
-                <span className="absolute left-3 top-3 inline-flex items-center rounded-full border border-white/10 bg-black/40 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur">
+                <span className="absolute left-3 top-3 z-10 inline-flex items-center rounded-full bg-amber-400 px-2.5 py-1 text-[11px] font-semibold text-black shadow-[0_6px_20px_-8px_rgba(251,191,36,0.7)]">
                   {p.category}
                 </span>
                 <div className="absolute inset-0 grid place-items-center">
@@ -679,6 +684,25 @@ function ProjectsSection({
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {p.desc}
                 </p>
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {p.tech.map((t) => {
+                    const color = brandColor(t);
+                    return (
+                      <span
+                        key={t}
+                        className="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-medium"
+                        style={{
+                          color,
+                          borderColor: `${color}40`,
+                          backgroundColor: `${color}14`,
+                        }}
+                      >
+                        <BrandIcon name={t} size={11} />
+                        {t}
+                      </span>
+                    );
+                  })}
+                </div>
                 <Link
                   to="/projects"
                   className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[color:var(--primary)] hover:text-[color:var(--orange)] transition-colors"
