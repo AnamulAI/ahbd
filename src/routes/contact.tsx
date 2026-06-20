@@ -345,10 +345,10 @@ function LocationCard() {
     <div className="card-elevated card-elevated-hover p-5">
       <Eyebrow>// location</Eyebrow>
       <div className="mt-4 flex items-start gap-3">
-        <span className="grid h-10 w-10 place-items-center rounded-lg bg-[color:var(--primary)]/15">
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[color:var(--primary)]/15">
           <MapPin className="h-5 w-5 text-[color:var(--primary)]" />
         </span>
-        <div>
+        <div className="min-w-0">
           <div className="text-sm font-semibold text-white">
             Chattogram, Bangladesh
           </div>
