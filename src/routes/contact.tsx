@@ -163,7 +163,7 @@ function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | nu
             <SelectTrigger
               id="service"
               aria-invalid={!!errors.service}
-              className="h-12 border-white/10 bg-background/60 text-left text-white data-[placeholder]:text-white/30 focus-visible:ring-[color:var(--primary)]"
+              className="h-12 border-white/10 bg-background/60 text-left text-white transition-[box-shadow,border-color,background-color] duration-200 data-[placeholder]:text-white/30 focus-visible:border-[color:var(--primary)] focus-visible:bg-background/80 focus-visible:ring-2 focus-visible:ring-[color:var(--primary)]/40 motion-reduce:transition-none"
             >
               <SelectValue placeholder="Select a service" />
             </SelectTrigger>
