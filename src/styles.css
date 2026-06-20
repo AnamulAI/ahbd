@@ -114,3 +114,46 @@ html {
   text-transform: uppercase;
   color: var(--color-primary);
 }
+
+/* Premium card surface with subtle gradient + hover lift/glow.
+   Used across the site for cohesion with uupm.cc-style cards. */
+@utility card-elevated {
+  position: relative;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in oklab, white 8%, transparent);
+  background:
+    linear-gradient(180deg,
+      color-mix(in oklab, var(--color-surface-2) 70%, transparent),
+      color-mix(in oklab, var(--color-surface) 80%, transparent));
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, white 6%, transparent),
+    0 1px 0 color-mix(in oklab, black 30%, transparent),
+    0 20px 60px -40px rgba(0, 0, 0, 0.6);
+  transition:
+    transform 250ms ease,
+    border-color 250ms ease,
+    box-shadow 250ms ease,
+    background-color 250ms ease;
+}
+
+@utility card-elevated-hover {
+  &:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in oklab, var(--color-primary) 45%, transparent);
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, white 8%, transparent),
+      0 0 0 1px color-mix(in oklab, var(--color-primary) 25%, transparent),
+      0 30px 80px -30px color-mix(in oklab, var(--color-primary) 45%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-elevated,
+  .card-elevated-hover {
+    transition: none !important;
+  }
+  .card-elevated-hover:hover {
+    transform: none;
+  }
+}
+
