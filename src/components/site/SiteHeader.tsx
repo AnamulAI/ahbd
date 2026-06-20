@@ -1,4 +1,4 @@
-import { Link, useLocation, useRouter } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { MessageCircle } from "lucide-react";
 
 const NAV_LINKS = [
