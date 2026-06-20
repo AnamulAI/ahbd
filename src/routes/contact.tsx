@@ -341,7 +341,7 @@ function SocialsCard() {
 
 function LocationCard() {
   return (
-    <div className="rounded-xl border border-white/10 bg-[color:var(--surface)]/70 p-5">
+    <div className="card-elevated card-elevated-hover p-5">
       <Eyebrow>// location</Eyebrow>
       <div className="mt-4 flex items-start gap-3">
         <span className="grid h-10 w-10 place-items-center rounded-lg bg-[color:var(--primary)]/15">
