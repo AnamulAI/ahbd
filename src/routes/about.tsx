@@ -112,41 +112,141 @@ function HeroSection() {
   );
 }
 
+function AvatarCodeCard() {
+  return (
+    <div className="card-elevated relative overflow-hidden rounded-2xl p-5 sm:p-6">
+      {/* Terminal header */}
+      <div className="flex items-center gap-2">
+        <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
+        <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
+        <span className="h-3 w-3 rounded-full bg-[#28c840]" />
+        <span className="ml-2 font-mono text-xs text-muted-foreground">~/anam-dev</span>
+      </div>
+
+      {/* Avatar with pulsing ring */}
+      <div className="mt-6 flex justify-center">
+        <div className="relative h-32 w-32 sm:h-36 sm:w-36">
+          <span
+            aria-hidden
+            className="avatar-ring-pulse absolute inset-0 rounded-full"
+            style={{
+              background:
+                "conic-gradient(from 180deg, var(--primary), var(--orange), var(--primary))",
+              filter: "blur(10px)",
+              opacity: 0.7,
+            }}
+          />
+          <span
+            aria-hidden
+            className="absolute inset-[3px] rounded-full"
+            style={{
+              background:
+                "linear-gradient(135deg, var(--primary), var(--orange))",
+            }}
+          />
+          <img
+            src={avatarPlaceholder}
+            alt="Anam Dev avatar placeholder"
+            width={256}
+            height={256}
+            loading="lazy"
+            className="absolute inset-[5px] h-[calc(100%-10px)] w-[calc(100%-10px)] rounded-full object-cover ring-1 ring-white/10"
+          />
+        </div>
+      </div>
+
+      {/* Code block */}
+      <pre className="mt-6 overflow-x-auto rounded-xl bg-[#0b0d12] p-4 font-mono text-[13px] leading-relaxed ring-1 ring-white/5">
+        <code>
+          <span className="text-[#c084fc]">const</span>{" "}
+          <span className="text-white">brand</span>{" "}
+          <span className="text-muted-foreground">=</span>{" "}
+          <span className="text-white">{"{"}</span>
+          {"\n  "}
+          <span className="text-[#60a5fa]">by</span>
+          <span className="text-muted-foreground">:</span>{" "}
+          <span className="text-[#86efac]">"Anam Dev"</span>
+          <span className="text-muted-foreground">,</span>
+          {"\n  "}
+          <span className="text-[#60a5fa]">focus</span>
+          <span className="text-muted-foreground">:</span>{" "}
+          <span className="text-[#86efac]">"Authority · Websites · AI"</span>
+          <span className="text-muted-foreground">,</span>
+          {"\n  "}
+          <span className="text-[#60a5fa]">clients</span>
+          <span className="text-muted-foreground">:</span>{" "}
+          <span className="text-[#86efac]">"Bangladesh · Remote"</span>
+          <span className="text-muted-foreground">,</span>
+          {"\n  "}
+          <span className="text-[#60a5fa]">available</span>
+          <span className="text-muted-foreground">:</span>{" "}
+          <span className="text-[#fbbf24]">true</span>
+          <span className="text-muted-foreground">,</span>
+          {"\n"}
+          <span className="text-white">{"}"}</span>
+        </code>
+      </pre>
+
+      {/* Divider + footer row */}
+      <div className="mt-5 border-t border-white/5 pt-4">
+        <div className="flex items-center justify-between text-xs text-muted-foreground">
+          <span className="inline-flex items-center gap-2">
+            <span className="relative inline-flex h-2 w-2">
+              <span className="status-ping absolute inline-flex h-full w-full rounded-full bg-[#22c55e]" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-[#22c55e]" />
+            </span>
+            available for projects
+          </span>
+          <span className="font-mono">v5.2026</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function BackstorySection() {
   return (
     <section>
-      <div className="mx-auto max-w-3xl px-4 py-24 text-center sm:px-6 sm:py-32">
-        <Eyebrow center>// the backstory</Eyebrow>
-        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-          I Didn't Start Here.{" "}
-          <span className="text-gradient-vo">I Built My Way Here.</span>
-        </h2>
+      <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
+        <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
+          <div className="text-left">
+            <Eyebrow>// the backstory</Eyebrow>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              I Didn't Start Here.{" "}
+              <span className="text-gradient-vo">I Built My Way Here.</span>
+            </h2>
 
-        <div className="mt-8 space-y-5 text-base leading-relaxed text-muted-foreground sm:text-lg">
-          <p>
-            Before I started building AI podcast assets and modern websites for
-            brands, I spent years working across different parts of the digital
-            space — from content workflows to virtual assistance to marketing
-            support and website-related work.
-          </p>
-          <p>
-            That foundation may not have looked glamorous from the outside, but
-            it gave me something valuable: a practical understanding of how
-            brands actually grow online, where things break, what creates
-            confusion, and what helps businesses build trust more effectively.
-          </p>
-          <p>
-            Over time, that experience shaped how I work today. I don't just
-            build digital assets that look good — I build them to support a
-            bigger business goal.
-          </p>
-        </div>
+            <div className="mt-8 space-y-5 text-base leading-relaxed text-muted-foreground sm:text-lg">
+              <p>
+                Before I started building AI podcast assets and modern websites for
+                brands, I spent years working across different parts of the digital
+                space — from content workflows to virtual assistance to marketing
+                support and website-related work.
+              </p>
+              <p>
+                That foundation may not have looked glamorous from the outside, but
+                it gave me something valuable: a practical understanding of how
+                brands actually grow online, where things break, what creates
+                confusion, and what helps businesses build trust more effectively.
+              </p>
+              <p>
+                Over time, that experience shaped how I work today. I don't just
+                build digital assets that look good — I build them to support a
+                bigger business goal.
+              </p>
+            </div>
 
-        <div className="mx-auto mt-10 max-w-2xl card-elevated border-l-4 [border-left-color:var(--primary)] p-6 text-left sm:p-8">
-          <p className="text-base font-medium leading-relaxed text-white sm:text-lg">
-            The result? I focus on creating digital assets that help brands look
-            sharper, communicate better, and grow with more clarity.
-          </p>
+            <div className="mt-8 card-elevated border-l-4 [border-left-color:var(--primary)] p-6 sm:p-7">
+              <p className="text-base font-medium leading-relaxed text-white sm:text-lg">
+                The result? I focus on creating digital assets that help brands look
+                sharper, communicate better, and grow with more clarity.
+              </p>
+            </div>
+          </div>
+
+          <div className="lg:sticky lg:top-24">
+            <AvatarCodeCard />
+          </div>
         </div>
       </div>
     </section>
