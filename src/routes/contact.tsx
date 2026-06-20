@@ -110,7 +110,7 @@ function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | nu
   return (
     <div
       ref={formRef}
-      className="rounded-2xl border border-white/10 bg-[color:var(--surface)]/80 p-6 shadow-[0_20px_60px_-30px_rgba(59,130,246,0.45)] backdrop-blur sm:p-8"
+      className="card-elevated p-6 backdrop-blur sm:p-8"
     >
       <Eyebrow>// send a message</Eyebrow>
       <h2 className="mt-2 text-2xl font-semibold text-white sm:text-3xl">
