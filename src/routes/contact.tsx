@@ -529,12 +529,7 @@ function ContactPage() {
           </div>
         </section>
 
-
-        <div className="h-px bg-white/5" />
-
         <ProcessSection />
-
-        <div className="h-px bg-white/5" />
 
         <ClosingCTA onSend={scrollToForm} />
       </main>
