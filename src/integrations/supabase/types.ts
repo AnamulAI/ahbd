@@ -788,7 +788,93 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      client_demo_pages_public: {
+        Row: {
+          audio_url: string | null
+          book_call_link: string | null
+          brand_name: string | null
+          client_name: string | null
+          closing_note: string | null
+          cover_image: string | null
+          created_at: string | null
+          cta_button_text: string | null
+          episode_summary: string | null
+          episode_title: string | null
+          features: Json | null
+          id: string | null
+          is_published: boolean | null
+          page_title: string | null
+          personalized_intro: string | null
+          podcast_category: string | null
+          preview_mode: string | null
+          secondary_cta_text: string | null
+          slug: string | null
+          subtitle: string | null
+          transcript_highlights: string | null
+          updated_at: string | null
+          video_url: string | null
+          website_url: string | null
+          whatsapp_link: string | null
+          why_fits_brand: string | null
+        }
+        Insert: {
+          audio_url?: string | null
+          book_call_link?: string | null
+          brand_name?: string | null
+          client_name?: string | null
+          closing_note?: string | null
+          cover_image?: string | null
+          created_at?: string | null
+          cta_button_text?: string | null
+          episode_summary?: string | null
+          episode_title?: string | null
+          features?: Json | null
+          id?: string | null
+          is_published?: boolean | null
+          page_title?: string | null
+          personalized_intro?: string | null
+          podcast_category?: string | null
+          preview_mode?: string | null
+          secondary_cta_text?: string | null
+          slug?: string | null
+          subtitle?: string | null
+          transcript_highlights?: string | null
+          updated_at?: string | null
+          video_url?: string | null
+          website_url?: string | null
+          whatsapp_link?: string | null
+          why_fits_brand?: string | null
+        }
+        Update: {
+          audio_url?: string | null
+          book_call_link?: string | null
+          brand_name?: string | null
+          client_name?: string | null
+          closing_note?: string | null
+          cover_image?: string | null
+          created_at?: string | null
+          cta_button_text?: string | null
+          episode_summary?: string | null
+          episode_title?: string | null
+          features?: Json | null
+          id?: string | null
+          is_published?: boolean | null
+          page_title?: string | null
+          personalized_intro?: string | null
+          podcast_category?: string | null
+          preview_mode?: string | null
+          secondary_cta_text?: string | null
+          slug?: string | null
+          subtitle?: string | null
+          transcript_highlights?: string | null
+          updated_at?: string | null
+          video_url?: string | null
+          website_url?: string | null
+          whatsapp_link?: string | null
+          why_fits_brand?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       check_demo_view_rate_limit: {
