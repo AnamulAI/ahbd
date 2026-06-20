@@ -36,7 +36,7 @@ export function SiteHeader({ onCtaClick, ctaLabel = "Let's Talk" }: SiteHeaderPr
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/5 bg-background/70 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-5 sm:gap-4 sm:px-6">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         <Logo />
 
         <nav aria-label="Primary" className="hidden md:block">
@@ -77,17 +77,17 @@ export function SiteHeader({ onCtaClick, ctaLabel = "Let's Talk" }: SiteHeaderPr
           <button
             type="button"
             onClick={onCtaClick}
-            className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-[color:var(--orange)] px-3.5 text-xs font-semibold text-black shadow-[0_8px_30px_-8px_var(--orange-glow)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_14px_40px_-8px_var(--orange-glow)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100 sm:h-11 sm:gap-2 sm:px-4 sm:text-sm"
+            className="inline-flex h-11 items-center gap-2 rounded-full bg-[color:var(--orange)] px-4 text-sm font-semibold text-black shadow-[0_8px_30px_-8px_var(--orange-glow)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_14px_40px_-8px_var(--orange-glow)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100"
           >
-            <MessageCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <MessageCircle className="h-4 w-4" />
             <span>{ctaLabel}</span>
           </button>
         ) : (
           <Link
             to="/contact"
-            className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-[color:var(--orange)] px-3.5 text-xs font-semibold text-black shadow-[0_8px_30px_-8px_var(--orange-glow)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_14px_40px_-8px_var(--orange-glow)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100 sm:h-11 sm:gap-2 sm:px-4 sm:text-sm"
+            className="inline-flex h-11 items-center gap-2 rounded-full bg-[color:var(--orange)] px-4 text-sm font-semibold text-black shadow-[0_8px_30px_-8px_var(--orange-glow)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_14px_40px_-8px_var(--orange-glow)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100"
           >
-            <MessageCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <MessageCircle className="h-4 w-4" />
             <span>{ctaLabel}</span>
           </Link>
         )}

@@ -111,7 +111,7 @@ function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | nu
   return (
     <div
       ref={formRef}
-      className="card-elevated p-5 backdrop-blur sm:p-8"
+      className="card-elevated p-6 backdrop-blur sm:p-8"
     >
       <Eyebrow>// send a message</Eyebrow>
       <h2 className="mt-2 text-2xl font-semibold text-white sm:text-3xl">
@@ -278,11 +278,11 @@ function QuickContact() {
               </span>
               <div className="min-w-0 flex-1">
                 <div className="text-xs text-muted-foreground">{it.label}</div>
-                <div className="break-words text-sm font-semibold leading-snug text-white">
+                <div className="truncate text-sm font-semibold text-white">
                   {it.value}
                 </div>
               </div>
-              <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-[color:var(--primary)] motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
+              <ArrowRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-[color:var(--primary)] motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
             </a>
           );
         })}
@@ -345,10 +345,10 @@ function LocationCard() {
     <div className="card-elevated card-elevated-hover p-5">
       <Eyebrow>// location</Eyebrow>
       <div className="mt-4 flex items-start gap-3">
-        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[color:var(--primary)]/15">
+        <span className="grid h-10 w-10 place-items-center rounded-lg bg-[color:var(--primary)]/15">
           <MapPin className="h-5 w-5 text-[color:var(--primary)]" />
         </span>
-        <div className="min-w-0">
+        <div>
           <div className="text-sm font-semibold text-white">
             Chattogram, Bangladesh
           </div>
@@ -404,7 +404,7 @@ function ProcessSection() {
   ];
   return (
     <section className="section-glow-mid border-t border-white/5">
-      <div className="mx-auto max-w-6xl px-5 py-20 sm:px-6 sm:py-32">
+      <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
         <div className="text-center">
           <Eyebrow>// how it works</Eyebrow>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
@@ -412,16 +412,16 @@ function ProcessSection() {
           </h2>
         </div>
 
-      <div className="mt-10 grid gap-5 sm:mt-12 md:grid-cols-3">
+      <div className="mt-12 grid gap-5 md:grid-cols-3">
         {steps.map((s) => {
           const Icon = s.icon;
           return (
             <div
               key={s.n}
-              className="card-elevated card-elevated-hover group p-5 sm:p-6"
+              className="card-elevated card-elevated-hover group p-6"
             >
-              <span className="grid h-10 w-10 place-items-center rounded-xl border border-[color:var(--primary)]/40 bg-[color:var(--primary)]/10 sm:h-12 sm:w-12">
-                <Icon className="h-4 w-4 text-[color:var(--primary)] sm:h-5 sm:w-5" />
+              <span className="grid h-12 w-12 place-items-center rounded-xl border border-[color:var(--primary)]/40 bg-[color:var(--primary)]/10">
+                <Icon className="h-5 w-5 text-[color:var(--primary)]" />
               </span>
               <div className="mt-5 font-mono text-xs text-[color:var(--primary)]">
                 {s.n}
@@ -444,7 +444,7 @@ function ClosingCTA({ onSend }: { onSend: () => void }) {
   return (
     <section className="section-glow-cta border-t border-white/5">
 
-      <div className="mx-auto max-w-3xl px-5 py-20 text-center sm:px-6 sm:py-36">
+      <div className="mx-auto max-w-3xl px-4 py-28 text-center sm:px-6 sm:py-36">
         <Eyebrow>// ready when you are</Eyebrow>
         <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
           No Long Forms. No Complicated Process.
@@ -500,7 +500,7 @@ function ContactPage() {
       <main>
         {/* HERO */}
         <section className="section-glow-hero">
-          <div className="mx-auto max-w-4xl px-5 pt-16 pb-12 text-center sm:px-6 sm:pt-32 sm:pb-24">
+          <div className="mx-auto max-w-4xl px-4 pt-24 pb-16 text-center sm:px-6 sm:pt-32 sm:pb-24">
             <Eyebrow>// let's connect</Eyebrow>
             <h1 className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-6xl">
               Let's Build Something
@@ -515,8 +515,8 @@ function ContactPage() {
         </section>
 
         {/* MAIN GRID — quiet dark, clean break from hero */}
-        <section className="border-t border-white/5 bg-[oklch(0.10_0.02_260)] pt-14 sm:pt-24">
-          <div className="mx-auto max-w-6xl px-5 pb-20 sm:px-6 sm:pb-32">
+        <section className="border-t border-white/5 bg-[oklch(0.10_0.02_260)] pt-20 sm:pt-24">
+          <div className="mx-auto max-w-6xl px-4 pb-24 sm:px-6 sm:pb-32">
             <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr]">
               <ContactForm formRef={formRef} />
               <div className="space-y-6">
