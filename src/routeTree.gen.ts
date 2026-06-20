@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ServicesWebDevelopmentRouteImport } from './routes/services.web-development'
 
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
@@ -28,35 +29,44 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServicesWebDevelopmentRoute = ServicesWebDevelopmentRouteImport.update({
+  id: '/services/web-development',
+  path: '/services/web-development',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/services/web-development': typeof ServicesWebDevelopmentRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/services/web-development': typeof ServicesWebDevelopmentRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/services/web-development': typeof ServicesWebDevelopmentRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/contact'
+  fullPaths: '/' | '/about' | '/contact' | '/services/web-development'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/contact'
-  id: '__root__' | '/' | '/about' | '/contact'
+  to: '/' | '/about' | '/contact' | '/services/web-development'
+  id: '__root__' | '/' | '/about' | '/contact' | '/services/web-development'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
+  ServicesWebDevelopmentRoute: typeof ServicesWebDevelopmentRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +92,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/services/web-development': {
+      id: '/services/web-development'
+      path: '/services/web-development'
+      fullPath: '/services/web-development'
+      preLoaderRoute: typeof ServicesWebDevelopmentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
+  ServicesWebDevelopmentRoute: ServicesWebDevelopmentRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
