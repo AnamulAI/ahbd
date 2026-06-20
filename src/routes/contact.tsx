@@ -537,7 +537,7 @@ function ContactPage() {
 
       <main>
         {/* HERO */}
-        <section className="mx-auto max-w-4xl px-4 pt-20 pb-12 text-center sm:px-6 sm:pt-28 sm:pb-16">
+        <section className="mx-auto max-w-4xl px-4 pt-24 pb-16 text-center sm:px-6 sm:pt-32 sm:pb-24">
           <Eyebrow>// let's connect</Eyebrow>
           <h1 className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-6xl">
             Let's Build Something
