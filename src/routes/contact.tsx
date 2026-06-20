@@ -551,7 +551,7 @@ function ContactPage() {
         </section>
 
         {/* MAIN GRID */}
-        <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
+        <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6 sm:pb-32">
           <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr]">
             <ContactForm formRef={formRef} />
             <div className="space-y-6">
