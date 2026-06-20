@@ -141,8 +141,12 @@ html {
   &:hover {
     transform: translateY(-3px);
     border-color: color-mix(in oklab, var(--color-primary) 45%, transparent);
+    background:
+      linear-gradient(180deg,
+        color-mix(in oklab, var(--color-surface-2) 100%, transparent),
+        color-mix(in oklab, var(--color-surface-2) 90%, transparent));
     box-shadow:
-      inset 0 1px 0 color-mix(in oklab, white 8%, transparent),
+      inset 0 1px 0 color-mix(in oklab, white 10%, transparent),
       0 0 0 1px color-mix(in oklab, var(--color-primary) 25%, transparent),
       0 30px 80px -30px color-mix(in oklab, var(--color-primary) 45%, transparent);
   }
