@@ -63,44 +63,6 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Logo() {
-  return (
-    <Link
-      to="/"
-      aria-label="AnamDev home"
-      className="font-mono text-base font-bold tracking-tight"
-    >
-      <span className="text-muted-foreground">{"{"}</span>
-      <span className="text-white">Anam</span>
-      <span className="text-[color:var(--primary)]">Dev</span>
-      <span className="text-muted-foreground">{"}"}</span>
-    </Link>
-  );
-}
-
-function TopNav({ onTalk }: { onTalk: () => void }) {
-  return (
-    <header className="sticky top-0 z-40 border-b border-white/5 bg-background/70 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link
-          to="/"
-          className="group inline-flex h-11 items-center gap-2 rounded-full px-2 text-sm text-muted-foreground transition hover:text-white"
-        >
-          <ArrowLeft className="h-4 w-4 transition group-hover:-translate-x-0.5" />
-          <span className="hidden sm:inline">Back to Home</span>
-        </Link>
-        <Logo />
-        <button
-          onClick={onTalk}
-          className="inline-flex h-11 items-center gap-2 rounded-full bg-[color:var(--orange)] px-4 text-sm font-semibold text-black shadow-[0_8px_30px_-8px_var(--orange-glow)] transition hover:brightness-110"
-        >
-          <MessageCircle className="h-4 w-4" />
-          <span>Let's Talk</span>
-        </button>
-      </div>
-    </header>
-  );
-}
 
 function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | null> }) {
   const [fullName, setFullName] = useState("");
