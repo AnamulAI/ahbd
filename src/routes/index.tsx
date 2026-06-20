@@ -25,7 +25,7 @@ function Index() {
   return (
     <main className="grid min-h-dvh place-items-center px-6 text-center">
       <div className="max-w-xl">
-        <div className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--violet)]">
+        <div className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
           // anamdev
         </div>
         <h1 className="mt-4 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
