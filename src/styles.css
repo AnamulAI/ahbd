@@ -259,11 +259,12 @@ html {
 
 /* Scanning sweep line across the avatar code-card */
 @keyframes card-scan-sweep {
-  0%        { transform: translateY(-10%); opacity: 0; }
-  10%       { opacity: 1; }
-  85%       { opacity: 1; }
-  100%      { transform: translateY(1100%); opacity: 0; }
+  0%   { top: 0%;    opacity: 0; }
+  8%   { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { top: 100%;  opacity: 0; }
 }
+
 .card-scan-line {
   pointer-events: none;
   position: absolute;
