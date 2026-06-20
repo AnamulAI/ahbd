@@ -96,6 +96,14 @@ html {
   html {
     scroll-behavior: smooth;
   }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .scroll-progress-bar { transition: none !important; }
+  }
+  .scroll-progress-bar {
+    transition: transform 120ms linear;
+    will-change: transform;
+  }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
