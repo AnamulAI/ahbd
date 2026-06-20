@@ -58,7 +58,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <div className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--violet)]">
+    <div className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
       {children}
     </div>
   );
@@ -73,7 +73,7 @@ function Logo() {
     >
       <span className="text-muted-foreground">{"{"}</span>
       <span className="text-white">Anam</span>
-      <span className="text-[color:var(--violet)]">Dev</span>
+      <span className="text-[color:var(--primary)]">Dev</span>
       <span className="text-muted-foreground">{"}"}</span>
     </Link>
   );
@@ -149,7 +149,7 @@ function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | nu
   return (
     <div
       ref={formRef}
-      className="rounded-2xl border border-white/10 bg-[color:var(--surface)]/80 p-6 shadow-[0_20px_60px_-30px_rgba(139,92,246,0.45)] backdrop-blur sm:p-8"
+      className="rounded-2xl border border-white/10 bg-[color:var(--surface)]/80 p-6 shadow-[0_20px_60px_-30px_rgba(59,130,246,0.45)] backdrop-blur sm:p-8"
     >
       <Eyebrow>// send a message</Eyebrow>
       <h2 className="mt-2 text-2xl font-semibold text-white sm:text-3xl">
@@ -168,7 +168,7 @@ function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | nu
             placeholder="Your full name"
             autoComplete="name"
             aria-invalid={!!errors.fullName}
-            className="h-12 border-white/10 bg-background/60 text-white placeholder:text-white/30 focus-visible:ring-[color:var(--violet)]"
+            className="h-12 border-white/10 bg-background/60 text-white placeholder:text-white/30 focus-visible:ring-[color:var(--primary)]"
           />
           {errors.fullName && (
             <p className="text-xs text-red-400">{errors.fullName}</p>
@@ -187,7 +187,7 @@ function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | nu
             placeholder="you@example.com"
             autoComplete="email"
             aria-invalid={!!errors.email}
-            className="h-12 border-white/10 bg-background/60 text-white placeholder:text-white/30 focus-visible:ring-[color:var(--violet)]"
+            className="h-12 border-white/10 bg-background/60 text-white placeholder:text-white/30 focus-visible:ring-[color:var(--primary)]"
           />
           {errors.email && (
             <p className="text-xs text-red-400">{errors.email}</p>
@@ -202,7 +202,7 @@ function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | nu
             <SelectTrigger
               id="service"
               aria-invalid={!!errors.service}
-              className="h-12 border-white/10 bg-background/60 text-left text-white data-[placeholder]:text-white/30 focus-visible:ring-[color:var(--violet)]"
+              className="h-12 border-white/10 bg-background/60 text-left text-white data-[placeholder]:text-white/30 focus-visible:ring-[color:var(--primary)]"
             >
               <SelectValue placeholder="Select a service" />
             </SelectTrigger>
@@ -233,7 +233,7 @@ function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | nu
             onChange={(e) => setBrief(e.target.value)}
             placeholder="Tell me a bit about your project or goals..."
             rows={5}
-            className="resize-y border-white/10 bg-background/60 text-white placeholder:text-white/30 focus-visible:ring-[color:var(--violet)]"
+            className="resize-y border-white/10 bg-background/60 text-white placeholder:text-white/30 focus-visible:ring-[color:var(--primary)]"
           />
         </div>
 
@@ -269,8 +269,8 @@ function QuickContact() {
   const items: QuickItem[] = [
     {
       icon: Mail,
-      iconBg: "bg-[color:var(--orange)]/15",
-      iconColor: "text-[color:var(--orange)]",
+      iconBg: "bg-[color:var(--primary)]/15",
+      iconColor: "text-[color:var(--primary)]",
       label: "Drop me an email",
       value: "hello@anamulhoque.com",
       href: "mailto:hello@anamulhoque.com",
@@ -286,8 +286,8 @@ function QuickContact() {
     },
     {
       icon: CalendarDays,
-      iconBg: "bg-[color:var(--violet)]/15",
-      iconColor: "text-[color:var(--violet)]",
+      iconBg: "bg-[color:var(--primary)]/15",
+      iconColor: "text-[color:var(--primary)]",
       label: "Book a free intro call",
       value: "Schedule on Calendly",
       href: "https://cal.com/anamulhoque.com",
@@ -307,7 +307,7 @@ function QuickContact() {
               href={it.href}
               target={it.external ? "_blank" : undefined}
               rel={it.external ? "noopener noreferrer" : undefined}
-              className="group flex min-h-[64px] items-center gap-4 rounded-xl border border-white/10 bg-[color:var(--surface)]/70 p-4 transition hover:border-[color:var(--violet)]/40 hover:bg-[color:var(--surface-2)]/80"
+              className="group flex min-h-[64px] items-center gap-4 rounded-xl border border-white/10 bg-[color:var(--surface)]/70 p-4 transition hover:border-[color:var(--primary)]/40 hover:bg-[color:var(--surface-2)]/80"
             >
               <span
                 className={`grid h-11 w-11 place-items-center rounded-lg ${it.iconBg}`}
@@ -360,7 +360,7 @@ function SocialsCard() {
                 rel="noopener noreferrer"
                 className="group flex min-h-[56px] items-center gap-3 rounded-lg border border-transparent px-2 py-2 transition hover:border-white/10 hover:bg-white/[0.03]"
               >
-                <span className="grid h-10 w-10 place-items-center rounded-md bg-white/5 text-white/90 group-hover:text-[color:var(--violet)]">
+                <span className="grid h-10 w-10 place-items-center rounded-md bg-white/5 text-white/90 group-hover:text-[color:var(--primary)]">
                   <Icon className="h-5 w-5" />
                 </span>
                 <div className="min-w-0">
@@ -383,8 +383,8 @@ function LocationCard() {
     <div className="rounded-xl border border-white/10 bg-[color:var(--surface)]/70 p-5">
       <Eyebrow>// location</Eyebrow>
       <div className="mt-4 flex items-start gap-3">
-        <span className="grid h-10 w-10 place-items-center rounded-lg bg-[color:var(--violet)]/15">
-          <MapPin className="h-5 w-5 text-[color:var(--violet)]" />
+        <span className="grid h-10 w-10 place-items-center rounded-lg bg-[color:var(--primary)]/15">
+          <MapPin className="h-5 w-5 text-[color:var(--primary)]" />
         </span>
         <div>
           <div className="text-sm font-semibold text-white">
@@ -401,7 +401,7 @@ function LocationCard() {
 
 function StatusCallout() {
   return (
-    <div className="rounded-xl border border-[color:var(--violet)]/40 bg-[color:var(--violet)]/10 p-5 shadow-[0_0_0_1px_rgba(139,92,246,0.15),0_20px_60px_-30px_rgba(139,92,246,0.4)]">
+    <div className="rounded-xl border border-[color:var(--primary)]/40 bg-[color:var(--primary)]/10 p-5 shadow-[0_0_0_1px_rgba(59,130,246,0.15),0_20px_60px_-30px_rgba(59,130,246,0.4)]">
       <div className="flex items-start gap-3">
         <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-emerald-500/15">
           <CheckCircle2 className="h-5 w-5 text-emerald-400" />
@@ -454,12 +454,12 @@ function ProcessSection() {
           return (
             <div
               key={s.n}
-              className="group rounded-2xl border border-white/10 bg-[color:var(--surface)]/70 p-6 transition hover:border-[color:var(--violet)]/40 hover:shadow-[0_20px_60px_-30px_rgba(139,92,246,0.45)]"
+              className="group rounded-2xl border border-white/10 bg-[color:var(--surface)]/70 p-6 transition hover:border-[color:var(--primary)]/40 hover:shadow-[0_20px_60px_-30px_rgba(59,130,246,0.45)]"
             >
-              <span className="grid h-12 w-12 place-items-center rounded-xl border border-[color:var(--violet)]/40 bg-[color:var(--violet)]/10">
-                <Icon className="h-5 w-5 text-[color:var(--violet)]" />
+              <span className="grid h-12 w-12 place-items-center rounded-xl border border-[color:var(--primary)]/40 bg-[color:var(--primary)]/10">
+                <Icon className="h-5 w-5 text-[color:var(--primary)]" />
               </span>
-              <div className="mt-5 font-mono text-xs text-[color:var(--violet)]">
+              <div className="mt-5 font-mono text-xs text-[color:var(--primary)]">
                 {s.n}
               </div>
               <h3 className="mt-1 text-lg font-semibold text-white">{s.title}</h3>
@@ -482,7 +482,7 @@ function ClosingCTA({ onSend }: { onSend: () => void }) {
         className="pointer-events-none absolute inset-0 -z-10"
         style={{
           background:
-            "radial-gradient(40% 60% at 30% 50%, rgba(139,92,246,0.25), transparent 70%), radial-gradient(40% 60% at 70% 50%, rgba(249,115,22,0.18), transparent 70%)",
+            "radial-gradient(40% 60% at 30% 50%, rgba(59,130,246,0.25), transparent 70%), radial-gradient(40% 60% at 70% 50%, rgba(249,115,22,0.18), transparent 70%)",
         }}
       />
       <div className="mx-auto max-w-3xl px-4 py-28 text-center sm:px-6 sm:py-36">
@@ -528,7 +528,7 @@ function SiteFooter() {
             <a
               key={l.label}
               href={l.href}
-              className="text-sm text-muted-foreground transition hover:text-[color:var(--violet)]"
+              className="text-sm text-muted-foreground transition hover:text-[color:var(--primary)]"
             >
               {l.label}
             </a>
