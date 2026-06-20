@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   Briefcase,
@@ -15,6 +16,7 @@ import {
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import anamAvatar from "@/assets/anam-avatar.png.asset.json";
+
 
 
 export const Route = createFileRoute("/about")({
@@ -111,11 +113,124 @@ function HeroSection() {
   );
 }
 
+type CodeSegment = { text: string; className?: string };
+
+const BRAND_CODE_SEGMENTS: CodeSegment[] = [
+  { text: "const", className: "text-[#c084fc]" },
+  { text: " " },
+  { text: "brand", className: "text-white" },
+  { text: " " },
+  { text: "=", className: "text-muted-foreground" },
+  { text: " " },
+  { text: "{", className: "text-white" },
+  { text: "\n  " },
+  { text: "by", className: "text-[#60a5fa]" },
+  { text: ":", className: "text-muted-foreground" },
+  { text: " " },
+  { text: '"Anam Dev"', className: "text-[#86efac]" },
+  { text: ",", className: "text-muted-foreground" },
+  { text: "\n  " },
+  { text: "focus", className: "text-[#60a5fa]" },
+  { text: ":", className: "text-muted-foreground" },
+  { text: " " },
+  { text: '"Authority · Websites · AI"', className: "text-[#86efac]" },
+  { text: ",", className: "text-muted-foreground" },
+  { text: "\n  " },
+  { text: "clients", className: "text-[#60a5fa]" },
+  { text: ":", className: "text-muted-foreground" },
+  { text: " " },
+  { text: '"Bangladesh · Remote"', className: "text-[#86efac]" },
+  { text: ",", className: "text-muted-foreground" },
+  { text: "\n  " },
+  { text: "available", className: "text-[#60a5fa]" },
+  { text: ":", className: "text-muted-foreground" },
+  { text: " " },
+  { text: "true", className: "text-[#fbbf24]" },
+  { text: ",", className: "text-muted-foreground" },
+  { text: "\n" },
+  { text: "}", className: "text-white" },
+];
+
+function useTypewriter(total: number, speedMs = 38, pauseMs = 2400) {
+  const [count, setCount] = useState(() => {
+    if (typeof window === "undefined") return total;
+    return window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+      ? total
+      : 0;
+  });
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mq.matches) {
+      setCount(total);
+      return;
+    }
+    let timer: ReturnType<typeof setTimeout>;
+    let current = 0;
+    setCount(0);
+    const tick = () => {
+      current += 1;
+      setCount(current);
+      if (current < total) {
+        timer = setTimeout(tick, speedMs);
+      } else {
+        timer = setTimeout(() => {
+          current = 0;
+          setCount(0);
+          timer = setTimeout(tick, speedMs);
+        }, pauseMs);
+      }
+    };
+    timer = setTimeout(tick, speedMs);
+    return () => clearTimeout(timer);
+  }, [total, speedMs, pauseMs]);
+
+  return count;
+}
+
+function TypedCode({ segments }: { segments: CodeSegment[] }) {
+  const total = useMemo(
+    () => segments.reduce((n, s) => n + s.text.length, 0),
+    [segments]
+  );
+  const typed = useTypewriter(total);
+  const done = typed >= total;
+
+  let remaining = typed;
+  const out: React.ReactNode[] = [];
+  segments.forEach((seg, i) => {
+    if (remaining <= 0) return;
+    const slice = seg.text.slice(0, remaining);
+    remaining -= seg.text.length;
+    if (!slice) return;
+    out.push(
+      <span key={i} className={seg.className}>
+        {slice}
+      </span>
+    );
+  });
+
+  return (
+    <code>
+      {out}
+      <span
+        aria-hidden
+        className={`type-caret inline-block w-[1ch] ${done ? "type-caret-done" : ""}`}
+      >
+        |
+      </span>
+    </code>
+  );
+}
+
 function AvatarCodeCard() {
   return (
     <div className="card-elevated relative overflow-hidden rounded-2xl p-5 sm:p-6">
+      {/* Scanning line */}
+      <span aria-hidden className="card-scan-line" />
+
       {/* Terminal header */}
-      <div className="flex items-center gap-2">
+      <div className="relative flex items-center gap-2">
         <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
         <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
         <span className="h-3 w-3 rounded-full bg-[#28c840]" />
@@ -123,7 +238,7 @@ function AvatarCodeCard() {
       </div>
 
       {/* Avatar with pulsing ring */}
-      <div className="mt-6 flex justify-center">
+      <div className="relative mt-6 flex justify-center">
         <div className="relative h-32 w-32 sm:h-36 sm:w-36">
           <span
             aria-hidden
@@ -155,39 +270,12 @@ function AvatarCodeCard() {
       </div>
 
       {/* Code block */}
-      <pre className="mt-6 overflow-x-auto rounded-xl bg-[#0b0d12] p-4 font-mono text-[13px] leading-relaxed ring-1 ring-white/5">
-        <code>
-          <span className="text-[#c084fc]">const</span>{" "}
-          <span className="text-white">brand</span>{" "}
-          <span className="text-muted-foreground">=</span>{" "}
-          <span className="text-white">{"{"}</span>
-          {"\n  "}
-          <span className="text-[#60a5fa]">by</span>
-          <span className="text-muted-foreground">:</span>{" "}
-          <span className="text-[#86efac]">"Anam Dev"</span>
-          <span className="text-muted-foreground">,</span>
-          {"\n  "}
-          <span className="text-[#60a5fa]">focus</span>
-          <span className="text-muted-foreground">:</span>{" "}
-          <span className="text-[#86efac]">"Authority · Websites · AI"</span>
-          <span className="text-muted-foreground">,</span>
-          {"\n  "}
-          <span className="text-[#60a5fa]">clients</span>
-          <span className="text-muted-foreground">:</span>{" "}
-          <span className="text-[#86efac]">"Bangladesh · Remote"</span>
-          <span className="text-muted-foreground">,</span>
-          {"\n  "}
-          <span className="text-[#60a5fa]">available</span>
-          <span className="text-muted-foreground">:</span>{" "}
-          <span className="text-[#fbbf24]">true</span>
-          <span className="text-muted-foreground">,</span>
-          {"\n"}
-          <span className="text-white">{"}"}</span>
-        </code>
+      <pre className="relative mt-6 overflow-x-auto rounded-xl bg-[#0b0d12] p-4 font-mono text-[13px] leading-relaxed whitespace-pre ring-1 ring-white/5">
+        <TypedCode segments={BRAND_CODE_SEGMENTS} />
       </pre>
 
       {/* Divider + footer row */}
-      <div className="mt-5 border-t border-white/5 pt-4">
+      <div className="relative mt-5 border-t border-white/5 pt-4">
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-2">
             <span className="relative inline-flex h-2 w-2">
@@ -202,6 +290,7 @@ function AvatarCodeCard() {
     </div>
   );
 }
+
 
 function BackstorySection() {
   return (
