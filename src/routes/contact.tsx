@@ -115,7 +115,7 @@ function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | nu
     >
       <Eyebrow>// send a message</Eyebrow>
       <h2 className="mt-2 text-2xl font-semibold text-white sm:text-3xl">
-        Tell me about your project
+        Tell me about your <span className="text-gradient-vo">project</span>
       </h2>
 
       <form onSubmit={onSubmit} className="mt-8 space-y-5" noValidate>
@@ -408,7 +408,7 @@ function ProcessSection() {
         <div className="text-center">
           <Eyebrow>// how it works</Eyebrow>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            Simple <span className="text-[color:var(--orange)]">3-Step</span> Process
+            Simple <span className="text-gradient-vo">3-Step</span> Process
           </h2>
         </div>
 
@@ -447,7 +447,7 @@ function ClosingCTA({ onSend }: { onSend: () => void }) {
       <div className="mx-auto max-w-3xl px-4 py-28 text-center sm:px-6 sm:py-36">
         <Eyebrow>// ready when you are</Eyebrow>
         <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
-          No Long Forms. No Complicated Process.
+          No Long Forms. No <span className="text-gradient-vo">Complicated</span> Process.
         </h2>
         <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground">
           Just send a message and let's figure out the best next step together.
