@@ -643,12 +643,12 @@ function ProcessSection() {
 }
 
 const SAMPLE_PROJECTS = [
-  { slug: "saas-landing", category: "SaaS", title: "SaaS Landing Page", desc: "Conversion-focused landing built for product launch and signup growth." },
-  { slug: "agency-website", category: "Agency", title: "Agency Website", desc: "Full multi-page site with services, case studies, and team pages." },
-  { slug: "ecommerce-interface", category: "Ecommerce", title: "Ecommerce Interface", desc: "Modern product catalog with smooth checkout flow." },
-  { slug: "service-business-website", category: "Business", title: "Service Business Website", desc: "Local service brand with booking and contact integration." },
-  { slug: "dashboard-ui", category: "Web App", title: "Dashboard UI", desc: "Internal tool dashboard with charts and clean data views." },
-  { slug: "portfolio-website", category: "Portfolio", title: "Portfolio Website", desc: "Personal brand portfolio with project showcase layout." },
+  { slug: "saas-landing", category: "Landing Page", title: "SaaS Landing Page", desc: "Conversion-focused landing built for product launch and signup growth.", tech: ["React", "Next.js", "Tailwind CSS"] },
+  { slug: "agency-website", category: "Business Site", title: "Agency Website", desc: "Full multi-page site with services, case studies, and team pages.", tech: ["WordPress", "Figma"] },
+  { slug: "ecommerce-interface", category: "Ecommerce", title: "Ecommerce Interface", desc: "Modern product catalog with smooth checkout flow.", tech: ["Next.js", "TypeScript", "Stripe"] },
+  { slug: "service-business-website", category: "Business Site", title: "Service Business Website", desc: "Local service brand with booking and contact integration.", tech: ["Webflow", "Figma"] },
+  { slug: "dashboard-ui", category: "Web App", title: "Dashboard UI", desc: "Internal tool dashboard with charts and clean data views.", tech: ["React", "TypeScript", "Supabase"] },
+  { slug: "portfolio-website", category: "Portfolio", title: "Portfolio Website", desc: "Personal brand portfolio with project showcase layout.", tech: ["Framer", "Figma"] },
 ];
 
 function ProjectsSection({
