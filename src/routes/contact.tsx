@@ -12,9 +12,7 @@ import {
   CheckCircle2,
   Rocket,
   ArrowRight,
-  ArrowLeft,
   ChevronUp,
-  Send,
   CalendarDays,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -29,6 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
+import { SiteHeader } from "@/components/site/SiteHeader";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -64,44 +63,6 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Logo() {
-  return (
-    <Link
-      to="/"
-      aria-label="AnamDev home"
-      className="font-mono text-base font-bold tracking-tight"
-    >
-      <span className="text-muted-foreground">{"{"}</span>
-      <span className="text-white">Anam</span>
-      <span className="text-[color:var(--primary)]">Dev</span>
-      <span className="text-muted-foreground">{"}"}</span>
-    </Link>
-  );
-}
-
-function TopNav({ onTalk }: { onTalk: () => void }) {
-  return (
-    <header className="sticky top-0 z-40 border-b border-white/5 bg-background/70 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link
-          to="/"
-          className="group inline-flex h-11 items-center gap-2 rounded-full px-2 text-sm text-muted-foreground transition hover:text-white"
-        >
-          <ArrowLeft className="h-4 w-4 transition group-hover:-translate-x-0.5" />
-          <span className="hidden sm:inline">Back to Home</span>
-        </Link>
-        <Logo />
-        <button
-          onClick={onTalk}
-          className="inline-flex h-11 items-center gap-2 rounded-full bg-[color:var(--orange)] px-4 text-sm font-semibold text-black shadow-[0_8px_30px_-8px_var(--orange-glow)] transition hover:brightness-110"
-        >
-          <MessageCircle className="h-4 w-4" />
-          <span>Let's Talk</span>
-        </button>
-      </div>
-    </header>
-  );
-}
 
 function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | null> }) {
   const [fullName, setFullName] = useState("");
@@ -149,7 +110,7 @@ function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | nu
   return (
     <div
       ref={formRef}
-      className="rounded-2xl border border-white/10 bg-[color:var(--surface)]/80 p-6 shadow-[0_20px_60px_-30px_rgba(59,130,246,0.45)] backdrop-blur sm:p-8"
+      className="card-elevated p-6 backdrop-blur sm:p-8"
     >
       <Eyebrow>// send a message</Eyebrow>
       <h2 className="mt-2 text-2xl font-semibold text-white sm:text-3xl">
@@ -168,7 +129,7 @@ function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | nu
             placeholder="Your full name"
             autoComplete="name"
             aria-invalid={!!errors.fullName}
-            className="h-12 border-white/10 bg-background/60 text-white placeholder:text-white/30 focus-visible:ring-[color:var(--primary)]"
+            className="h-12 border-white/10 bg-background/60 text-white placeholder:text-white/30 transition-[box-shadow,border-color,background-color] duration-200 focus-visible:border-[color:var(--primary)] focus-visible:bg-background/80 focus-visible:ring-2 focus-visible:ring-[color:var(--primary)]/40 motion-reduce:transition-none"
           />
           {errors.fullName && (
             <p className="text-xs text-red-400">{errors.fullName}</p>
@@ -187,7 +148,7 @@ function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | nu
             placeholder="you@example.com"
             autoComplete="email"
             aria-invalid={!!errors.email}
-            className="h-12 border-white/10 bg-background/60 text-white placeholder:text-white/30 focus-visible:ring-[color:var(--primary)]"
+            className="h-12 border-white/10 bg-background/60 text-white placeholder:text-white/30 transition-[box-shadow,border-color,background-color] duration-200 focus-visible:border-[color:var(--primary)] focus-visible:bg-background/80 focus-visible:ring-2 focus-visible:ring-[color:var(--primary)]/40 motion-reduce:transition-none"
           />
           {errors.email && (
             <p className="text-xs text-red-400">{errors.email}</p>
@@ -202,7 +163,7 @@ function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | nu
             <SelectTrigger
               id="service"
               aria-invalid={!!errors.service}
-              className="h-12 border-white/10 bg-background/60 text-left text-white data-[placeholder]:text-white/30 focus-visible:ring-[color:var(--primary)]"
+              className="h-12 border-white/10 bg-background/60 text-left text-white transition-[box-shadow,border-color,background-color] duration-200 data-[placeholder]:text-white/30 focus-visible:border-[color:var(--primary)] focus-visible:bg-background/80 focus-visible:ring-2 focus-visible:ring-[color:var(--primary)]/40 motion-reduce:transition-none"
             >
               <SelectValue placeholder="Select a service" />
             </SelectTrigger>
@@ -233,7 +194,7 @@ function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | nu
             onChange={(e) => setBrief(e.target.value)}
             placeholder="Tell me a bit about your project or goals..."
             rows={5}
-            className="resize-y border-white/10 bg-background/60 text-white placeholder:text-white/30 focus-visible:ring-[color:var(--primary)]"
+            className="resize-y border-white/10 bg-background/60 text-white placeholder:text-white/30 transition-[box-shadow,border-color,background-color] duration-200 focus-visible:border-[color:var(--primary)] focus-visible:bg-background/80 focus-visible:ring-2 focus-visible:ring-[color:var(--primary)]/40 motion-reduce:transition-none"
           />
         </div>
 
@@ -241,10 +202,10 @@ function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | nu
           <Button
             type="submit"
             disabled={submitting}
-            className="group h-12 w-full rounded-full bg-[color:var(--orange)] px-6 text-sm font-semibold text-black shadow-[0_10px_40px_-10px_var(--orange-glow)] hover:brightness-110 sm:w-auto"
+            className="group h-12 w-full rounded-full bg-[color:var(--orange)] px-6 text-sm font-semibold text-black shadow-[0_10px_40px_-10px_var(--orange-glow)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_18px_50px_-10px_var(--orange-glow)] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100 sm:w-auto"
           >
             {submitting ? "Sending..." : "Send Message"}
-            <ArrowRight className="ml-1 h-4 w-4 transition group-hover:translate-x-0.5" />
+            <ArrowRight className="ml-1 h-4 w-4 transition group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
           </Button>
           <p className="mt-3 text-xs text-muted-foreground">
             Typical response within 24 hours.
@@ -307,7 +268,7 @@ function QuickContact() {
               href={it.href}
               target={it.external ? "_blank" : undefined}
               rel={it.external ? "noopener noreferrer" : undefined}
-              className="group flex min-h-[64px] items-center gap-4 rounded-xl border border-white/10 bg-[color:var(--surface)]/70 p-4 transition hover:border-[color:var(--primary)]/40 hover:bg-[color:var(--surface-2)]/80"
+              className="card-elevated card-elevated-hover group flex min-h-[64px] items-center gap-4 p-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)]/50"
             >
               <span
                 className={`grid h-11 w-11 place-items-center rounded-lg ${it.iconBg}`}
@@ -320,7 +281,7 @@ function QuickContact() {
                   {it.value}
                 </div>
               </div>
-              <ArrowRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-white" />
+              <ArrowRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-[color:var(--primary)] motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
             </a>
           );
         })}
@@ -336,7 +297,7 @@ function SocialsCard() {
     { icon: Facebook, name: "Facebook", handle: "@helloenamul", href: "https://facebook.com/helloenamul" },
   ];
   return (
-    <div className="overflow-hidden rounded-xl border border-white/10 bg-[color:var(--surface)]/80">
+    <div className="card-elevated card-elevated-hover overflow-hidden">
       <div className="flex items-center gap-2 border-b border-white/10 bg-black/30 px-4 py-2.5">
         <span className="flex gap-1.5">
           <span className="h-2.5 w-2.5 rounded-full bg-red-500/80" />
@@ -358,9 +319,9 @@ function SocialsCard() {
                 href={s.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex min-h-[56px] items-center gap-3 rounded-lg border border-transparent px-2 py-2 transition hover:border-white/10 hover:bg-white/[0.03]"
+                className="group flex min-h-[56px] items-center gap-3 rounded-lg border border-transparent px-2 py-2 transition-colors duration-200 hover:border-white/10 hover:bg-white/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)]/50 motion-reduce:transition-none"
               >
-                <span className="grid h-10 w-10 place-items-center rounded-md bg-white/5 text-white/90 group-hover:text-[color:var(--primary)]">
+                <span className="grid h-10 w-10 place-items-center rounded-md bg-white/5 text-white/90 transition-colors duration-200 group-hover:text-[color:var(--primary)] motion-reduce:transition-none">
                   <Icon className="h-5 w-5" />
                 </span>
                 <div className="min-w-0">
@@ -380,7 +341,7 @@ function SocialsCard() {
 
 function LocationCard() {
   return (
-    <div className="rounded-xl border border-white/10 bg-[color:var(--surface)]/70 p-5">
+    <div className="card-elevated card-elevated-hover p-5">
       <Eyebrow>// location</Eyebrow>
       <div className="mt-4 flex items-start gap-3">
         <span className="grid h-10 w-10 place-items-center rounded-lg bg-[color:var(--primary)]/15">
@@ -401,7 +362,7 @@ function LocationCard() {
 
 function StatusCallout() {
   return (
-    <div className="rounded-xl border border-[color:var(--primary)]/40 bg-[color:var(--primary)]/10 p-5 shadow-[0_0_0_1px_rgba(59,130,246,0.15),0_20px_60px_-30px_rgba(59,130,246,0.4)]">
+    <div className="card-elevated p-5 [border-color:color-mix(in_oklab,var(--primary)_40%,transparent)] [background:linear-gradient(180deg,color-mix(in_oklab,var(--primary)_14%,transparent),color-mix(in_oklab,var(--primary)_6%,transparent))] shadow-[0_0_0_1px_color-mix(in_oklab,var(--primary)_18%,transparent),0_20px_60px_-30px_color-mix(in_oklab,var(--primary)_45%,transparent)]">
       <div className="flex items-start gap-3">
         <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-emerald-500/15">
           <CheckCircle2 className="h-5 w-5 text-emerald-400" />
@@ -454,7 +415,7 @@ function ProcessSection() {
           return (
             <div
               key={s.n}
-              className="group rounded-2xl border border-white/10 bg-[color:var(--surface)]/70 p-6 transition hover:border-[color:var(--primary)]/40 hover:shadow-[0_20px_60px_-30px_rgba(59,130,246,0.45)]"
+              className="card-elevated card-elevated-hover group p-6"
             >
               <span className="grid h-12 w-12 place-items-center rounded-xl border border-[color:var(--primary)]/40 bg-[color:var(--primary)]/10">
                 <Icon className="h-5 w-5 text-[color:var(--primary)]" />
@@ -496,10 +457,10 @@ function ClosingCTA({ onSend }: { onSend: () => void }) {
         <div className="mt-8">
           <Button
             onClick={onSend}
-            className="group h-14 rounded-full bg-[color:var(--orange)] px-8 text-base font-semibold text-black shadow-[0_20px_60px_-15px_var(--orange-glow)] hover:brightness-110"
+            className="group h-14 rounded-full bg-[color:var(--orange)] px-8 text-base font-semibold text-black shadow-[0_20px_60px_-15px_var(--orange-glow)] transition-all duration-200 hover:scale-[1.04] hover:shadow-[0_28px_70px_-15px_var(--orange-glow)] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100"
           >
             Send a Message
-            <ArrowRight className="ml-1 h-5 w-5 transition group-hover:translate-x-0.5" />
+            <ArrowRight className="ml-1 h-5 w-5 transition group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
           </Button>
         </div>
       </div>
@@ -528,7 +489,7 @@ function SiteFooter() {
             <a
               key={l.label}
               href={l.href}
-              className="text-sm text-muted-foreground transition hover:text-[color:var(--primary)]"
+              className="text-sm text-muted-foreground transition-colors duration-200 hover:text-[color:var(--primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)]/50 rounded motion-reduce:transition-none"
             >
               {l.label}
             </a>
@@ -557,7 +518,7 @@ function ScrollToTop() {
     <button
       aria-label="Scroll to top"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      className="fixed bottom-6 right-6 z-40 grid h-12 w-12 place-items-center rounded-full bg-[color:var(--orange)] text-black shadow-[0_15px_40px_-10px_var(--orange-glow)] transition hover:brightness-110"
+      className="fixed bottom-6 right-6 z-40 grid h-12 w-12 place-items-center rounded-full bg-[color:var(--orange)] text-black shadow-[0_15px_40px_-10px_var(--orange-glow)] transition-all duration-200 hover:scale-110 hover:shadow-[0_22px_55px_-10px_var(--orange-glow)] hover:brightness-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100"
     >
       <ChevronUp className="h-5 w-5" />
     </button>
@@ -572,11 +533,11 @@ function ContactPage() {
 
   return (
     <div className="min-h-dvh bg-background text-foreground">
-      <TopNav onTalk={scrollToForm} />
+      <SiteHeader onCtaClick={scrollToForm} />
 
       <main>
         {/* HERO */}
-        <section className="mx-auto max-w-4xl px-4 pt-20 pb-12 text-center sm:px-6 sm:pt-28 sm:pb-16">
+        <section className="mx-auto max-w-4xl px-4 pt-24 pb-16 text-center sm:px-6 sm:pt-32 sm:pb-24">
           <Eyebrow>// let's connect</Eyebrow>
           <h1 className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-6xl">
             Let's Build Something
@@ -590,7 +551,7 @@ function ContactPage() {
         </section>
 
         {/* MAIN GRID */}
-        <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
+        <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6 sm:pb-32">
           <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr]">
             <ContactForm formRef={formRef} />
             <div className="space-y-6">
