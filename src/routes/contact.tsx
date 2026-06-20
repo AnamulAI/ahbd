@@ -515,8 +515,8 @@ function ContactPage() {
         </section>
 
         {/* MAIN GRID — quiet dark, clean break from hero */}
-        <section className="border-t border-white/5 bg-[oklch(0.10_0.02_260)] pt-20 sm:pt-24">
-          <div className="mx-auto max-w-6xl px-4 pb-24 sm:px-6 sm:pb-32">
+        <section className="border-t border-white/5 bg-[oklch(0.10_0.02_260)] pt-14 sm:pt-24">
+          <div className="mx-auto max-w-6xl px-5 pb-20 sm:px-6 sm:pb-32">
             <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr]">
               <ContactForm formRef={formRef} />
               <div className="space-y-6">
