@@ -40,7 +40,7 @@ import {
   AccordionContent,
 } from "@/components/ui/accordion";
 
-{/* TODO: meta title "Web Development Services | AnamDev" */}
+// TODO: meta title "Web Development Services | AnamDev"
 export const Route = createFileRoute("/services/web-development")({
   head: () => ({
     meta: [
@@ -788,7 +788,6 @@ function PricingSection() {
               </ul>
               <Link
                 to="/contact"
-                search={{ service: "web_development" }}
                 className={[
                   "mt-7 inline-flex h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition-all duration-200",
                   t.featured
