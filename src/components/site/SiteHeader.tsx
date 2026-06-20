@@ -32,8 +32,7 @@ export type SiteHeaderProps = {
 };
 
 export function SiteHeader({ onCtaClick, ctaLabel = "Let's Talk" }: SiteHeaderProps) {
-  const { location } = useRouter();
-  const pathname = location.pathname;
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/5 bg-background/70 backdrop-blur-xl">
