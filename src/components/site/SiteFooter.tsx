@@ -43,7 +43,7 @@ function LinkCol({ title, links }: { title: string; links: FooterLink[] }) {
 
 export function SiteFooter() {
   return (
-    <footer className="bg-background/80">
+    <footer className="border-t border-white/5 bg-background/80">
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div className="grid gap-10 max-md:text-center sm:grid-cols-2 lg:grid-cols-4">
           <div>

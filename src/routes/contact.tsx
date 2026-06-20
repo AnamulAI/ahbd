@@ -403,7 +403,7 @@ function ProcessSection() {
     },
   ];
   return (
-    <section>
+    <section className="border-t border-white/5">
       <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
         <div className="text-center">
           <Eyebrow>// how it works</Eyebrow>
@@ -442,7 +442,7 @@ function ProcessSection() {
 
 function ClosingCTA({ onSend }: { onSend: () => void }) {
   return (
-    <section className="section-glow-cta">
+    <section className="section-glow-cta border-t border-white/5">
 
       <div className="mx-auto max-w-3xl px-4 py-28 text-center sm:px-6 sm:py-36">
         <Eyebrow>// ready when you are</Eyebrow>
@@ -515,7 +515,7 @@ function ContactPage() {
         </section>
 
         {/* MAIN GRID — quiet dark, clean break from hero */}
-        <section className="bg-[oklch(0.10_0.02_260)] pt-20 sm:pt-24">
+        <section className="border-t border-white/5 bg-[oklch(0.10_0.02_260)] pt-20 sm:pt-24">
           <div className="mx-auto max-w-6xl px-4 pb-24 sm:px-6 sm:pb-32">
             <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr]">
               <ContactForm formRef={formRef} />
