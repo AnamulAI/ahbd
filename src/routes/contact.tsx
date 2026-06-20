@@ -442,7 +442,7 @@ function ProcessSection() {
 
 function ClosingCTA({ onSend }: { onSend: () => void }) {
   return (
-    <section className="section-glow-cta border-t border-white/5">
+    <section className="section-glow-cta">
 
       <div className="mx-auto max-w-3xl px-4 py-28 text-center sm:px-6 sm:py-36">
         <Eyebrow>// ready when you are</Eyebrow>
