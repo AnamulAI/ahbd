@@ -403,7 +403,7 @@ function ProcessSection() {
     },
   ];
   return (
-    <section className="border-t border-white/5">
+    <section>
       <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
         <div className="text-center">
           <Eyebrow>// how it works</Eyebrow>
