@@ -489,7 +489,7 @@ function SiteFooter() {
             <a
               key={l.label}
               href={l.href}
-              className="text-sm text-muted-foreground transition hover:text-[color:var(--primary)]"
+              className="text-sm text-muted-foreground transition-colors duration-200 hover:text-[color:var(--primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)]/50 rounded motion-reduce:transition-none"
             >
               {l.label}
             </a>
