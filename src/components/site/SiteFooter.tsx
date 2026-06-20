@@ -24,7 +24,7 @@ const legal: FooterLink[] = [
 function LinkCol({ title, links }: { title: string; links: FooterLink[] }) {
   return (
     <div className="max-md:text-center">
-      <h3 className="text-sm font-semibold text-white">{title}</h3>
+      <h3 className="text-sm font-semibold text-gradient-vo">{title}</h3>
       <ul className="mt-4 space-y-2.5">
         {links.map((l) => (
           <li key={l.label}>
