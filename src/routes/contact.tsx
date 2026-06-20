@@ -418,9 +418,9 @@ function ProcessSection() {
           return (
             <div
               key={s.n}
-              className="card-elevated card-elevated-hover group p-6"
+              className="card-elevated card-elevated-hover group p-6 max-md:text-center"
             >
-              <span className="grid h-12 w-12 place-items-center rounded-xl border border-[color:var(--primary)]/40 bg-[color:var(--primary)]/10">
+              <span className="grid h-12 w-12 place-items-center rounded-xl border border-[color:var(--primary)]/40 bg-[color:var(--primary)]/10 max-md:mx-auto">
                 <Icon className="h-5 w-5 text-[color:var(--primary)]" />
               </span>
               <div className="mt-5 font-mono text-xs text-[color:var(--primary)]">
