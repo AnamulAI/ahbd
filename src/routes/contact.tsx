@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteHeader } from "@/components/site/SiteHeader";
+import { SiteFooter } from "@/components/site/SiteFooter";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -402,7 +403,7 @@ function ProcessSection() {
     },
   ];
   return (
-    <section className="section-glow-mid">
+    <section className="section-glow-mid border-t border-white/5">
       <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
         <div className="text-center">
           <Eyebrow>// how it works</Eyebrow>
@@ -441,7 +442,7 @@ function ProcessSection() {
 
 function ClosingCTA({ onSend }: { onSend: () => void }) {
   return (
-    <section className="section-glow-cta">
+    <section className="section-glow-cta border-t border-white/5">
 
       <div className="mx-auto max-w-3xl px-4 py-28 text-center sm:px-6 sm:py-36">
         <Eyebrow>// ready when you are</Eyebrow>
@@ -465,42 +466,6 @@ function ClosingCTA({ onSend }: { onSend: () => void }) {
   );
 }
 
-function SiteFooter() {
-  const links = [
-    { label: "Home", href: "/" },
-    { label: "About", href: "/about" },
-    { label: "AI Podcast", href: "/services#ai-podcast" },
-    { label: "Web Development", href: "/services#web-development" },
-    { label: "AI Automation", href: "/services#ai-automation" },
-    { label: "Blog", href: "/blog" },
-    { label: "Contact", href: "/contact" },
-  ];
-  return (
-    <footer className="border-t border-white/5 bg-background/60">
-      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-        <nav
-          aria-label="Footer"
-          className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3"
-        >
-          {links.map((l) => (
-            <a
-              key={l.label}
-              href={l.href}
-              className="text-sm text-muted-foreground transition-colors duration-200 hover:text-[color:var(--primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)]/50 rounded motion-reduce:transition-none"
-            >
-              {l.label}
-            </a>
-          ))}
-        </nav>
-        <div className="my-8 h-px bg-white/5" />
-        <div className="flex flex-col items-center justify-between gap-3 text-xs text-muted-foreground sm:flex-row">
-          <p>© 2026 Mohammad Anamul Hoque. All rights reserved.</p>
-          <p>Built with ❤️ &amp; AI</p>
-        </div>
-      </div>
-    </footer>
-  );
-}
 
 function ScrollToTop() {
   const [show, setShow] = useState(false);
@@ -549,8 +514,8 @@ function ContactPage() {
           </div>
         </section>
 
-        {/* MAIN GRID */}
-        <section className="section-glow-subtle">
+        {/* MAIN GRID — quiet dark, clean break from hero */}
+        <section className="border-t border-white/5 bg-[oklch(0.10_0.02_260)] pt-20 sm:pt-24">
           <div className="mx-auto max-w-6xl px-4 pb-24 sm:px-6 sm:pb-32">
             <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr]">
               <ContactForm formRef={formRef} />
@@ -564,12 +529,7 @@ function ContactPage() {
           </div>
         </section>
 
-
-        <div className="h-px bg-white/5" />
-
         <ProcessSection />
-
-        <div className="h-px bg-white/5" />
 
         <ClosingCTA onSend={scrollToForm} />
       </main>
