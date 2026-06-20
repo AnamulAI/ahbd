@@ -268,7 +268,7 @@ function QuickContact() {
               href={it.href}
               target={it.external ? "_blank" : undefined}
               rel={it.external ? "noopener noreferrer" : undefined}
-              className="group flex min-h-[64px] items-center gap-4 rounded-xl border border-white/10 bg-[color:var(--surface)]/70 p-4 transition hover:border-[color:var(--primary)]/40 hover:bg-[color:var(--surface-2)]/80"
+              className="card-elevated card-elevated-hover group flex min-h-[64px] items-center gap-4 p-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)]/50"
             >
               <span
                 className={`grid h-11 w-11 place-items-center rounded-lg ${it.iconBg}`}
@@ -281,7 +281,7 @@ function QuickContact() {
                   {it.value}
                 </div>
               </div>
-              <ArrowRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-white" />
+              <ArrowRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-[color:var(--primary)] motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
             </a>
           );
         })}
