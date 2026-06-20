@@ -362,7 +362,7 @@ function LocationCard() {
 
 function StatusCallout() {
   return (
-    <div className="rounded-xl border border-[color:var(--primary)]/40 bg-[color:var(--primary)]/10 p-5 shadow-[0_0_0_1px_rgba(59,130,246,0.15),0_20px_60px_-30px_rgba(59,130,246,0.4)]">
+    <div className="card-elevated p-5 [border-color:color-mix(in_oklab,var(--primary)_40%,transparent)] [background:linear-gradient(180deg,color-mix(in_oklab,var(--primary)_14%,transparent),color-mix(in_oklab,var(--primary)_6%,transparent))] shadow-[0_0_0_1px_color-mix(in_oklab,var(--primary)_18%,transparent),0_20px_60px_-30px_color-mix(in_oklab,var(--primary)_45%,transparent)]">
       <div className="flex items-start gap-3">
         <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-emerald-500/15">
           <CheckCircle2 className="h-5 w-5 text-emerald-400" />
