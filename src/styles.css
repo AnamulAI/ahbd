@@ -101,7 +101,7 @@ html {
 }
 
 @utility text-gradient-vo {
-  background-image: linear-gradient(90deg, oklch(0.78 0.2 295), oklch(0.8 0.18 50));
+  background-image: linear-gradient(90deg, oklch(0.68 0.19 255), oklch(0.8 0.18 50));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
