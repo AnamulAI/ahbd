@@ -269,8 +269,8 @@ function QuickContact() {
   const items: QuickItem[] = [
     {
       icon: Mail,
-      iconBg: "bg-[color:var(--orange)]/15",
-      iconColor: "text-[color:var(--orange)]",
+      iconBg: "bg-[color:var(--primary)]/15",
+      iconColor: "text-[color:var(--primary)]",
       label: "Drop me an email",
       value: "hello@anamulhoque.com",
       href: "mailto:hello@anamulhoque.com",
