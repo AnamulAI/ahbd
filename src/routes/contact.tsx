@@ -533,7 +533,7 @@ function ContactPage() {
 
   return (
     <div className="min-h-dvh bg-background text-foreground">
-      <TopNav onTalk={scrollToForm} />
+      <SiteHeader onCtaClick={scrollToForm} />
 
       <main>
         {/* HERO */}
