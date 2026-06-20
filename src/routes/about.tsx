@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   Briefcase,
@@ -15,6 +16,7 @@ import {
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import anamAvatar from "@/assets/anam-avatar.png.asset.json";
+
 
 
 export const Route = createFileRoute("/about")({
