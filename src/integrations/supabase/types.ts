@@ -303,6 +303,36 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_leads: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          project_brief: string | null
+          service_interest: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          project_brief?: string | null
+          service_interest: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          project_brief?: string | null
+          service_interest?: string
+          status?: string
+        }
+        Relationships: []
+      }
       demo_view_rate_limits: {
         Row: {
           client_ip_hash: string
