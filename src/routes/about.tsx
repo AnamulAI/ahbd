@@ -144,8 +144,8 @@ function AvatarCodeCard() {
             }}
           />
           <img
-            src={avatarPlaceholder}
-            alt="Anam Dev avatar placeholder"
+            src={anamAvatar.url}
+            alt="Anam Dev avatar"
             width={256}
             height={256}
             loading="lazy"
