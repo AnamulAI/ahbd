@@ -69,7 +69,7 @@ export function SiteFooter() {
         <div className="my-10 h-px bg-white/5" />
 
         <div className="flex flex-col items-center justify-between gap-3 text-xs text-muted-foreground sm:flex-row">
-          <p>© 2026 Anam Dev. All rights reserved.</p>
+          <p>© 2026 Mohammad Anamul Hoque. All rights reserved.</p>
           <p>Built with ❤️ &amp; AI</p>
         </div>
       </div>
