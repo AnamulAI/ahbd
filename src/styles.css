@@ -180,6 +180,8 @@ html {
       radial-gradient(50% 55% at 88% 25%, oklch(0.74 0.18 50 / 26%), transparent 65%),
       radial-gradient(70% 55% at 50% 110%, oklch(0.62 0.19 255 / 14%), transparent 70%);
     filter: blur(40px);
+    mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%);
   }
 }
 
@@ -196,6 +198,8 @@ html {
     background:
       radial-gradient(45% 55% at 85% 15%, oklch(0.62 0.19 255 / 10%), transparent 70%);
     filter: blur(50px);
+    mask-image: linear-gradient(180deg, transparent 0%, #000 30%, #000 70%, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 30%, #000 70%, transparent 100%);
   }
 }
 
@@ -213,6 +217,8 @@ html {
       radial-gradient(40% 70% at 38% 50%, oklch(0.62 0.19 255 / 28%), transparent 70%),
       radial-gradient(40% 70% at 62% 50%, oklch(0.74 0.18 50 / 24%), transparent 70%);
     filter: blur(50px);
+    mask-image: linear-gradient(180deg, transparent 0%, #000 35%, #000 65%, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 35%, #000 65%, transparent 100%);
   }
 }
 
