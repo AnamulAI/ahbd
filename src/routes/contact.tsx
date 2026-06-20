@@ -319,9 +319,9 @@ function SocialsCard() {
                 href={s.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex min-h-[56px] items-center gap-3 rounded-lg border border-transparent px-2 py-2 transition hover:border-white/10 hover:bg-white/[0.03]"
+                className="group flex min-h-[56px] items-center gap-3 rounded-lg border border-transparent px-2 py-2 transition-colors duration-200 hover:border-white/10 hover:bg-white/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)]/50 motion-reduce:transition-none"
               >
-                <span className="grid h-10 w-10 place-items-center rounded-md bg-white/5 text-white/90 group-hover:text-[color:var(--primary)]">
+                <span className="grid h-10 w-10 place-items-center rounded-md bg-white/5 text-white/90 transition-colors duration-200 group-hover:text-[color:var(--primary)] motion-reduce:transition-none">
                   <Icon className="h-5 w-5" />
                 </span>
                 <div className="min-w-0">
