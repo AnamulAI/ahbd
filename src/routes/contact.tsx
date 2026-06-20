@@ -297,7 +297,7 @@ function SocialsCard() {
     { icon: Facebook, name: "Facebook", handle: "@helloenamul", href: "https://facebook.com/helloenamul" },
   ];
   return (
-    <div className="overflow-hidden rounded-xl border border-white/10 bg-[color:var(--surface)]/80">
+    <div className="card-elevated card-elevated-hover overflow-hidden">
       <div className="flex items-center gap-2 border-b border-white/10 bg-black/30 px-4 py-2.5">
         <span className="flex gap-1.5">
           <span className="h-2.5 w-2.5 rounded-full bg-red-500/80" />
