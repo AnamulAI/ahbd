@@ -402,13 +402,15 @@ function ProcessSection() {
     },
   ];
   return (
-    <section className="mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
-      <div className="text-center">
-        <Eyebrow>// how it works</Eyebrow>
-        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-          Simple <span className="text-[color:var(--orange)]">3-Step</span> Process
-        </h2>
-      </div>
+    <section className="section-glow-mid">
+      <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
+        <div className="text-center">
+          <Eyebrow>// how it works</Eyebrow>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+            Simple <span className="text-[color:var(--orange)]">3-Step</span> Process
+          </h2>
+        </div>
+
       <div className="mt-12 grid gap-5 md:grid-cols-3">
         {steps.map((s) => {
           const Icon = s.icon;
@@ -431,21 +433,16 @@ function ProcessSection() {
           );
         })}
       </div>
+      </div>
     </section>
+
   );
 }
 
 function ClosingCTA({ onSend }: { onSend: () => void }) {
   return (
-    <section className="relative overflow-hidden">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10"
-        style={{
-          background:
-            "radial-gradient(40% 60% at 30% 50%, rgba(59,130,246,0.25), transparent 70%), radial-gradient(40% 60% at 70% 50%, rgba(249,115,22,0.18), transparent 70%)",
-        }}
-      />
+    <section className="section-glow-cta">
+
       <div className="mx-auto max-w-3xl px-4 py-28 text-center sm:px-6 sm:py-36">
         <Eyebrow>// ready when you are</Eyebrow>
         <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
@@ -537,31 +534,36 @@ function ContactPage() {
 
       <main>
         {/* HERO */}
-        <section className="mx-auto max-w-4xl px-4 pt-24 pb-16 text-center sm:px-6 sm:pt-32 sm:pb-24">
-          <Eyebrow>// let's connect</Eyebrow>
-          <h1 className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-6xl">
-            Let's Build Something
-            <br />
-            <span className="text-gradient-vo">Worth Talking About</span>
-          </h1>
-          <p className="mx-auto mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
-            Have a project in mind? Want to discuss AI podcast content, a modern
-            website, or both? I'd love to hear what you're working on.
-          </p>
+        <section className="section-glow-hero">
+          <div className="mx-auto max-w-4xl px-4 pt-24 pb-16 text-center sm:px-6 sm:pt-32 sm:pb-24">
+            <Eyebrow>// let's connect</Eyebrow>
+            <h1 className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-6xl">
+              Let's Build Something
+              <br />
+              <span className="text-gradient-vo">Worth Talking About</span>
+            </h1>
+            <p className="mx-auto mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
+              Have a project in mind? Want to discuss AI podcast content, a modern
+              website, or both? I'd love to hear what you're working on.
+            </p>
+          </div>
         </section>
 
         {/* MAIN GRID */}
-        <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6 sm:pb-32">
-          <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr]">
-            <ContactForm formRef={formRef} />
-            <div className="space-y-6">
-              <QuickContact />
-              <SocialsCard />
-              <LocationCard />
-              <StatusCallout />
+        <section className="section-glow-subtle">
+          <div className="mx-auto max-w-6xl px-4 pb-24 sm:px-6 sm:pb-32">
+            <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr]">
+              <ContactForm formRef={formRef} />
+              <div className="space-y-6">
+                <QuickContact />
+                <SocialsCard />
+                <LocationCard />
+                <StatusCallout />
+              </div>
             </div>
           </div>
         </section>
+
 
         <div className="h-px bg-white/5" />
 
