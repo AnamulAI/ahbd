@@ -129,7 +129,7 @@ function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | nu
             placeholder="Your full name"
             autoComplete="name"
             aria-invalid={!!errors.fullName}
-            className="h-12 border-white/10 bg-background/60 text-white placeholder:text-white/30 focus-visible:ring-[color:var(--primary)]"
+            className="h-12 border-white/10 bg-background/60 text-white placeholder:text-white/30 transition-[box-shadow,border-color,background-color] duration-200 focus-visible:border-[color:var(--primary)] focus-visible:bg-background/80 focus-visible:ring-2 focus-visible:ring-[color:var(--primary)]/40 motion-reduce:transition-none"
           />
           {errors.fullName && (
             <p className="text-xs text-red-400">{errors.fullName}</p>
