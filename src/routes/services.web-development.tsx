@@ -669,10 +669,10 @@ function ProjectsSection({
           {SAMPLE_PROJECTS.map((p) => (
             <article
               key={p.slug}
-              className="card-elevated card-elevated-hover overflow-hidden"
+              className="card-glow card-elevated card-elevated-hover overflow-hidden"
             >
               <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-[color:var(--primary)]/15 via-white/[0.03] to-[color:var(--orange)]/15">
-                <span className="absolute left-3 top-3 inline-flex items-center rounded-full border border-white/10 bg-black/40 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur">
+                <span className="absolute left-3 top-3 z-10 inline-flex items-center rounded-full bg-amber-400 px-2.5 py-1 text-[11px] font-semibold text-black shadow-[0_6px_20px_-8px_rgba(251,191,36,0.7)]">
                   {p.category}
                 </span>
                 <div className="absolute inset-0 grid place-items-center">
@@ -684,6 +684,25 @@ function ProjectsSection({
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {p.desc}
                 </p>
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {p.tech.map((t) => {
+                    const color = brandColor(t);
+                    return (
+                      <span
+                        key={t}
+                        className="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-medium"
+                        style={{
+                          color,
+                          borderColor: `${color}40`,
+                          backgroundColor: `${color}14`,
+                        }}
+                      >
+                        <BrandIcon name={t} size={11} />
+                        {t}
+                      </span>
+                    );
+                  })}
+                </div>
                 <Link
                   to="/projects"
                   className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[color:var(--primary)] hover:text-[color:var(--orange)] transition-colors"
