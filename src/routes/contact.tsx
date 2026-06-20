@@ -203,7 +203,7 @@ function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | nu
           <Button
             type="submit"
             disabled={submitting}
-            className="group h-12 w-full rounded-full bg-[color:var(--orange)] px-6 text-sm font-semibold text-black shadow-[0_10px_40px_-10px_var(--orange-glow)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_18px_50px_-10px_var(--orange-glow)] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100 sm:w-auto"
+            className="group h-12 w-full rounded-full btn-gradient px-6 text-sm font-semibold text-black shadow-[0_10px_40px_-10px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_18px_50px_-10px_var(--vo-glow)] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100 sm:w-auto"
           >
             {submitting ? "Sending..." : "Send Message"}
             <ArrowRight className="ml-1 h-4 w-4 transition group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
@@ -455,7 +455,7 @@ function ClosingCTA({ onSend }: { onSend: () => void }) {
         <div className="mt-8">
           <Button
             onClick={onSend}
-            className="group h-14 rounded-full bg-[color:var(--orange)] px-8 text-base font-semibold text-black shadow-[0_20px_60px_-15px_var(--orange-glow)] transition-all duration-200 hover:scale-[1.04] hover:shadow-[0_28px_70px_-15px_var(--orange-glow)] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100"
+            className="group h-14 rounded-full btn-gradient px-8 text-base font-semibold text-black shadow-[0_20px_60px_-15px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.04] hover:shadow-[0_28px_70px_-15px_var(--vo-glow)] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100"
           >
             Send a Message
             <ArrowRight className="ml-1 h-5 w-5 transition group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
@@ -480,7 +480,7 @@ function ScrollToTop() {
     <button
       aria-label="Scroll to top"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      className="fixed bottom-6 right-6 z-40 grid h-12 w-12 place-items-center rounded-full bg-[color:var(--orange)] text-black shadow-[0_15px_40px_-10px_var(--orange-glow)] transition-all duration-200 hover:scale-110 hover:shadow-[0_22px_55px_-10px_var(--orange-glow)] hover:brightness-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100"
+      className="fixed bottom-6 right-6 z-40 grid h-12 w-12 place-items-center rounded-full btn-gradient text-black shadow-[0_15px_40px_-10px_var(--vo-glow)] transition-all duration-200 hover:scale-110 hover:shadow-[0_22px_55px_-10px_var(--vo-glow)] hover:brightness-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100"
     >
       <ChevronUp className="h-5 w-5" />
     </button>
