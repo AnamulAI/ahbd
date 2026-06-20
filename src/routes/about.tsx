@@ -14,9 +14,8 @@ import {
 
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
-import avatarPlaceholder from "@/assets/avatar-placeholder.jpg";
-// NOTE: avatarPlaceholder is a temporary illustrated avatar — replace with
-// Anam's actual photo or final illustrated avatar when the asset is provided.
+import anamAvatar from "@/assets/anam-avatar.png.asset.json";
+
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -145,8 +144,8 @@ function AvatarCodeCard() {
             }}
           />
           <img
-            src={avatarPlaceholder}
-            alt="Anam Dev avatar placeholder"
+            src={anamAvatar.url}
+            alt="Anam Dev avatar"
             width={256}
             height={256}
             loading="lazy"
