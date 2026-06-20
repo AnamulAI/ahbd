@@ -48,11 +48,13 @@ export function SiteFooter() {
           <div>
             <Link
               to="/"
-              className="inline-block font-mono text-lg font-semibold text-white"
+              aria-label="AnamDev home"
+              className="inline-block font-mono text-base font-bold tracking-tight transition-colors"
             >
-              <span className="text-[color:var(--primary)]">{"{"}</span>
-              Anam Dev
-              <span className="text-[color:var(--primary)]">{"}"}</span>
+              <span className="text-muted-foreground">{"{"}</span>
+              <span className="text-white">Anam</span>
+              <span className="text-[color:var(--primary)]">Dev</span>
+              <span className="text-muted-foreground">{"}"}</span>
             </Link>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
               Building authority brands through AI-powered podcasts and modern
@@ -67,7 +69,7 @@ export function SiteFooter() {
         <div className="my-10 h-px bg-white/5" />
 
         <div className="flex flex-col items-center justify-between gap-3 text-xs text-muted-foreground sm:flex-row">
-          <p>© 2026 Anam Dev. All rights reserved.</p>
+          <p>© 2026 Mohammad Anamul Hoque. All rights reserved.</p>
           <p>Built with ❤️ &amp; AI</p>
         </div>
       </div>
