@@ -11,7 +11,7 @@ import {
   Sparkles,
   Trophy,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 
