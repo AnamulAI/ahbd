@@ -170,9 +170,9 @@ html {
     z-index: -1;
     pointer-events: none;
     background:
-      radial-gradient(60% 65% at 10% 15%, oklch(0.62 0.19 255 / 35%), transparent 70%),
-      radial-gradient(55% 60% at 90% 20%, oklch(0.74 0.18 50 / 26%), transparent 70%),
-      radial-gradient(75% 65% at 50% 105%, oklch(0.62 0.19 255 / 18%), transparent 70%);
+      radial-gradient(60% 65% at 10% 15%, oklch(0.62 0.19 255 / 30%), transparent 70%),
+      radial-gradient(60% 65% at 90% 20%, oklch(0.74 0.18 50 / 26%), transparent 70%),
+      radial-gradient(75% 65% at 50% 105%, oklch(0.62 0.19 255 / 16%), transparent 70%);
     filter: blur(60px);
   }
 }
@@ -187,8 +187,8 @@ html {
     z-index: -1;
     pointer-events: none;
     background:
-      radial-gradient(40% 50% at 5% 10%, oklch(0.62 0.19 255 / 14%), transparent 70%),
-      radial-gradient(35% 45% at 95% 90%, oklch(0.74 0.18 50 / 10%), transparent 70%);
+      radial-gradient(40% 50% at 5% 10%, oklch(0.62 0.19 255 / 15%), transparent 70%),
+      radial-gradient(35% 45% at 95% 90%, oklch(0.74 0.18 50 / 12%), transparent 70%);
     filter: blur(50px);
   }
 }
@@ -219,7 +219,7 @@ html {
     z-index: -1;
     pointer-events: none;
     background:
-      radial-gradient(50% 70% at 35% 50%, oklch(0.62 0.19 255 / 32%), transparent 70%),
+      radial-gradient(50% 70% at 35% 50%, oklch(0.62 0.19 255 / 30%), transparent 70%),
       radial-gradient(50% 70% at 65% 50%, oklch(0.74 0.18 50 / 24%), transparent 70%);
     filter: blur(55px);
   }
@@ -233,5 +233,6 @@ html {
     filter: none;
   }
 }
+
 
 
