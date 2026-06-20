@@ -404,7 +404,7 @@ function ProcessSection() {
   ];
   return (
     <section className="section-glow-mid border-t border-white/5">
-      <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
+      <div className="mx-auto max-w-6xl px-5 py-20 sm:px-6 sm:py-32">
         <div className="text-center">
           <Eyebrow>// how it works</Eyebrow>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
@@ -412,16 +412,16 @@ function ProcessSection() {
           </h2>
         </div>
 
-      <div className="mt-12 grid gap-5 md:grid-cols-3">
+      <div className="mt-10 grid gap-5 sm:mt-12 md:grid-cols-3">
         {steps.map((s) => {
           const Icon = s.icon;
           return (
             <div
               key={s.n}
-              className="card-elevated card-elevated-hover group p-6"
+              className="card-elevated card-elevated-hover group p-5 sm:p-6"
             >
-              <span className="grid h-12 w-12 place-items-center rounded-xl border border-[color:var(--primary)]/40 bg-[color:var(--primary)]/10">
-                <Icon className="h-5 w-5 text-[color:var(--primary)]" />
+              <span className="grid h-10 w-10 place-items-center rounded-xl border border-[color:var(--primary)]/40 bg-[color:var(--primary)]/10 sm:h-12 sm:w-12">
+                <Icon className="h-4 w-4 text-[color:var(--primary)] sm:h-5 sm:w-5" />
               </span>
               <div className="mt-5 font-mono text-xs text-[color:var(--primary)]">
                 {s.n}
