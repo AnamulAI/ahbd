@@ -809,7 +809,7 @@ function ConceptCard({ card }: { card: ConceptCardData }) {
       <h3 className="mt-4 text-lg font-semibold text-white">{card.title}</h3>
       <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{card.description}</p>
 
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className="mt-3 flex flex-wrap gap-2">
         {card.tags.map((t) => {
           const I = t.icon;
           return (
@@ -824,7 +824,7 @@ function ConceptCard({ card }: { card: ConceptCardData }) {
         })}
       </div>
 
-      <div className="mt-auto flex gap-3 pt-5">
+      <div className="mt-3 flex gap-3">
         <button
           type="button"
           disabled
@@ -1043,22 +1043,22 @@ function PricingCalculatorSection() {
                       type="button"
                       onClick={() => handleService(s.id)}
                       className={[
-                      "card-elevated card-elevated-hover relative flex h-full min-h-[116px] flex-col p-4 text-left transition-all cursor-pointer",
-                      active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
-                    ].join(" ")}
-                  >
-                    <div className="flex flex-1 items-start gap-3">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[color:var(--primary)]/10">
-                        <Icon className="h-4 w-4 text-[color:var(--primary)]" style={s.brandColor ? { color: s.brandColor } : undefined} />
+                        "card-elevated card-elevated-hover relative flex h-full min-h-[110px] flex-col p-3.5 text-left transition-all cursor-pointer",
+                        active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
+                      ].join(" ")}
+                    >
+                      <div className="flex flex-1 items-start gap-3">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[color:var(--primary)]/10">
+                          <Icon className="h-4 w-4 text-[color:var(--primary)]" style={s.brandColor ? { color: s.brandColor } : undefined} />
+                        </div>
+                        <div className="pt-0.5 text-sm font-semibold leading-snug text-white">{s.name}</div>
                       </div>
-                      <div className="pt-1 text-sm font-semibold leading-snug text-white">{s.name}</div>
-                    </div>
-                    <div className="mt-3 pl-12 text-sm font-bold text-[color:var(--primary)]">
-                      Base {fmt(s.base)}
-                    </div>
-                    {active && (
-                      <Check className="absolute right-3 top-3 h-4 w-4 text-[color:var(--primary)]" />
-                    )}
+                      <div className="mt-2 pl-12 text-sm font-bold text-[color:var(--primary)]">
+                        Base {fmt(s.base)}
+                      </div>
+                      {active && (
+                        <Check className="absolute right-3 top-3 h-4 w-4 text-[color:var(--primary)]" />
+                      )}
                     </button>
                   );
                 })}
