@@ -13,7 +13,6 @@ import {
   Share2,
   Rocket,
   Video,
-  PenTool,
   Briefcase,
   Megaphone,
   GraduationCap,
@@ -619,12 +618,10 @@ function ValueSection() {
 // ---------- 6. WHO'S IT FOR ----------
 
 const ICP = [
-  { icon: PenTool, label: "Bloggers & Writers", desc: "Turn your existing articles into a podcast without writing a single extra word." },
-  { icon: Briefcase, label: "Small Business Owners", desc: "Build a branded show around your expertise without hiring a production team." },
-  { icon: Megaphone, label: "Marketers & Agencies", desc: "Repurpose content library assets into audio at scale, for clients or your own brand." },
-  { icon: GraduationCap, label: "Coaches & Consultants", desc: "Establish authority with a consistent weekly show, without the production overhead." },
-  { icon: Newspaper, label: "Newsletter Writers", desc: "Reach Spotify and Apple Podcasts listeners who will never open your email." },
-  { icon: TrendingUp, label: "Content Creators", desc: "Add a podcast to your content stack without adding hours to your week." },
+  { icon: Megaphone, label: "Marketers & Agencies", desc: "Repurpose blog posts, case studies, and campaign briefs into branded podcast episodes — scaling audio content without a recording studio or hiring editors." },
+  { icon: TrendingUp, label: "Content Creators", desc: "Turn YouTube videos, newsletters, and blog posts into podcast episodes — reaching audio-first audiences on Spotify and Apple Podcasts without extra recording hours." },
+  { icon: Briefcase, label: "Small Businesses & Growing Brands", desc: "Launch a thought-leadership podcast that builds brand authority and reaches customers — without hiring a production team." },
+  { icon: GraduationCap, label: "Educators & Course Creators", desc: "Convert lesson plans, course PDFs, and written material into engaging audio lessons students actually finish." },
 ];
 
 function WhoSection() {
@@ -637,7 +634,7 @@ function WhoSection() {
           gradient="Content"
           trailing=", Not a Studio"
         />
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid gap-4 sm:grid-cols-2">
           {ICP.map((c) => {
             const Icon = c.icon;
             return (
