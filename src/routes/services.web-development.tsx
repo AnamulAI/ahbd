@@ -434,61 +434,63 @@ function EcommerceCaseStudyDialog({ children }: { children: React.ReactNode }) {
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+      <DialogContent className="flex flex-col overflow-hidden max-h-[90vh] p-0 sm:max-w-2xl">
         <span aria-hidden className="modal-scan-line" />
-        <DialogHeader>
-          <DialogTitle className="text-xl">
-            Custom eCommerce Platform — What's Possible
-          </DialogTitle>
-          <DialogDescription className="pt-2 text-sm leading-relaxed">
-            A full-featured custom ecommerce platform built end-to-end — from
-            customer storefront to admin operations.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-6 sm:grid-cols-2">
-          <div>
-            <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
-              Customer Experience
-            </h4>
-            <ul className="mt-3 space-y-2.5">
-              {customer.map((i) => {
-                const I = i.icon;
-                return (
-                  <li key={i.label} className="flex items-start gap-2.5 text-sm text-muted-foreground">
-                    <I className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--primary)]" />
-                    <span>{i.label}</span>
-                  </li>
-                );
-              })}
-            </ul>
+        <div className="flex flex-col gap-4 overflow-y-auto p-6 max-h-[90vh]">
+          <DialogHeader>
+            <DialogTitle className="text-xl">
+              Custom eCommerce Platform — What's Possible
+            </DialogTitle>
+            <DialogDescription className="pt-2 text-sm leading-relaxed">
+              A full-featured custom ecommerce platform built end-to-end — from
+              customer storefront to admin operations.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-6 sm:grid-cols-2">
+            <div>
+              <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
+                Customer Experience
+              </h4>
+              <ul className="mt-3 space-y-2.5">
+                {customer.map((i) => {
+                  const I = i.icon;
+                  return (
+                    <li key={i.label} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                      <I className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--primary)]" />
+                      <span>{i.label}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
+                Admin & Operations
+              </h4>
+              <ul className="mt-3 space-y-2.5">
+                {admin.map((i) => {
+                  const I = i.icon;
+                  return (
+                    <li key={i.label} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                      <I className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--primary)]" />
+                      <span>{i.label}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           </div>
-          <div>
-            <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
-              Admin & Operations
-            </h4>
-            <ul className="mt-3 space-y-2.5">
-              {admin.map((i) => {
-                const I = i.icon;
-                return (
-                  <li key={i.label} className="flex items-start gap-2.5 text-sm text-muted-foreground">
-                    <I className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--primary)]" />
-                    <span>{i.label}</span>
-                  </li>
-                );
-              })}
-            </ul>
+          <div className="mt-2 flex flex-col items-center gap-3 border-t border-white/10 pt-5 text-center">
+            <p className="text-sm text-muted-foreground">
+              Want something like this for your business?
+            </p>
+            <Link
+              to="/contact"
+              className="btn-gradient inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold text-white"
+            >
+              Discuss Your Project <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
-        </div>
-        <div className="mt-2 flex flex-col items-center gap-3 border-t border-white/10 pt-5 text-center">
-          <p className="text-sm text-muted-foreground">
-            Want something like this for your business?
-          </p>
-          <Link
-            to="/contact"
-            className="btn-gradient inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold text-white"
-          >
-            Discuss Your Project <ArrowRight className="h-4 w-4" />
-          </Link>
         </div>
       </DialogContent>
     </Dialog>

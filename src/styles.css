@@ -331,7 +331,7 @@ html {
   box-shadow: 0 0 12px rgba(96, 165, 250, 0.6),
               0 0 24px rgba(96, 165, 250, 0.3);
   opacity: 0;
-  animation: modal-scan-sweep 0.75s ease-out 0.15s 1 forwards;
+  animation: modal-scan-sweep 1.3s ease-out 0.15s 1 forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
