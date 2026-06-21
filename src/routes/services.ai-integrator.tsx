@@ -927,7 +927,7 @@ function PricingCalculatorSection() {
                       </div>
                       <div className="pt-1 text-sm font-semibold leading-snug text-white">{s.name}</div>
                     </div>
-                    <div className="mt-3 text-sm font-bold text-[color:var(--primary)]">
+                    <div className="mt-3 pl-12 text-sm font-bold text-[color:var(--primary)]">
                       Base {fmt(s.base)}
                     </div>
                     {active && (
