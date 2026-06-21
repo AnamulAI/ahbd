@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useRef } from "react";
+import { useRef, useState, useMemo } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   ArrowRight,
   Check,
@@ -40,6 +41,22 @@ import {
   Image as ImageIcon,
   Boxes,
   FolderTree,
+  Code2,
+  Tag,
+  Film,
+  Megaphone,
+  BadgeCheck,
+  LogIn,
+  CreditCard,
+  Truck,
+  Send,
+  Target,
+  Pencil,
+  Search,
+  LineChart,
+  LifeBuoy,
+  CalendarClock,
+  ShieldHalf,
 } from "lucide-react";
 
 import {
@@ -865,109 +882,357 @@ function ProjectsSection({
   );
 }
 
-const TIERS = [
-  {
-    name: "Starter",
-    tagline: "Best for landing pages & simple sites",
-    price: "Starting from $300",
-    features: [
-      "Single-page or few-page site",
-      "Responsive design",
-      "Basic SEO setup",
-      "1-2 weeks delivery",
-    ],
-    cta: "Get a Quote",
-    featured: false,
-  },
-  {
-    name: "Growth",
-    tagline: "Best for full business websites",
-    price: "Starting from $700",
-    features: [
-      "Multi-page custom website",
-      "CMS or admin integration option",
-      "SEO-friendly structure",
-      "Priority support",
-    ],
-    cta: "Get a Quote",
-    featured: true,
-  },
-  {
-    name: "Custom / Web App",
-    tagline: "Best for dashboards, SaaS, or complex builds",
-    price: "Custom Quote",
-    features: [
-      "Full web app or dashboard",
-      "Database & backend setup",
-      "Ongoing support available",
-      "Tailored scope & timeline",
-    ],
-    cta: "Discuss Your Project",
-    featured: false,
-  },
-];
+const PROJECT_TYPES = [
+  { id: "landing", name: "Landing Page", base: 450, icon: Globe, note: "" },
+  { id: "business", name: "Business Website", base: 900, icon: Building2, note: "" },
+  { id: "brand", name: "Personal Brand Site", base: 600, icon: User, note: "" },
+  { id: "ecommerce", name: "eCommerce Store", base: 1800, icon: ShoppingCart, note: "" },
+  { id: "lms", name: "LMS / Course Platform", base: 1500, icon: GraduationCap, note: "" },
+  { id: "webapp", name: "Web App / Dashboard", base: 2500, icon: LayoutDashboard, note: "Starting from $2,500 — final quote varies" },
+] as const;
 
-function PricingSection() {
+const PLATFORMS = [
+  {
+    id: "custom",
+    name: "Custom Code",
+    desc: "React, Next.js & modern stack — fully custom, most flexible, built to scale",
+    discount: 0,
+  },
+  {
+    id: "wordpress",
+    name: "WordPress",
+    desc: "Faster build, budget-friendly, easy for you to manage content yourself",
+    discount: 0.15,
+  },
+] as const;
+
+const ADDONS = [
+  { id: "video-hero", label: "Cinematic Video Hero + Fallback", price: 150, icon: Film, color: "#F97316" },
+  { id: "promo-banner", label: "Promo Banner + Countdown Timer", price: 100, icon: Megaphone, color: "#F59E0B" },
+  { id: "trust-strip", label: "Trust Strip Icons", price: 50, icon: BadgeCheck, color: "#22C55E" },
+  { id: "auth", label: "Email + Phone/OTP Login System", price: 300, icon: LogIn, color: "#3B82F6" },
+  { id: "payments", label: "Payment Gateway Integration (Stripe/PayPal)", price: 250, icon: CreditCard, color: "#635BFF" },
+  { id: "shipping", label: "Courier/Shipping API Integration", price: 300, icon: Truck, color: "#EAB308" },
+  { id: "telegram", label: "Telegram Order Notifications", price: 150, icon: Send, color: "#229ED9" },
+  { id: "pixel", label: "Facebook Pixel + Conversion API", price: 150, icon: Target, color: "#1877F2" },
+  { id: "cms", label: "No-Code Content Editor (CMS)", price: 400, icon: Pencil, color: "#A855F7" },
+  { id: "seo", label: "Full SEO Suite (Meta, OG, Sitemap, JSON-LD)", price: 200, icon: Search, color: "#10B981" },
+  { id: "analytics", label: "Custom Analytics Dashboard", price: 350, icon: LineChart, color: "#06B6D4" },
+] as const;
+
+const SUPPORT_TIERS = [
+  { id: "30d", name: "30 Days Free Support", price: 0, included: true, tag: null as string | null, icon: LifeBuoy },
+  { id: "3m", name: "3 Months Support", price: 200, included: false, tag: null as string | null, icon: CalendarClock },
+  { id: "6m", name: "6 Months Support", price: 400, included: false, tag: "Recommended" as string | null, icon: ShieldHalf },
+] as const;
+
+function fmt(n: number) {
+  return "$" + n.toLocaleString("en-US");
+}
+
+function PricingCalculatorSection() {
+  const [projectId, setProjectId] = useState<string>("business");
+  const [platformId, setPlatformId] = useState<string>("custom");
+  const [addonIds, setAddonIds] = useState<string[]>([]);
+  const [supportId, setSupportId] = useState<string>("30d");
+
+  const project = PROJECT_TYPES.find((p) => p.id === projectId)!;
+  const platform = PLATFORMS.find((p) => p.id === platformId)!;
+  const support = SUPPORT_TIERS.find((s) => s.id === supportId)!;
+  const selectedAddons = ADDONS.filter((a) => addonIds.includes(a.id));
+
+  const projectPrice = useMemo(
+    () => Math.round(project.base * (1 - platform.discount)),
+    [project, platform]
+  );
+  const addonsTotal = selectedAddons.reduce((s, a) => s + a.price, 0);
+  const total = projectPrice + addonsTotal + support.price;
+
+  const toggleAddon = (id: string) => {
+    setAddonIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
+
+  const waMessage = useMemo(() => {
+    const lines = [
+      "Hi! I'd like a quote based on this estimate:",
+      "",
+      `• Project: ${project.name} (${platform.name}) — ${fmt(projectPrice)}`,
+    ];
+    if (selectedAddons.length) {
+      lines.push("• Add-ons:");
+      selectedAddons.forEach((a) => lines.push(`   - ${a.label} (+${fmt(a.price)})`));
+    }
+    lines.push(`• Support: ${support.name}${support.included ? " (Included)" : ` (+${fmt(support.price)})`}`);
+    lines.push("", `TOTAL: ${fmt(total)}`);
+    return lines.join("\n");
+  }, [project, platform, projectPrice, selectedAddons, support, total]);
+
+  const waLink = `https://wa.me/8801777768353?text=${encodeURIComponent(waMessage)}`;
+
   return (
     <section className="py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <SectionHeading
-          eyebrow="// PRICING"
-          white="Custom Pricing"
-          gradient="Based on Scope"
-          subtext="Pricing depends on the type of project, page count, feature complexity, and overall build scope. Simple landing pages, business websites, and more advanced setups all require different levels of work — so pricing is tailored to fit your need."
+          eyebrow="// PRICING CALCULATOR"
+          white="Build Your"
+          gradient="Custom Quote"
+          subtext="Pick your project type, platform, and add-ons. The estimate updates instantly — message me when you're ready."
         />
-        <div className="mt-12 grid gap-5 lg:grid-cols-3">
-          {TIERS.map((t) => (
-            <div
-              key={t.name}
-              className={[
-                "card-elevated card-elevated-hover relative flex flex-col p-7 max-md:items-center max-md:text-center",
-                t.featured
-                  ? "border-[color:var(--primary)]/50 shadow-[0_30px_90px_-40px_var(--primary)]"
-                  : "",
-              ].join(" ")}
-            >
-              {t.featured && (
-                <span className="absolute -top-3 left-1/2 inline-flex -translate-x-1/2 items-center gap-1 rounded-full bg-gradient-to-r from-[color:var(--primary)] to-[color:var(--orange)] px-3 py-1 text-[11px] font-semibold text-black">
-                  <Star className="h-3 w-3" />
-                  Most Popular
-                </span>
-              )}
-              <h3 className="text-lg font-semibold text-white">{t.name}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">{t.tagline}</p>
-              <div className="mt-5 text-2xl font-bold text-white">
-                {t.price}
+
+        <div className="mt-12 grid gap-6 lg:grid-cols-[1fr_360px]">
+          {/* LEFT — CONFIGURATOR */}
+          <div className="space-y-10">
+            {/* STEP 1 */}
+            <div>
+              <StepHeader n={1} title="What are you building?" />
+              <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {PROJECT_TYPES.map((p) => {
+                  const Icon = p.icon;
+                  const active = projectId === p.id;
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => setProjectId(p.id)}
+                      className={[
+                        "card-elevated card-elevated-hover relative flex flex-col items-start gap-2 p-4 text-left transition-all",
+                        active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
+                      ].join(" ")}
+                    >
+                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[color:var(--primary)]/10">
+                        <Icon className="h-4 w-4 text-[color:var(--primary)]" />
+                      </div>
+                      <div className="text-sm font-semibold text-white">{p.name}</div>
+                      <div className="text-sm font-bold text-[color:var(--primary)]">
+                        {p.note ? p.note : `Base ${fmt(p.base)}`}
+                      </div>
+                      {active && (
+                        <Check className="absolute right-3 top-3 h-4 w-4 text-[color:var(--primary)]" />
+                      )}
+                    </button>
+                  );
+                })}
               </div>
-              <ul className="mt-5 flex-1 space-y-3 max-md:w-full">
-                {t.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-sm text-muted-foreground">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--primary)]" />
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link
-                to="/contact"
-                className={[
-                  "mt-7 inline-flex h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition-all duration-200",
-                  t.featured
-                    ? "btn-gradient text-black shadow-[0_10px_30px_-12px_var(--vo-glow)] hover:scale-[1.02] hover:brightness-110"
-                    : "border border-[color:var(--primary)]/50 text-white hover:bg-[color:var(--primary)]/10",
-                ].join(" ")}
-              >
-                {t.cta}
-                <ArrowRight className="h-4 w-4" />
-              </Link>
             </div>
-          ))}
+
+            {/* STEP 2 */}
+            <div>
+              <StepHeader n={2} title="Choose Your Platform" />
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                {PLATFORMS.map((p) => {
+                  const active = platformId === p.id;
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => setPlatformId(p.id)}
+                      className={[
+                        "card-elevated card-elevated-hover relative flex items-start gap-3 p-4 text-left transition-all",
+                        active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
+                      ].join(" ")}
+                    >
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/5">
+                        {p.id === "wordpress" ? (
+                          <BrandIcon name="WordPress" size={20} />
+                        ) : (
+                          <Code2 className="h-5 w-5 text-[color:var(--primary)]" />
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-sm font-semibold text-white">{p.name}</span>
+                          {p.discount > 0 && (
+                            <span className="rounded-full bg-[color:var(--orange)]/15 px-2 py-0.5 text-[10px] font-semibold text-[color:var(--orange)]">
+                              -15%
+                            </span>
+                          )}
+                        </div>
+                        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{p.desc}</p>
+                      </div>
+                      {active && (
+                        <Check className="absolute right-3 top-3 h-4 w-4 text-[color:var(--primary)]" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* STEP 3 */}
+            <div>
+              <StepHeader n={3} title="Add optional features" />
+              <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
+                {ADDONS.map((a) => {
+                  const Icon = a.icon;
+                  const active = addonIds.includes(a.id);
+                  return (
+                    <label
+                      key={a.id}
+                      className={[
+                        "card-elevated card-elevated-hover flex cursor-pointer items-center gap-3 p-3.5 transition-all",
+                        active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
+                      ].join(" ")}
+                    >
+                      <Checkbox
+                        checked={active}
+                        onCheckedChange={() => toggleAddon(a.id)}
+                        className="border-white/30 data-[state=checked]:border-[color:var(--primary)] data-[state=checked]:bg-[color:var(--primary)]"
+                      />
+                      <Icon className="h-4 w-4 shrink-0" style={{ color: a.color }} />
+                      <span className="min-w-0 flex-1 text-sm text-white">{a.label}</span>
+                      <span className="shrink-0 text-sm font-semibold text-[color:var(--primary)]">
+                        +{fmt(a.price)}
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* STEP 4 */}
+            <div>
+              <StepHeader n={4} title="Support & Maintenance" />
+              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                {SUPPORT_TIERS.map((s) => {
+                  const Icon = s.icon;
+                  const active = supportId === s.id;
+                  return (
+                    <button
+                      key={s.id}
+                      type="button"
+                      onClick={() => setSupportId(s.id)}
+                      className={[
+                        "card-elevated card-elevated-hover relative flex flex-col items-start gap-2 p-4 text-left transition-all",
+                        active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
+                      ].join(" ")}
+                    >
+                      <div className="flex items-center justify-between w-full">
+                        <Icon className="h-4 w-4 text-[color:var(--primary)]" />
+                        {s.tag && (
+                          <span className="rounded-full bg-gradient-to-r from-[color:var(--primary)] to-[color:var(--orange)] px-2 py-0.5 text-[10px] font-semibold text-black">
+                            {s.tag}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-sm font-semibold text-white">{s.name}</div>
+                      <div className="text-sm font-bold text-[color:var(--primary)]">
+                        {s.included ? "Included" : `+${fmt(s.price)}`}
+                      </div>
+                      {active && (
+                        <Check className="absolute right-3 top-3 h-4 w-4 text-[color:var(--primary)]" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT — STICKY ESTIMATE */}
+          <aside className="lg:sticky lg:top-24 lg:self-start">
+            <div className="relative rounded-2xl border border-[color:var(--primary)]/60 bg-[#16181D] p-6 shadow-[0_0_0_1px_rgba(59,130,246,0.15),0_30px_90px_-30px_rgba(249,115,22,0.35),0_30px_90px_-40px_rgba(59,130,246,0.45)]">
+              <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-[color:var(--primary)]/10 via-transparent to-[color:var(--orange)]/10" />
+              <div className="relative">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-[color:var(--orange)]" />
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-[color:var(--orange)]">
+                    Live estimate
+                  </span>
+                </div>
+                <h3 className="mt-2 text-xl font-semibold text-white">Your Estimate</h3>
+
+                <ul className="mt-5 space-y-2.5 text-sm">
+                  <li className="flex items-start justify-between gap-3">
+                    <span className="text-muted-foreground">
+                      {project.name} <span className="text-white/60">({platform.name})</span>
+                    </span>
+                    <span className="shrink-0 font-semibold text-white">{fmt(projectPrice)}</span>
+                  </li>
+                  {selectedAddons.map((a) => (
+                    <li key={a.id} className="flex items-start justify-between gap-3">
+                      <span className="text-muted-foreground">{a.label}</span>
+                      <span className="shrink-0 font-semibold text-white">+{fmt(a.price)}</span>
+                    </li>
+                  ))}
+                  <li className="flex items-start justify-between gap-3">
+                    <span className="text-muted-foreground">{support.name}</span>
+                    <span className="shrink-0 font-semibold text-white">
+                      {support.included ? "Included" : `+${fmt(support.price)}`}
+                    </span>
+                  </li>
+                </ul>
+
+                <div className="my-5 h-px w-full bg-white/10" />
+
+                <div className="flex items-end justify-between gap-3">
+                  <span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                    Total
+                  </span>
+                  <span className="text-3xl font-bold text-white">{fmt(total)}</span>
+                </div>
+
+                <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+                  This is an estimate. Final pricing is confirmed after a quick scope discussion.
+                </p>
+
+                <a
+                  href={waLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-gradient mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold text-black shadow-[0_10px_30px_-12px_var(--vo-glow)] transition-all hover:scale-[1.02] hover:brightness-110"
+                >
+                  Get This Quote on WhatsApp
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+                <Link
+                  to="/contact"
+                  className="mt-3 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full border border-[color:var(--primary)]/50 px-5 text-sm font-semibold text-white transition-all hover:bg-[color:var(--primary)]/10"
+                >
+                  Send via Contact Form
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+          </aside>
         </div>
-        <p className="mx-auto mt-10 max-w-2xl text-center text-sm text-muted-foreground">
-          Need something more specific? I'll prepare a tailored quote based on
-          your exact requirements.
-        </p>
+
+        {/* DISCOUNT BANNER */}
+        <div className="relative mt-10 overflow-hidden rounded-2xl p-[1px]">
+          <div className="absolute inset-0 bg-gradient-to-r from-[color:var(--primary)]/60 via-white/10 to-[color:var(--orange)]/60" />
+          <div className="relative flex flex-col items-start gap-4 rounded-2xl bg-[#16181D] p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7">
+            <div className="flex items-start gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[color:var(--primary)]/20 to-[color:var(--orange)]/20">
+                <Tag className="h-5 w-5 text-[color:var(--orange)]" />
+              </div>
+              <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+                Have a custom need or tight budget? I offer flexible discounts for
+                <span className="text-white"> early-stage startups, nonprofits, and long-term partnerships.</span>
+              </p>
+            </div>
+            <Link
+              to="/contact"
+              className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-full border border-[color:var(--primary)]/50 px-5 text-sm font-semibold text-white transition-all hover:bg-[color:var(--primary)]/10"
+            >
+              Ask About a Custom Offer
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
       </div>
     </section>
+  );
+}
+
+function StepHeader({ n, title }: { n: number; title: string }) {
+  return (
+    <div className="flex items-center gap-3">
+      <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[color:var(--primary)]/50 text-xs font-bold text-[color:var(--primary)]">
+        {n}
+      </span>
+      <h3 className="text-lg font-semibold text-white sm:text-xl">{title}</h3>
+    </div>
   );
 }
 
@@ -1065,7 +1330,7 @@ function WebDevPage() {
         <IncludedSection />
         <ProcessSection />
         <ProjectsSection samplesRef={samplesRef} />
-        <PricingSection />
+        <PricingCalculatorSection />
         <FaqSection />
         <ClosingCtaSection />
       </main>
