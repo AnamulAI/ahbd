@@ -1070,7 +1070,7 @@ const PROJECT_TYPES = [
   { id: "brand", name: "Personal Brand Site", base: 600, icon: User, note: "" },
   { id: "ecommerce", name: "eCommerce Store", base: 1800, icon: ShoppingCart, note: "" },
   { id: "lms", name: "LMS / Course Platform", base: 1500, icon: GraduationCap, note: "" },
-  { id: "webapp", name: "Web App / Dashboard", base: 2500, icon: LayoutDashboard, note: "Starting from $2,500 — final quote varies" },
+  { id: "webapp", name: "Web App / Dashboard", base: 2500, icon: LayoutDashboard, note: "Starting from $2,500" },
 ] as const;
 
 const PLATFORMS = [
