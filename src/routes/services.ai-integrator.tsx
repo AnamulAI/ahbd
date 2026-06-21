@@ -314,7 +314,7 @@ function ProblemSection() {
 
 type Build = {
   id: "gpt" | "copilot" | "api";
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
   brandColor?: string;
   title: string;
   desc: string;
@@ -770,7 +770,7 @@ type ServiceType = {
   id: "gpt" | "copilot" | "api";
   name: string;
   base: number;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
   brandColor?: string;
 };
 
