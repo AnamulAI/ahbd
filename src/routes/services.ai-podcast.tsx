@@ -267,6 +267,53 @@ function HeroSection({ onHowItWorksClick }: { onHowItWorksClick: () => void }) {
   );
 }
 
+// ---------- MARKET OPPORTUNITY ----------
+
+const MARKET_STATS = [
+  { num: "584.1M", label: "Global podcast listeners in 2025" },
+  { num: "$30.8B", label: "Current podcast industry value" },
+  { num: "27%", label: "Annual industry growth rate (YoY)" },
+  { num: "$131B", label: "Projected market size by 2030" },
+];
+
+function MarketOpportunitySection() {
+  return (
+    <section className="bg-surface border-y border-white/[0.06] py-16 sm:py-20">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+          <Eyebrow>// MARKET OPPORTUNITY</Eyebrow>
+          <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
+            The Podcasting Boom Is Just <span className="text-gradient-vo">Beginning</span>
+          </h2>
+          <p className="mt-5 text-base text-muted-foreground sm:text-lg">
+            Position yourself in the fastest-growing content medium. The window is open — and it's wide open right now.
+          </p>
+        </div>
+
+        <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {MARKET_STATS.map((s) => (
+            <div key={s.label} className="flex flex-col items-center text-center">
+              <div className="text-4xl font-bold tracking-tight text-gradient-vo sm:text-5xl">
+                {s.num}
+              </div>
+              <div className="mt-2 text-sm text-muted-foreground">
+                {s.label}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p className="mx-auto mt-10 max-w-2xl text-center text-sm text-muted-foreground sm:text-base">
+          These numbers represent real demand — content creators and businesses who get in now build the audience before the space gets crowded.
+        </p>
+        <p className="mx-auto mt-3 text-center text-xs text-muted-foreground/70">
+          Industry data: Grand View Research, RSS.com Podcast Industry Report
+        </p>
+      </div>
+    </section>
+  );
+}
+
 // ---------- 2. THE REAL PROBLEM ----------
 
 const PAIN_POINTS = [
@@ -1405,6 +1452,7 @@ function AiPodcastPage() {
       <SiteHeader />
       <main>
         <HeroSection onHowItWorksClick={scrollToHowItWorks} />
+        <MarketOpportunitySection />
         <ProblemSection />
         <WhatIBuildSection />
         <AddOnsSection />
