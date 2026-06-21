@@ -258,7 +258,7 @@ function ProblemSection() {
             return (
               <div
                 key={p.text}
-                className="card-elevated card-elevated-hover p-6"
+                className="card-elevated card-elevated-hover p-6 max-md:flex max-md:flex-col max-md:items-center max-md:text-center"
               >
                 <span className="grid h-10 w-10 place-items-center rounded-lg bg-[color:var(--orange)]/15">
                   <Icon className="h-5 w-5 text-[color:var(--orange)]" />
