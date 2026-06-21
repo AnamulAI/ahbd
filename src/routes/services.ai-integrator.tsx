@@ -5,7 +5,6 @@ import {
   ArrowRight,
   Check,
   CheckCircle2,
-  Bot,
   Briefcase,
   PlugZap,
   MessageCircleOff,
@@ -60,14 +59,17 @@ import {
 } from "@/components/ui/accordion";
 
 import {
-  siPython,
-  siLangchain,
-  siWhatsapp,
-  siPostman,
-  siZapier,
-  siMake,
-  siN8n,
-} from "simple-icons";
+  SiOpenai,
+  SiGithubcopilot,
+  SiPython,
+  SiLangchain,
+  SiWhatsapp,
+  SiPostman,
+  SiZapier,
+  SiMake,
+  SiN8N,
+} from "react-icons/si";
+import type { IconType } from "react-icons";
 
 export const Route = createFileRoute("/services/ai-integrator")({
   head: () => ({
@@ -167,31 +169,24 @@ function SecondaryButton({
 
 // ---------- tech stack badges ----------
 
-type TechBadge = { name: string; svg?: { path: string; hex: string }; lucide?: React.ComponentType<{ className?: string }>; color?: string };
+type TechBadge = { name: string; Icon: IconType; color: string };
 
 const TECH_BADGES: TechBadge[] = [
-  { name: "OpenAI", lucide: Sparkles, color: "#10A37F" },
-  { name: "ChatGPT", lucide: Bot, color: "#10A37F" },
-  { name: "Microsoft Copilot", lucide: Briefcase, color: "#0078D4" },
-  { name: "Python", svg: siPython },
-  { name: "LangChain", svg: siLangchain },
-  { name: "WhatsApp", svg: siWhatsapp },
-  { name: "Postman", svg: siPostman },
-  { name: "Zapier", svg: siZapier },
-  { name: "Make.com", svg: siMake },
-  { name: "n8n", svg: siN8n },
+  { name: "OpenAI", Icon: SiOpenai, color: "#10A37F" },
+  { name: "ChatGPT", Icon: SiOpenai, color: "#10A37F" },
+  { name: "Microsoft Copilot", Icon: SiGithubcopilot, color: "#0078D4" },
+  { name: "Python", Icon: SiPython, color: "#3776AB" },
+  { name: "LangChain", Icon: SiLangchain, color: "#1C3C3C" },
+  { name: "WhatsApp", Icon: SiWhatsapp, color: "#25D366" },
+  { name: "Postman", Icon: SiPostman, color: "#FF6C37" },
+  { name: "Zapier", Icon: SiZapier, color: "#FF4A00" },
+  { name: "Make.com", Icon: SiMake, color: "#6D00CC" },
+  { name: "n8n", Icon: SiN8N, color: "#EA4B71" },
 ];
 
 function TechIcon({ badge, size = 14 }: { badge: TechBadge; size?: number }) {
-  if (badge.svg) {
-    return (
-      <svg viewBox="0 0 24 24" width={size} height={size} fill={`#${badge.svg.hex}`} aria-hidden>
-        <path d={badge.svg.path} />
-      </svg>
-    );
-  }
-  const I = badge.lucide!;
-  return <I className="h-3.5 w-3.5" />;
+  const I = badge.Icon;
+  return <I size={size} color={badge.color} aria-hidden />;
 }
 
 // ---------- 1. HERO ----------
@@ -318,7 +313,8 @@ function ProblemSection() {
 
 type Build = {
   id: "gpt" | "copilot" | "api";
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
+  brandColor?: string;
   title: string;
   desc: string;
   tags: string[];
@@ -329,7 +325,8 @@ type Build = {
 const BUILDS: Build[] = [
   {
     id: "gpt",
-    icon: Bot,
+    icon: SiOpenai,
+    brandColor: "#10A37F",
     title: "Custom GPT Assistant",
     desc: "A focused AI assistant trained on your business documents — pricing, services, policies, FAQs — deployable instantly via a shareable link or the GPT Store.",
     tags: ["Zero-Code", "Fast Setup", "Knowledge-Based"],
@@ -351,7 +348,8 @@ const BUILDS: Build[] = [
   },
   {
     id: "copilot",
-    icon: Briefcase,
+    icon: SiGithubcopilot,
+    brandColor: "#0078D4",
     title: "Microsoft Copilot Agent",
     desc: "A corporate office AI assistant that reads your company's documents and policies, answers employee questions, and can draft Word, Excel, and PowerPoint files.",
     tags: ["Office 365", "SharePoint", "Enterprise-Ready"],
@@ -406,7 +404,7 @@ function BuildDialog({ build, children }: { build: Build; children: React.ReactN
           <DialogHeader>
             <div className="flex items-center gap-3">
               <span className="grid h-10 w-10 place-items-center rounded-xl bg-[color:var(--primary)]/15">
-                <Icon className="h-5 w-5 text-[color:var(--primary)]" />
+                <Icon className="h-5 w-5 text-[color:var(--primary)]" style={build.brandColor ? { color: build.brandColor } : undefined} />
               </span>
               <DialogTitle className="font-display text-xl font-bold">{build.title}</DialogTitle>
             </div>
@@ -492,7 +490,7 @@ function WhatIBuildSection() {
                   className="card-elevated card-elevated-hover flex h-full flex-col items-center p-6 text-center cursor-pointer"
                 >
                   <span className="grid h-12 w-12 place-items-center rounded-xl bg-[color:var(--primary)]/15">
-                    <Icon className="h-5 w-5 text-[color:var(--primary)]" />
+                    <Icon className="h-5 w-5 text-[color:var(--primary)]" style={b.brandColor ? { color: b.brandColor } : undefined} />
                   </span>
                   <h3 className="mt-5 text-lg font-semibold text-white">{b.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{b.desc}</p>
@@ -771,12 +769,13 @@ type ServiceType = {
   id: "gpt" | "copilot" | "api";
   name: string;
   base: number;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
+  brandColor?: string;
 };
 
 const SERVICE_TYPES: ServiceType[] = [
-  { id: "gpt", name: "Custom GPT Assistant", base: 300, icon: Bot },
-  { id: "copilot", name: "Microsoft Copilot Agent", base: 700, icon: Briefcase },
+  { id: "gpt", name: "Custom GPT Assistant", base: 300, icon: SiOpenai, brandColor: "#10A37F" },
+  { id: "copilot", name: "Microsoft Copilot Agent", base: 700, icon: SiGithubcopilot, brandColor: "#0078D4" },
   { id: "api", name: "API Integration", base: 500, icon: PlugZap },
 ];
 
@@ -926,7 +925,7 @@ function PricingCalculatorSection() {
                   >
                     <div className="flex flex-1 items-start gap-3">
                       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[color:var(--primary)]/10">
-                        <Icon className="h-4 w-4 text-[color:var(--primary)]" />
+                        <Icon className="h-4 w-4 text-[color:var(--primary)]" style={s.brandColor ? { color: s.brandColor } : undefined} />
                       </div>
                       <div className="pt-1 text-sm font-semibold leading-snug text-white">{s.name}</div>
                     </div>
