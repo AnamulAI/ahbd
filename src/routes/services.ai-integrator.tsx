@@ -491,7 +491,7 @@ function WhatIBuildSection() {
                   className="card-elevated card-elevated-hover flex h-full flex-col items-center p-6 text-center cursor-pointer"
                 >
                   <span className="grid h-12 w-12 place-items-center rounded-xl bg-[color:var(--primary)]/15">
-                    <Icon className="h-5 w-5 text-[color:var(--primary)]" />
+                    <Icon className="h-5 w-5 text-[color:var(--primary)]" style={b.brandColor ? { color: b.brandColor } : undefined} />
                   </span>
                   <h3 className="mt-5 text-lg font-semibold text-white">{b.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{b.desc}</p>
