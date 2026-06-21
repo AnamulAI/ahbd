@@ -405,7 +405,7 @@ function BuildDialog({ build, children }: { build: Build; children: React.ReactN
           <DialogHeader>
             <div className="flex items-center gap-3">
               <span className="grid h-10 w-10 place-items-center rounded-xl bg-[color:var(--primary)]/15">
-                <Icon className="h-5 w-5 text-[color:var(--primary)]" />
+                <Icon className="h-5 w-5 text-[color:var(--primary)]" style={build.brandColor ? { color: build.brandColor } : undefined} />
               </span>
               <DialogTitle className="font-display text-xl font-bold">{build.title}</DialogTitle>
             </div>
