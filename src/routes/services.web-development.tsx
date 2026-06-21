@@ -1025,21 +1025,36 @@ function fmt(n: number) {
 
 function PricingCalculatorSection() {
   const [projectId, setProjectId] = useState<string>("business");
+  const [scopeId, setScopeId] = useState<string>("s1");
   const [platformId, setPlatformId] = useState<string>("custom");
   const [addonIds, setAddonIds] = useState<string[]>([]);
   const [supportId, setSupportId] = useState<string>("30d");
+  const [hostingId, setHostingId] = useState<string>("vercel");
+  const [includedOpen, setIncludedOpen] = useState<boolean>(false);
 
   const project = PROJECT_TYPES.find((p) => p.id === projectId)!;
   const platform = PLATFORMS.find((p) => p.id === platformId)!;
   const support = SUPPORT_TIERS.find((s) => s.id === supportId)!;
   const selectedAddons = ADDONS.filter((a) => addonIds.includes(a.id));
+  const scopeConfig = SCOPE_BY_PROJECT[projectId];
+  const scope =
+    scopeConfig.options.find((o) => o.id === scopeId) ?? scopeConfig.options[0];
+
+  // Reset scope to that project type's first option whenever Step 1 changes
+  useEffect(() => {
+    setScopeId("s1");
+  }, [projectId]);
+
+  const buildRef = BUILDS.find(
+    (b) => b.title === PROJECT_TO_BUILD_TITLE[projectId]
+  );
 
   const projectPrice = useMemo(
     () => Math.round(project.base * (1 - platform.discount)),
     [project, platform]
   );
   const addonsTotal = selectedAddons.reduce((s, a) => s + a.price, 0);
-  const total = projectPrice + addonsTotal + support.price;
+  const total = projectPrice + scope.price + addonsTotal + support.price;
 
   const toggleAddon = (id: string) => {
     setAddonIds((prev) =>
@@ -1052,15 +1067,18 @@ function PricingCalculatorSection() {
       "Hi! I'd like a quote based on this estimate:",
       "",
       `• Project: ${project.name} (${platform.name}) — ${fmt(projectPrice)}`,
+      `• Scope: ${scope.label}${scope.price ? ` (+${fmt(scope.price)})` : " (Included)"}`,
     ];
     if (selectedAddons.length) {
       lines.push("• Add-ons:");
       selectedAddons.forEach((a) => lines.push(`   - ${a.label} (+${fmt(a.price)})`));
     }
     lines.push(`• Support: ${support.name}${support.included ? " (Included)" : ` (+${fmt(support.price)})`}`);
+    const hosting = HOSTING_OPTIONS.find((h) => h.id === hostingId)!;
+    lines.push(`• Hosting: ${hosting.name}`);
     lines.push("", `TOTAL: ${fmt(total)}`);
     return lines.join("\n");
-  }, [project, platform, projectPrice, selectedAddons, support, total]);
+  }, [project, platform, projectPrice, scope, selectedAddons, support, total, hostingId]);
 
   const waLink = `https://wa.me/8801777768353?text=${encodeURIComponent(waMessage)}`;
 
