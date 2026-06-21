@@ -256,12 +256,12 @@ function HeroSection({ onSamplesClick }: { onSamplesClick: () => void }) {
 }
 
 const PAIN_POINTS = [
-  { icon: Calendar, text: "Slow project timelines that keep dragging on" },
-  { icon: Users, text: "Unclear communication and messy processes" },
-  { icon: PenTool, text: "Outdated design that hurts credibility" },
-  { icon: LayoutDashboard, text: "Weak mobile experience losing visitors" },
-  { icon: Zap, text: "Poor performance and slow page speeds" },
-  { icon: TrendingUp, text: "Websites that do not support business growth" },
+  { icon: Calendar, title: "Slow Timelines", text: "Slow project timelines that keep dragging on" },
+  { icon: Users, title: "Messy Process", text: "Unclear communication and messy processes" },
+  { icon: PenTool, title: "Outdated Design", text: "Outdated design that hurts credibility" },
+  { icon: LayoutDashboard, title: "Weak Mobile UX", text: "Weak mobile experience losing visitors" },
+  { icon: Zap, title: "Poor Performance", text: "Poor performance and slow page speeds" },
+  { icon: TrendingUp, title: "No Growth Path", text: "Websites that do not support business growth" },
 ];
 
 function ProblemSection() {
@@ -278,13 +278,16 @@ function ProblemSection() {
             const Icon = p.icon;
             return (
               <div
-                key={p.text}
-                className="card-elevated card-elevated-hover p-6 max-md:flex max-md:flex-col max-md:items-center max-md:text-center"
+                key={p.title}
+                className="card-elevated card-elevated-hover flex flex-col items-center text-center p-6"
               >
-                <span className="grid h-10 w-10 place-items-center rounded-lg bg-[color:var(--orange)]/15">
-                  <Icon className="h-5 w-5 text-[color:var(--orange)]" />
+                <span className="grid h-12 w-12 place-items-center rounded-xl bg-[color:var(--primary)]/15">
+                  <Icon className="h-5 w-5 text-[color:var(--primary)]" />
                 </span>
-                <p className="mt-4 text-sm leading-relaxed text-white sm:text-base">
+                <h3 className="mt-5 text-sm font-semibold text-white">
+                  {p.title}
+                </h3>
+                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
                   {p.text}
                 </p>
               </div>
