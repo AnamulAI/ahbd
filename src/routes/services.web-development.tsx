@@ -357,7 +357,7 @@ function WhatIBuildSection() {
             const isEcom = b.title === "eCommerce Stores";
             const cardInner = (
               <>
-                <span className="grid h-11 w-11 place-items-center rounded-xl bg-[color:var(--primary)]/15 max-md:mx-auto">
+                <span className="grid h-12 w-12 place-items-center rounded-xl bg-[color:var(--primary)]/15">
                   <Icon className="h-5 w-5 text-[color:var(--primary)]" />
                 </span>
                 <h3 className="mt-5 text-lg font-semibold text-white">
@@ -366,7 +366,7 @@ function WhatIBuildSection() {
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {b.desc}
                 </p>
-                <div className="mt-4 flex flex-wrap gap-1.5 max-md:justify-center">
+                <div className="mt-4 flex flex-wrap justify-center gap-1.5">
                   {b.tags.map((t) => (
                     <span
                       key={t}
@@ -389,7 +389,7 @@ function WhatIBuildSection() {
                 <EcommerceCaseStudyDialog key={b.title}>
                   <button
                     type="button"
-                    className="card-elevated card-elevated-hover flex flex-col p-6 max-md:items-center max-md:text-center text-left cursor-pointer"
+                    className="card-elevated card-elevated-hover flex h-full flex-col items-center p-6 text-center cursor-pointer"
                   >
                     {cardInner}
                   </button>
@@ -400,7 +400,7 @@ function WhatIBuildSection() {
             return (
               <article
                 key={b.title}
-                className="card-elevated card-elevated-hover flex flex-col p-6 max-md:items-center max-md:text-center"
+                className="card-elevated card-elevated-hover flex h-full flex-col items-center p-6 text-center"
               >
                 {cardInner}
               </article>
