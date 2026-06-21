@@ -621,10 +621,10 @@ function EcommerceCaseStudyDialog({ children }: { children: React.ReactNode }) {
         <span aria-hidden className="modal-scan-line" />
         <div className="flex flex-col gap-4 overflow-y-auto p-6 max-h-[90vh]">
           <DialogHeader>
-            <DialogTitle className="text-xl">
+            <DialogTitle className="font-display text-xl font-bold">
               Custom eCommerce Platform — What's Possible
             </DialogTitle>
-            <DialogDescription className="pt-2 text-sm leading-relaxed">
+            <DialogDescription className="font-sans pt-2 text-sm leading-relaxed">
               A full-featured custom ecommerce platform built end-to-end — from
               customer storefront to admin operations.
             </DialogDescription>
@@ -634,11 +634,11 @@ function EcommerceCaseStudyDialog({ children }: { children: React.ReactNode }) {
               <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
                 Customer Experience
               </h4>
-              <ul className="mt-3 space-y-2.5">
+              <ul className="mt-3 space-y-1">
                 {customer.map((i) => {
                   const I = i.icon;
                   return (
-                    <li key={i.label} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                    <li key={i.label} className="flex items-start gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-200 hover:bg-white/[0.06] hover:text-white">
                       <I className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--primary)]" />
                       <span>{i.label}</span>
                     </li>
@@ -650,11 +650,11 @@ function EcommerceCaseStudyDialog({ children }: { children: React.ReactNode }) {
               <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
                 Admin & Operations
               </h4>
-              <ul className="mt-3 space-y-2.5">
+              <ul className="mt-3 space-y-1">
                 {admin.map((i) => {
                   const I = i.icon;
                   return (
-                    <li key={i.label} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                    <li key={i.label} className="flex items-start gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-200 hover:bg-white/[0.06] hover:text-white">
                       <I className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--primary)]" />
                       <span>{i.label}</span>
                     </li>
