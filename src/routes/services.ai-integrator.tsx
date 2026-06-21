@@ -5,7 +5,6 @@ import {
   ArrowRight,
   Check,
   CheckCircle2,
-  Bot,
   Briefcase,
   PlugZap,
   MessageCircleOff,
