@@ -18,6 +18,9 @@ import {
   TrendingUp,
   Plane,
   Building2,
+  MessageSquare,
+  Share2,
+  Code2,
   Stethoscope,
   GraduationCap,
   ShoppingBag,
@@ -37,8 +40,8 @@ import {
   LifeBuoy,
   CalendarClock,
   ShieldHalf,
-  Image as ImageIcon,
 } from "lucide-react";
+
 
 import {
   Dialog,
