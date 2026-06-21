@@ -1070,7 +1070,7 @@ const PROJECT_TYPES = [
   { id: "brand", name: "Personal Brand Site", base: 600, icon: User, note: "" },
   { id: "ecommerce", name: "eCommerce Store", base: 1800, icon: ShoppingCart, note: "" },
   { id: "lms", name: "LMS / Course Platform", base: 1500, icon: GraduationCap, note: "" },
-  { id: "webapp", name: "Web App / Dashboard", base: 2500, icon: LayoutDashboard, note: "Starting from $2,500 — final quote varies" },
+  { id: "webapp", name: "Web App / Dashboard", base: 2500, icon: LayoutDashboard, note: "Starting from $2,500" },
 ] as const;
 
 const PLATFORMS = [
@@ -1281,27 +1281,52 @@ function PricingCalculatorSection() {
                 {PROJECT_TYPES.map((p) => {
                   const Icon = p.icon;
                   const active = projectId === p.id;
-                  return (
+                  const buildTitle = PROJECT_TO_BUILD_TITLE[p.id];
+                  const buildRefCard = BUILDS.find((b) => b.title === buildTitle);
+                  const DetailsTrigger = (
                     <button
-                      key={p.id}
                       type="button"
+                      onClick={(e) => e.stopPropagation()}
+                      className="mt-1 self-start text-xs font-medium text-[color:var(--muted-foreground)] hover:text-[color:var(--primary)] hover:underline underline-offset-2 transition-colors"
+                    >
+                      Details →
+                    </button>
+                  );
+                  return (
+                    <div
+                      key={p.id}
+                      role="button"
+                      tabIndex={0}
                       onClick={() => setProjectId(p.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setProjectId(p.id);
+                        }
+                      }}
                       className={[
-                        "card-elevated card-elevated-hover relative flex flex-col items-start gap-2 p-4 text-left transition-all",
+                        "card-elevated card-elevated-hover relative flex flex-col gap-2 p-4 text-left transition-all cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--primary)]",
                         active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
                       ].join(" ")}
                     >
-                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[color:var(--primary)]/10">
-                        <Icon className="h-4 w-4 text-[color:var(--primary)]" />
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[color:var(--primary)]/10">
+                          <Icon className="h-4 w-4 text-[color:var(--primary)]" />
+                        </div>
+                        <div className="text-sm font-semibold text-white">{p.name}</div>
                       </div>
-                      <div className="text-sm font-semibold text-white">{p.name}</div>
                       <div className="text-sm font-bold text-[color:var(--primary)]">
                         {p.note ? p.note : `Base ${fmt(p.base)}`}
                       </div>
+                      {p.id === "ecommerce" ? (
+                        <EcommerceCaseStudyDialog>{DetailsTrigger}</EcommerceCaseStudyDialog>
+                      ) : buildRefCard ? (
+                        <BuildInfoDialog build={buildRefCard}>{DetailsTrigger}</BuildInfoDialog>
+                      ) : null}
                       {active && (
                         <Check className="absolute right-3 top-3 h-4 w-4 text-[color:var(--primary)]" />
                       )}
-                    </button>
+                    </div>
                   );
                 })}
               </div>
