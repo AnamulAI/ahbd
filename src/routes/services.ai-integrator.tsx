@@ -748,7 +748,7 @@ function ProjectsSection({ id }: { id: string }) {
 
             <div className="mt-4 flex aspect-video items-center justify-center rounded-xl border border-dashed border-white/15 bg-white/[0.03]">
               <div className="flex flex-col items-center gap-2 text-white/30">
-                <Image className="h-8 w-8" />
+                <ImageIcon className="h-8 w-8" />
                 <span className="text-[10px] font-medium uppercase tracking-wider">[Project Thumbnail]</span>
               </div>
             </div>
