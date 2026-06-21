@@ -580,12 +580,14 @@ function WhatIBuildSection() {
             }
 
             return (
-              <article
-                key={b.title}
-                className="card-elevated card-elevated-hover flex h-full flex-col items-center p-6 text-center"
-              >
-                {cardInner}
-              </article>
+              <BuildInfoDialog key={b.title} build={b}>
+                <button
+                  type="button"
+                  className="card-elevated card-elevated-hover flex h-full flex-col items-center p-6 text-center cursor-pointer"
+                >
+                  {cardInner}
+                </button>
+              </BuildInfoDialog>
             );
           })}
         </div>
