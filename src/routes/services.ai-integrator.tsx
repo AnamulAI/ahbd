@@ -249,17 +249,19 @@ function HeroSection({ onSamplesClick }: { onSamplesClick: () => void }) {
           ))}
         </div>
 
-        <div className="mt-8 flex w-full max-w-5xl flex-wrap items-center justify-center gap-2">
-          {TECH_BADGES.map((b) => (
-            <span
-              key={b.name}
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-white/85"
-              style={b.color ? { color: b.color } : undefined}
-            >
-              <TechIcon badge={b} />
-              <span className="text-white/85">{b.name}</span>
-            </span>
-          ))}
+        <div className="tech-marquee mt-8 w-full max-w-5xl overflow-hidden motion-reduce:overflow-visible motion-reduce:[mask-image:none] motion-reduce:[-webkit-mask-image:none]">
+          <div className="tech-marquee-track motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:animate-none">
+            {[...TECH_BADGES, ...TECH_BADGES].map((b, i) => (
+              <span
+                key={`${b.name}-${i}`}
+                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-white/85"
+                style={b.color ? { color: b.color } : undefined}
+              >
+                <TechIcon badge={b} />
+                <span className="text-white/85">{b.name}</span>
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </section>
