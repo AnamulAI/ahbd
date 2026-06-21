@@ -802,7 +802,7 @@ function PricingSection() {
               <div className="mt-5 text-2xl font-bold text-white">
                 {t.price}
               </div>
-              <ul className="mt-5 flex-1 space-y-3">
+              <ul className="mt-5 flex-1 space-y-3 max-md:w-full">
                 {t.features.map((f) => (
                   <li key={f} className="flex items-start gap-2.5 text-sm text-muted-foreground">
                     <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--primary)]" />
