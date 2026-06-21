@@ -28,7 +28,28 @@ import {
   Globe2,
   Sparkles,
   Star,
+  MessageCircle,
+  PackageCheck,
+  Images,
+  UserCircle,
+  Share2,
+  BarChart3,
+  ShieldAlert,
+  ShoppingBag,
+  AlertTriangle,
+  Image as ImageIcon,
+  LineChart,
 } from "lucide-react";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
 
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
