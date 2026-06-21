@@ -285,8 +285,8 @@ function ProblemSection() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="// THE REAL PROBLEM"
-          white="Most Businesses Have AI Access — But"
-          gradient="No Real Integration"
+          white={"Most Businesses Have AI Access \u2014"}
+          gradient="But No Real Integration"
         />
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {PAIN_POINTS.map((p) => {
