@@ -447,8 +447,8 @@ function BuildInfoDialog({
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="flex flex-col max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="text-xl">{build.title}</DialogTitle>
-          <DialogDescription className="pt-2 text-sm leading-relaxed">
+          <DialogTitle className="font-display text-xl font-bold">{build.title}</DialogTitle>
+          <DialogDescription className="font-sans pt-2 text-sm leading-relaxed">
             {build.desc}
           </DialogDescription>
           <div className="mt-3 flex flex-wrap gap-1.5">
@@ -467,13 +467,13 @@ function BuildInfoDialog({
             <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
               Standard Features
             </h4>
-            <ul className="mt-3 space-y-2.5">
+            <ul className="mt-3 space-y-1">
               {features.map((f) => {
                 const I = f.icon;
                 return (
                   <li
                     key={f.label}
-                    className="flex items-start gap-2.5 text-sm text-muted-foreground"
+                    className="flex items-start gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-200 hover:bg-white/[0.06] hover:text-white"
                   >
                     <I
                       className={`mt-0.5 h-4 w-4 shrink-0 ${f.color}`}
@@ -489,13 +489,13 @@ function BuildInfoDialog({
             <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--orange)]">
               Delivery Process
             </h4>
-            <ul className="mt-3 space-y-2.5">
+            <ul className="mt-3 space-y-1">
               {DELIVERY_PROCESS.map((f) => {
                 const I = f.icon;
                 return (
                   <li
                     key={f.label}
-                    className="flex items-start gap-2.5 text-sm text-muted-foreground"
+                    className="flex items-start gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-200 hover:bg-white/[0.06] hover:text-white"
                   >
                     <I
                       className={`mt-0.5 h-4 w-4 shrink-0 ${f.color}`}
