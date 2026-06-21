@@ -37,7 +37,7 @@ const SERVICE_ITEMS = [
 const NAV_LINKS: ReadonlyArray<NavLink> = [
   { label: "Home", to: "/" },
   { label: "About", to: "/about" },
-  { label: "Services", to: "/services", children: SERVICE_ITEMS },
+  { label: "Services", to: "/services/web-development", children: SERVICE_ITEMS }, // TODO: revert to "/services" once a proper services overview/index page is built (after AI Integrator and AI Podcast service pages are complete)
   { label: "Projects", to: "/projects" },
   { label: "Blog", to: "/blog" },
   { label: "Contact", to: "/contact" },
