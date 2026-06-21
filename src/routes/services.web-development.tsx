@@ -330,12 +330,10 @@ function WhatIBuildSection() {
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {BUILDS.map((b) => {
             const Icon = b.icon;
-            return (
-              <article
-                key={b.title}
-                className="card-elevated card-elevated-hover flex flex-col p-6 max-md:items-center max-md:text-center"
-              >
-                <span className="grid h-11 w-11 place-items-center rounded-xl bg-[color:var(--primary)]/15">
+            const isEcom = b.title === "eCommerce Stores";
+            const cardInner = (
+              <>
+                <span className="grid h-11 w-11 place-items-center rounded-xl bg-[color:var(--primary)]/15 max-md:mx-auto">
                   <Icon className="h-5 w-5 text-[color:var(--primary)]" />
                 </span>
                 <h3 className="mt-5 text-lg font-semibold text-white">
@@ -354,12 +352,119 @@ function WhatIBuildSection() {
                     </span>
                   ))}
                 </div>
+                {isEcom && (
+                  <span className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-[color:var(--primary)]">
+                    View Case Study <ArrowRight className="h-3 w-3" />
+                  </span>
+                )}
+              </>
+            );
+
+            if (isEcom) {
+              return (
+                <EcommerceCaseStudyDialog key={b.title}>
+                  <button
+                    type="button"
+                    className="card-elevated card-elevated-hover flex flex-col p-6 max-md:items-center max-md:text-center text-left cursor-pointer"
+                  >
+                    {cardInner}
+                  </button>
+                </EcommerceCaseStudyDialog>
+              );
+            }
+
+            return (
+              <article
+                key={b.title}
+                className="card-elevated card-elevated-hover flex flex-col p-6 max-md:items-center max-md:text-center"
+              >
+                {cardInner}
               </article>
             );
           })}
         </div>
       </div>
     </section>
+  );
+}
+
+function EcommerceCaseStudyDialog({ children }: { children: React.ReactNode }) {
+  const customer = [
+    { icon: MessageCircle, label: "WhatsApp Quick Order" },
+    { icon: ShoppingCart, label: "Slide-over Cart Drawer" },
+    { icon: PackageCheck, label: "Guest Checkout & Order Tracking" },
+    { icon: Images, label: "Product Variants & Image Gallery" },
+    { icon: UserCircle, label: "Customer Accounts & Order History" },
+    { icon: Share2, label: "Social Share Buttons" },
+  ];
+  const admin = [
+    { icon: BarChart3, label: "Real-Time Sales Dashboard" },
+    { icon: ShieldAlert, label: "Fraud Risk Scoring & Block List" },
+    { icon: ShoppingBag, label: "Abandoned Checkout Recovery" },
+    { icon: AlertTriangle, label: "Low-Stock Alerts" },
+    { icon: ImageIcon, label: "Auto Image Compression (WebP)" },
+    { icon: LineChart, label: "Custom Analytics & Reports" },
+  ];
+  return (
+    <Dialog>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+        <DialogHeader>
+          <DialogTitle className="text-xl">
+            Mango Bazar — eCommerce Platform Case Study
+          </DialogTitle>
+          <DialogDescription className="pt-2 text-sm leading-relaxed">
+            A full-featured mango/fruit ecommerce platform built end-to-end —
+            from customer storefront to admin operations.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-6 sm:grid-cols-2">
+          <div>
+            <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
+              Customer Experience
+            </h4>
+            <ul className="mt-3 space-y-2.5">
+              {customer.map((i) => {
+                const I = i.icon;
+                return (
+                  <li key={i.label} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                    <I className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--primary)]" />
+                    <span>{i.label}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
+              Admin & Operations
+            </h4>
+            <ul className="mt-3 space-y-2.5">
+              {admin.map((i) => {
+                const I = i.icon;
+                return (
+                  <li key={i.label} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                    <I className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--primary)]" />
+                    <span>{i.label}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+        <div className="mt-2 flex flex-col items-center gap-3 border-t border-white/10 pt-5 text-center">
+          <p className="text-sm text-muted-foreground">
+            Want something like this for your business?
+          </p>
+          <Link
+            to="/contact"
+            className="btn-gradient inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold text-white"
+          >
+            Discuss Your Project <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
