@@ -249,17 +249,19 @@ function HeroSection({ onSamplesClick }: { onSamplesClick: () => void }) {
           ))}
         </div>
 
-        <div className="mt-8 flex w-full max-w-5xl flex-wrap items-center justify-center gap-2">
-          {TECH_BADGES.map((b) => (
-            <span
-              key={b.name}
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-white/85"
-              style={b.color ? { color: b.color } : undefined}
-            >
-              <TechIcon badge={b} />
-              <span className="text-white/85">{b.name}</span>
-            </span>
-          ))}
+        <div className="tech-marquee mt-8 w-full max-w-5xl overflow-hidden motion-reduce:overflow-visible motion-reduce:[mask-image:none] motion-reduce:[-webkit-mask-image:none]">
+          <div className="tech-marquee-track motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:animate-none">
+            {[...TECH_BADGES, ...TECH_BADGES].map((b, i) => (
+              <span
+                key={`${b.name}-${i}`}
+                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-white/85"
+                style={b.color ? { color: b.color } : undefined}
+              >
+                <TechIcon badge={b} />
+                <span className="text-white/85">{b.name}</span>
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -772,7 +774,7 @@ type ServiceType = {
 const SERVICE_TYPES: ServiceType[] = [
   { id: "gpt", name: "Custom GPT Assistant", base: 300, icon: Bot },
   { id: "copilot", name: "Microsoft Copilot Agent", base: 700, icon: Briefcase },
-  { id: "api", name: "API Integration (Website/WhatsApp)", base: 500, icon: PlugZap },
+  { id: "api", name: "API Integration", base: 500, icon: PlugZap },
 ];
 
 type ScopeOption = { id: string; label: string; price: number; tag?: string };
@@ -915,22 +917,22 @@ function PricingCalculatorSection() {
                       type="button"
                       onClick={() => handleService(s.id)}
                       className={[
-                        "card-elevated card-elevated-hover relative flex flex-col gap-2 p-4 text-left transition-all cursor-pointer",
-                        active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
-                      ].join(" ")}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[color:var(--primary)]/10">
-                          <Icon className="h-4 w-4 text-[color:var(--primary)]" />
-                        </div>
-                        <div className="text-sm font-semibold text-white">{s.name}</div>
+                      "card-elevated card-elevated-hover relative flex h-full min-h-[116px] flex-col p-4 text-left transition-all cursor-pointer",
+                      active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
+                    ].join(" ")}
+                  >
+                    <div className="flex flex-1 items-start gap-3">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[color:var(--primary)]/10">
+                        <Icon className="h-4 w-4 text-[color:var(--primary)]" />
                       </div>
-                      <div className="text-sm font-bold text-[color:var(--primary)]">
-                        Base {fmt(s.base)}
-                      </div>
-                      {active && (
-                        <Check className="absolute right-3 top-3 h-4 w-4 text-[color:var(--primary)]" />
-                      )}
+                      <div className="pt-1 text-sm font-semibold leading-snug text-white">{s.name}</div>
+                    </div>
+                    <div className="mt-3 text-sm font-bold text-[color:var(--primary)]">
+                      Base {fmt(s.base)}
+                    </div>
+                    {active && (
+                      <Check className="absolute right-3 top-3 h-4 w-4 text-[color:var(--primary)]" />
+                    )}
                     </button>
                   );
                 })}
