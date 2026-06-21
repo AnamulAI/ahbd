@@ -326,7 +326,8 @@ type Build = {
 const BUILDS: Build[] = [
   {
     id: "gpt",
-    icon: Bot,
+    icon: SiOpenai,
+    brandColor: "#10A37F",
     title: "Custom GPT Assistant",
     desc: "A focused AI assistant trained on your business documents — pricing, services, policies, FAQs — deployable instantly via a shareable link or the GPT Store.",
     tags: ["Zero-Code", "Fast Setup", "Knowledge-Based"],
