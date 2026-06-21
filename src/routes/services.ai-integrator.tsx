@@ -915,22 +915,22 @@ function PricingCalculatorSection() {
                       type="button"
                       onClick={() => handleService(s.id)}
                       className={[
-                        "card-elevated card-elevated-hover relative flex flex-col gap-2 p-4 text-left transition-all cursor-pointer",
-                        active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
-                      ].join(" ")}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[color:var(--primary)]/10">
-                          <Icon className="h-4 w-4 text-[color:var(--primary)]" />
-                        </div>
-                        <div className="text-sm font-semibold text-white">{s.name}</div>
+                      "card-elevated card-elevated-hover relative flex h-full min-h-[116px] flex-col p-4 text-left transition-all cursor-pointer",
+                      active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
+                    ].join(" ")}
+                  >
+                    <div className="flex flex-1 items-start gap-3">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[color:var(--primary)]/10">
+                        <Icon className="h-4 w-4 text-[color:var(--primary)]" />
                       </div>
-                      <div className="text-sm font-bold text-[color:var(--primary)]">
-                        Base {fmt(s.base)}
-                      </div>
-                      {active && (
-                        <Check className="absolute right-3 top-3 h-4 w-4 text-[color:var(--primary)]" />
-                      )}
+                      <div className="pt-1 text-sm font-semibold leading-snug text-white">{s.name}</div>
+                    </div>
+                    <div className="mt-3 text-sm font-bold text-[color:var(--primary)]">
+                      Base {fmt(s.base)}
+                    </div>
+                    {active && (
+                      <Check className="absolute right-3 top-3 h-4 w-4 text-[color:var(--primary)]" />
+                    )}
                     </button>
                   );
                 })}
