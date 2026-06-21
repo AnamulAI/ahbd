@@ -61,7 +61,7 @@ import {
   LifeBuoy,
   CalendarClock,
   ShieldHalf,
-  ChevronDown,
+  
   ExternalLink,
   MousePointerClick,
   BookOpen,
