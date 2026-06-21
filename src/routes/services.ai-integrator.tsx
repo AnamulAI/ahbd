@@ -771,11 +771,12 @@ type ServiceType = {
   name: string;
   base: number;
   icon: React.ComponentType<{ className?: string }>;
+  brandColor?: string;
 };
 
 const SERVICE_TYPES: ServiceType[] = [
-  { id: "gpt", name: "Custom GPT Assistant", base: 300, icon: Bot },
-  { id: "copilot", name: "Microsoft Copilot Agent", base: 700, icon: Briefcase },
+  { id: "gpt", name: "Custom GPT Assistant", base: 300, icon: SiOpenai, brandColor: "#10A37F" },
+  { id: "copilot", name: "Microsoft Copilot Agent", base: 700, icon: SiGithubcopilot, brandColor: "#0078D4" },
   { id: "api", name: "API Integration", base: 500, icon: PlugZap },
 ];
 
