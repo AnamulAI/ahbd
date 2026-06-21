@@ -435,6 +435,7 @@ function EcommerceCaseStudyDialog({ children }: { children: React.ReactNode }) {
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+        <span aria-hidden className="modal-scan-line" />
         <DialogHeader>
           <DialogTitle className="text-xl">
             Custom eCommerce Platform — What's Possible
