@@ -13,6 +13,8 @@ import {
   siVite,
   siPostgresql,
   siStripe,
+  siVercel,
+  siHostinger,
 } from "simple-icons";
 
 type Brand = {
