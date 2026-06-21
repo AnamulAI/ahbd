@@ -663,7 +663,23 @@ function EcommerceCaseStudyDialog({ children }: { children: React.ReactNode }) {
               </ul>
             </div>
           </div>
-          <div className="mt-2 flex flex-col items-center gap-3 border-t border-white/10 pt-5 text-center">
+          <div className="border-t border-white/10 pt-4">
+            <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--orange)]">
+              Delivery Process
+            </h4>
+            <div className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-2">
+              {ECOMMERCE_DELIVERY_PROCESS.map((f) => {
+                const I = f.icon;
+                return (
+                  <span key={f.label} className="inline-flex items-center gap-2 text-xs text-muted-foreground">
+                    <I className={`h-4 w-4 shrink-0 ${f.color}`} aria-hidden />
+                    {f.label}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+          <div className="mt-4 flex flex-col items-center gap-3 border-t border-white/10 pt-5 text-center">
             <p className="text-sm text-muted-foreground">
               Want something like this for your business?
             </p>
