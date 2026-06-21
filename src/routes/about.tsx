@@ -77,12 +77,14 @@ function HeroSection() {
             Discuss Your Project
             <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
           </Link>
+          {/* TODO: revert to "/services" once a proper services overview/index page is built (after AI Integrator and AI Podcast service pages are complete) */}
           <Link
-            to="/services"
+            to="/services/web-development"
             className="inline-flex h-12 items-center gap-2 rounded-full border border-[color:var(--primary)]/50 px-6 text-sm font-semibold text-white transition-all duration-200 hover:border-[color:var(--primary)] hover:bg-[color:var(--primary)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)] motion-reduce:transition-none"
           >
             View Services
           </Link>
+
         </div>
 
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">

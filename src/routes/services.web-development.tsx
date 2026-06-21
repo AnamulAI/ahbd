@@ -1731,7 +1731,9 @@ function ClosingCtaSection() {
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <PrimaryCTA to="/contact">Discuss Your Project</PrimaryCTA>
-          <SecondaryButton href="/services">View All Services</SecondaryButton>
+          {/* TODO: revert to "/services" once a proper services overview/index page is built (after AI Integrator and AI Podcast service pages are complete) */}
+          <SecondaryButton href="/services/web-development">View All Services</SecondaryButton>
+
         </div>
       </div>
     </section>
