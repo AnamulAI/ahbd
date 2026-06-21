@@ -117,7 +117,7 @@ function SectionHeading({
   return (
     <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
       <Eyebrow>{eyebrow}</Eyebrow>
-      <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
+      <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight text-white text-balance sm:text-4xl lg:text-5xl">
         {white} <span className="text-gradient-vo">{gradient}</span>
         {trailing ? ` ${trailing}` : ""}
       </h2>
@@ -211,10 +211,10 @@ function HeroSection({ onSamplesClick }: { onSamplesClick: () => void }) {
     <section className="section-glow-hero">
       <div className="mx-auto flex max-w-6xl flex-col items-center px-4 pt-20 pb-16 text-center sm:px-6 sm:pt-28 sm:pb-24">
         <Eyebrow>// AI INTEGRATOR SERVICE</Eyebrow>
-        <h1 className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">
+        <h1 className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-white text-balance sm:text-5xl lg:text-6xl">
           Connect AI to Your Business
           <br />
-          — <span className="text-gradient-vo">Without Building From Scratch</span>
+          <span className="text-gradient-vo">Without Building From Scratch</span>
         </h1>
         <p className="mt-6 max-w-[700px] text-base text-muted-foreground sm:text-lg">
           Most businesses don't need a custom AI model — they need someone who
@@ -285,8 +285,8 @@ function ProblemSection() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="// THE REAL PROBLEM"
-          white="Most Businesses Have AI Access — But"
-          gradient="No Real Integration"
+          white={"Most Businesses Have AI Access \u2014"}
+          gradient="But No Real Integration"
         />
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {PAIN_POINTS.map((p) => {
@@ -400,70 +400,73 @@ function BuildDialog({ build, children }: { build: Build; children: React.ReactN
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="flex flex-col max-h-[90vh] overflow-y-auto sm:max-w-2xl">
-        <DialogHeader>
-          <div className="flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-[color:var(--primary)]/15">
-              <Icon className="h-5 w-5 text-[color:var(--primary)]" />
-            </span>
-            <DialogTitle className="font-display text-xl font-bold">{build.title}</DialogTitle>
-          </div>
-          <DialogDescription className="font-sans pt-2 text-sm leading-relaxed">
-            {build.desc}
-          </DialogDescription>
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            {build.tags.map((t) => (
-              <span
-                key={t}
-                className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
-              >
-                {t}
+      <DialogContent className="flex flex-col overflow-hidden max-h-[90vh] p-0 sm:max-w-2xl">
+        <span aria-hidden className="modal-scan-line" />
+        <div className="flex flex-col gap-4 overflow-y-auto p-6 max-h-[90vh]">
+          <DialogHeader>
+            <div className="flex items-center gap-3">
+              <span className="grid h-10 w-10 place-items-center rounded-xl bg-[color:var(--primary)]/15">
+                <Icon className="h-5 w-5 text-[color:var(--primary)]" />
               </span>
-            ))}
-          </div>
-        </DialogHeader>
-        <div className="grid gap-6 sm:grid-cols-2">
-          <div>
-            <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
-              Standard Features
-            </h4>
-            <ul className="mt-3 space-y-1">
-              {build.features.map((f) => (
-                <li
-                  key={f}
-                  className="flex items-start gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-200 hover:bg-white/[0.06] hover:text-white"
+              <DialogTitle className="font-display text-xl font-bold">{build.title}</DialogTitle>
+            </div>
+            <DialogDescription className="font-sans pt-2 text-sm leading-relaxed">
+              {build.desc}
+            </DialogDescription>
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {build.tags.map((t) => (
+                <span
+                  key={t}
+                  className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
                 >
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--primary)]" aria-hidden />
-                  <span>{f}</span>
-                </li>
+                  {t}
+                </span>
               ))}
-            </ul>
+            </div>
+          </DialogHeader>
+          <div className="grid gap-6 sm:grid-cols-2">
+            <div>
+              <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
+                Standard Features
+              </h4>
+              <ul className="mt-3 space-y-1">
+                {build.features.map((f) => (
+                  <li
+                    key={f}
+                    className="flex items-start gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-200 hover:bg-white/[0.06] hover:text-white"
+                  >
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--primary)]" aria-hidden />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--orange)]">
+                Delivery Process
+              </h4>
+              <ul className="mt-3 space-y-1">
+                {build.process.map((f) => (
+                  <li
+                    key={f}
+                    className="flex items-start gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-200 hover:bg-white/[0.06] hover:text-white"
+                  >
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--orange)]" aria-hidden />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-          <div>
-            <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--orange)]">
-              Delivery Process
-            </h4>
-            <ul className="mt-3 space-y-1">
-              {build.process.map((f) => (
-                <li
-                  key={f}
-                  className="flex items-start gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-200 hover:bg-white/[0.06] hover:text-white"
-                >
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--orange)]" aria-hidden />
-                  <span>{f}</span>
-                </li>
-              ))}
-            </ul>
+          <div className="mt-2 flex flex-col items-center gap-3 border-t border-white/10 pt-5 text-center">
+            <p className="text-sm text-muted-foreground">Ready to put AI to real work?</p>
+            <Link
+              to="/contact"
+              className="btn-gradient inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold text-white transition-transform duration-200 hover:scale-[1.03]"
+            >
+              Discuss Your Project <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
-        </div>
-        <div className="mt-2 flex flex-col items-center gap-3 border-t border-white/10 pt-5 text-center">
-          <p className="text-sm text-muted-foreground">Ready to put AI to real work?</p>
-          <Link
-            to="/contact"
-            className="btn-gradient inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold text-white"
-          >
-            Discuss Your Project <ArrowRight className="h-4 w-4" />
-          </Link>
         </div>
       </DialogContent>
     </Dialog>
@@ -927,7 +930,7 @@ function PricingCalculatorSection() {
                       </div>
                       <div className="pt-1 text-sm font-semibold leading-snug text-white">{s.name}</div>
                     </div>
-                    <div className="mt-3 text-sm font-bold text-[color:var(--primary)]">
+                    <div className="mt-3 pl-12 text-sm font-bold text-[color:var(--primary)]">
                       Base {fmt(s.base)}
                     </div>
                     {active && (
