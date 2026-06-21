@@ -1281,17 +1281,6 @@ function PricingCalculatorSection() {
                 {PROJECT_TYPES.map((p) => {
                   const Icon = p.icon;
                   const active = projectId === p.id;
-                  const buildTitle = PROJECT_TO_BUILD_TITLE[p.id];
-                  const buildRefCard = BUILDS.find((b) => b.title === buildTitle);
-                  const DetailsTrigger = (
-                    <button
-                      type="button"
-                      onClick={(e) => e.stopPropagation()}
-                      className="mt-1 self-start text-xs font-medium text-[color:var(--muted-foreground)] hover:text-[color:var(--primary)] hover:underline underline-offset-2 transition-colors"
-                    >
-                      Details →
-                    </button>
-                  );
                   return (
                     <div
                       key={p.id}
@@ -1318,11 +1307,6 @@ function PricingCalculatorSection() {
                       <div className="text-sm font-bold text-[color:var(--primary)]">
                         {p.note ? p.note : `Base ${fmt(p.base)}`}
                       </div>
-                      {p.id === "ecommerce" ? (
-                        <EcommerceCaseStudyDialog>{DetailsTrigger}</EcommerceCaseStudyDialog>
-                      ) : buildRefCard ? (
-                        <BuildInfoDialog build={buildRefCard}>{DetailsTrigger}</BuildInfoDialog>
-                      ) : null}
                       {active && (
                         <Check className="absolute right-3 top-3 h-4 w-4 text-[color:var(--primary)]" />
                       )}
