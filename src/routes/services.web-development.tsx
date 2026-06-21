@@ -58,7 +58,6 @@ import {
   CalendarClock,
   ShieldHalf,
   ChevronDown,
-  Server,
   ExternalLink,
 } from "lucide-react";
 
