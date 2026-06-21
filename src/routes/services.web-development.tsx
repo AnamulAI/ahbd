@@ -1209,7 +1209,7 @@ function PricingCalculatorSection() {
   const [addonIds, setAddonIds] = useState<string[]>([]);
   const [supportId, setSupportId] = useState<string>("30d");
   const [hostingId, setHostingId] = useState<string>("vercel");
-  const [includedOpen, setIncludedOpen] = useState<boolean>(false);
+  
 
   const project = PROJECT_TYPES.find((p) => p.id === projectId)!;
   const platform = PLATFORMS.find((p) => p.id === platformId)!;
