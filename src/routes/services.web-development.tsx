@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useRef } from "react";
+import { useRef, useState, useMemo } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   ArrowRight,
   Check,
