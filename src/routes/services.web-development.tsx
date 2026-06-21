@@ -785,7 +785,7 @@ function PricingSection() {
             <div
               key={t.name}
               className={[
-                "card-elevated card-elevated-hover relative flex flex-col p-7",
+                "card-elevated card-elevated-hover relative flex flex-col p-7 max-md:items-center max-md:text-center",
                 t.featured
                   ? "border-[color:var(--primary)]/50 shadow-[0_30px_90px_-40px_var(--primary)]"
                   : "",
