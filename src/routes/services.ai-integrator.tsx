@@ -60,14 +60,17 @@ import {
 } from "@/components/ui/accordion";
 
 import {
-  siPython,
-  siLangchain,
-  siWhatsapp,
-  siPostman,
-  siZapier,
-  siMake,
-  siN8n,
-} from "simple-icons";
+  SiOpenai,
+  SiGithubcopilot,
+  SiPython,
+  SiLangchain,
+  SiWhatsapp,
+  SiPostman,
+  SiZapier,
+  SiMake,
+  SiN8N,
+} from "react-icons/si";
+import type { IconType } from "react-icons";
 
 export const Route = createFileRoute("/services/ai-integrator")({
   head: () => ({
