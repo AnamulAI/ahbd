@@ -368,6 +368,162 @@ const BUILDS = [
   },
 ];
 
+type BuildFeature = {
+  icon: React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>;
+  label: string;
+  color: string;
+};
+
+const STANDARD_FEATURES: Record<string, BuildFeature[]> = {
+  "Landing Pages": [
+    { icon: Target, label: "Conversion-focused single page layout", color: "text-[color:var(--primary)]" },
+    { icon: Smartphone, label: "Mobile-responsive design", color: "text-[color:var(--orange)]" },
+    { icon: Mail, label: "Lead capture / contact form", color: "text-[color:var(--primary)]" },
+    { icon: Zap, label: "Fast loading & on-page SEO basics", color: "text-[color:var(--orange)]" },
+    { icon: MousePointerClick, label: "Clear call-to-action button(s)", color: "text-[color:var(--orange)]" },
+    { icon: Star, label: "Social proof / testimonial section", color: "text-[color:var(--orange)]" },
+  ],
+  "Business Websites": [
+    { icon: FolderTree, label: "Multi-page navigation (Home, About, Services, Contact)", color: "text-[color:var(--primary)]" },
+    { icon: Mail, label: "Contact form with email notifications", color: "text-[color:var(--primary)]" },
+    { icon: Smartphone, label: "Mobile-responsive design", color: "text-[color:var(--orange)]" },
+    { icon: Search, label: "On-page SEO structure", color: "text-[color:var(--primary)]" },
+    { icon: Briefcase, label: "Service/product showcase pages", color: "text-[color:var(--primary)]" },
+    { icon: MapPin, label: "Google Maps / location integration", color: "text-[color:var(--orange)]" },
+  ],
+  "Personal Brand Sites": [
+    { icon: Images, label: "Portfolio / work showcase section", color: "text-[color:var(--primary)]" },
+    { icon: UserCircle, label: "About / bio section", color: "text-[color:var(--primary)]" },
+    { icon: Calendar, label: "Booking or contact integration", color: "text-[color:var(--orange)]" },
+    { icon: Share2, label: "Social media links", color: "text-[color:var(--primary)]" },
+    { icon: Star, label: "Testimonials section", color: "text-[color:var(--orange)]" },
+    { icon: BadgeCheck, label: "Resume / credentials display", color: "text-[color:var(--orange)]" },
+  ],
+  "LMS & Course Platforms": [
+    { icon: BookOpen, label: "Course catalog & listings", color: "text-[color:var(--primary)]" },
+    { icon: LogIn, label: "Student enrollment & login", color: "text-[color:var(--primary)]" },
+    { icon: Film, label: "Video / content delivery", color: "text-[color:var(--orange)]" },
+    { icon: LineChart, label: "Progress tracking", color: "text-[color:var(--primary)]" },
+    { icon: CreditCard, label: "Payment integration for course purchase", color: "text-[color:var(--orange)]" },
+    { icon: LayoutDashboard, label: "Basic student dashboard", color: "text-[color:var(--primary)]" },
+  ],
+  "Web Apps & Dashboards": [
+    { icon: ShieldCheck, label: "User authentication / login", color: "text-[color:var(--primary)]" },
+    { icon: BarChart3, label: "Data dashboard with visualizations", color: "text-[color:var(--orange)]" },
+    { icon: Database, label: "Create / edit / delete records (CRUD)", color: "text-[color:var(--primary)]" },
+    { icon: LayoutDashboard, label: "Responsive admin interface", color: "text-[color:var(--primary)]" },
+    { icon: ShieldHalf, label: "Role-based access control", color: "text-[color:var(--orange)]" },
+    { icon: Search, label: "Search & filter functionality", color: "text-[color:var(--primary)]" },
+  ],
+};
+
+const DELIVERY_PROCESS: BuildFeature[] = [
+  { icon: Compass, label: "Project discovery and direction", color: "text-[color:var(--primary)]" },
+  { icon: Map, label: "Website structure planning", color: "text-[color:var(--orange)]" },
+  { icon: PenTool, label: "Responsive UI development", color: "text-[color:var(--primary)]" },
+  { icon: Zap, label: "Performance-focused setup", color: "text-[color:var(--orange)]" },
+  { icon: Search, label: "SEO-friendly page structure", color: "text-[color:var(--primary)]" },
+  { icon: Rocket, label: "Launch-ready handoff", color: "text-[color:var(--orange)]" },
+];
+
+const ECOMMERCE_DELIVERY_PROCESS: BuildFeature[] = [
+  { icon: Compass, label: "Project discovery and direction", color: "text-[color:var(--primary)]" },
+  { icon: Map, label: "Website structure planning", color: "text-[color:var(--orange)]" },
+  { icon: Zap, label: "Performance-focused setup", color: "text-[color:var(--orange)]" },
+  { icon: Search, label: "SEO-friendly page structure", color: "text-[color:var(--primary)]" },
+  { icon: Rocket, label: "Launch-ready handoff", color: "text-[color:var(--orange)]" },
+];
+
+function BuildInfoDialog({
+  build,
+  children,
+}: {
+  build: (typeof BUILDS)[number];
+  children: React.ReactNode;
+}) {
+  const features = STANDARD_FEATURES[build.title] ?? [];
+  return (
+    <Dialog>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className="flex flex-col max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+        <DialogHeader>
+          <DialogTitle className="text-xl">{build.title}</DialogTitle>
+          <DialogDescription className="pt-2 text-sm leading-relaxed">
+            {build.desc}
+          </DialogDescription>
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {build.tags.map((t) => (
+              <span
+                key={t}
+                className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
+              >
+                {t}
+              </span>
+            ))}
+          </div>
+        </DialogHeader>
+        <div className="grid gap-6 sm:grid-cols-2">
+          <div>
+            <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
+              Standard Features
+            </h4>
+            <ul className="mt-3 space-y-2.5">
+              {features.map((f) => {
+                const I = f.icon;
+                return (
+                  <li
+                    key={f.label}
+                    className="flex items-start gap-2.5 text-sm text-muted-foreground"
+                  >
+                    <I
+                      className={`mt-0.5 h-4 w-4 shrink-0 ${f.color}`}
+                      aria-hidden
+                    />
+                    <span>{f.label}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--orange)]">
+              Delivery Process
+            </h4>
+            <ul className="mt-3 space-y-2.5">
+              {DELIVERY_PROCESS.map((f) => {
+                const I = f.icon;
+                return (
+                  <li
+                    key={f.label}
+                    className="flex items-start gap-2.5 text-sm text-muted-foreground"
+                  >
+                    <I
+                      className={`mt-0.5 h-4 w-4 shrink-0 ${f.color}`}
+                      aria-hidden
+                    />
+                    <span>{f.label}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+        <div className="mt-2 flex flex-col items-center gap-3 border-t border-white/10 pt-5 text-center">
+          <p className="text-sm text-muted-foreground">
+            Ready to build something similar?
+          </p>
+          <Link
+            to="/contact"
+            className="btn-gradient inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold text-white"
+          >
+            Discuss Your Project <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 function WhatIBuildSection() {
   return (
     <section className="py-20 sm:py-28">
