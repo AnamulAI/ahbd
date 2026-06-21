@@ -64,15 +64,19 @@ export function ScrollUX() {
         tabIndex={showTop ? 0 : -1}
         className={[
           "fixed bottom-6 right-6 z-50 grid h-12 w-12 place-items-center rounded-full",
-          "border border-white/15 btn-gradient",
+          "border border-white/10 bg-[#16181D] text-foreground",
           "shadow-[0_15px_40px_-10px_var(--vo-glow)]",
           "transition-all duration-300 ease-out",
-          "hover:-translate-y-0.5 hover:border-white/30 hover:shadow-[0_22px_55px_-10px_var(--vo-glow)]",
+          "hover:-translate-y-0.5 hover:border-[color:var(--primary)]/50 hover:shadow-[0_22px_55px_-10px_var(--vo-glow)]",
           "active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)]",
           "motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100",
           showTop ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none",
         ].join(" ")}
       >
+        <span
+          aria-hidden="true"
+          className="absolute inset-0 rounded-full opacity-60 blur-md btn-gradient -z-10"
+        />
         <ChevronUp className="h-5 w-5 text-white" strokeWidth={2.5} />
       </button>
     </>
@@ -80,4 +84,3 @@ export function ScrollUX() {
 }
 
 export default ScrollUX;
-
