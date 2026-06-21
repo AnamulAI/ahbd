@@ -38,7 +38,8 @@ import {
   ShoppingBag,
   AlertTriangle,
   Image as ImageIcon,
-  LineChart,
+  Boxes,
+  FolderTree,
 } from "lucide-react";
 
 import {
@@ -427,7 +428,8 @@ function EcommerceCaseStudyDialog({ children }: { children: React.ReactNode }) {
     { icon: ShoppingBag, label: "Abandoned Checkout Recovery" },
     { icon: AlertTriangle, label: "Low-Stock Alerts" },
     { icon: ImageIcon, label: "Auto Image Compression (WebP)" },
-    { icon: LineChart, label: "Custom Analytics & Reports" },
+    { icon: Boxes, label: "Multi-Variant Product Management" },
+    { icon: FolderTree, label: "Category Management" },
   ];
   return (
     <Dialog>
@@ -435,11 +437,11 @@ function EcommerceCaseStudyDialog({ children }: { children: React.ReactNode }) {
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle className="text-xl">
-            Mango Bazar — eCommerce Platform Case Study
+            Custom eCommerce Platform — What's Possible
           </DialogTitle>
           <DialogDescription className="pt-2 text-sm leading-relaxed">
-            A full-featured mango/fruit ecommerce platform built end-to-end —
-            from customer storefront to admin operations.
+            A full-featured custom ecommerce platform built end-to-end — from
+            customer storefront to admin operations.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-6 sm:grid-cols-2">
