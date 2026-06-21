@@ -1330,7 +1330,7 @@ function WebDevPage() {
         <IncludedSection />
         <ProcessSection />
         <ProjectsSection samplesRef={samplesRef} />
-        <PricingSection />
+        <PricingCalculatorSection />
         <FaqSection />
         <ClosingCtaSection />
       </main>
