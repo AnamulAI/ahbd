@@ -531,7 +531,7 @@ function AddOnsSection() {
                 key={a.title}
                 className="card-elevated card-elevated-hover flex flex-col p-6"
               >
-                <span className="grid h-12 w-12 place-items-center rounded-xl bg-[color:var(--primary)]/15">
+                <span className="mx-auto grid h-12 w-12 place-items-center rounded-xl bg-[color:var(--primary)]/15">
                   <Icon className="h-5 w-5 text-[color:var(--primary)]" />
                 </span>
                 <h3 className="mt-5 text-lg font-semibold text-white">{a.title}</h3>
@@ -1066,11 +1066,11 @@ function PricingCalculatorSection() {
                       type="button"
                       onClick={() => setDurationId(d.id)}
                       className={[
-                        "card-elevated card-elevated-hover relative flex h-full min-h-[110px] flex-col p-3.5 text-left transition-all cursor-pointer",
+                        "card-elevated card-elevated-hover relative flex h-full flex-col p-3.5 text-left transition-all cursor-pointer",
                         active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
                       ].join(" ")}
                     >
-                      <div className="flex flex-1 items-start gap-3">
+                      <div className="flex items-start gap-3">
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[color:var(--primary)]/10">
                           <Clock className="h-4 w-4 text-[color:var(--primary)]" />
                         </div>
@@ -1078,7 +1078,7 @@ function PricingCalculatorSection() {
                           {d.label}
                         </div>
                       </div>
-                      <div className="mt-2 pl-12 text-sm font-bold text-[color:var(--primary)]">
+                      <div className="mt-1 pl-12 text-sm font-bold text-[color:var(--primary)]">
                         {d.price === 0 ? "Included" : `+${fmt(d.price)}/mo`}
                       </div>
                       {active && (
@@ -1102,11 +1102,11 @@ function PricingCalculatorSection() {
                       type="button"
                       onClick={() => setVolumeId(v.id)}
                       className={[
-                        "card-elevated card-elevated-hover relative flex h-full min-h-[110px] flex-col p-3.5 text-left transition-all cursor-pointer",
+                        "card-elevated card-elevated-hover relative flex h-full flex-col p-3.5 text-left transition-all cursor-pointer",
                         active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
                       ].join(" ")}
                     >
-                      <div className="flex flex-1 items-start gap-3">
+                      <div className="flex items-start gap-3">
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[color:var(--primary)]/10">
                           <Mic className="h-4 w-4 text-[color:var(--primary)]" />
                         </div>
@@ -1114,7 +1114,7 @@ function PricingCalculatorSection() {
                           {v.label}
                         </div>
                       </div>
-                      <div className="mt-2 pl-12 text-sm font-bold text-[color:var(--primary)]">
+                      <div className="mt-1 pl-12 text-sm font-bold text-[color:var(--primary)]">
                         {v.price === 0 ? "Included" : `+${fmt(v.price)}/mo`}
                       </div>
                       {active && (
