@@ -37,6 +37,7 @@ import {
   LifeBuoy,
   CalendarClock,
   ShieldHalf,
+  Image as ImageIcon,
 } from "lucide-react";
 
 import {
