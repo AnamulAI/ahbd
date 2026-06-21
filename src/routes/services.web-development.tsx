@@ -41,6 +41,22 @@ import {
   Image as ImageIcon,
   Boxes,
   FolderTree,
+  Code2,
+  Tag,
+  Film,
+  Megaphone,
+  BadgeCheck,
+  LogIn,
+  CreditCard,
+  Truck,
+  Send,
+  Target,
+  Pencil,
+  Search,
+  LineChart,
+  LifeBuoy,
+  CalendarClock,
+  ShieldHalf,
 } from "lucide-react";
 
 import {
