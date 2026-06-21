@@ -730,7 +730,121 @@ function ProcessSection() {
   );
 }
 
-// ---------- 8. PROJECTS (placeholder) ----------
+// ---------- 8. PROJECTS (illustrative concepts) ----------
+
+type ConceptTag = {
+  name: string;
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
+  color: string;
+};
+
+type ConceptCardData = {
+  category: string;
+  thumbnailIcon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
+  thumbnailColor: string;
+  title: string;
+  description: string;
+  tags: ConceptTag[];
+};
+
+const CONCEPTS: ConceptCardData[] = [
+  {
+    category: "Custom GPT Assistant",
+    thumbnailIcon: Plane,
+    thumbnailColor: "#10A37F",
+    title: "Travel Agency Booking Assistant",
+    description:
+      "A concept example of a Custom GPT trained on tour packages, pricing, and booking flow — answering customer questions instantly and guiding them through the booking process.",
+    tags: [
+      { name: "OpenAI", icon: SiOpenai, color: "#10A37F" },
+      { name: "ChatGPT", icon: SiOpenai, color: "#10A37F" },
+      { name: "GPT Store", icon: Sparkles, color: "#10A37F" },
+    ],
+  },
+  {
+    category: "Microsoft Copilot Agent",
+    thumbnailIcon: Building2,
+    thumbnailColor: "#0078D4",
+    title: "Corporate Office Assistant",
+    description:
+      "A concept example of a Copilot Agent trained on internal company documents — answering employee questions about onboarding, leave policy, and IT support instantly.",
+    tags: [
+      { name: "Microsoft Copilot", icon: SiGithubcopilot, color: "#0078D4" },
+      { name: "SharePoint", icon: Share2, color: "#0078D4" },
+      { name: "Office 365", icon: Briefcase, color: "#D83B01" },
+    ],
+  },
+  {
+    category: "API Integration",
+    thumbnailIcon: MessageSquare,
+    thumbnailColor: "#25D366",
+    title: "WhatsApp Customer Support Bot",
+    description:
+      "A concept example connecting AI directly to WhatsApp Business — handling customer questions about pricing, availability, and bookings automatically.",
+    tags: [
+      { name: "WhatsApp", icon: SiWhatsapp, color: "#25D366" },
+      { name: "OpenAI", icon: SiOpenai, color: "#10A37F" },
+      { name: "API", icon: Code2, color: "#3B82F6" },
+    ],
+  },
+];
+
+function ConceptCard({ card }: { card: ConceptCardData }) {
+  const Thumb = card.thumbnailIcon;
+  return (
+    <div className="card-elevated card-elevated-hover flex h-full flex-col p-5">
+      <div className="flex items-start justify-between gap-3">
+        <span className="inline-flex rounded-md border border-white/10 bg-white/[0.04] px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-white/70">
+          {card.category}
+        </span>
+        <span className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[10px] font-semibold text-white/40">
+          Example Concept
+        </span>
+      </div>
+
+      <div className="mt-4 flex aspect-video items-center justify-center rounded-xl bg-white/[0.03]">
+        <Thumb className="h-10 w-10" style={{ color: card.thumbnailColor }} />
+      </div>
+
+      <h3 className="mt-4 text-lg font-semibold text-white">{card.title}</h3>
+      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{card.description}</p>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        {card.tags.map((t) => {
+          const I = t.icon;
+          return (
+            <span
+              key={t.name}
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[10px] font-medium text-white/80"
+            >
+              <I className="h-3.5 w-3.5" style={{ color: t.color }} />
+              {t.name}
+            </span>
+          );
+        })}
+      </div>
+
+      <div className="mt-auto flex gap-3 pt-5">
+        <button
+          type="button"
+          disabled
+          title="Coming Soon"
+          className="inline-flex h-9 flex-1 cursor-not-allowed items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-transparent px-3 text-xs font-medium text-white/40"
+        >
+          Live Demo
+        </button>
+        <button
+          type="button"
+          disabled
+          title="Coming Soon"
+          className="inline-flex h-9 flex-1 cursor-not-allowed items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-transparent px-3 text-xs font-medium text-white/40"
+        >
+          Project Details
+        </button>
+      </div>
+    </div>
+  );
+}
 
 function ProjectsSection({ id }: { id: string }) {
   return (
@@ -742,46 +856,13 @@ function ProjectsSection({ id }: { id: string }) {
           gradient="AI Integration Projects"
           subtext="Real project examples are being added as new AI integration work is completed."
         />
-        <div className="mx-auto mt-12 max-w-md">
-          {/* Template card: field structure preview only — no real project data */}
-          <div className="rounded-2xl border border-dashed border-white/20 bg-white/[0.02] p-5 grayscale transition-opacity hover:opacity-80">
-            <span className="inline-flex rounded-md border border-white/10 bg-white/[0.04] px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-white/40">
-              [Category]
-            </span>
 
-            <div className="mt-4 flex aspect-video items-center justify-center rounded-xl border border-dashed border-white/15 bg-white/[0.03]">
-              <div className="flex flex-col items-center gap-2 text-white/30">
-                <ImageIcon className="h-8 w-8" />
-                <span className="text-[10px] font-medium uppercase tracking-wider">[Project Thumbnail]</span>
-              </div>
-            </div>
-
-            <h3 className="mt-4 text-lg font-bold text-white/50">[Project Title]</h3>
-            <p className="mt-2 text-sm text-white/35">
-              [Short description of what was built and the outcome]
-            </p>
-
-            <div className="mt-4 flex flex-wrap gap-2">
-              {["[Tech]", "[Tech]", "[Tech]"].map((label, idx) => (
-                <span
-                  key={idx}
-                  className="rounded-full border border-white/10 px-2.5 py-1 text-[10px] font-medium text-white/35"
-                >
-                  {label}
-                </span>
-              ))}
-            </div>
-
-            <div className="mt-5 flex gap-3">
-              <span className="inline-flex h-9 items-center rounded-lg border border-white/10 px-3 text-xs font-medium text-white/40">
-                [Live Demo]
-              </span>
-              <span className="inline-flex h-9 items-center rounded-lg border border-white/10 px-3 text-xs font-medium text-white/40">
-                [Project Details]
-              </span>
-            </div>
-          </div>
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {CONCEPTS.map((c) => (
+            <ConceptCard key={c.title} card={c} />
+          ))}
         </div>
+
         <div className="mt-8 flex flex-col items-center gap-3 text-center">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-semibold text-white/60">
             <Clock className="h-3.5 w-3.5" />
@@ -794,7 +875,7 @@ function ProjectsSection({ id }: { id: string }) {
             Want to be one of the first case studies?{" "}
             <Link
               to="/contact"
-              className="font-semibold text-[color:var(--primary)] hover:text-[color:var(--orange)] transition-colors"
+              className="font-semibold text-[color:var(--primary)] transition-colors hover:text-[color:var(--orange)]"
             >
               Discuss Your Project <ArrowRight className="inline h-3.5 w-3.5" />
             </Link>
@@ -804,6 +885,7 @@ function ProjectsSection({ id }: { id: string }) {
     </section>
   );
 }
+
 
 // ---------- 9. PRICING CALCULATOR ----------
 
