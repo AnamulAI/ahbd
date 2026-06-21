@@ -38,7 +38,8 @@ import {
   ShoppingBag,
   AlertTriangle,
   Image as ImageIcon,
-  LineChart,
+  Boxes,
+  FolderTree,
 } from "lucide-react";
 
 import {
