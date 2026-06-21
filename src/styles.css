@@ -306,10 +306,10 @@ html {
 
 /* One-shot scanning sweep for modal open reveal */
 @keyframes modal-scan-sweep {
-  0%   { transform: translateY(0);    opacity: 0; }
+  0%   { top: 0%;               opacity: 0; }
   10%  { opacity: 1; }
   90%  { opacity: 1; }
-  100% { transform: translateY(85vh); opacity: 0; }
+  100% { top: calc(100% - 2px); opacity: 0; }
 }
 
 .modal-scan-line {
