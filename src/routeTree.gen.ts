@@ -13,6 +13,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicesWebDevelopmentRouteImport } from './routes/services.web-development'
+import { Route as ServicesAiPodcastRouteImport } from './routes/services.ai-podcast'
 import { Route as ServicesAiIntegratorRouteImport } from './routes/services.ai-integrator'
 
 const ContactRoute = ContactRouteImport.update({
@@ -35,6 +36,11 @@ const ServicesWebDevelopmentRoute = ServicesWebDevelopmentRouteImport.update({
   path: '/services/web-development',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServicesAiPodcastRoute = ServicesAiPodcastRouteImport.update({
+  id: '/services/ai-podcast',
+  path: '/services/ai-podcast',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesAiIntegratorRoute = ServicesAiIntegratorRouteImport.update({
   id: '/services/ai-integrator',
   path: '/services/ai-integrator',
@@ -46,6 +52,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/services/ai-integrator': typeof ServicesAiIntegratorRoute
+  '/services/ai-podcast': typeof ServicesAiPodcastRoute
   '/services/web-development': typeof ServicesWebDevelopmentRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/services/ai-integrator': typeof ServicesAiIntegratorRoute
+  '/services/ai-podcast': typeof ServicesAiPodcastRoute
   '/services/web-development': typeof ServicesWebDevelopmentRoute
 }
 export interface FileRoutesById {
@@ -61,6 +69,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/services/ai-integrator': typeof ServicesAiIntegratorRoute
+  '/services/ai-podcast': typeof ServicesAiPodcastRoute
   '/services/web-development': typeof ServicesWebDevelopmentRoute
 }
 export interface FileRouteTypes {
@@ -70,6 +79,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/services/ai-integrator'
+    | '/services/ai-podcast'
     | '/services/web-development'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -77,6 +87,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/services/ai-integrator'
+    | '/services/ai-podcast'
     | '/services/web-development'
   id:
     | '__root__'
@@ -84,6 +95,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/services/ai-integrator'
+    | '/services/ai-podcast'
     | '/services/web-development'
   fileRoutesById: FileRoutesById
 }
@@ -92,6 +104,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
   ServicesAiIntegratorRoute: typeof ServicesAiIntegratorRoute
+  ServicesAiPodcastRoute: typeof ServicesAiPodcastRoute
   ServicesWebDevelopmentRoute: typeof ServicesWebDevelopmentRoute
 }
 
@@ -125,6 +138,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesWebDevelopmentRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/services/ai-podcast': {
+      id: '/services/ai-podcast'
+      path: '/services/ai-podcast'
+      fullPath: '/services/ai-podcast'
+      preLoaderRoute: typeof ServicesAiPodcastRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services/ai-integrator': {
       id: '/services/ai-integrator'
       path: '/services/ai-integrator'
@@ -140,18 +160,9 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
   ServicesAiIntegratorRoute: ServicesAiIntegratorRoute,
+  ServicesAiPodcastRoute: ServicesAiPodcastRoute,
   ServicesWebDevelopmentRoute: ServicesWebDevelopmentRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
