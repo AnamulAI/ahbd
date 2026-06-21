@@ -400,70 +400,73 @@ function BuildDialog({ build, children }: { build: Build; children: React.ReactN
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="flex flex-col max-h-[90vh] overflow-y-auto sm:max-w-2xl">
-        <DialogHeader>
-          <div className="flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-[color:var(--primary)]/15">
-              <Icon className="h-5 w-5 text-[color:var(--primary)]" />
-            </span>
-            <DialogTitle className="font-display text-xl font-bold">{build.title}</DialogTitle>
-          </div>
-          <DialogDescription className="font-sans pt-2 text-sm leading-relaxed">
-            {build.desc}
-          </DialogDescription>
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            {build.tags.map((t) => (
-              <span
-                key={t}
-                className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
-              >
-                {t}
+      <DialogContent className="flex flex-col overflow-hidden max-h-[90vh] p-0 sm:max-w-2xl">
+        <span aria-hidden className="modal-scan-line" />
+        <div className="flex flex-col gap-4 overflow-y-auto p-6 max-h-[90vh]">
+          <DialogHeader>
+            <div className="flex items-center gap-3">
+              <span className="grid h-10 w-10 place-items-center rounded-xl bg-[color:var(--primary)]/15">
+                <Icon className="h-5 w-5 text-[color:var(--primary)]" />
               </span>
-            ))}
-          </div>
-        </DialogHeader>
-        <div className="grid gap-6 sm:grid-cols-2">
-          <div>
-            <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
-              Standard Features
-            </h4>
-            <ul className="mt-3 space-y-1">
-              {build.features.map((f) => (
-                <li
-                  key={f}
-                  className="flex items-start gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-200 hover:bg-white/[0.06] hover:text-white"
+              <DialogTitle className="font-display text-xl font-bold">{build.title}</DialogTitle>
+            </div>
+            <DialogDescription className="font-sans pt-2 text-sm leading-relaxed">
+              {build.desc}
+            </DialogDescription>
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {build.tags.map((t) => (
+                <span
+                  key={t}
+                  className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
                 >
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--primary)]" aria-hidden />
-                  <span>{f}</span>
-                </li>
+                  {t}
+                </span>
               ))}
-            </ul>
+            </div>
+          </DialogHeader>
+          <div className="grid gap-6 sm:grid-cols-2">
+            <div>
+              <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
+                Standard Features
+              </h4>
+              <ul className="mt-3 space-y-1">
+                {build.features.map((f) => (
+                  <li
+                    key={f}
+                    className="flex items-start gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-200 hover:bg-white/[0.06] hover:text-white"
+                  >
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--primary)]" aria-hidden />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--orange)]">
+                Delivery Process
+              </h4>
+              <ul className="mt-3 space-y-1">
+                {build.process.map((f) => (
+                  <li
+                    key={f}
+                    className="flex items-start gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-200 hover:bg-white/[0.06] hover:text-white"
+                  >
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--orange)]" aria-hidden />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-          <div>
-            <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--orange)]">
-              Delivery Process
-            </h4>
-            <ul className="mt-3 space-y-1">
-              {build.process.map((f) => (
-                <li
-                  key={f}
-                  className="flex items-start gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-200 hover:bg-white/[0.06] hover:text-white"
-                >
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--orange)]" aria-hidden />
-                  <span>{f}</span>
-                </li>
-              ))}
-            </ul>
+          <div className="mt-2 flex flex-col items-center gap-3 border-t border-white/10 pt-5 text-center">
+            <p className="text-sm text-muted-foreground">Ready to put AI to real work?</p>
+            <Link
+              to="/contact"
+              className="btn-gradient inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold text-white transition-transform duration-200 hover:scale-[1.03]"
+            >
+              Discuss Your Project <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
-        </div>
-        <div className="mt-2 flex flex-col items-center gap-3 border-t border-white/10 pt-5 text-center">
-          <p className="text-sm text-muted-foreground">Ready to put AI to real work?</p>
-          <Link
-            to="/contact"
-            className="btn-gradient inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold text-white"
-          >
-            Discuss Your Project <ArrowRight className="h-4 w-4" />
-          </Link>
         </div>
       </DialogContent>
     </Dialog>
