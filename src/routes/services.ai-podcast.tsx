@@ -306,6 +306,20 @@ function MarketOpportunitySection() {
           ))}
         </div>
 
+        <div className="mt-10 flex flex-wrap items-center justify-center divide-x divide-white/10 text-sm text-muted-foreground">
+          {[
+            { num: "300+", label: "AI Voices Available" },
+            { num: "15+", label: "Publishing Platforms" },
+            { num: "<10 min", label: "Per Episode, Start to Finish" },
+            { num: "50+", label: "Languages Supported" },
+          ].map((s) => (
+            <div key={s.label} className="flex items-center gap-1.5 px-4 py-1">
+              <span className="font-semibold text-white">{s.num}</span>
+              <span>{s.label}</span>
+            </div>
+          ))}
+        </div>
+
         <p className="mx-auto mt-10 max-w-2xl text-center text-sm text-muted-foreground sm:text-base">
           These numbers represent real demand — content creators and businesses who get in now build the audience before the space gets crowded.
         </p>
