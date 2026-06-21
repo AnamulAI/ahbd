@@ -315,6 +315,7 @@ function ProblemSection() {
 type Build = {
   id: "gpt" | "copilot" | "api";
   icon: React.ComponentType<{ className?: string }>;
+  brandColor?: string;
   title: string;
   desc: string;
   tags: string[];
