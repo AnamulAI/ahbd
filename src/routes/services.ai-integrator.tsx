@@ -170,31 +170,24 @@ function SecondaryButton({
 
 // ---------- tech stack badges ----------
 
-type TechBadge = { name: string; svg?: { path: string; hex: string }; lucide?: React.ComponentType<{ className?: string }>; color?: string };
+type TechBadge = { name: string; Icon: IconType; color: string };
 
 const TECH_BADGES: TechBadge[] = [
-  { name: "OpenAI", lucide: Sparkles, color: "#10A37F" },
-  { name: "ChatGPT", lucide: Bot, color: "#10A37F" },
-  { name: "Microsoft Copilot", lucide: Briefcase, color: "#0078D4" },
-  { name: "Python", svg: siPython },
-  { name: "LangChain", svg: siLangchain },
-  { name: "WhatsApp", svg: siWhatsapp },
-  { name: "Postman", svg: siPostman },
-  { name: "Zapier", svg: siZapier },
-  { name: "Make.com", svg: siMake },
-  { name: "n8n", svg: siN8n },
+  { name: "OpenAI", Icon: SiOpenai, color: "#10A37F" },
+  { name: "ChatGPT", Icon: SiOpenai, color: "#10A37F" },
+  { name: "Microsoft Copilot", Icon: SiGithubcopilot, color: "#0078D4" },
+  { name: "Python", Icon: SiPython, color: "#3776AB" },
+  { name: "LangChain", Icon: SiLangchain, color: "#1C3C3C" },
+  { name: "WhatsApp", Icon: SiWhatsapp, color: "#25D366" },
+  { name: "Postman", Icon: SiPostman, color: "#FF6C37" },
+  { name: "Zapier", Icon: SiZapier, color: "#FF4A00" },
+  { name: "Make.com", Icon: SiMake, color: "#6D00CC" },
+  { name: "n8n", Icon: SiN8N, color: "#EA4B71" },
 ];
 
 function TechIcon({ badge, size = 14 }: { badge: TechBadge; size?: number }) {
-  if (badge.svg) {
-    return (
-      <svg viewBox="0 0 24 24" width={size} height={size} fill={`#${badge.svg.hex}`} aria-hidden>
-        <path d={badge.svg.path} />
-      </svg>
-    );
-  }
-  const I = badge.lucide!;
-  return <I className="h-3.5 w-3.5" />;
+  const I = badge.Icon;
+  return <I size={size} color={badge.color} aria-hidden />;
 }
 
 // ---------- 1. HERO ----------
