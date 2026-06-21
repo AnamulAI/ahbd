@@ -8,6 +8,7 @@ import {
   Globe,
   Store,
   User,
+  Smartphone,
   ShoppingCart,
   GraduationCap,
   LayoutDashboard,
@@ -22,6 +23,7 @@ import {
   Trophy,
   Compass,
   Map,
+  MapPin,
   PenTool,
   Wand2,
   PartyPopper,
@@ -47,7 +49,9 @@ import {
   Megaphone,
   BadgeCheck,
   LogIn,
+  Mail,
   CreditCard,
+  Database,
   Truck,
   Send,
   Target,
@@ -59,6 +63,8 @@ import {
   ShieldHalf,
   ChevronDown,
   ExternalLink,
+  MousePointerClick,
+  BookOpen,
 } from "lucide-react";
 
 import {
