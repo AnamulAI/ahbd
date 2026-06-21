@@ -679,12 +679,12 @@ function ProjectsSection({
                   <Sparkles className="h-10 w-10 text-white/30" />
                 </div>
               </div>
-              <div className="p-5">
+              <div className="p-5 max-md:text-center">
                 <h3 className="text-base font-semibold text-white">{p.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {p.desc}
                 </p>
-                <div className="mt-3 flex flex-wrap gap-1.5">
+                <div className="mt-3 flex flex-wrap gap-1.5 max-md:justify-center">
                   {p.tech.map((t) => {
                     const color = brandColor(t);
                     return (
