@@ -349,7 +349,8 @@ const BUILDS: Build[] = [
   },
   {
     id: "copilot",
-    icon: Briefcase,
+    icon: SiGithubcopilot,
+    brandColor: "#0078D4",
     title: "Microsoft Copilot Agent",
     desc: "A corporate office AI assistant that reads your company's documents and policies, answers employee questions, and can draft Word, Excel, and PowerPoint files.",
     tags: ["Office 365", "SharePoint", "Enterprise-Ready"],
