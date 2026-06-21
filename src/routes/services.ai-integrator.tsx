@@ -772,7 +772,7 @@ type ServiceType = {
 const SERVICE_TYPES: ServiceType[] = [
   { id: "gpt", name: "Custom GPT Assistant", base: 300, icon: Bot },
   { id: "copilot", name: "Microsoft Copilot Agent", base: 700, icon: Briefcase },
-  { id: "api", name: "API Integration (Website/WhatsApp)", base: 500, icon: PlugZap },
+  { id: "api", name: "API Integration", base: 500, icon: PlugZap },
 ];
 
 type ScopeOption = { id: string; label: string; price: number; tag?: string };
