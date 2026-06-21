@@ -13,7 +13,6 @@ import {
   Share2,
   Rocket,
   Video,
-  PenTool,
   Briefcase,
   Megaphone,
   GraduationCap,
