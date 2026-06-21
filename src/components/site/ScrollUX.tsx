@@ -77,7 +77,7 @@ export function ScrollUX() {
           aria-hidden="true"
           className="absolute inset-0 rounded-full opacity-60 blur-md btn-gradient -z-10"
         />
-        <ChevronUp className="h-5 w-5 text-gradient-vo" strokeWidth={2.5} />
+        <ChevronUp className="h-5 w-5 text-white" strokeWidth={2.5} />
       </button>
     </>
   );
