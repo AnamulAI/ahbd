@@ -1128,9 +1128,53 @@ function PricingCalculatorSection() {
               </div>
             </div>
 
-            {/* STEP 2 */}
+            {/* STEP 2 — Dynamic Scope */}
             <div>
-              <StepHeader n={2} title="Choose Your Platform" />
+              <StepHeader n={2} title={scopeConfig.label} />
+              <div
+                key={projectId}
+                className="mt-5 grid gap-3 sm:grid-cols-2 animate-in fade-in-50 slide-in-from-bottom-2 duration-300"
+              >
+                {scopeConfig.options.map((o) => {
+                  const active = scope.id === o.id;
+                  return (
+                    <button
+                      key={o.id}
+                      type="button"
+                      onClick={() => setScopeId(o.id)}
+                      className={[
+                        "card-elevated card-elevated-hover relative flex flex-col items-start gap-2 p-4 text-left transition-all",
+                        active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
+                      ].join(" ")}
+                    >
+                      <div className="flex w-full items-start justify-between gap-2">
+                        <span className="text-sm font-semibold text-white">{o.label}</span>
+                        {o.tag && (
+                          <span className="shrink-0 rounded-full bg-gradient-to-r from-[color:var(--primary)] to-[color:var(--orange)] px-2 py-0.5 text-[10px] font-semibold text-black">
+                            {o.tag}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-sm font-bold text-[color:var(--primary)]">
+                        {o.price === 0 ? "Included" : `+${fmt(o.price)}`}
+                      </div>
+                      {active && (
+                        <Check className="absolute right-3 bottom-3 h-4 w-4 text-[color:var(--primary)]" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+              {scopeConfig.helper && (
+                <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+                  {scopeConfig.helper}
+                </p>
+              )}
+            </div>
+
+            {/* STEP 3 — Platform */}
+            <div>
+              <StepHeader n={3} title="Choose Your Platform" />
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 {PLATFORMS.map((p) => {
                   const active = platformId === p.id;
@@ -1171,9 +1215,9 @@ function PricingCalculatorSection() {
               </div>
             </div>
 
-            {/* STEP 3 */}
+            {/* STEP 4 — Add-ons + Hosting */}
             <div>
-              <StepHeader n={3} title="Add optional features" />
+              <StepHeader n={4} title="Add optional features" />
               <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
                 {ADDONS.map((a) => {
                   const Icon = a.icon;
@@ -1200,11 +1244,64 @@ function PricingCalculatorSection() {
                   );
                 })}
               </div>
+
+              {/* Hosting & Deployment subsection */}
+              <div className="mt-6">
+                <h4 className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                  Hosting &amp; Deployment
+                </h4>
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  {HOSTING_OPTIONS.map((h) => {
+                    const active = hostingId === h.id;
+                    return (
+                      <button
+                        key={h.id}
+                        type="button"
+                        onClick={() => setHostingId(h.id)}
+                        className={[
+                          "card-elevated card-elevated-hover relative flex items-start gap-3 p-4 text-left transition-all",
+                          active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
+                        ].join(" ")}
+                      >
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/5">
+                          <BrandIcon name={h.brand} size={20} />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-sm font-semibold text-white">{h.name}</span>
+                            <span className="rounded-full bg-white/5 px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                              No price impact
+                            </span>
+                          </div>
+                          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                            {h.desc}
+                          </p>
+                          {h.id === "hostinger" && active && (
+                            <a
+                              href={HOSTINGER_AFFILIATE_URL}
+                              target="_blank"
+                              rel="noopener noreferrer sponsored"
+                              onClick={(e) => e.stopPropagation()}
+                              className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[color:var(--primary)] to-[color:var(--orange)] px-3 py-1.5 text-xs font-semibold text-black hover:brightness-110"
+                            >
+                              Claim 20% Off Hostinger
+                              <ExternalLink className="h-3 w-3" />
+                            </a>
+                          )}
+                        </div>
+                        {active && (
+                          <Check className="absolute right-3 top-3 h-4 w-4 text-[color:var(--primary)]" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
 
-            {/* STEP 4 */}
+            {/* STEP 5 — Support */}
             <div>
-              <StepHeader n={4} title="Support & Maintenance" />
+              <StepHeader n={5} title="Support & Maintenance" />
               <div className="mt-5 grid gap-3 sm:grid-cols-3">
                 {SUPPORT_TIERS.map((s) => {
                   const Icon = s.icon;
@@ -1240,6 +1337,7 @@ function PricingCalculatorSection() {
               </div>
             </div>
           </div>
+
 
           {/* RIGHT — STICKY ESTIMATE */}
           <aside className="lg:sticky lg:top-24 lg:self-start">
