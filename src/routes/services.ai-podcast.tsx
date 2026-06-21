@@ -25,6 +25,8 @@ import {
   Sparkles,
   Tag,
   AudioLines,
+  Layers,
+  LayoutTemplate,
 } from "lucide-react";
 
 import {
@@ -706,34 +708,64 @@ function WhoSection() {
 // ---------- 7. INCLUDED ----------
 
 const INCLUDED = [
-  "Script generation from your source material (topic, blog, URL, or PDF)",
-  "Choice of podcast style matched to your content (interview, solo commentary, deep dive, and more)",
-  "Premium AI voice narration in your preferred language and tone",
-  "Branded intro and outro with background music",
-  "Full audio episode (MP3) + auto-captioned video version",
-  "Episode transcript for accessibility and SEO",
-  "One round of revisions before final delivery",
+  {
+    icon: Sparkles,
+    title: "AI Content Generation",
+    desc: "Transforms any written content — blog posts, URLs, PDFs, keywords, or just an idea — into a natural, engaging podcast script in 60 seconds, with consistent voice and style across every episode.",
+  },
+  {
+    icon: Mic,
+    title: "Professional Voice Synthesis",
+    desc: "300+ AI voices across 50+ languages and accents. Clone your own voice with just 60 seconds of audio — sounds natural, not robotic.",
+  },
+  {
+    icon: Video,
+    title: "Video Podcast Generation",
+    desc: "Auto-generates professional video versions with speaker avatars, waveforms, and auto-captions. Export in any format — ready for YouTube, TikTok, Instagram, and Reels.",
+  },
+  {
+    icon: Layers,
+    title: "Complete Series Creation",
+    desc: "Build a real show, not just one-off episodes. Multi-episode series with a consistent theme, voice, and style — including professionally crafted intros, outros, and transitions.",
+  },
+  {
+    icon: LayoutTemplate,
+    title: "Format Library",
+    desc: "Pre-built formats for every content goal: interview-style deep dives, educational lessons, news-format brief summaries, storytelling narratives, and panel discussions.",
+  },
+  {
+    icon: Rocket,
+    title: "One-Click Publishing & Distribution",
+    desc: "Publish to every platform your audience uses — simultaneously, in one click. Direct RSS feed generation for universal distribution. Export broadcast-quality MP3 or video.",
+  },
 ];
 
 function IncludedSection() {
   return (
     <section className="py-20 sm:py-28">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <SectionHeading
           eyebrow="// WHAT'S INCLUDED"
           white="Every Episode Includes"
           gradient="This"
           trailing=", By Default"
         />
-        <div className="card-elevated mt-12 p-7 sm:p-8">
-          <ul className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
-            {INCLUDED.map((item) => (
-              <li key={item} className="flex items-start gap-3">
-                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[color:var(--primary)]" />
-                <span className="text-sm text-white sm:text-base">{item}</span>
-              </li>
-            ))}
-          </ul>
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {INCLUDED.map((item) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={item.title}
+                className="card-elevated card-elevated-hover flex flex-col items-center text-center p-6"
+              >
+                <span className="grid h-12 w-12 place-items-center rounded-xl bg-[color:var(--primary)]/15">
+                  <Icon className="h-5 w-5 text-[color:var(--primary)]" />
+                </span>
+                <h3 className="mt-5 text-base font-semibold text-white">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.desc}</p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
