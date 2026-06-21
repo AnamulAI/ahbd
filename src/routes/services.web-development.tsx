@@ -425,14 +425,14 @@ function ValueSection() {
 }
 
 const ICP = [
-  { icon: Rocket, label: "Startups" },
-  { icon: Briefcase, label: "Agencies" },
-  { icon: Users, label: "Coaches & Consultants" },
-  { icon: LayoutDashboard, label: "SaaS Businesses" },
-  { icon: ShoppingCart, label: "Ecommerce Brands" },
-  { icon: User, label: "Personal Brands" },
-  { icon: Building2, label: "Local Service Businesses" },
-  { icon: Globe2, label: "Founders Needing Better Digital Presence" },
+  { icon: Rocket, label: "Startups", desc: "Launch fast with a credible first impression" },
+  { icon: Briefcase, label: "Agencies", desc: "White-label web builds for your clients" },
+  { icon: Users, label: "Coaches & Consultants", desc: "Authority sites that convert bookings" },
+  { icon: LayoutDashboard, label: "SaaS Businesses", desc: "Marketing sites and product dashboards" },
+  { icon: ShoppingCart, label: "Ecommerce Brands", desc: "Stores built to convert and scale" },
+  { icon: User, label: "Personal Brands", desc: "Portfolio sites that build trust fast" },
+  { icon: Building2, label: "Local Service Businesses", desc: "Simple sites that bring in local leads" },
+  { icon: Globe2, label: "Founders Needing Better Digital Presence", desc: "A sharper site without the agency wait" },
 ];
 
 function IdealClientsSection() {
@@ -450,14 +450,17 @@ function IdealClientsSection() {
             return (
               <div
                 key={c.label}
-                className="card-elevated card-elevated-hover flex items-center gap-3 p-4 max-md:flex-col max-md:items-center max-md:text-center"
+                className="card-elevated card-elevated-hover flex flex-col items-center text-center p-6"
               >
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[color:var(--primary)]/15">
-                  <Icon className="h-4 w-4 text-[color:var(--primary)]" />
+                <span className="grid h-12 w-12 place-items-center rounded-xl bg-[color:var(--primary)]/15">
+                  <Icon className="h-5 w-5 text-[color:var(--primary)]" />
                 </span>
-                <span className="text-sm font-medium text-white">
+                <h3 className="mt-5 text-sm font-semibold text-white">
                   {c.label}
-                </span>
+                </h3>
+                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                  {c.desc}
+                </p>
               </div>
             );
           })}
