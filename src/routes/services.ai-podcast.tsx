@@ -1454,9 +1454,14 @@ function ClosingCtaSection() {
             No recording equipment needed
           </span>
           <span className="text-white/20">·</span>
+          <Link to="/contact" className="inline-flex items-center gap-1.5 underline-offset-2 hover:text-white hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)] rounded">
+            <Check className="h-3.5 w-3.5 text-[color:var(--primary)]" />
+            Free Sample Episode — just send your topic
+          </Link>
+          <span className="text-white/20">·</span>
           <span className="inline-flex items-center gap-1.5">
             <Check className="h-3.5 w-3.5 text-[color:var(--primary)]" />
-            Published everywhere your audience listens
+            300+ AI voices ready
           </span>
         </p>
       </div>
