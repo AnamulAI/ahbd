@@ -516,20 +516,20 @@ function IncludedSection() {
           gradient="Included"
         />
         <div className="mt-12 grid gap-6 lg:grid-cols-2">
-          <div className="card-elevated p-7 max-md:text-center">
+            <div className="card-elevated p-7">
             <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-[color:var(--primary)]">
               // CORE DELIVERABLES
             </div>
             <ul className="mt-5 space-y-3">
               {CORE_DELIVERABLES.map((item) => (
-                <li key={item} className="flex items-start gap-3 max-md:flex-col max-md:items-center max-md:text-center">
+                <li key={item} className="flex items-start gap-3">
                   <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--primary)]" />
                   <span className="text-sm text-white sm:text-base">{item}</span>
                 </li>
               ))}
             </ul>
           </div>
-          <div className="card-elevated p-7 max-md:text-center">
+          <div className="card-elevated p-7">
             <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-[color:var(--orange)]">
               // OPTIONAL ADD-ONS
             </div>
@@ -539,7 +539,7 @@ function IncludedSection() {
                 return (
                   <div
                     key={a.title}
-                    className="flex gap-4 rounded-xl border border-white/8 bg-white/[0.02] p-4 max-md:flex-col max-md:items-center max-md:text-center"
+                    className="flex gap-4 rounded-xl border border-white/8 bg-white/[0.02] p-4"
                   >
                     <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[color:var(--orange)]/15">
                       <Icon className="h-4 w-4 text-[color:var(--orange)]" />
