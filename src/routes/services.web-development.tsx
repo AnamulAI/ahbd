@@ -929,6 +929,96 @@ const SUPPORT_TIERS = [
   { id: "6m", name: "6 Months Support", price: 400, included: false, tag: "Recommended" as string | null, icon: ShieldHalf },
 ] as const;
 
+type ScopeOption = { id: string; label: string; price: number; tag?: string | null };
+type ScopeConfig = { label: string; helper?: string; options: ScopeOption[] };
+
+const SCOPE_BY_PROJECT: Record<string, ScopeConfig> = {
+  landing: {
+    label: "Sections & Scope",
+    options: [
+      { id: "s1", label: "5-7 Sections", price: 0, tag: "Most Popular" },
+      { id: "s2", label: "8-12 Sections", price: 150 },
+      { id: "s3", label: "13-20 Sections", price: 300 },
+      { id: "s4", label: "Full Custom (Unlimited)", price: 500 },
+    ],
+  },
+  business: {
+    label: "Pages & Scope",
+    options: [
+      { id: "s1", label: "3-5 Pages", price: 0, tag: "Most Popular" },
+      { id: "s2", label: "6-10 Pages", price: 200 },
+      { id: "s3", label: "11-20 Pages", price: 450 },
+      { id: "s4", label: "Custom / Unlimited", price: 800 },
+    ],
+  },
+  ecommerce: {
+    label: "Products & Scope",
+    options: [
+      { id: "s1", label: "Under 50 Products", price: 0 },
+      { id: "s2", label: "50-200 Products", price: 150 },
+      { id: "s3", label: "200-500 Products", price: 300 },
+      { id: "s4", label: "500+ Products", price: 500 },
+    ],
+  },
+  brand: {
+    label: "Pages & Sections",
+    options: [
+      { id: "s1", label: "Core Pages (Home, About, Contact)", price: 0 },
+      { id: "s2", label: "+ Services / Work Page", price: 150 },
+      { id: "s3", label: "+ Blog Setup", price: 180 },
+      { id: "s4", label: "Full Brand Site (All Pages)", price: 400, tag: "Recommended" },
+    ],
+  },
+  lms: {
+    label: "Courses & Scope",
+    options: [
+      { id: "s1", label: "Up to 5 Courses", price: 0 },
+      { id: "s2", label: "6-15 Courses", price: 200 },
+      { id: "s3", label: "16-30 Courses", price: 400 },
+      { id: "s4", label: "30+ Courses (Unlimited)", price: 650 },
+    ],
+  },
+  webapp: {
+    label: "Features & Complexity",
+    helper:
+      "Feature examples: user login/auth, dashboard, data tables, filters, charts, file upload, notifications, payment, API integration, admin panel, etc.",
+    options: [
+      { id: "s1", label: "MVP (3-5 Core Features)", price: 0, tag: "Start Here" },
+      { id: "s2", label: "Standard (6-10 Features)", price: 1000 },
+      { id: "s3", label: "Advanced (11-20 Features)", price: 2300 },
+      { id: "s4", label: "Enterprise (20+ / Custom)", price: 4000 },
+    ],
+  },
+};
+
+const HOSTING_OPTIONS = [
+  {
+    id: "vercel",
+    name: "Vercel Deployment",
+    desc: "Best for custom code projects — I'll deploy and configure it for you",
+    brand: "Vercel" as const,
+  },
+  {
+    id: "hostinger",
+    name: "Hostinger Hosting",
+    desc: "Get 20% off hosting through my partner link",
+    brand: "Hostinger" as const,
+  },
+];
+
+// TODO: replace with actual Hostinger affiliate link
+const HOSTINGER_AFFILIATE_URL = "https://www.hostinger.com/?ref=AFFILIATE_PLACEHOLDER";
+
+// Map calculator project id → "What I Build" reference card
+const PROJECT_TO_BUILD_TITLE: Record<string, string> = {
+  landing: "Landing Pages",
+  business: "Business Websites",
+  brand: "Personal Brand Sites",
+  ecommerce: "eCommerce Stores",
+  lms: "LMS & Course Platforms",
+  webapp: "Web Apps & Dashboards",
+};
+
 function fmt(n: number) {
   return "$" + n.toLocaleString("en-US");
 }
