@@ -211,10 +211,10 @@ function HeroSection({ onSamplesClick }: { onSamplesClick: () => void }) {
     <section className="section-glow-hero">
       <div className="mx-auto flex max-w-6xl flex-col items-center px-4 pt-20 pb-16 text-center sm:px-6 sm:pt-28 sm:pb-24">
         <Eyebrow>// AI INTEGRATOR SERVICE</Eyebrow>
-        <h1 className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">
+        <h1 className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-white text-balance sm:text-5xl lg:text-6xl">
           Connect AI to Your Business
           <br />
-          — <span className="text-gradient-vo">Without Building From Scratch</span>
+          <span className="text-gradient-vo">Without Building From Scratch</span>
         </h1>
         <p className="mt-6 max-w-[700px] text-base text-muted-foreground sm:text-lg">
           Most businesses don't need a custom AI model — they need someone who
