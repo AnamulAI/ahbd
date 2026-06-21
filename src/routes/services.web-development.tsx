@@ -61,7 +61,7 @@ import {
   LifeBuoy,
   CalendarClock,
   ShieldHalf,
-  ChevronDown,
+  
   ExternalLink,
   MousePointerClick,
   BookOpen,
@@ -447,8 +447,8 @@ function BuildInfoDialog({
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="flex flex-col max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="text-xl">{build.title}</DialogTitle>
-          <DialogDescription className="pt-2 text-sm leading-relaxed">
+          <DialogTitle className="font-display text-xl font-bold">{build.title}</DialogTitle>
+          <DialogDescription className="font-sans pt-2 text-sm leading-relaxed">
             {build.desc}
           </DialogDescription>
           <div className="mt-3 flex flex-wrap gap-1.5">
@@ -467,13 +467,13 @@ function BuildInfoDialog({
             <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
               Standard Features
             </h4>
-            <ul className="mt-3 space-y-2.5">
+            <ul className="mt-3 space-y-1">
               {features.map((f) => {
                 const I = f.icon;
                 return (
                   <li
                     key={f.label}
-                    className="flex items-start gap-2.5 text-sm text-muted-foreground"
+                    className="flex items-start gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-200 hover:bg-white/[0.06] hover:text-white"
                   >
                     <I
                       className={`mt-0.5 h-4 w-4 shrink-0 ${f.color}`}
@@ -489,13 +489,13 @@ function BuildInfoDialog({
             <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--orange)]">
               Delivery Process
             </h4>
-            <ul className="mt-3 space-y-2.5">
+            <ul className="mt-3 space-y-1">
               {DELIVERY_PROCESS.map((f) => {
                 const I = f.icon;
                 return (
                   <li
                     key={f.label}
-                    className="flex items-start gap-2.5 text-sm text-muted-foreground"
+                    className="flex items-start gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-200 hover:bg-white/[0.06] hover:text-white"
                   >
                     <I
                       className={`mt-0.5 h-4 w-4 shrink-0 ${f.color}`}
@@ -621,10 +621,10 @@ function EcommerceCaseStudyDialog({ children }: { children: React.ReactNode }) {
         <span aria-hidden className="modal-scan-line" />
         <div className="flex flex-col gap-4 overflow-y-auto p-6 max-h-[90vh]">
           <DialogHeader>
-            <DialogTitle className="text-xl">
+            <DialogTitle className="font-display text-xl font-bold">
               Custom eCommerce Platform — What's Possible
             </DialogTitle>
-            <DialogDescription className="pt-2 text-sm leading-relaxed">
+            <DialogDescription className="font-sans pt-2 text-sm leading-relaxed">
               A full-featured custom ecommerce platform built end-to-end — from
               customer storefront to admin operations.
             </DialogDescription>
@@ -634,11 +634,11 @@ function EcommerceCaseStudyDialog({ children }: { children: React.ReactNode }) {
               <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
                 Customer Experience
               </h4>
-              <ul className="mt-3 space-y-2.5">
+              <ul className="mt-3 space-y-1">
                 {customer.map((i) => {
                   const I = i.icon;
                   return (
-                    <li key={i.label} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                    <li key={i.label} className="flex items-start gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-200 hover:bg-white/[0.06] hover:text-white">
                       <I className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--primary)]" />
                       <span>{i.label}</span>
                     </li>
@@ -650,11 +650,11 @@ function EcommerceCaseStudyDialog({ children }: { children: React.ReactNode }) {
               <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
                 Admin & Operations
               </h4>
-              <ul className="mt-3 space-y-2.5">
+              <ul className="mt-3 space-y-1">
                 {admin.map((i) => {
                   const I = i.icon;
                   return (
-                    <li key={i.label} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                    <li key={i.label} className="flex items-start gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-200 hover:bg-white/[0.06] hover:text-white">
                       <I className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--primary)]" />
                       <span>{i.label}</span>
                     </li>
@@ -1209,7 +1209,7 @@ function PricingCalculatorSection() {
   const [addonIds, setAddonIds] = useState<string[]>([]);
   const [supportId, setSupportId] = useState<string>("30d");
   const [hostingId, setHostingId] = useState<string>("vercel");
-  const [includedOpen, setIncludedOpen] = useState<boolean>(false);
+  
 
   const project = PROJECT_TYPES.find((p) => p.id === projectId)!;
   const platform = PLATFORMS.find((p) => p.id === platformId)!;
@@ -1548,37 +1548,25 @@ function PricingCalculatorSection() {
                       </span>
                       <span className="shrink-0 font-semibold text-white">{fmt(projectPrice)}</span>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setIncludedOpen((v) => !v)}
-                      className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-semibold text-[color:var(--primary)] hover:text-[color:var(--orange)] transition-colors"
-                      aria-expanded={includedOpen}
-                    >
-                      {includedOpen ? "Hide what's included" : "See what's included"}
-                      <ChevronDown
-                        className={[
-                          "h-3 w-3 transition-transform",
-                          includedOpen ? "rotate-180" : "",
-                        ].join(" ")}
-                      />
-                    </button>
-                    {includedOpen && buildRef && (
-                      <div className="mt-2 rounded-lg border border-white/10 bg-white/[0.02] p-3 animate-in fade-in-50 slide-in-from-top-1 duration-200">
-                        <p className="text-xs leading-relaxed text-muted-foreground">
-                          {buildRef.desc}
-                        </p>
-                        <div className="mt-2.5 flex flex-wrap gap-1.5">
-                          {buildRef.tags.map((t) => (
-                            <span
-                              key={t}
-                              className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
-                            >
-                              {t}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                    {buildRef && (projectId === "ecommerce" ? (
+                      <EcommerceCaseStudyDialog>
+                        <button
+                          type="button"
+                          className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-semibold text-[color:var(--primary)] hover:text-[color:var(--orange)] transition-colors cursor-pointer"
+                        >
+                          See what's included <ArrowRight className="h-3 w-3" />
+                        </button>
+                      </EcommerceCaseStudyDialog>
+                    ) : (
+                      <BuildInfoDialog build={buildRef}>
+                        <button
+                          type="button"
+                          className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-semibold text-[color:var(--primary)] hover:text-[color:var(--orange)] transition-colors cursor-pointer"
+                        >
+                          See what's included <ArrowRight className="h-3 w-3" />
+                        </button>
+                      </BuildInfoDialog>
+                    ))}
                   </li>
                   <li className="flex items-start justify-between gap-3">
                     <span className="text-muted-foreground">
