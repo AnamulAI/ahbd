@@ -1353,11 +1353,52 @@ function PricingCalculatorSection() {
                 <h3 className="mt-2 text-xl font-semibold text-white">Your Estimate</h3>
 
                 <ul className="mt-5 space-y-2.5 text-sm">
+                  <li>
+                    <div className="flex items-start justify-between gap-3">
+                      <span className="text-muted-foreground">
+                        {project.name} <span className="text-white/60">({platform.name})</span>
+                      </span>
+                      <span className="shrink-0 font-semibold text-white">{fmt(projectPrice)}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIncludedOpen((v) => !v)}
+                      className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-semibold text-[color:var(--primary)] hover:text-[color:var(--orange)] transition-colors"
+                      aria-expanded={includedOpen}
+                    >
+                      {includedOpen ? "Hide what's included" : "See what's included"}
+                      <ChevronDown
+                        className={[
+                          "h-3 w-3 transition-transform",
+                          includedOpen ? "rotate-180" : "",
+                        ].join(" ")}
+                      />
+                    </button>
+                    {includedOpen && buildRef && (
+                      <div className="mt-2 rounded-lg border border-white/10 bg-white/[0.02] p-3 animate-in fade-in-50 slide-in-from-top-1 duration-200">
+                        <p className="text-xs leading-relaxed text-muted-foreground">
+                          {buildRef.desc}
+                        </p>
+                        <div className="mt-2.5 flex flex-wrap gap-1.5">
+                          {buildRef.tags.map((t) => (
+                            <span
+                              key={t}
+                              className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
+                            >
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </li>
                   <li className="flex items-start justify-between gap-3">
                     <span className="text-muted-foreground">
-                      {project.name} <span className="text-white/60">({platform.name})</span>
+                      Scope: <span className="text-white/80">{scope.label}</span>
                     </span>
-                    <span className="shrink-0 font-semibold text-white">{fmt(projectPrice)}</span>
+                    <span className="shrink-0 font-semibold text-white">
+                      {scope.price === 0 ? "Included" : `+${fmt(scope.price)}`}
+                    </span>
                   </li>
                   {selectedAddons.map((a) => (
                     <li key={a.id} className="flex items-start justify-between gap-3">
@@ -1372,6 +1413,7 @@ function PricingCalculatorSection() {
                     </span>
                   </li>
                 </ul>
+
 
                 <div className="my-5 h-px w-full bg-white/10" />
 
