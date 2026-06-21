@@ -1452,6 +1452,7 @@ function AiPodcastPage() {
       <SiteHeader />
       <main>
         <HeroSection onHowItWorksClick={scrollToHowItWorks} />
+        <MarketOpportunitySection />
         <ProblemSection />
         <WhatIBuildSection />
         <AddOnsSection />
