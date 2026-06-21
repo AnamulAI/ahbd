@@ -258,7 +258,7 @@ function ProblemSection() {
             return (
               <div
                 key={p.text}
-                className="card-elevated card-elevated-hover p-6"
+                className="card-elevated card-elevated-hover p-6 max-md:flex max-md:flex-col max-md:items-center max-md:text-center"
               >
                 <span className="grid h-10 w-10 place-items-center rounded-lg bg-[color:var(--orange)]/15">
                   <Icon className="h-5 w-5 text-[color:var(--orange)]" />
@@ -333,7 +333,7 @@ function WhatIBuildSection() {
             return (
               <article
                 key={b.title}
-                className="card-elevated card-elevated-hover flex flex-col p-6"
+                className="card-elevated card-elevated-hover flex flex-col p-6 max-md:items-center max-md:text-center"
               >
                 <span className="grid h-11 w-11 place-items-center rounded-xl bg-[color:var(--primary)]/15">
                   <Icon className="h-5 w-5 text-[color:var(--primary)]" />
@@ -344,7 +344,7 @@ function WhatIBuildSection() {
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {b.desc}
                 </p>
-                <div className="mt-4 flex flex-wrap gap-1.5">
+                <div className="mt-4 flex flex-wrap gap-1.5 max-md:justify-center">
                   {b.tags.map((t) => (
                     <span
                       key={t}
@@ -401,7 +401,7 @@ function ValueSection() {
             return (
               <div
                 key={v.title}
-                className="card-elevated card-elevated-hover flex gap-5 p-6"
+                className="card-elevated card-elevated-hover flex gap-5 p-6 max-md:flex-col max-md:items-center max-md:text-center"
               >
                 <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[color:var(--primary)]/20 to-[color:var(--orange)]/20">
                   <Icon className="h-5 w-5 text-white" />
@@ -450,7 +450,7 @@ function IdealClientsSection() {
             return (
               <div
                 key={c.label}
-                className="card-elevated card-elevated-hover flex items-center gap-3 p-4"
+                className="card-elevated card-elevated-hover flex items-center gap-3 p-4 max-md:flex-col max-md:items-center max-md:text-center"
               >
                 <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[color:var(--primary)]/15">
                   <Icon className="h-4 w-4 text-[color:var(--primary)]" />
@@ -516,20 +516,20 @@ function IncludedSection() {
           gradient="Included"
         />
         <div className="mt-12 grid gap-6 lg:grid-cols-2">
-          <div className="card-elevated p-7">
+          <div className="card-elevated p-7 max-md:text-center">
             <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-[color:var(--primary)]">
               // CORE DELIVERABLES
             </div>
             <ul className="mt-5 space-y-3">
               {CORE_DELIVERABLES.map((item) => (
-                <li key={item} className="flex items-start gap-3">
+                <li key={item} className="flex items-start gap-3 max-md:flex-col max-md:items-center max-md:text-center">
                   <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--primary)]" />
                   <span className="text-sm text-white sm:text-base">{item}</span>
                 </li>
               ))}
             </ul>
           </div>
-          <div className="card-elevated p-7">
+          <div className="card-elevated p-7 max-md:text-center">
             <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-[color:var(--orange)]">
               // OPTIONAL ADD-ONS
             </div>
@@ -539,7 +539,7 @@ function IncludedSection() {
                 return (
                   <div
                     key={a.title}
-                    className="flex gap-4 rounded-xl border border-white/8 bg-white/[0.02] p-4"
+                    className="flex gap-4 rounded-xl border border-white/8 bg-white/[0.02] p-4 max-md:flex-col max-md:items-center max-md:text-center"
                   >
                     <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[color:var(--orange)]/15">
                       <Icon className="h-4 w-4 text-[color:var(--orange)]" />
@@ -679,12 +679,12 @@ function ProjectsSection({
                   <Sparkles className="h-10 w-10 text-white/30" />
                 </div>
               </div>
-              <div className="p-5">
+              <div className="p-5 max-md:text-center">
                 <h3 className="text-base font-semibold text-white">{p.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {p.desc}
                 </p>
-                <div className="mt-3 flex flex-wrap gap-1.5">
+                <div className="mt-3 flex flex-wrap gap-1.5 max-md:justify-center">
                   {p.tech.map((t) => {
                     const color = brandColor(t);
                     return (
@@ -785,7 +785,7 @@ function PricingSection() {
             <div
               key={t.name}
               className={[
-                "card-elevated card-elevated-hover relative flex flex-col p-7",
+                "card-elevated card-elevated-hover relative flex flex-col p-7 max-md:items-center max-md:text-center",
                 t.featured
                   ? "border-[color:var(--primary)]/50 shadow-[0_30px_90px_-40px_var(--primary)]"
                   : "",
@@ -802,7 +802,7 @@ function PricingSection() {
               <div className="mt-5 text-2xl font-bold text-white">
                 {t.price}
               </div>
-              <ul className="mt-5 flex-1 space-y-3">
+              <ul className="mt-5 flex-1 space-y-3 max-md:w-full">
                 {t.features.map((f) => (
                   <li key={f} className="flex items-start gap-2.5 text-sm text-muted-foreground">
                     <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--primary)]" />
