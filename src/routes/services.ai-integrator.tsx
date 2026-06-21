@@ -117,7 +117,7 @@ function SectionHeading({
   return (
     <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
       <Eyebrow>{eyebrow}</Eyebrow>
-      <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
+      <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight text-white text-balance sm:text-4xl lg:text-5xl">
         {white} <span className="text-gradient-vo">{gradient}</span>
         {trailing ? ` ${trailing}` : ""}
       </h2>
