@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useRef, useState, useMemo } from "react";
+import { useRef, useState, useMemo, useEffect } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   ArrowRight,
@@ -57,6 +57,8 @@ import {
   LifeBuoy,
   CalendarClock,
   ShieldHalf,
+  ChevronDown,
+  ExternalLink,
 } from "lucide-react";
 
 import {
@@ -926,27 +928,132 @@ const SUPPORT_TIERS = [
   { id: "6m", name: "6 Months Support", price: 400, included: false, tag: "Recommended" as string | null, icon: ShieldHalf },
 ] as const;
 
+type ScopeOption = { id: string; label: string; price: number; tag?: string | null };
+type ScopeConfig = { label: string; helper?: string; options: ScopeOption[] };
+
+const SCOPE_BY_PROJECT: Record<string, ScopeConfig> = {
+  landing: {
+    label: "Sections & Scope",
+    options: [
+      { id: "s1", label: "5-7 Sections", price: 0, tag: "Most Popular" },
+      { id: "s2", label: "8-12 Sections", price: 150 },
+      { id: "s3", label: "13-20 Sections", price: 300 },
+      { id: "s4", label: "Full Custom (Unlimited)", price: 500 },
+    ],
+  },
+  business: {
+    label: "Pages & Scope",
+    options: [
+      { id: "s1", label: "3-5 Pages", price: 0, tag: "Most Popular" },
+      { id: "s2", label: "6-10 Pages", price: 200 },
+      { id: "s3", label: "11-20 Pages", price: 450 },
+      { id: "s4", label: "Custom / Unlimited", price: 800 },
+    ],
+  },
+  ecommerce: {
+    label: "Products & Scope",
+    options: [
+      { id: "s1", label: "Under 50 Products", price: 0 },
+      { id: "s2", label: "50-200 Products", price: 150 },
+      { id: "s3", label: "200-500 Products", price: 300 },
+      { id: "s4", label: "500+ Products", price: 500 },
+    ],
+  },
+  brand: {
+    label: "Pages & Sections",
+    options: [
+      { id: "s1", label: "Core Pages (Home, About, Contact)", price: 0 },
+      { id: "s2", label: "+ Services / Work Page", price: 150 },
+      { id: "s3", label: "+ Blog Setup", price: 180 },
+      { id: "s4", label: "Full Brand Site (All Pages)", price: 400, tag: "Recommended" },
+    ],
+  },
+  lms: {
+    label: "Courses & Scope",
+    options: [
+      { id: "s1", label: "Up to 5 Courses", price: 0 },
+      { id: "s2", label: "6-15 Courses", price: 200 },
+      { id: "s3", label: "16-30 Courses", price: 400 },
+      { id: "s4", label: "30+ Courses (Unlimited)", price: 650 },
+    ],
+  },
+  webapp: {
+    label: "Features & Complexity",
+    helper:
+      "Feature examples: user login/auth, dashboard, data tables, filters, charts, file upload, notifications, payment, API integration, admin panel, etc.",
+    options: [
+      { id: "s1", label: "MVP (3-5 Core Features)", price: 0, tag: "Start Here" },
+      { id: "s2", label: "Standard (6-10 Features)", price: 1000 },
+      { id: "s3", label: "Advanced (11-20 Features)", price: 2300 },
+      { id: "s4", label: "Enterprise (20+ / Custom)", price: 4000 },
+    ],
+  },
+};
+
+const HOSTING_OPTIONS = [
+  {
+    id: "vercel",
+    name: "Vercel Deployment",
+    desc: "Best for custom code projects — I'll deploy and configure it for you",
+    brand: "Vercel" as const,
+  },
+  {
+    id: "hostinger",
+    name: "Hostinger Hosting",
+    desc: "Get 20% off hosting through my partner link",
+    brand: "Hostinger" as const,
+  },
+];
+
+// TODO: replace with actual Hostinger affiliate link
+const HOSTINGER_AFFILIATE_URL = "https://www.hostinger.com/?ref=AFFILIATE_PLACEHOLDER";
+
+// Map calculator project id → "What I Build" reference card
+const PROJECT_TO_BUILD_TITLE: Record<string, string> = {
+  landing: "Landing Pages",
+  business: "Business Websites",
+  brand: "Personal Brand Sites",
+  ecommerce: "eCommerce Stores",
+  lms: "LMS & Course Platforms",
+  webapp: "Web Apps & Dashboards",
+};
+
 function fmt(n: number) {
   return "$" + n.toLocaleString("en-US");
 }
 
 function PricingCalculatorSection() {
   const [projectId, setProjectId] = useState<string>("business");
+  const [scopeId, setScopeId] = useState<string>("s1");
   const [platformId, setPlatformId] = useState<string>("custom");
   const [addonIds, setAddonIds] = useState<string[]>([]);
   const [supportId, setSupportId] = useState<string>("30d");
+  const [hostingId, setHostingId] = useState<string>("vercel");
+  const [includedOpen, setIncludedOpen] = useState<boolean>(false);
 
   const project = PROJECT_TYPES.find((p) => p.id === projectId)!;
   const platform = PLATFORMS.find((p) => p.id === platformId)!;
   const support = SUPPORT_TIERS.find((s) => s.id === supportId)!;
   const selectedAddons = ADDONS.filter((a) => addonIds.includes(a.id));
+  const scopeConfig = SCOPE_BY_PROJECT[projectId];
+  const scope =
+    scopeConfig.options.find((o) => o.id === scopeId) ?? scopeConfig.options[0];
+
+  // Reset scope to that project type's first option whenever Step 1 changes
+  useEffect(() => {
+    setScopeId("s1");
+  }, [projectId]);
+
+  const buildRef = BUILDS.find(
+    (b) => b.title === PROJECT_TO_BUILD_TITLE[projectId]
+  );
 
   const projectPrice = useMemo(
     () => Math.round(project.base * (1 - platform.discount)),
     [project, platform]
   );
   const addonsTotal = selectedAddons.reduce((s, a) => s + a.price, 0);
-  const total = projectPrice + addonsTotal + support.price;
+  const total = projectPrice + scope.price + addonsTotal + support.price;
 
   const toggleAddon = (id: string) => {
     setAddonIds((prev) =>
@@ -959,15 +1066,18 @@ function PricingCalculatorSection() {
       "Hi! I'd like a quote based on this estimate:",
       "",
       `• Project: ${project.name} (${platform.name}) — ${fmt(projectPrice)}`,
+      `• Scope: ${scope.label}${scope.price ? ` (+${fmt(scope.price)})` : " (Included)"}`,
     ];
     if (selectedAddons.length) {
       lines.push("• Add-ons:");
       selectedAddons.forEach((a) => lines.push(`   - ${a.label} (+${fmt(a.price)})`));
     }
     lines.push(`• Support: ${support.name}${support.included ? " (Included)" : ` (+${fmt(support.price)})`}`);
+    const hosting = HOSTING_OPTIONS.find((h) => h.id === hostingId)!;
+    lines.push(`• Hosting: ${hosting.name}`);
     lines.push("", `TOTAL: ${fmt(total)}`);
     return lines.join("\n");
-  }, [project, platform, projectPrice, selectedAddons, support, total]);
+  }, [project, platform, projectPrice, scope, selectedAddons, support, total, hostingId]);
 
   const waLink = `https://wa.me/8801777768353?text=${encodeURIComponent(waMessage)}`;
 
@@ -1017,9 +1127,53 @@ function PricingCalculatorSection() {
               </div>
             </div>
 
-            {/* STEP 2 */}
+            {/* STEP 2 — Dynamic Scope */}
             <div>
-              <StepHeader n={2} title="Choose Your Platform" />
+              <StepHeader n={2} title={scopeConfig.label} />
+              <div
+                key={projectId}
+                className="mt-5 grid gap-3 sm:grid-cols-2 animate-in fade-in-50 slide-in-from-bottom-2 duration-300"
+              >
+                {scopeConfig.options.map((o) => {
+                  const active = scope.id === o.id;
+                  return (
+                    <button
+                      key={o.id}
+                      type="button"
+                      onClick={() => setScopeId(o.id)}
+                      className={[
+                        "card-elevated card-elevated-hover relative flex flex-col items-start gap-2 p-4 text-left transition-all",
+                        active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
+                      ].join(" ")}
+                    >
+                      <div className="flex w-full items-start justify-between gap-2">
+                        <span className="text-sm font-semibold text-white">{o.label}</span>
+                        {o.tag && (
+                          <span className="shrink-0 rounded-full bg-gradient-to-r from-[color:var(--primary)] to-[color:var(--orange)] px-2 py-0.5 text-[10px] font-semibold text-black">
+                            {o.tag}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-sm font-bold text-[color:var(--primary)]">
+                        {o.price === 0 ? "Included" : `+${fmt(o.price)}`}
+                      </div>
+                      {active && (
+                        <Check className="absolute right-3 bottom-3 h-4 w-4 text-[color:var(--primary)]" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+              {scopeConfig.helper && (
+                <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+                  {scopeConfig.helper}
+                </p>
+              )}
+            </div>
+
+            {/* STEP 3 — Platform */}
+            <div>
+              <StepHeader n={3} title="Choose Your Platform" />
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 {PLATFORMS.map((p) => {
                   const active = platformId === p.id;
@@ -1060,9 +1214,9 @@ function PricingCalculatorSection() {
               </div>
             </div>
 
-            {/* STEP 3 */}
+            {/* STEP 4 — Add-ons + Hosting */}
             <div>
-              <StepHeader n={3} title="Add optional features" />
+              <StepHeader n={4} title="Add optional features" />
               <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
                 {ADDONS.map((a) => {
                   const Icon = a.icon;
@@ -1089,11 +1243,64 @@ function PricingCalculatorSection() {
                   );
                 })}
               </div>
+
+              {/* Hosting & Deployment subsection */}
+              <div className="mt-6">
+                <h4 className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                  Hosting &amp; Deployment
+                </h4>
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  {HOSTING_OPTIONS.map((h) => {
+                    const active = hostingId === h.id;
+                    return (
+                      <button
+                        key={h.id}
+                        type="button"
+                        onClick={() => setHostingId(h.id)}
+                        className={[
+                          "card-elevated card-elevated-hover relative flex items-start gap-3 p-4 text-left transition-all",
+                          active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
+                        ].join(" ")}
+                      >
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/5">
+                          <BrandIcon name={h.brand} size={20} />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-sm font-semibold text-white">{h.name}</span>
+                            <span className="rounded-full bg-white/5 px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                              No price impact
+                            </span>
+                          </div>
+                          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                            {h.desc}
+                          </p>
+                          {h.id === "hostinger" && active && (
+                            <a
+                              href={HOSTINGER_AFFILIATE_URL}
+                              target="_blank"
+                              rel="noopener noreferrer sponsored"
+                              onClick={(e) => e.stopPropagation()}
+                              className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[color:var(--primary)] to-[color:var(--orange)] px-3 py-1.5 text-xs font-semibold text-black hover:brightness-110"
+                            >
+                              Claim 20% Off Hostinger
+                              <ExternalLink className="h-3 w-3" />
+                            </a>
+                          )}
+                        </div>
+                        {active && (
+                          <Check className="absolute right-3 top-3 h-4 w-4 text-[color:var(--primary)]" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
 
-            {/* STEP 4 */}
+            {/* STEP 5 — Support */}
             <div>
-              <StepHeader n={4} title="Support & Maintenance" />
+              <StepHeader n={5} title="Support & Maintenance" />
               <div className="mt-5 grid gap-3 sm:grid-cols-3">
                 {SUPPORT_TIERS.map((s) => {
                   const Icon = s.icon;
@@ -1130,6 +1337,7 @@ function PricingCalculatorSection() {
             </div>
           </div>
 
+
           {/* RIGHT — STICKY ESTIMATE */}
           <aside className="lg:sticky lg:top-24 lg:self-start">
             <div className="relative rounded-2xl border border-[color:var(--primary)]/60 bg-[#16181D] p-6 shadow-[0_0_0_1px_rgba(59,130,246,0.15),0_30px_90px_-30px_rgba(249,115,22,0.35),0_30px_90px_-40px_rgba(59,130,246,0.45)]">
@@ -1144,11 +1352,52 @@ function PricingCalculatorSection() {
                 <h3 className="mt-2 text-xl font-semibold text-white">Your Estimate</h3>
 
                 <ul className="mt-5 space-y-2.5 text-sm">
+                  <li>
+                    <div className="flex items-start justify-between gap-3">
+                      <span className="text-muted-foreground">
+                        {project.name} <span className="text-white/60">({platform.name})</span>
+                      </span>
+                      <span className="shrink-0 font-semibold text-white">{fmt(projectPrice)}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIncludedOpen((v) => !v)}
+                      className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-semibold text-[color:var(--primary)] hover:text-[color:var(--orange)] transition-colors"
+                      aria-expanded={includedOpen}
+                    >
+                      {includedOpen ? "Hide what's included" : "See what's included"}
+                      <ChevronDown
+                        className={[
+                          "h-3 w-3 transition-transform",
+                          includedOpen ? "rotate-180" : "",
+                        ].join(" ")}
+                      />
+                    </button>
+                    {includedOpen && buildRef && (
+                      <div className="mt-2 rounded-lg border border-white/10 bg-white/[0.02] p-3 animate-in fade-in-50 slide-in-from-top-1 duration-200">
+                        <p className="text-xs leading-relaxed text-muted-foreground">
+                          {buildRef.desc}
+                        </p>
+                        <div className="mt-2.5 flex flex-wrap gap-1.5">
+                          {buildRef.tags.map((t) => (
+                            <span
+                              key={t}
+                              className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
+                            >
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </li>
                   <li className="flex items-start justify-between gap-3">
                     <span className="text-muted-foreground">
-                      {project.name} <span className="text-white/60">({platform.name})</span>
+                      Scope: <span className="text-white/80">{scope.label}</span>
                     </span>
-                    <span className="shrink-0 font-semibold text-white">{fmt(projectPrice)}</span>
+                    <span className="shrink-0 font-semibold text-white">
+                      {scope.price === 0 ? "Included" : `+${fmt(scope.price)}`}
+                    </span>
                   </li>
                   {selectedAddons.map((a) => (
                     <li key={a.id} className="flex items-start justify-between gap-3">
@@ -1163,6 +1412,7 @@ function PricingCalculatorSection() {
                     </span>
                   </li>
                 </ul>
+
 
                 <div className="my-5 h-px w-full bg-white/10" />
 

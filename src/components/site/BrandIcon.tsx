@@ -13,6 +13,8 @@ import {
   siVite,
   siPostgresql,
   siStripe,
+  siVercel,
+  siHostinger,
 } from "simple-icons";
 
 type Brand = {
@@ -43,6 +45,8 @@ export const BRANDS: Record<string, Brand> = {
   Vite: siVite,
   PostgreSQL: siPostgresql,
   Stripe: siStripe,
+  Vercel: siVercel,
+  Hostinger: siHostinger,
 };
 
 export function brandColor(name: string): string {
