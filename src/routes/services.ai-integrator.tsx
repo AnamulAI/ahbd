@@ -37,6 +37,7 @@ import {
   LifeBuoy,
   CalendarClock,
   ShieldHalf,
+  Image as ImageIcon,
 } from "lucide-react";
 
 import {
@@ -738,26 +739,64 @@ function ProjectsSection({ id }: { id: string }) {
           gradient="AI Integration Projects"
           subtext="Real project examples are being added as new AI integration work is completed."
         />
-        <div className="mx-auto mt-12 max-w-xl">
-          <div className="flex flex-col items-center rounded-2xl border border-dashed border-white/15 bg-white/[0.02] p-10 text-center">
-            <span className="grid h-14 w-14 place-items-center rounded-2xl bg-white/[0.04]">
-              <Clock className="h-6 w-6 text-white/40" />
+        <div className="mx-auto mt-12 max-w-md">
+          {/* Template card: field structure preview only — no real project data */}
+          <div className="rounded-2xl border border-dashed border-white/20 bg-white/[0.02] p-5 grayscale transition-opacity hover:opacity-80">
+            <span className="inline-flex rounded-md border border-white/10 bg-white/[0.04] px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-white/40">
+              [Category]
             </span>
-            <h3 className="mt-5 text-lg font-semibold text-white">Coming Soon</h3>
-            <p className="mt-2 text-sm text-muted-foreground">
-              New AI integration case studies will be added here soon.
+
+            <div className="mt-4 flex aspect-video items-center justify-center rounded-xl border border-dashed border-white/15 bg-white/[0.03]">
+              <div className="flex flex-col items-center gap-2 text-white/30">
+                <ImageIcon className="h-8 w-8" />
+                <span className="text-[10px] font-medium uppercase tracking-wider">[Project Thumbnail]</span>
+              </div>
+            </div>
+
+            <h3 className="mt-4 text-lg font-bold text-white/50">[Project Title]</h3>
+            <p className="mt-2 text-sm text-white/35">
+              [Short description of what was built and the outcome]
             </p>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              {["[Tech]", "[Tech]", "[Tech]"].map((label, idx) => (
+                <span
+                  key={idx}
+                  className="rounded-full border border-white/10 px-2.5 py-1 text-[10px] font-medium text-white/35"
+                >
+                  {label}
+                </span>
+              ))}
+            </div>
+
+            <div className="mt-5 flex gap-3">
+              <span className="inline-flex h-9 items-center rounded-lg border border-white/10 px-3 text-xs font-medium text-white/40">
+                [Live Demo]
+              </span>
+              <span className="inline-flex h-9 items-center rounded-lg border border-white/10 px-3 text-xs font-medium text-white/40">
+                [Project Details]
+              </span>
+            </div>
           </div>
         </div>
-        <p className="mt-8 text-center text-sm text-muted-foreground">
-          Want to be one of the first case studies?{" "}
-          <Link
-            to="/contact"
-            className="font-semibold text-[color:var(--primary)] hover:text-[color:var(--orange)] transition-colors"
-          >
-            Discuss Your Project <ArrowRight className="inline h-3.5 w-3.5" />
-          </Link>
-        </p>
+        <div className="mt-8 flex flex-col items-center gap-3 text-center">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-semibold text-white/60">
+            <Clock className="h-3.5 w-3.5" />
+            Coming Soon
+          </span>
+          <p className="text-sm text-muted-foreground">
+            Real AI integration case studies will be added here as projects are completed.
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Want to be one of the first case studies?{" "}
+            <Link
+              to="/contact"
+              className="font-semibold text-[color:var(--primary)] hover:text-[color:var(--orange)] transition-colors"
+            >
+              Discuss Your Project <ArrowRight className="inline h-3.5 w-3.5" />
+            </Link>
+          </p>
+        </div>
       </div>
     </section>
   );
