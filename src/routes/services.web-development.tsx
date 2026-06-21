@@ -663,8 +663,8 @@ function EcommerceCaseStudyDialog({ children }: { children: React.ReactNode }) {
               </ul>
             </div>
           </div>
-          <div className="border-t border-white/10 pt-4">
-            <h4 className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--orange)]">
+          <div>
+            <h4 className="font-mono text-center text-xs uppercase tracking-[0.18em] text-[color:var(--orange)]">
               Delivery Process
             </h4>
             <div className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-2">
