@@ -17,6 +17,7 @@ import {
   Megaphone,
   GraduationCap,
   Newspaper,
+  PenTool,
   TrendingUp,
   Send,
   Wand2,
@@ -667,11 +668,58 @@ function ValueSection() {
 // ---------- 6. WHO'S IT FOR ----------
 
 const ICP = [
-  { icon: Megaphone, label: "Marketers & Agencies", desc: "Repurpose blog posts, case studies, and campaign briefs into branded podcast episodes — scaling audio content without a recording studio or hiring editors." },
-  { icon: TrendingUp, label: "Content Creators", desc: "Turn YouTube videos, newsletters, and blog posts into podcast episodes — reaching audio-first audiences on Spotify and Apple Podcasts without extra recording hours." },
-  { icon: Briefcase, label: "Small Businesses & Growing Brands", desc: "Launch a thought-leadership podcast that builds brand authority and reaches customers — without hiring a production team." },
-  { icon: GraduationCap, label: "Educators & Course Creators", desc: "Convert lesson plans, course PDFs, and written material into engaging audio lessons students actually finish." },
+  {
+    icon: PenTool,
+    label: "Content Creators & Bloggers",
+    desc: "Turn every blog post into a podcast episode. Reach commuters, gym-goers, and listeners who prefer audio — without recording a single word yourself.",
+    tags: ["Blog → Podcast", "URL Import", "Auto-Distribute"],
+  },
+  {
+    icon: Megaphone,
+    label: "Marketers & Agencies",
+    desc: "Produce branded podcast series for clients at scale. Use templates to keep every episode on-brand while cutting production time from days to minutes.",
+    tags: ["Series Creation", "Brand Templates", "Multi-Client"],
+  },
+  {
+    icon: GraduationCap,
+    label: "Educators & Coaches",
+    desc: "Transform course materials, lesson plans, and workshops into on-demand audio content. Give your students another way to absorb your teaching.",
+    tags: ["PDF Upload", "Interview Style", "Deep Dive Format"],
+  },
+  {
+    icon: Briefcase,
+    label: "Businesses & Thought Leaders",
+    desc: "Share industry insights, company news, and leadership perspectives through a professional podcast. Build authority and trust with your market — consistently.",
+    tags: ["Business Interview", "Solo Commentary", "LinkedIn Publishing"],
+  },
+  {
+    icon: Newspaper,
+    label: "Journalists & Newsletter Writers",
+    desc: "Give your long-form writing an audio dimension. Import articles directly, get a natural conversational script, and publish alongside your written piece.",
+    tags: ["URL Import", "News-Brief Style", "Spotify & Apple"],
+  },
+  {
+    icon: Rocket,
+    label: "Startup Founders",
+    desc: "Build a founder podcast that documents your journey, attracts talent, and keeps your community engaged — without adding more to your plate.",
+    tags: ["Long-Form Interview", "Video Podcast", "YouTube + TikTok"],
+  },
 ];
+
+function TagBadges({ tags }: { tags: string[] }) {
+  return (
+    <div className="mt-3 flex flex-wrap justify-center gap-1.5">
+      {tags.map((tag) => (
+        <span
+          key={tag}
+          className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
+        >
+          {tag}
+        </span>
+      ))}
+    </div>
+  );
+}
 
 function WhoSection() {
   return (
@@ -683,7 +731,7 @@ function WhoSection() {
           gradient="Content"
           trailing=", Not a Studio"
         />
-        <div className="mt-12 grid gap-4 sm:grid-cols-2">
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {ICP.map((c) => {
             const Icon = c.icon;
             return (
@@ -696,6 +744,7 @@ function WhoSection() {
                 </span>
                 <h3 className="mt-5 text-sm font-semibold text-white">{c.label}</h3>
                 <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{c.desc}</p>
+                <TagBadges tags={c.tags} />
               </div>
             );
           })}
