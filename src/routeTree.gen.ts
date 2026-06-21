@@ -13,6 +13,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicesWebDevelopmentRouteImport } from './routes/services.web-development'
+import { Route as ServicesAiIntegratorRouteImport } from './routes/services.ai-integrator'
 
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
@@ -34,17 +35,24 @@ const ServicesWebDevelopmentRoute = ServicesWebDevelopmentRouteImport.update({
   path: '/services/web-development',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServicesAiIntegratorRoute = ServicesAiIntegratorRouteImport.update({
+  id: '/services/ai-integrator',
+  path: '/services/ai-integrator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/services/ai-integrator': typeof ServicesAiIntegratorRoute
   '/services/web-development': typeof ServicesWebDevelopmentRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/services/ai-integrator': typeof ServicesAiIntegratorRoute
   '/services/web-development': typeof ServicesWebDevelopmentRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,38 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/services/ai-integrator': typeof ServicesAiIntegratorRoute
   '/services/web-development': typeof ServicesWebDevelopmentRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/contact' | '/services/web-development'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/services/ai-integrator'
+    | '/services/web-development'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/contact' | '/services/web-development'
-  id: '__root__' | '/' | '/about' | '/contact' | '/services/web-development'
+  to:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/services/ai-integrator'
+    | '/services/web-development'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/services/ai-integrator'
+    | '/services/web-development'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
+  ServicesAiIntegratorRoute: typeof ServicesAiIntegratorRoute
   ServicesWebDevelopmentRoute: typeof ServicesWebDevelopmentRoute
 }
 
@@ -99,6 +125,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesWebDevelopmentRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/services/ai-integrator': {
+      id: '/services/ai-integrator'
+      path: '/services/ai-integrator'
+      fullPath: '/services/ai-integrator'
+      preLoaderRoute: typeof ServicesAiIntegratorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -106,6 +139,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
+  ServicesAiIntegratorRoute: ServicesAiIntegratorRoute,
   ServicesWebDevelopmentRoute: ServicesWebDevelopmentRoute,
 }
 export const routeTree = rootRouteImport
