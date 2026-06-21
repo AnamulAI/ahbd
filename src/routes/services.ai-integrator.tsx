@@ -926,7 +926,7 @@ function PricingCalculatorSection() {
                   >
                     <div className="flex flex-1 items-start gap-3">
                       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[color:var(--primary)]/10">
-                        <Icon className="h-4 w-4 text-[color:var(--primary)]" />
+                        <Icon className="h-4 w-4 text-[color:var(--primary)]" style={s.brandColor ? { color: s.brandColor } : undefined} />
                       </div>
                       <div className="pt-1 text-sm font-semibold leading-snug text-white">{s.name}</div>
                     </div>
