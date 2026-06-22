@@ -281,6 +281,8 @@ function SamplePage() {
         </div>
       </section>
 
+      <PublishEverywhereStrip />
+
       {moduleOrder.map((mod) => {
         if (mod === "platforms" && platforms.length > 0) {
           return (
