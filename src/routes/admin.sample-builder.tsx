@@ -270,7 +270,10 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
       toast.error(error.message);
       return null;
     }
-    return res.publicUrl;
+    // previewUrl is a freshly-signed URL that works immediately in the
+    // admin form; it's stored verbatim and the public preview re-signs
+    // the bucket+path on every render so links never go stale.
+    return res.previewUrl;
   };
 
   const resetForm = () => {
