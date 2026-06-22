@@ -536,7 +536,7 @@ function YouTubeMock({ businessName, logoUrl, episodeTitle, videoUrl }: {
       <div className="relative aspect-video bg-neutral-900">
         {videoUrl && playing ? (
           youtube ? (
-            <YouTubeEmbed url={youtube} className="absolute inset-0" />
+            <YouTubeEmbed url={youtube} className="absolute inset-0" autoplay minimal />
           ) : (
             <video
               src={videoUrl}
@@ -547,7 +547,11 @@ function YouTubeMock({ businessName, logoUrl, episodeTitle, videoUrl }: {
           )
         ) : (
           <>
-            <LogoTile logoUrl={logoUrl} label={businessName} className="absolute inset-0 size-full opacity-90" />
+            {youtube ? (
+              <YouTubeThumb url={youtube} className="absolute inset-0 size-full" />
+            ) : (
+              <LogoTile logoUrl={logoUrl} label={businessName} className="absolute inset-0 size-full opacity-90" />
+            )}
             <button
               type="button"
               onClick={videoUrl ? () => setPlaying(true) : undefined}
