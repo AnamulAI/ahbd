@@ -326,7 +326,7 @@ function SamplePage() {
               {data.business_name.slice(0, 1).toUpperCase()}
             </div>
           )}
-          <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+          <p className="text-xs font-mono uppercase tracking-wider text-[color:var(--primary)]">
             // YOUR PODCAST PREVIEW
           </p>
           <h1 className="mt-4 text-4xl sm:text-5xl">
@@ -464,7 +464,7 @@ function useAudioPlayer(src: string | null) {
 function SectionHeader({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <div className="text-center mb-10">
-      <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">{eyebrow}</p>
+      <p className="text-xs font-mono uppercase tracking-wider text-[color:var(--primary)]">{eyebrow}</p>
       <h2 className="mt-2 text-3xl sm:text-4xl">{title}</h2>
     </div>
   );
