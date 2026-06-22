@@ -633,7 +633,7 @@ function VideoModule({ businessName, episodeTitle, videoUrl }: { businessName: s
                 </button>
                 <div className="absolute top-5 left-5 right-5 z-10">
                   <p className="text-white/80 text-xs font-mono drop-shadow">{businessName} · Video Podcast</p>
-                  <p className="text-white font-bold text-xl mt-1 line-clamp-2 drop-shadow">{episodeTitle}</p>
+                  {!videoUrl && <p className="text-white font-bold text-xl mt-1 line-clamp-2 drop-shadow">{episodeTitle}</p>}
                 </div>
                 <div className="absolute bottom-4 left-5 right-5 z-10 flex items-center gap-2 bg-black/70 backdrop-blur rounded-lg px-3 py-2">
                   <Captions className="size-4 text-white/80" />
