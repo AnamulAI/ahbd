@@ -212,9 +212,20 @@ export const createMediaUploadUrl = createServerFn({ method: "POST" })
     }
   });
 
+export type AudienceCategory = "marketers" | "creators" | "businesses" | "educators";
+
+export const AUDIENCE_CATEGORIES: AudienceCategory[] = ["marketers", "creators", "businesses", "educators"];
+
+function normalizeAudience(value: unknown): AudienceCategory {
+  return AUDIENCE_CATEGORIES.includes(value as AudienceCategory)
+    ? (value as AudienceCategory)
+    : "businesses";
+}
+
 export type SamplePayload = {
   pin: string;
   business_name: string;
+  audience_category: AudienceCategory;
   episode_title: string;
   topic: string;
   platforms: string[];
@@ -233,6 +244,7 @@ export type SamplePayload = {
   clip_tiktok_url?: string | null;
   clip_linkedin_url?: string | null;
 };
+
 
 async function uploadLogoIfPresent(
   slug: string,

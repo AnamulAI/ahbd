@@ -46,6 +46,7 @@ export type Database = {
       }
       sample_previews: {
         Row: {
+          audience_category: string
           audio_url: string | null
           business_name: string
           clip_instagram_url: string | null
@@ -67,6 +68,7 @@ export type Database = {
           video_url: string | null
         }
         Insert: {
+          audience_category?: string
           audio_url?: string | null
           business_name: string
           clip_instagram_url?: string | null
@@ -88,6 +90,7 @@ export type Database = {
           video_url?: string | null
         }
         Update: {
+          audience_category?: string
           audio_url?: string | null
           business_name?: string
           clip_instagram_url?: string | null
