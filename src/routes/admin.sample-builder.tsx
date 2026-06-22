@@ -293,6 +293,7 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
 
   const resetForm = () => {
     setBusinessName("");
+    setAudienceCategory("businesses");
     setEpisodeTitle("");
     setTopic("");
     setPlatforms(["spotify", "apple", "youtube"]);
