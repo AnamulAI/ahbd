@@ -470,8 +470,11 @@ function SpotifyMock({ businessName, logoUrl, episodeTitle, topic, audioUrl }: {
 function AppleMock({ businessName, logoUrl, episodeTitle, topic, audioUrl }: {
   businessName: string; logoUrl: string | null; episodeTitle: string; topic: string; audioUrl: string | null;
 }) {
-  const youtube = audioUrl && isYouTubeUrl(audioUrl) ? audioUrl : null;
-  const { playing, progress, toggle, available } = useAudioPlayer(youtube ? null : audioUrl);
+  const isYt = !!audioUrl && isYouTubeUrl(audioUrl);
+  const isSc = !!audioUrl && isSoundCloudUrl(audioUrl);
+  const nativeSrc = audioUrl && !isYt && !isSc ? audioUrl : null;
+  const { playing, progress, toggle, available } = useAudioPlayer(nativeSrc);
+  const [scOpen, setScOpen] = useState(false);
   return (
     <div className="rounded-xl overflow-hidden border border-black/10 shadow-2xl bg-white text-neutral-900">
       <div className="p-5 flex items-center gap-2">
@@ -487,15 +490,19 @@ function AppleMock({ businessName, logoUrl, episodeTitle, topic, audioUrl }: {
         <p className="text-[10px] uppercase tracking-wider text-neutral-500 mb-2">Latest Episode</p>
         <p className="font-medium text-sm">{episodeTitle}</p>
         {topic && <p className="text-xs text-neutral-600 mt-1 line-clamp-2">{topic}</p>}
-        {youtube ? (
+        {isYt && audioUrl ? (
           <div className="mt-3 aspect-video w-full rounded-md overflow-hidden bg-black">
-            <YouTubeEmbed url={youtube} />
+            <YouTubeEmbed url={audioUrl} />
+          </div>
+        ) : isSc && audioUrl && scOpen ? (
+          <div className="mt-3 rounded-md overflow-hidden">
+            <SoundCloudEmbed url={audioUrl} className="h-[166px]" />
           </div>
         ) : (
           <>
             <button
               type="button"
-              onClick={available ? toggle : undefined}
+              onClick={isSc ? () => setScOpen(true) : (available ? toggle : undefined)}
               className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full text-white"
               style={{ background: "linear-gradient(135deg, #9933CC, #E91E63)" }}
             >
