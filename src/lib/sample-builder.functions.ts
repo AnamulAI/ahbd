@@ -1,6 +1,29 @@
 import { createServerFn } from "@tanstack/react-start";
+import { createClient } from "@supabase/supabase-js";
+
+import type { Database } from "@/integrations/supabase/types";
 
 const BUCKET = "sample-logos";
+
+function createPublicSupabaseClient() {
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !key) {
+    const missing = [
+      ...(!url ? ["SUPABASE_URL"] : []),
+      ...(!key ? ["SUPABASE_PUBLISHABLE_KEY"] : []),
+    ];
+    throw new Error(`Missing Supabase public environment variable(s): ${missing.join(", ")}.`);
+  }
+
+  return createClient<Database>(url, key, {
+    auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
+  });
+}
+
+function isMissingAdminSecret(error: unknown) {
+  return error instanceof Error && error.message.includes("SUPABASE_SERVICE_ROLE_KEY");
+}
 
 function slugify(input: string): string {
   return input
@@ -47,8 +70,8 @@ export const listSamples = createServerFn({ method: "POST" })
   .inputValidator((d: { pin: string }) => d)
   .handler(async ({ data }) => {
     checkPin(data.pin);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: rows, error } = await supabaseAdmin
+    const supabasePublic = createPublicSupabaseClient();
+    const { data: rows, error } = await supabasePublic
       .from("sample_previews")
       .select("id, slug, business_name, created_at")
       .order("created_at", { ascending: false })
@@ -81,7 +104,17 @@ export const createSample = createServerFn({ method: "POST" })
       throw new Error("Pick at least one platform");
     }
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    let supabaseAdmin: Awaited<typeof import("@/integrations/supabase/client.server")>["supabaseAdmin"];
+    try {
+      ({ supabaseAdmin } = await import("@/integrations/supabase/client.server"));
+      // Force lazy client initialization here so missing admin config becomes a handled form error.
+      supabaseAdmin.from("sample_previews");
+    } catch (error) {
+      if (isMissingAdminSecret(error)) {
+        throw new Error("Sample creation needs the SUPABASE_SERVICE_ROLE_KEY server secret to be available.");
+      }
+      throw error;
+    }
 
     // Generate a unique slug
     const base = slugify(data.business_name);
