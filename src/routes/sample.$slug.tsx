@@ -87,12 +87,16 @@ function SamplePage() {
       {/* Hero */}
       <section className="section-glow-hero relative overflow-hidden">
         <div className="relative mx-auto max-w-4xl px-6 py-16 text-center">
-          {data.logo_url && (
+          {data.logo_url ? (
             <img
               src={data.logo_url}
               alt={`${data.business_name} logo`}
               className="mx-auto mb-6 max-h-24 rounded-lg bg-white/95 object-contain p-3"
             />
+          ) : (
+            <div className="mx-auto mb-6 size-24 rounded-2xl flex items-center justify-center bg-gradient-to-br from-primary to-orange text-4xl font-bold text-white">
+              {data.business_name.slice(0, 1).toUpperCase()}
+            </div>
           )}
           <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
             // YOUR CUSTOM PODCAST PREVIEW
@@ -228,7 +232,7 @@ function LogoTile({ logoUrl, label, className }: { logoUrl: string | null; label
     );
   }
   return (
-    <div className={cn("flex items-center justify-center text-2xl font-bold text-white/80 bg-gradient-to-br from-primary to-orange", className)}>
+    <div className={cn("flex items-center justify-center text-2xl font-bold text-white bg-gradient-to-br from-primary to-orange", className)}>
       {label.slice(0, 1).toUpperCase()}
     </div>
   );
