@@ -217,7 +217,7 @@ function SamplePage() {
             // YOUR CUSTOM PODCAST PREVIEW
           </p>
           <h1 className="mt-4 text-4xl sm:text-5xl">
-            A Custom Podcast Preview for{" "}
+            A Podcast Preview for{" "}
             <span className="text-gradient-vo">{data.business_name}</span>
           </h1>
           <h2 className="mt-3 text-xl sm:text-2xl text-muted-foreground font-normal">
