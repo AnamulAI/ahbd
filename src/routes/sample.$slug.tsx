@@ -217,7 +217,7 @@ function SamplePage() {
             // YOUR CUSTOM PODCAST PREVIEW
           </p>
           <h1 className="mt-4 text-4xl sm:text-5xl">
-            A Custom Podcast Preview for{" "}
+            A Podcast Preview for{" "}
             <span className="text-gradient-vo">{data.business_name}</span>
           </h1>
           <h2 className="mt-3 text-xl sm:text-2xl text-muted-foreground font-normal">
@@ -633,7 +633,7 @@ function VideoModule({ businessName, episodeTitle, videoUrl }: { businessName: s
                 </button>
                 <div className="absolute top-5 left-5 right-5 z-10">
                   <p className="text-white/80 text-xs font-mono drop-shadow">{businessName} · Video Podcast</p>
-                  <p className="text-white font-bold text-xl mt-1 line-clamp-2 drop-shadow">{episodeTitle}</p>
+                  {!videoUrl && <p className="text-white font-bold text-xl mt-1 line-clamp-2 drop-shadow">{episodeTitle}</p>}
                 </div>
                 <div className="absolute bottom-4 left-5 right-5 z-10 flex items-center gap-2 bg-black/70 backdrop-blur rounded-lg px-3 py-2">
                   <Captions className="size-4 text-white/80" />
@@ -655,7 +655,7 @@ function VideoModule({ businessName, episodeTitle, videoUrl }: { businessName: s
 }
 
 function SmmClipCard({
-  brand, Icon, color, label, snippet, clipUrl, iconColor,
+  brand, Icon, color, label, snippet, clipUrl, iconColor, iconBg,
 }: {
   brand: string;
   Icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
@@ -664,13 +664,20 @@ function SmmClipCard({
   snippet: string;
   clipUrl: string | null;
   iconColor?: string;
+  iconBg?: string;
 }) {
   const [playing, setPlaying] = useState(false);
   const youtube = clipUrl && isYouTubeUrl(clipUrl) ? clipUrl : null;
   return (
     <div key={brand} className="rounded-xl overflow-hidden border border-white/10 bg-neutral-950 shadow-2xl">
       <div className="p-4 flex items-center gap-2 border-b border-white/5">
-        <Icon className="size-5" style={iconColor ? { color: iconColor } : undefined} />
+        {iconBg ? (
+          <div className="size-6 rounded-md flex items-center justify-center shrink-0" style={{ background: iconBg }}>
+            <Icon className="size-4" style={iconColor ? { color: iconColor } : undefined} />
+          </div>
+        ) : (
+          <Icon className="size-5" style={iconColor ? { color: iconColor } : undefined} />
+        )}
         <span className="text-sm font-medium text-white/90">{label}</span>
       </div>
       <div className="relative aspect-[9/16]" style={{ background: color }}>
@@ -707,11 +714,6 @@ function SmmClipCard({
                 <Play className="size-7 text-black fill-black ml-0.5" />
               </span>
             </button>
-            <div className="absolute bottom-3 left-3 right-3 text-white pointer-events-none">
-              <p className="text-xs font-semibold drop-shadow line-clamp-3">
-                "{snippet}{snippet.length >= 60 ? "..." : ""}"
-              </p>
-            </div>
           </>
         )}
       </div>
@@ -730,9 +732,9 @@ function SmmModule({
 }) {
   const snippet = (topic || businessName).slice(0, 60);
   const cards = [
-    { brand: "instagram", Icon: SiInstagram, color: "linear-gradient(135deg, #F58529, #DD2A7B, #8134AF)", label: "Instagram Reel", clipUrl: clipInstagram },
-    { brand: "tiktok", Icon: SiTiktok, color: "#000000", label: "TikTok", clipUrl: clipTiktok, iconColor: "#fff" },
-    { brand: "linkedin", Icon: SiLinkedin, color: "#0A66C2", label: "LinkedIn Clip", clipUrl: clipLinkedin },
+    { brand: "instagram", Icon: SiInstagram, color: "linear-gradient(135deg, #F58529, #DD2A7B, #8134AF)", label: "Instagram Reel", clipUrl: clipInstagram, iconBg: "linear-gradient(135deg, #833AB4, #FD1D1D, #F56040)", iconColor: "#ffffff" },
+    { brand: "tiktok", Icon: SiTiktok, color: "#000000", label: "TikTok", clipUrl: clipTiktok, iconColor: "#00F2EA" },
+    { brand: "linkedin", Icon: SiLinkedin, color: "#0A66C2", label: "LinkedIn Clip", clipUrl: clipLinkedin, iconBg: "#ffffff", iconColor: "#0A66C2" },
   ];
 
   return (
@@ -750,6 +752,7 @@ function SmmModule({
               snippet={snippet}
               clipUrl={c.clipUrl}
               iconColor={c.iconColor}
+              iconBg={c.iconBg}
             />
           ))}
         </div>
