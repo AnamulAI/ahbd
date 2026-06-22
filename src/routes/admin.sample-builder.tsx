@@ -159,12 +159,9 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
   }, [activeModules]);
 
   const refreshList = async () => {
-    try {
-      const res = await listFn({ data: { pin } });
-      setSamples(res.samples as Sample[]);
-    } catch (err) {
-      toast.error("Could not load samples");
-    }
+    const res = await listFn({ data: { pin } });
+    setSamples(res.samples as Sample[]);
+    if (res.error) toast.error(res.error);
   };
 
   useEffect(() => {
@@ -213,6 +210,10 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
           logo_filename: logoFilename,
         },
       });
+      if (!res.ok || !res.slug) {
+        toast.error(res.error || "Failed to create");
+        return;
+      }
       setLastSlug(res.slug);
       toast.success("Sample created");
       refreshList();
