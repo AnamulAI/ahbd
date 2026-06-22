@@ -714,11 +714,6 @@ function SmmClipCard({
                 <Play className="size-7 text-black fill-black ml-0.5" />
               </span>
             </button>
-            <div className="absolute bottom-3 left-3 right-3 text-white pointer-events-none">
-              <p className="text-xs font-semibold drop-shadow line-clamp-3">
-                "{snippet}{snippet.length >= 60 ? "..." : ""}"
-              </p>
-            </div>
           </>
         )}
       </div>
