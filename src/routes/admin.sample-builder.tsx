@@ -34,7 +34,16 @@ import {
   listSamples,
   updateSample,
   verifyPin,
+  AUDIENCE_CATEGORIES,
+  type AudienceCategory,
 } from "@/lib/sample-builder.functions";
+
+const AUDIENCE_LABELS: Record<AudienceCategory, string> = {
+  marketers: "Marketers",
+  creators: "Content Creators",
+  businesses: "Businesses",
+  educators: "Educators",
+};
 
 type SearchParams = { id?: string };
 
