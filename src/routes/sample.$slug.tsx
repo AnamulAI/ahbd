@@ -232,7 +232,7 @@ function LogoTile({ logoUrl, label, className }: { logoUrl: string | null; label
     );
   }
   return (
-    <div className={cn("flex items-center justify-center text-2xl font-bold text-white/80 bg-gradient-to-br from-primary to-orange", className)}>
+    <div className={cn("flex items-center justify-center text-2xl font-bold text-white bg-gradient-to-br from-primary to-orange", className)}>
       {label.slice(0, 1).toUpperCase()}
     </div>
   );
