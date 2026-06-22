@@ -44,6 +44,57 @@ export type Database = {
         }
         Relationships: []
       }
+      sample_previews: {
+        Row: {
+          business_name: string
+          created_at: string
+          cta_link: string
+          cta_text: string
+          episode_title: string
+          id: string
+          logo_url: string | null
+          module_order: Json
+          platforms: Json
+          show_smm: boolean
+          show_video: boolean
+          slug: string
+          topic: string
+          updated_at: string
+        }
+        Insert: {
+          business_name: string
+          created_at?: string
+          cta_link?: string
+          cta_text?: string
+          episode_title?: string
+          id?: string
+          logo_url?: string | null
+          module_order?: Json
+          platforms?: Json
+          show_smm?: boolean
+          show_video?: boolean
+          slug: string
+          topic?: string
+          updated_at?: string
+        }
+        Update: {
+          business_name?: string
+          created_at?: string
+          cta_link?: string
+          cta_text?: string
+          episode_title?: string
+          id?: string
+          logo_url?: string | null
+          module_order?: Json
+          platforms?: Json
+          show_smm?: boolean
+          show_video?: boolean
+          slug?: string
+          topic?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
