@@ -46,7 +46,11 @@ export type Database = {
       }
       sample_previews: {
         Row: {
+          audio_url: string | null
           business_name: string
+          clip_instagram_url: string | null
+          clip_linkedin_url: string | null
+          clip_tiktok_url: string | null
           created_at: string
           cta_link: string
           cta_text: string
@@ -60,9 +64,14 @@ export type Database = {
           slug: string
           topic: string
           updated_at: string
+          video_url: string | null
         }
         Insert: {
+          audio_url?: string | null
           business_name: string
+          clip_instagram_url?: string | null
+          clip_linkedin_url?: string | null
+          clip_tiktok_url?: string | null
           created_at?: string
           cta_link?: string
           cta_text?: string
@@ -76,9 +85,14 @@ export type Database = {
           slug: string
           topic?: string
           updated_at?: string
+          video_url?: string | null
         }
         Update: {
+          audio_url?: string | null
           business_name?: string
+          clip_instagram_url?: string | null
+          clip_linkedin_url?: string | null
+          clip_tiktok_url?: string | null
           created_at?: string
           cta_link?: string
           cta_text?: string
@@ -92,6 +106,7 @@ export type Database = {
           slug?: string
           topic?: string
           updated_at?: string
+          video_url?: string | null
         }
         Relationships: []
       }
