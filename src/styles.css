@@ -2,6 +2,42 @@
 @source "../src";
 @import "tw-animate-css";
 
+/* Sample preview builder — platform marquee strip */
+@keyframes marquee-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-25%); }
+}
+@keyframes marquee-right {
+  from { transform: translateX(-25%); }
+  to   { transform: translateX(0); }
+}
+
+@utility platform-marquee {
+  mask-image: linear-gradient(to right, transparent 0, #000 8%, #000 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 8%, #000 92%, transparent 100%);
+}
+
+@utility platform-marquee-track-left {
+  display: flex;
+  width: max-content;
+  gap: 0.75rem;
+  animation: marquee-left 40s linear infinite;
+}
+
+@utility platform-marquee-track-right {
+  display: flex;
+  width: max-content;
+  gap: 0.75rem;
+  animation: marquee-right 45s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .platform-marquee-track-left,
+  .platform-marquee-track-right {
+    animation: none !important;
+  }
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
