@@ -732,9 +732,9 @@ function SmmModule({
 }) {
   const snippet = (topic || businessName).slice(0, 60);
   const cards = [
-    { brand: "instagram", Icon: SiInstagram, color: "linear-gradient(135deg, #F58529, #DD2A7B, #8134AF)", label: "Instagram Reel", clipUrl: clipInstagram },
-    { brand: "tiktok", Icon: SiTiktok, color: "#000000", label: "TikTok", clipUrl: clipTiktok, iconColor: "#fff" },
-    { brand: "linkedin", Icon: SiLinkedin, color: "#0A66C2", label: "LinkedIn Clip", clipUrl: clipLinkedin },
+    { brand: "instagram", Icon: SiInstagram, color: "linear-gradient(135deg, #F58529, #DD2A7B, #8134AF)", label: "Instagram Reel", clipUrl: clipInstagram, iconBg: "linear-gradient(135deg, #833AB4, #FD1D1D, #F56040)", iconColor: "#ffffff" },
+    { brand: "tiktok", Icon: SiTiktok, color: "#000000", label: "TikTok", clipUrl: clipTiktok, iconColor: "#00F2EA" },
+    { brand: "linkedin", Icon: SiLinkedin, color: "#0A66C2", label: "LinkedIn Clip", clipUrl: clipLinkedin, iconBg: "#ffffff", iconColor: "#0A66C2" },
   ];
 
   return (
@@ -752,6 +752,7 @@ function SmmModule({
               snippet={snippet}
               clipUrl={c.clipUrl}
               iconColor={c.iconColor}
+              iconBg={c.iconBg}
             />
           ))}
         </div>
