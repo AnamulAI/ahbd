@@ -1026,34 +1026,75 @@ function ProjectsSection() {
   );
 }
 
-// ---------- 10. PRICING CALCULATOR ----------
+// ---------- 10. PRICING CALCULATOR (3-SEGMENT TABBED) ----------
 
-type DurationOption = { id: string; label: string; price: number };
 type VolumeOption = { id: string; label: string; price: number };
+type AddonOption = { id: string; label: string; price: number; recurring: boolean };
 
-const DURATION_OPTIONS: DurationOption[] = [
-  { id: "d1", label: "5–10 min", price: 0 },
-  { id: "d2", label: "15 min", price: 100 },
-  { id: "d3", label: "20 min", price: 200 },
-  { id: "d4", label: "30 min", price: 400 },
-  { id: "d5", label: "45 min", price: 600 },
-];
-
-const VOLUME_OPTIONS: VolumeOption[] = [
-  { id: "v1", label: "4 episodes", price: 0 },
-  { id: "v2", label: "8 episodes", price: 400 },
-  { id: "v3", label: "12 episodes", price: 800 },
-  { id: "v4", label: "16 episodes", price: 1200 },
-];
-
-const PRICING_ADDONS = [
-  { id: "platform", label: "Platform Setup & Publishing", price: 200, recurring: false },
+const SHARED_ADDONS: AddonOption[] = [
   { id: "social", label: "Social Media Repurposing", price: 200, recurring: true },
   { id: "voice", label: "Voice Cloning Setup", price: 100, recurring: false },
   { id: "avatar", label: "AI Avatar Video Podcast", price: 400, recurring: true },
+];
+
+const TAB1_VOLUMES: VolumeOption[] = [
+  { id: "v1", label: "4 episodes", price: 0 },
+  { id: "v2", label: "8 episodes", price: 150 },
+  { id: "v3", label: "12 episodes", price: 300 },
+  { id: "v4", label: "16 episodes", price: 450 },
+];
+
+const TAB1_BASE = 349;
+const TAB2_LAUNCH = 999;
+const TAB2_MONTHLY = 1500;
+const TAB3_BASE = 599;
+
+const TAB1_FEATURES = [
+  "4 episodes/month, fully edited",
+  "Branded intro & outro",
+  "Show notes per episode",
+  "Publishing to Spotify, Apple Podcasts, YouTube Podcasts & more",
+  "Consistent release schedule",
+];
+
+const TAB2_FEATURES = [
+  "Brand & show strategy session",
+  "Custom intro/outro with branded music",
+  "Platform setup (Spotify, Apple Podcasts, YouTube Podcasts)",
+  "4 episodes/month, fully produced",
+  "Consistent voice and style every episode",
+  "Episode transcripts included",
+];
+
+const TAB3_FEATURES = [
+  "4 episodes/month from your written content",
+  "Script generated from your blog, URL, or PDF",
+  "Premium AI voice narration",
+  "Branded intro/outro",
+  "Published to Spotify, Apple Podcasts, and YouTube Podcasts",
+  "Episode transcripts for SEO",
+];
+
+const TABS = [
+  {
+    id: "publishing",
+    title: "Podcast Publishing & Management",
+    subtitle: "I already have a podcast, I just need it produced and published consistently.",
+  },
+  {
+    id: "authority",
+    title: "Business Authority Podcast",
+    subtitle: "I want to launch a branded podcast to build trust and authority for my business.",
+  },
+  {
+    id: "content",
+    title: "Content-to-Podcast",
+    subtitle: "I want to turn my blog, newsletter, or expertise into a podcast.",
+  },
 ] as const;
 
-const BASE_PRICE = 990;
+type TabId = (typeof TABS)[number]["id"];
+
 const fmt = (n: number) => `$${n.toLocaleString()}`;
 
 function StepHeader({ n, title }: { n: number; title: string }) {
@@ -1067,7 +1108,15 @@ function StepHeader({ n, title }: { n: number; title: string }) {
   );
 }
 
-function IncludedDialog({ children }: { children: React.ReactNode }) {
+function IncludedDialog({
+  children,
+  title,
+  features,
+}: {
+  children: React.ReactNode;
+  title: string;
+  features: string[];
+}) {
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -1079,14 +1128,11 @@ function IncludedDialog({ children }: { children: React.ReactNode }) {
               <span className="grid h-10 w-10 place-items-center rounded-xl bg-[color:var(--primary)]/15">
                 <Mic className="h-5 w-5 text-[color:var(--primary)]" />
               </span>
-              <DialogTitle className="font-display text-xl font-bold">
-                What's Included In Your Plan
-              </DialogTitle>
+              <DialogTitle className="font-display text-xl font-bold">{title}</DialogTitle>
             </div>
             <DialogDescription className="font-sans pt-2 text-sm leading-relaxed">
-              Every plan starts with the full Done-For-You production service.
-              Add-ons extend reach and production value on top of the core
-              deliverables below.
+              Here's exactly what's included in this plan. Add-ons extend reach and production
+              value on top of these core deliverables.
             </DialogDescription>
           </DialogHeader>
           <div>
@@ -1094,12 +1140,15 @@ function IncludedDialog({ children }: { children: React.ReactNode }) {
               Core Service
             </h4>
             <ul className="mt-3 space-y-1">
-              {CORE_FEATURES.map((f) => (
+              {features.map((f) => (
                 <li
                   key={f}
                   className="flex items-start gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-200 hover:bg-white/[0.06] hover:text-white"
                 >
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--primary)]" aria-hidden />
+                  <Check
+                    className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--primary)]"
+                    aria-hidden
+                  />
                   <span>{f}</span>
                 </li>
               ))}
@@ -1110,14 +1159,18 @@ function IncludedDialog({ children }: { children: React.ReactNode }) {
               Available Add-Ons
             </h4>
             <ul className="mt-3 space-y-1">
-              {ADDON_CARDS.map((a) => (
+              {SHARED_ADDONS.map((a) => (
                 <li
-                  key={a.title}
+                  key={a.id}
                   className="flex items-start gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-200 hover:bg-white/[0.06] hover:text-white"
                 >
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--orange)]" aria-hidden />
+                  <Check
+                    className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--orange)]"
+                    aria-hidden
+                  />
                   <span>
-                    <span className="font-semibold text-white">{a.title}</span> — {a.desc}
+                    <span className="font-semibold text-white">{a.label}</span> — +{fmt(a.price)}
+                    {a.recurring ? "/mo" : " one-time"}
                   </span>
                 </li>
               ))}
@@ -1137,48 +1190,450 @@ function IncludedDialog({ children }: { children: React.ReactNode }) {
   );
 }
 
-function PricingCalculatorSection() {
-  const [durationId, setDurationId] = useState<string>("d1");
-  const [volumeId, setVolumeId] = useState<string>("v1");
-  const [addonIds, setAddonIds] = useState<string[]>([]);
+function AddonsBlock({
+  stepNumber,
+  selected,
+  onToggle,
+}: {
+  stepNumber: number;
+  selected: string[];
+  onToggle: (id: string) => void;
+}) {
+  return (
+    <div>
+      <StepHeader n={stepNumber} title="Optional Add-Ons" />
+      <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
+        {SHARED_ADDONS.map((a) => {
+          const active = selected.includes(a.id);
+          return (
+            <label
+              key={a.id}
+              className={[
+                "card-elevated card-elevated-hover flex cursor-pointer items-center gap-3 p-3.5 transition-all",
+                active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
+              ].join(" ")}
+            >
+              <Checkbox
+                checked={active}
+                onCheckedChange={() => onToggle(a.id)}
+                className="border-white/30 data-[state=checked]:border-[color:var(--primary)] data-[state=checked]:bg-[color:var(--primary)]"
+              />
+              <span className="min-w-0 flex-1 text-sm text-white">{a.label}</span>
+              <span className="shrink-0 text-sm font-semibold text-[color:var(--primary)]">
+                +{fmt(a.price)}
+                <span className="ml-1 text-[10px] font-medium text-[color:var(--orange)]">
+                  {a.recurring ? "/mo" : "one-time"}
+                </span>
+              </span>
+            </label>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
-  const duration = DURATION_OPTIONS.find((d) => d.id === durationId)!;
-  const volume = VOLUME_OPTIONS.find((v) => v.id === volumeId)!;
-  const selectedAddons = PRICING_ADDONS.filter((a) => addonIds.includes(a.id));
+function FeaturedTierCard({
+  badge,
+  title,
+  priceBlocks,
+  features,
+}: {
+  badge: string;
+  title: string;
+  priceBlocks: { label: string; price: string; desc: string; tone?: "primary" | "orange" }[];
+  features: string[];
+}) {
+  return (
+    <div className="relative overflow-hidden rounded-2xl p-[1px]">
+      <div className="absolute inset-0 bg-gradient-to-br from-[color:var(--primary)]/60 via-white/10 to-[color:var(--orange)]/60" />
+      <div className="relative rounded-2xl bg-[#16181D] p-6 sm:p-8 shadow-[0_30px_90px_-30px_rgba(249,115,22,0.35),0_30px_90px_-40px_rgba(59,130,246,0.45)]">
+        <span className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[color:var(--primary)] to-[color:var(--orange)] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
+          <Sparkles className="h-3 w-3" /> {badge}
+        </span>
+        <h3 className="mt-4 font-display text-2xl font-bold text-white sm:text-3xl">{title}</h3>
 
-  const toggleAddon = (id: string) =>
-    setAddonIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          {priceBlocks.map((b) => (
+            <div
+              key={b.label}
+              className="rounded-xl border border-white/10 bg-[#0F0F0F] p-5"
+            >
+              <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                {b.label}
+              </div>
+              <div
+                className={[
+                  "mt-2 font-display text-3xl font-bold",
+                  b.tone === "orange" ? "text-[color:var(--orange)]" : "text-white",
+                ].join(" ")}
+              >
+                {b.price}
+              </div>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{b.desc}</p>
+            </div>
+          ))}
+        </div>
 
-  const recurringAddons = selectedAddons.filter((a) => a.recurring);
-  const oneTimeAddons = selectedAddons.filter((a) => !a.recurring);
+        <ul className="mt-6 grid gap-2 sm:grid-cols-2">
+          {features.map((f) => (
+            <li key={f} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+              <Check
+                className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--primary)]"
+                aria-hidden
+              />
+              <span>{f}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
 
-  const monthlyTotal =
-    BASE_PRICE +
-    duration.price +
-    volume.price +
-    recurringAddons.reduce((acc, a) => acc + a.price, 0);
-  const oneTimeTotal = oneTimeAddons.reduce((acc, a) => acc + a.price, 0);
-
-  const waMessage = useMemo(() => {
-    const lines = [
-      "Hi Anam, I built a custom AI Podcast quote:",
-      "",
-      `• Base plan: ${fmt(BASE_PRICE)}/month`,
-      `• Episode duration: ${duration.label}${duration.price === 0 ? " (Included)" : ` (+${fmt(duration.price)}/mo)`}`,
-      `• Monthly volume: ${volume.label}${volume.price === 0 ? " (Included)" : ` (+${fmt(volume.price)}/mo)`}`,
-    ];
-    if (selectedAddons.length) {
-      lines.push("• Add-ons:");
-      selectedAddons.forEach((a) =>
-        lines.push(`   - ${a.label} (+${fmt(a.price)}${a.recurring ? "/mo" : " one-time"})`),
-      );
-    }
-    lines.push("", `MONTHLY TOTAL: ${fmt(monthlyTotal)}/month`);
-    if (oneTimeTotal > 0) lines.push(`ONE-TIME SETUP: ${fmt(oneTimeTotal)}`);
-    return lines.join("\n");
-  }, [duration, volume, selectedAddons, monthlyTotal, oneTimeTotal]);
-
+function EstimateSidebar({
+  lineItems,
+  monthlyTotal,
+  oneTimeTotal,
+  oneTimeLabel,
+  includedTitle,
+  includedFeatures,
+  waMessage,
+}: {
+  lineItems: { label: string; value: string; sub?: string }[];
+  monthlyTotal: number;
+  oneTimeTotal: number;
+  oneTimeLabel?: string;
+  includedTitle: string;
+  includedFeatures: string[];
+  waMessage: string;
+}) {
   const waLink = `https://wa.me/8801777768353?text=${encodeURIComponent(waMessage)}`;
+  return (
+    <aside className="lg:sticky lg:top-24 lg:self-start">
+      <div className="relative rounded-2xl border border-[color:var(--primary)]/60 bg-[#16181D] p-6 shadow-[0_0_0_1px_rgba(59,130,246,0.15),0_30px_90px_-30px_rgba(249,115,22,0.35),0_30px_90px_-40px_rgba(59,130,246,0.45)]">
+        <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-[color:var(--primary)]/10 via-transparent to-[color:var(--orange)]/10" />
+        <div className="relative">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-[color:var(--orange)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[color:var(--orange)]">
+              Live estimate
+            </span>
+          </div>
+          <h3 className="mt-2 text-xl font-semibold text-white">Your Plan</h3>
+
+          <ul className="mt-5 space-y-2.5 text-sm">
+            {lineItems.map((li, i) => (
+              <li key={i} className="flex items-start justify-between gap-3">
+                <span className="text-muted-foreground">
+                  {li.label}
+                  {li.sub && <span className="text-white/80"> {li.sub}</span>}
+                </span>
+                <span className="shrink-0 font-semibold text-white">{li.value}</span>
+              </li>
+            ))}
+          </ul>
+
+          <IncludedDialog title={includedTitle} features={includedFeatures}>
+            <button
+              type="button"
+              className="mt-3 inline-flex items-center gap-1 text-[11px] font-semibold text-[color:var(--primary)] hover:text-[color:var(--orange)] transition-colors cursor-pointer"
+            >
+              See what's included <ArrowRight className="h-3 w-3" />
+            </button>
+          </IncludedDialog>
+
+          <div className="my-5 h-px w-full bg-white/10" />
+
+          <div className="flex items-end justify-between gap-3">
+            <span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+              Monthly Total
+            </span>
+            <span className="text-3xl font-bold text-white">
+              {fmt(monthlyTotal)}
+              <span className="ml-1 text-sm font-medium text-[color:var(--orange)]">/mo</span>
+            </span>
+          </div>
+          {oneTimeTotal > 0 && (
+            <div className="mt-1 flex items-end justify-between gap-3">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[color:var(--orange)]">
+                + {oneTimeLabel ?? "One-time setup"}
+              </span>
+              <span className="text-sm font-bold text-[color:var(--orange)]">
+                {fmt(oneTimeTotal)}
+              </span>
+            </div>
+          )}
+
+          <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+            This is an estimate. Final pricing is confirmed after a quick scope discussion.
+          </p>
+
+          <a
+            href={waLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-gradient mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold text-white shadow-[0_10px_30px_-12px_var(--vo-glow)] transition-all hover:scale-[1.02] hover:brightness-110"
+          >
+            Get This Quote on WhatsApp
+            <ArrowRight className="h-4 w-4" />
+          </a>
+          <Link
+            to="/contact"
+            className="mt-3 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full border border-[color:var(--primary)]/50 px-5 text-sm font-semibold text-white transition-all hover:bg-[color:var(--primary)]/10"
+          >
+            Send via Contact Form
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+function Tab1Publishing() {
+  const [volumeId, setVolumeId] = useState("v1");
+  const [addonIds, setAddonIds] = useState<string[]>([]);
+  const volume = TAB1_VOLUMES.find((v) => v.id === volumeId)!;
+  const selectedAddons = SHARED_ADDONS.filter((a) => addonIds.includes(a.id));
+  const recurring = selectedAddons.filter((a) => a.recurring);
+  const oneTime = selectedAddons.filter((a) => !a.recurring);
+  const monthlyTotal =
+    TAB1_BASE + volume.price + recurring.reduce((s, a) => s + a.price, 0);
+  const oneTimeTotal = oneTime.reduce((s, a) => s + a.price, 0);
+  const toggle = (id: string) =>
+    setAddonIds((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+
+  const lineItems = [
+    { label: "Base plan", value: `${fmt(TAB1_BASE)}/mo` },
+    {
+      label: "Volume:",
+      sub: volume.label,
+      value: volume.price === 0 ? "Included" : `+${fmt(volume.price)}/mo`,
+    },
+    ...selectedAddons.map((a) => ({
+      label: a.label,
+      value: `+${fmt(a.price)}${a.recurring ? "/mo" : " one-time"}`,
+    })),
+  ];
+
+  const waMessage = [
+    "Hi Anam, I built a custom quote for Podcast Publishing & Management:",
+    "",
+    `• Base plan: ${fmt(TAB1_BASE)}/month (4 episodes incl.)`,
+    `• Volume: ${volume.label}${volume.price === 0 ? " (Included)" : ` (+${fmt(volume.price)}/mo)`}`,
+    ...(selectedAddons.length
+      ? [
+          "• Add-ons:",
+          ...selectedAddons.map(
+            (a) =>
+              `   - ${a.label} (+${fmt(a.price)}${a.recurring ? "/mo" : " one-time"})`,
+          ),
+        ]
+      : []),
+    "",
+    `MONTHLY TOTAL: ${fmt(monthlyTotal)}/month`,
+    ...(oneTimeTotal > 0 ? [`ONE-TIME SETUP: ${fmt(oneTimeTotal)}`] : []),
+  ].join("\n");
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+      <div className="space-y-10">
+        <div>
+          <StepHeader n={1} title="Monthly Volume" />
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {TAB1_VOLUMES.map((v) => {
+              const active = volumeId === v.id;
+              return (
+                <button
+                  key={v.id}
+                  type="button"
+                  onClick={() => setVolumeId(v.id)}
+                  className={[
+                    "card-elevated card-elevated-hover relative flex h-full flex-col p-3.5 text-left transition-all cursor-pointer",
+                    active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
+                  ].join(" ")}
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[color:var(--primary)]/10">
+                      <Mic className="h-4 w-4 text-[color:var(--primary)]" />
+                    </div>
+                    <div className="pt-0.5 text-sm font-semibold leading-snug text-white">
+                      {v.label}
+                    </div>
+                  </div>
+                  <div className="mt-1 pl-12 text-sm font-bold text-[color:var(--primary)]">
+                    {v.price === 0 ? "Included" : `+${fmt(v.price)}/mo`}
+                  </div>
+                  {active && (
+                    <Check className="absolute right-3 top-3 h-4 w-4 text-[color:var(--primary)]" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <AddonsBlock stepNumber={2} selected={addonIds} onToggle={toggle} />
+      </div>
+
+      <EstimateSidebar
+        lineItems={lineItems}
+        monthlyTotal={monthlyTotal}
+        oneTimeTotal={oneTimeTotal}
+        includedTitle="Podcast Publishing & Management"
+        includedFeatures={TAB1_FEATURES}
+        waMessage={waMessage}
+      />
+    </div>
+  );
+}
+
+function Tab2Authority() {
+  const [addonIds, setAddonIds] = useState<string[]>([]);
+  const selectedAddons = SHARED_ADDONS.filter((a) => addonIds.includes(a.id));
+  const recurring = selectedAddons.filter((a) => a.recurring);
+  const oneTime = selectedAddons.filter((a) => !a.recurring);
+  const monthlyTotal = TAB2_MONTHLY + recurring.reduce((s, a) => s + a.price, 0);
+  const oneTimeTotal = TAB2_LAUNCH + oneTime.reduce((s, a) => s + a.price, 0);
+  const toggle = (id: string) =>
+    setAddonIds((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+
+  const lineItems = [
+    { label: "Launch fee (one-time)", value: fmt(TAB2_LAUNCH) },
+    { label: "Production fee", value: `${fmt(TAB2_MONTHLY)}/mo` },
+    ...selectedAddons.map((a) => ({
+      label: a.label,
+      value: `+${fmt(a.price)}${a.recurring ? "/mo" : " one-time"}`,
+    })),
+  ];
+
+  const waMessage = [
+    "Hi Anam, I'm interested in the Business Authority Podcast:",
+    "",
+    `• Launch fee (one-time): ${fmt(TAB2_LAUNCH)}`,
+    `• Production fee: ${fmt(TAB2_MONTHLY)}/month`,
+    ...(selectedAddons.length
+      ? [
+          "• Add-ons:",
+          ...selectedAddons.map(
+            (a) =>
+              `   - ${a.label} (+${fmt(a.price)}${a.recurring ? "/mo" : " one-time"})`,
+          ),
+        ]
+      : []),
+    "",
+    `MONTHLY TOTAL: ${fmt(monthlyTotal)}/month`,
+    `+ ONE-TIME: ${fmt(oneTimeTotal)} (incl. ${fmt(TAB2_LAUNCH)} launch fee)`,
+  ].join("\n");
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+      <div className="space-y-10">
+        <FeaturedTierCard
+          badge="Most Popular For Businesses"
+          title="Business Authority Podcast — Launch & Grow"
+          priceBlocks={[
+            {
+              label: "One-time Launch Fee",
+              price: fmt(TAB2_LAUNCH),
+              desc: "Brand strategy, show setup, intro/outro production, and publishing setup across every major platform.",
+              tone: "orange",
+            },
+            {
+              label: "Monthly Production Fee",
+              price: `${fmt(TAB2_MONTHLY)}/mo`,
+              desc: "4 professionally produced episodes per month, consistent branding, and ongoing multi-platform publishing — so your show builds authority on a predictable schedule.",
+            },
+          ]}
+          features={TAB2_FEATURES}
+        />
+
+        <AddonsBlock stepNumber={1} selected={addonIds} onToggle={toggle} />
+      </div>
+
+      <EstimateSidebar
+        lineItems={lineItems}
+        monthlyTotal={monthlyTotal}
+        oneTimeTotal={oneTimeTotal}
+        oneTimeLabel="One-time (incl. launch fee)"
+        includedTitle="Business Authority Podcast"
+        includedFeatures={TAB2_FEATURES}
+        waMessage={waMessage}
+      />
+    </div>
+  );
+}
+
+function Tab3Content() {
+  const [addonIds, setAddonIds] = useState<string[]>([]);
+  const selectedAddons = SHARED_ADDONS.filter((a) => addonIds.includes(a.id));
+  const recurring = selectedAddons.filter((a) => a.recurring);
+  const oneTime = selectedAddons.filter((a) => !a.recurring);
+  const monthlyTotal = TAB3_BASE + recurring.reduce((s, a) => s + a.price, 0);
+  const oneTimeTotal = oneTime.reduce((s, a) => s + a.price, 0);
+  const toggle = (id: string) =>
+    setAddonIds((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+
+  const lineItems = [
+    { label: "Base plan", value: `${fmt(TAB3_BASE)}/mo` },
+    ...selectedAddons.map((a) => ({
+      label: a.label,
+      value: `+${fmt(a.price)}${a.recurring ? "/mo" : " one-time"}`,
+    })),
+  ];
+
+  const waMessage = [
+    "Hi Anam, I'm interested in the Content-to-Podcast service:",
+    "",
+    `• Base plan: ${fmt(TAB3_BASE)}/month`,
+    ...(selectedAddons.length
+      ? [
+          "• Add-ons:",
+          ...selectedAddons.map(
+            (a) =>
+              `   - ${a.label} (+${fmt(a.price)}${a.recurring ? "/mo" : " one-time"})`,
+          ),
+        ]
+      : []),
+    "",
+    `MONTHLY TOTAL: ${fmt(monthlyTotal)}/month`,
+    ...(oneTimeTotal > 0 ? [`ONE-TIME SETUP: ${fmt(oneTimeTotal)}`] : []),
+  ].join("\n");
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+      <div className="space-y-10">
+        <FeaturedTierCard
+          badge="For Creators & Educators"
+          title="Content-to-Podcast"
+          priceBlocks={[
+            {
+              label: "Flat Monthly Price",
+              price: `${fmt(TAB3_BASE)}/mo`,
+              desc: "Turn your existing blog, newsletter, or course material into 4 podcast episodes a month — published everywhere your audience already listens.",
+            },
+          ]}
+          features={TAB3_FEATURES}
+        />
+
+        <AddonsBlock stepNumber={1} selected={addonIds} onToggle={toggle} />
+      </div>
+
+      <EstimateSidebar
+        lineItems={lineItems}
+        monthlyTotal={monthlyTotal}
+        oneTimeTotal={oneTimeTotal}
+        includedTitle="Content-to-Podcast"
+        includedFeatures={TAB3_FEATURES}
+        waMessage={waMessage}
+      />
+    </div>
+  );
+}
+
+function PricingCalculatorSection() {
+  const [activeTab, setActiveTab] = useState<TabId>("publishing");
 
   return (
     <section className="py-20 sm:py-28">
@@ -1187,222 +1642,42 @@ function PricingCalculatorSection() {
           eyebrow="// PRICING"
           white="Build Your"
           gradient="Perfect Plan"
-          subtext="Start at $990/month — customize duration, volume, and add-ons to match your needs."
+          subtext="Choose the service that matches your situation — pricing built for how you'll actually use it."
         />
 
-        <div className="mt-12 grid gap-6 lg:grid-cols-[1fr_360px]">
-          {/* LEFT */}
-          <div className="space-y-10">
-            {/* STEP 1 — Duration */}
-            <div>
-              <StepHeader n={1} title="Episode Duration" />
-              <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {DURATION_OPTIONS.map((d) => {
-                  const active = durationId === d.id;
-                  return (
-                    <button
-                      key={d.id}
-                      type="button"
-                      onClick={() => setDurationId(d.id)}
-                      className={[
-                        "card-elevated card-elevated-hover relative flex h-full flex-col p-3.5 text-left transition-all cursor-pointer",
-                        active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
-                      ].join(" ")}
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[color:var(--primary)]/10">
-                          <Clock className="h-4 w-4 text-[color:var(--primary)]" />
-                        </div>
-                        <div className="pt-0.5 text-sm font-semibold leading-snug text-white">
-                          {d.label}
-                        </div>
-                      </div>
-                      <div className="mt-1 pl-12 text-sm font-bold text-[color:var(--primary)]">
-                        {d.price === 0 ? "Included" : `+${fmt(d.price)}/mo`}
-                      </div>
-                      {active && (
-                        <Check className="absolute right-3 top-3 h-4 w-4 text-[color:var(--primary)]" />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* STEP 2 — Volume */}
-            <div>
-              <StepHeader n={2} title="Monthly Volume" />
-              <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                {VOLUME_OPTIONS.map((v) => {
-                  const active = volumeId === v.id;
-                  return (
-                    <button
-                      key={v.id}
-                      type="button"
-                      onClick={() => setVolumeId(v.id)}
-                      className={[
-                        "card-elevated card-elevated-hover relative flex h-full flex-col p-3.5 text-left transition-all cursor-pointer",
-                        active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
-                      ].join(" ")}
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[color:var(--primary)]/10">
-                          <Mic className="h-4 w-4 text-[color:var(--primary)]" />
-                        </div>
-                        <div className="pt-0.5 text-sm font-semibold leading-snug text-white">
-                          {v.label}
-                        </div>
-                      </div>
-                      <div className="mt-1 pl-12 text-sm font-bold text-[color:var(--primary)]">
-                        {v.price === 0 ? "Included" : `+${fmt(v.price)}/mo`}
-                      </div>
-                      {active && (
-                        <Check className="absolute right-3 top-3 h-4 w-4 text-[color:var(--primary)]" />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* STEP 3 — Add-ons */}
-            <div>
-              <StepHeader n={3} title="Optional Add-Ons" />
-              <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
-                {PRICING_ADDONS.map((a) => {
-                  const active = addonIds.includes(a.id);
-                  return (
-                    <label
-                      key={a.id}
-                      className={[
-                        "card-elevated card-elevated-hover flex cursor-pointer items-center gap-3 p-3.5 transition-all",
-                        active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
-                      ].join(" ")}
-                    >
-                      <Checkbox
-                        checked={active}
-                        onCheckedChange={() => toggleAddon(a.id)}
-                        className="border-white/30 data-[state=checked]:border-[color:var(--primary)] data-[state=checked]:bg-[color:var(--primary)]"
-                      />
-                      <span className="min-w-0 flex-1 text-sm text-white">{a.label}</span>
-                      <span className="shrink-0 text-sm font-semibold text-[color:var(--primary)]">
-                        +{fmt(a.price)}
-                        <span className="ml-1 text-[10px] font-medium text-[color:var(--orange)]">
-                          {a.recurring ? "/mo" : "one-time"}
-                        </span>
-                      </span>
-                    </label>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-          {/* RIGHT — STICKY ESTIMATE */}
-          <aside className="lg:sticky lg:top-24 lg:self-start">
-            <div className="relative rounded-2xl border border-[color:var(--primary)]/60 bg-[#16181D] p-6 shadow-[0_0_0_1px_rgba(59,130,246,0.15),0_30px_90px_-30px_rgba(249,115,22,0.35),0_30px_90px_-40px_rgba(59,130,246,0.45)]">
-              <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-[color:var(--primary)]/10 via-transparent to-[color:var(--orange)]/10" />
-              <div className="relative">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-[color:var(--orange)]" />
-                  <span className="text-[11px] font-semibold uppercase tracking-wider text-[color:var(--orange)]">
-                    Live estimate
-                  </span>
+        {/* TAB SELECTOR */}
+        <div className="mt-12 grid gap-3 sm:grid-cols-3">
+          {TABS.map((t) => {
+            const active = activeTab === t.id;
+            return (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => setActiveTab(t.id)}
+                className={[
+                  "card-elevated card-elevated-hover flex h-full flex-col gap-2 p-5 text-left transition-all cursor-pointer",
+                  active ? "!border-[color:var(--primary)] !bg-[#1C1F26]" : "",
+                ].join(" ")}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <h3 className="font-display text-base font-bold leading-snug text-white sm:text-lg">
+                    {t.title}
+                  </h3>
+                  {active && (
+                    <Check className="mt-1 h-4 w-4 shrink-0 text-[color:var(--primary)]" />
+                  )}
                 </div>
-                <h3 className="mt-2 text-xl font-semibold text-white">Your Plan</h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">{t.subtitle}</p>
+              </button>
+            );
+          })}
+        </div>
 
-                <ul className="mt-5 space-y-2.5 text-sm">
-                  <li>
-                    <div className="flex items-start justify-between gap-3">
-                      <span className="text-muted-foreground">Base plan</span>
-                      <span className="shrink-0 font-semibold text-white">
-                        {fmt(BASE_PRICE)}
-                        <span className="ml-1 text-[10px] font-medium text-[color:var(--orange)]">/mo</span>
-                      </span>
-                    </div>
-                    <IncludedDialog>
-                      <button
-                        type="button"
-                        className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-semibold text-[color:var(--primary)] hover:text-[color:var(--orange)] transition-colors cursor-pointer"
-                      >
-                        See what's included <ArrowRight className="h-3 w-3" />
-                      </button>
-                    </IncludedDialog>
-                  </li>
-                  <li className="flex items-start justify-between gap-3">
-                    <span className="text-muted-foreground">
-                      Duration: <span className="text-white/80">{duration.label}</span>
-                    </span>
-                    <span className="shrink-0 font-semibold text-white">
-                      {duration.price === 0 ? "Included" : `+${fmt(duration.price)}/mo`}
-                    </span>
-                  </li>
-                  <li className="flex items-start justify-between gap-3">
-                    <span className="text-muted-foreground">
-                      Volume: <span className="text-white/80">{volume.label}</span>
-                    </span>
-                    <span className="shrink-0 font-semibold text-white">
-                      {volume.price === 0 ? "Included" : `+${fmt(volume.price)}/mo`}
-                    </span>
-                  </li>
-                  {selectedAddons.map((a) => (
-                    <li key={a.id} className="flex items-start justify-between gap-3">
-                      <span className="text-muted-foreground">{a.label}</span>
-                      <span className="shrink-0 font-semibold text-white">
-                        +{fmt(a.price)}
-                        <span className="ml-1 text-[10px] font-medium text-[color:var(--orange)]">
-                          {a.recurring ? "/mo" : "one-time"}
-                        </span>
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="my-5 h-px w-full bg-white/10" />
-
-                <div className="flex items-end justify-between gap-3">
-                  <span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                    Monthly Total
-                  </span>
-                  <span className="text-3xl font-bold text-white">
-                    {fmt(monthlyTotal)}
-                    <span className="ml-1 text-sm font-medium text-[color:var(--orange)]">/mo</span>
-                  </span>
-                </div>
-                {oneTimeTotal > 0 && (
-                  <div className="mt-1 flex items-end justify-between gap-3">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-[color:var(--orange)]">
-                      + One-time setup
-                    </span>
-                    <span className="text-sm font-bold text-[color:var(--orange)]">
-                      {fmt(oneTimeTotal)}
-                    </span>
-                  </div>
-                )}
-
-                <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-                  This is an estimate. Final pricing is confirmed after a quick scope discussion.
-                </p>
-
-                <a
-                  href={waLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-gradient mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold text-black shadow-[0_10px_30px_-12px_var(--vo-glow)] transition-all hover:scale-[1.02] hover:brightness-110"
-                >
-                  Get This Quote on WhatsApp
-                  <ArrowRight className="h-4 w-4" />
-                </a>
-                <Link
-                  to="/contact"
-                  className="mt-3 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full border border-[color:var(--primary)]/50 px-5 text-sm font-semibold text-white transition-all hover:bg-[color:var(--primary)]/10"
-                >
-                  Send via Contact Form
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-            </div>
-          </aside>
+        {/* TAB CONTENT — keyed so switching resets internal state */}
+        <div className="mt-10">
+          {activeTab === "publishing" && <Tab1Publishing key="publishing" />}
+          {activeTab === "authority" && <Tab2Authority key="authority" />}
+          {activeTab === "content" && <Tab3Content key="content" />}
         </div>
 
         {/* DISCOUNT BANNER */}
