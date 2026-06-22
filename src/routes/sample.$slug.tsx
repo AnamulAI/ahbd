@@ -326,11 +326,15 @@ function SamplePage() {
 
       <section className="section-glow-cta relative overflow-hidden">
         <div className="relative mx-auto max-w-3xl px-6 py-20 text-center">
-          <h2 className="text-4xl sm:text-5xl">Like What You See?</h2>
+          <h2 className="text-4xl sm:text-5xl">
+            {ctaCopy.headlinePrefix}
+            <span className="text-gradient-vo">{ctaCopy.emphasis}</span>
+            {ctaCopy.headlineSuffix}
+          </h2>
           <p className="mt-5 text-lg text-muted-foreground">
-            This was just a preview. Let's make it real — fully produced, branded, and published
-            everywhere your audience listens.
+            {ctaCopy.subheadline}
           </p>
+
           <div className="mt-8">
             <a
               href={data.cta_link}
