@@ -34,7 +34,16 @@ import {
   listSamples,
   updateSample,
   verifyPin,
+  AUDIENCE_CATEGORIES,
+  type AudienceCategory,
 } from "@/lib/sample-builder.functions";
+
+const AUDIENCE_LABELS: Record<AudienceCategory, string> = {
+  marketers: "Marketers",
+  creators: "Content Creators",
+  businesses: "Businesses",
+  educators: "Educators",
+};
 
 type SearchParams = { id?: string };
 
@@ -140,6 +149,7 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
   const isEditing = !!editId;
 
   const [businessName, setBusinessName] = useState("");
+  const [audienceCategory, setAudienceCategory] = useState<AudienceCategory>("businesses");
   const [episodeTitle, setEpisodeTitle] = useState("");
   const [topic, setTopic] = useState("");
   const [platforms, setPlatforms] = useState<string[]>(["spotify", "apple", "youtube"]);
@@ -209,6 +219,11 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
         }
         const s = res.sample;
         setBusinessName(s.business_name || "");
+        setAudienceCategory(
+          (AUDIENCE_CATEGORIES as readonly string[]).includes(s.audience_category)
+            ? (s.audience_category as AudienceCategory)
+            : "businesses",
+        );
         setEpisodeTitle(s.episode_title || "");
         setTopic(s.topic || "");
         setPlatforms((s.platforms as string[]) || []);
@@ -278,6 +293,7 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
 
   const resetForm = () => {
     setBusinessName("");
+    setAudienceCategory("businesses");
     setEpisodeTitle("");
     setTopic("");
     setPlatforms(["spotify", "apple", "youtube"]);
@@ -326,6 +342,7 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
       const basePayload = {
         pin,
         business_name: businessName,
+        audience_category: audienceCategory,
         episode_title: episodeTitle,
         topic,
         platforms,
@@ -427,6 +444,34 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
             <Field label="Business / Brand Name *">
               <Input value={businessName} onChange={(e) => setBusinessName(e.target.value)} required />
             </Field>
+
+            <Field label="Target Audience *">
+              <div className="grid grid-cols-2 gap-2">
+                {AUDIENCE_CATEGORIES.map((cat) => {
+                  const active = audienceCategory === cat;
+                  return (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => setAudienceCategory(cat)}
+                      className={cn(
+                        "rounded-md border px-4 py-3 text-sm text-left transition-colors",
+                        active
+                          ? "border-primary bg-primary/10 text-foreground"
+                          : "border-white/10 bg-secondary/30 text-muted-foreground hover:text-foreground hover:border-white/20",
+                      )}
+                    >
+                      {AUDIENCE_LABELS[cat]}
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Drives the hero description and closing CTA copy on the public preview.
+              </p>
+            </Field>
+
+
 
             <Field label="Logo">
               <ModeToggle mode={logoMode} onChange={(m) => { setLogoMode(m); setLogoCleared(false); }} />

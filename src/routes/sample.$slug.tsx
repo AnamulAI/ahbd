@@ -181,6 +181,54 @@ function SoundCloudEmbed({ url, className }: { url: string; className?: string }
   );
 }
 
+type AudienceCategory = "marketers" | "creators" | "businesses" | "educators";
+
+const AUDIENCE_HERO_COPY: Record<AudienceCategory, string> = {
+  marketers:
+    "B2B and content marketers use this service to repurpose blog posts, case studies, and campaign briefs into branded audio — published to Spotify, Apple Podcasts, LinkedIn, and 10+ platforms in one click.",
+  creators:
+    "Content creators use this service to transform YouTube videos, newsletters, and blog posts into podcast episodes — reaching audio-first audiences on Spotify and Apple Podcasts without extra hours of recording.",
+  businesses:
+    "SMBs and growing brands use this service to launch and run thought-leadership podcasts that reach customers on Spotify, Apple Podcasts, LinkedIn, and YouTube — without hiring a production team.",
+  educators:
+    "Teachers, course creators, and trainers use this service to convert PDFs, lesson plans, and written material into engaging audio episodes — accessible on Spotify, Apple Podcasts, or as private student podcast feeds.",
+};
+
+type CtaCopy = { headlinePrefix: string; emphasis: string; headlineSuffix?: string; subheadline: string };
+
+const AUDIENCE_CTA_COPY: Record<AudienceCategory, CtaCopy> = {
+  marketers: {
+    headlinePrefix: "Your Content Library Is Already a ",
+    emphasis: "Podcast",
+    subheadline:
+      "Stop letting blog posts die on the page. This service turns everything you've already written into professional audio — published everywhere, automatically.",
+  },
+  creators: {
+    headlinePrefix: "Your Videos and Newsletters Are Already ",
+    emphasis: "Episodes",
+    subheadline:
+      "Launch your podcast today — no mic, no editing, no extra hours. Paste your content, pick a voice, and publish to Spotify and Apple Podcasts.",
+  },
+  businesses: {
+    headlinePrefix: "Your Brand Deserves a ",
+    emphasis: "Podcast",
+    subheadline:
+      "Launch your thought-leadership show today. Professional quality, zero production overhead, published everywhere automatically.",
+  },
+  educators: {
+    headlinePrefix: "Your Lesson Plans Are Ready to ",
+    emphasis: "Listen To",
+    subheadline:
+      "Upload your PDFs. This service narrates, formats, and distributes — students learn on their own schedule.",
+  },
+};
+
+function normalizeAudience(value: unknown): AudienceCategory {
+  return value === "marketers" || value === "creators" || value === "businesses" || value === "educators"
+    ? value
+    : "businesses";
+}
+
 function SamplePage() {
   const { slug } = Route.useParams();
   const { data } = useSuspenseQuery(sampleQuery(slug));
@@ -188,6 +236,9 @@ function SamplePage() {
 
   const platforms = (data.platforms as string[]) ?? [];
   const moduleOrder = (data.module_order as string[]) ?? [];
+  const audience = normalizeAudience((data as any).audience_category);
+  const heroCopy = AUDIENCE_HERO_COPY[audience];
+  const ctaCopy = AUDIENCE_CTA_COPY[audience];
   const episodeTitle =
     data.episode_title?.trim() ||
     (data.topic ? `Episode 1: ${data.topic.split(/[.!?\n]/)[0].trim()}` : "Episode 1");
@@ -223,11 +274,10 @@ function SamplePage() {
           <h2 className="mt-3 text-xl sm:text-2xl text-muted-foreground font-normal">
             Here's What Your Podcast Could Look Like
           </h2>
-          {data.topic && (
-            <p className="mt-6 text-base text-foreground/80 italic">
-              Based on: "{data.topic}"
-            </p>
-          )}
+          <p className="mt-6 text-base text-foreground/80 max-w-2xl mx-auto">
+            {heroCopy}
+          </p>
+
           <p className="mt-6 text-sm text-muted-foreground">
             This is a free custom preview — no commitment required.
           </p>
@@ -276,11 +326,15 @@ function SamplePage() {
 
       <section className="section-glow-cta relative overflow-hidden">
         <div className="relative mx-auto max-w-3xl px-6 py-20 text-center">
-          <h2 className="text-4xl sm:text-5xl">Like What You See?</h2>
+          <h2 className="text-4xl sm:text-5xl">
+            {ctaCopy.headlinePrefix}
+            <span className="text-gradient-vo">{ctaCopy.emphasis}</span>
+            {ctaCopy.headlineSuffix}
+          </h2>
           <p className="mt-5 text-lg text-muted-foreground">
-            This was just a preview. Let's make it real — fully produced, branded, and published
-            everywhere your audience listens.
+            {ctaCopy.subheadline}
           </p>
+
           <div className="mt-8">
             <a
               href={data.cta_link}
