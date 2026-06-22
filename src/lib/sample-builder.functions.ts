@@ -15,6 +15,17 @@ const UPLOAD_BUCKETS = {
 
 type UploadKind = keyof typeof UPLOAD_BUCKETS;
 
+const SIGNED_URL_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days; refreshed on every SSR fetch
+
+const MEDIA_URL_FIELDS = [
+  "logo_url",
+  "audio_url",
+  "video_url",
+  "clip_instagram_url",
+  "clip_tiktok_url",
+  "clip_linkedin_url",
+] as const;
+
 function createPublicSupabaseClient() {
   const url = process.env.SUPABASE_URL || SUPABASE_URL_FALLBACK;
   const key = process.env.SUPABASE_PUBLISHABLE_KEY || SUPABASE_PUBLISHABLE_KEY_FALLBACK;
@@ -62,10 +73,44 @@ function checkPin(pin: string) {
 async function ensureLogoBucket() {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { error } = await supabaseAdmin.storage.createBucket(LOGO_BUCKET, {
-    public: true,
+    public: false,
     fileSizeLimit: 5 * 1024 * 1024,
   });
   if (error && !/exists/i.test(error.message)) throw error;
+}
+
+/**
+ * Detect a stored Supabase Storage URL and produce a fresh signed URL.
+ * Returns the input unchanged if it's not a Supabase Storage URL (e.g.
+ * pasted external link, YouTube, etc.).
+ */
+async function maybeSignStorageUrl(url: string | null | undefined): Promise<string | null> {
+  if (!url) return null;
+  const m = url.match(/\/storage\/v1\/object\/(?:public|sign)\/([^/]+)\/([^?]+)/);
+  if (!m) return url;
+  const [, bucket, encodedPath] = m;
+  const path = decodeURIComponent(encodedPath);
+  try {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin.storage
+      .from(bucket)
+      .createSignedUrl(path, SIGNED_URL_TTL_SECONDS);
+    if (error || !data?.signedUrl) return url;
+    return data.signedUrl;
+  } catch {
+    return url;
+  }
+}
+
+export async function signSampleRow<T extends Record<string, any> | null>(row: T): Promise<T> {
+  if (!row) return row;
+  const next: Record<string, any> = { ...row };
+  for (const key of MEDIA_URL_FIELDS) {
+    if (next[key]) {
+      next[key] = await maybeSignStorageUrl(next[key]);
+    }
+  }
+  return next as T;
 }
 
 export const verifyPin = createServerFn({ method: "POST" })
@@ -105,7 +150,8 @@ export const getSampleForEdit = createServerFn({ method: "POST" })
         .eq("id", data.id)
         .maybeSingle();
       if (error) return { sample: null, error: error.message };
-      return { sample: row, error: null };
+      const signed = await signSampleRow(row);
+      return { sample: signed, error: null };
     } catch (error) {
       return { sample: null, error: errorMessage(error, "Could not load sample") };
     }
@@ -113,7 +159,7 @@ export const getSampleForEdit = createServerFn({ method: "POST" })
 
 /**
  * Returns a signed upload URL for the chosen media bucket plus the eventual
- * public URL. Client uses `supabase.storage.from(bucket).uploadToSignedUrl(...)`.
+ * canonical storage URL (which the public preview will re-sign at read time).
  */
 export const createMediaUploadUrl = createServerFn({ method: "POST" })
   .inputValidator((d: { pin: string; kind: UploadKind; filename: string; slugHint?: string }) => d)
@@ -143,14 +189,23 @@ export const createMediaUploadUrl = createServerFn({ method: "POST" })
         .createSignedUploadUrl(path);
       if (error || !signed) return { ok: false, error: error?.message || "Could not create upload URL" } as const;
 
+      // Store the canonical "public" URL pattern so we can recognize the
+      // bucket+path at read time and re-sign it. The bucket itself is private,
+      // so this URL won't work raw — the public preview signs it on the fly.
       const { data: pub } = supabaseAdmin.storage.from(bucket).getPublicUrl(path);
+      const { data: previewSigned } = await supabaseAdmin.storage
+        .from(bucket)
+        .createSignedUrl(path, SIGNED_URL_TTL_SECONDS);
 
       return {
         ok: true as const,
         bucket,
         path: signed.path,
         token: signed.token,
+        // Stored value (canonical, used to identify bucket/path later):
         publicUrl: pub.publicUrl,
+        // Immediately usable preview URL for the admin form:
+        previewUrl: previewSigned?.signedUrl ?? pub.publicUrl,
       };
     } catch (error) {
       return { ok: false, error: errorMessage(error, "Could not create upload URL") } as const;
@@ -170,6 +225,8 @@ export type SamplePayload = {
   cta_link: string;
   logo_base64?: string | null;
   logo_filename?: string | null;
+  /** Direct URL to use as logo_url (paste-link mode). Pass null to clear, undefined to leave unchanged. */
+  logo_direct_url?: string | null;
   audio_url?: string | null;
   video_url?: string | null;
   clip_instagram_url?: string | null;
@@ -195,8 +252,26 @@ async function uploadLogoIfPresent(
     .from(LOGO_BUCKET)
     .upload(path, bytes, { contentType: mime, upsert: true });
   if (upErr) throw upErr;
+  // Canonical storage URL — re-signed on read.
   const { data: pub } = supabaseAdmin.storage.from(LOGO_BUCKET).getPublicUrl(path);
   return pub.publicUrl;
+}
+
+function resolveLogoForCreate(data: SamplePayload, uploaded: string | null): string | null {
+  if (uploaded) return uploaded;
+  if (data.logo_direct_url !== undefined) return data.logo_direct_url || null;
+  return null;
+}
+
+function resolveLogoForUpdate(
+  data: SamplePayload,
+  uploaded: string | null,
+  existing: string | null,
+): string | null {
+  if (uploaded) return uploaded;
+  if (data.logo_direct_url !== undefined) return data.logo_direct_url || null;
+  if (data.logo_filename === null) return null; // legacy explicit clear
+  return existing;
 }
 
 export const createSample = createServerFn({ method: "POST" })
@@ -232,7 +307,8 @@ export const createSample = createServerFn({ method: "POST" })
         slug = `${base}-${Math.random().toString(36).slice(2, 6)}`;
       }
 
-      const logo_url = await uploadLogoIfPresent(slug, data.logo_base64, data.logo_filename);
+      const uploaded = await uploadLogoIfPresent(slug, data.logo_base64, data.logo_filename);
+      const logo_url = resolveLogoForCreate(data, uploaded);
 
       const { error: insErr, data: row } = await supabaseAdmin
         .from("sample_previews")
@@ -295,11 +371,10 @@ export const updateSample = createServerFn({ method: "POST" })
       if (getErr) return { ok: false, error: getErr.message, slug: null };
       if (!existing) return { ok: false, error: "Sample not found", slug: null };
 
-      const logo_url = data.logo_base64
+      const uploaded = data.logo_base64
         ? await uploadLogoIfPresent(existing.slug, data.logo_base64, data.logo_filename)
-        : data.logo_filename === null
-          ? null // explicit clear
-          : existing.logo_url;
+        : null;
+      const logo_url = resolveLogoForUpdate(data, uploaded, existing.logo_url);
 
       const { error: updErr } = await supabaseAdmin
         .from("sample_previews")
