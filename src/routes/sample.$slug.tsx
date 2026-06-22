@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Pause, Play, Rss } from "lucide-react";
+import { ArrowRight, Pause, Play, Rss, Heart, MoreHorizontal, Shuffle, Download, ThumbsUp, Share2 } from "lucide-react";
 import {
   SiSpotify, SiApplepodcasts, SiYoutube, SiInstagram, SiTiktok,
   SiFacebook, SiX, SiGoogle,
@@ -537,7 +537,7 @@ function SpotifyMock({ businessName, logoUrl, episodeTitle, topic, audioUrl }: {
       <div className="px-5 pb-5 flex gap-4 items-end">
         <LogoTile logoUrl={logoUrl} label={businessName} className="size-32 rounded-md shadow-xl" />
         <div className="pb-2">
-          <p className="text-[10px] uppercase text-white/60 tracking-wider">Podcast</p>
+          <p className="text-[10px] uppercase text-white/60 tracking-wider">Podcast · 1 episode</p>
           <h3 className="text-white font-bold text-2xl leading-tight">{businessName}</h3>
         </div>
       </div>
@@ -552,25 +552,34 @@ function SpotifyMock({ businessName, logoUrl, episodeTitle, topic, audioUrl }: {
           </div>
         ) : (
           <>
-            <button
-              onClick={isSc ? () => setScOpen(true) : (available ? toggle : undefined)}
-              className={cn(
-                "w-14 h-14 rounded-full flex items-center justify-center mb-4 transition-transform",
-                (available || isSc) && "hover:scale-105 active:scale-95",
-              )}
-              style={{ background: "#1DB954" }}
-              aria-label={playing ? "Pause" : "Play"}
-              type="button"
-            >
-              {playing
-                ? <Pause className="size-6 text-black fill-black" />
-                : <Play className="size-6 text-black fill-black ml-0.5" />}
-            </button>
-            {available && (
-              <div className="mb-3 h-1 w-full rounded-full bg-white/10 overflow-hidden">
-                <div className="h-full rounded-full transition-[width] duration-200" style={{ width: `${progress * 100}%`, background: "#1DB954" }} />
+            <div className="flex items-center gap-4 mb-3">
+              <button
+                onClick={isSc ? () => setScOpen(true) : (available ? toggle : undefined)}
+                className={cn(
+                  "w-14 h-14 rounded-full flex items-center justify-center transition-transform",
+                  (available || isSc) && "hover:scale-105 active:scale-95",
+                )}
+                style={{ background: "#1DB954" }}
+                aria-label={playing ? "Pause" : "Play"}
+                type="button"
+              >
+                {playing
+                  ? <Pause className="size-6 text-black fill-black" />
+                  : <Play className="size-6 text-black fill-black ml-0.5" />}
+              </button>
+              <div className="flex items-center gap-4 text-white/70">
+                <Shuffle className="size-4 hover:text-white cursor-pointer" />
+                <Heart className="size-4 hover:text-white cursor-pointer" />
+                <MoreHorizontal className="size-4 hover:text-white cursor-pointer" />
               </div>
-            )}
+            </div>
+            <div className="mb-3 flex items-center gap-2">
+              <span className="text-[10px] text-white/50 tabular-nums">0:00</span>
+              <div className="flex-1 h-1 rounded-full bg-white/10 overflow-hidden">
+                <div className="h-full rounded-full transition-[width] duration-200" style={{ width: `${(available ? progress : 0) * 100}%`, background: "#1DB954" }} />
+              </div>
+              <span className="text-[10px] text-white/50 tabular-nums">12:34</span>
+            </div>
           </>
         )}
         <div className="space-y-3">
@@ -600,9 +609,9 @@ function AppleMock({ businessName, logoUrl, episodeTitle, topic, audioUrl }: {
         <span className="font-semibold text-sm">Apple Podcasts</span>
       </div>
       <div className="px-5 pb-5 text-center">
-        <LogoTile logoUrl={logoUrl} label={businessName} className="size-36 mx-auto rounded-2xl shadow-lg" />
+        <LogoTile logoUrl={logoUrl} label={businessName} className="size-36 mx-auto rounded-[20%] shadow-lg" />
         <h3 className="mt-4 font-bold text-xl">{businessName}</h3>
-        <p className="text-xs" style={{ color: "#9933CC" }}>Business · Updated today</p>
+        <p className="text-xs" style={{ color: "#9933CC" }}>Business · 12 min · Updated today</p>
       </div>
       <div className="border-t border-black/5 px-5 py-4 bg-neutral-50">
         <p className="text-[10px] uppercase tracking-wider text-neutral-500 mb-2">Latest Episode</p>
@@ -618,21 +627,25 @@ function AppleMock({ businessName, logoUrl, episodeTitle, topic, audioUrl }: {
           </div>
         ) : (
           <>
-            <button
-              type="button"
-              onClick={isSc ? () => setScOpen(true) : (available ? toggle : undefined)}
-              className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full text-white"
-              style={{ background: "linear-gradient(135deg, #9933CC, #E91E63)" }}
-            >
-              {playing
-                ? <><Pause className="size-3 fill-white" /> Pause</>
-                : <><Play className="size-3 fill-white" /> Play</>}
-            </button>
-            {available && (
-              <div className="mt-3 h-1 w-full rounded-full bg-black/10 overflow-hidden">
-                <div className="h-full rounded-full transition-[width] duration-200" style={{ width: `${progress * 100}%`, background: "linear-gradient(135deg, #9933CC, #E91E63)" }} />
+            <div className="mt-3 flex items-center gap-3">
+              <button
+                type="button"
+                onClick={isSc ? () => setScOpen(true) : (available ? toggle : undefined)}
+                className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full text-white"
+                style={{ background: "linear-gradient(135deg, #9933CC, #E91E63)" }}
+              >
+                {playing
+                  ? <><Pause className="size-3 fill-white" /> Pause</>
+                  : <><Play className="size-3 fill-white" /> Play</>}
+              </button>
+              <div className="ml-auto flex items-center gap-3 text-neutral-500">
+                <Download className="size-4 hover:text-neutral-800 cursor-pointer" />
+                <MoreHorizontal className="size-4 hover:text-neutral-800 cursor-pointer" />
               </div>
-            )}
+            </div>
+            <div className="mt-3 h-0.5 w-full rounded-full bg-black/10 overflow-hidden">
+              <div className="h-full rounded-full transition-[width] duration-200" style={{ width: `${(available ? progress : 0) * 100}%`, background: "linear-gradient(135deg, #9933CC, #E91E63)" }} />
+            </div>
           </>
         )}
       </div>
@@ -692,8 +705,27 @@ function YouTubeMock({ businessName, logoUrl, episodeTitle, videoUrl }: {
       </div>
       <div className="p-4">
         <p className="font-semibold text-sm leading-snug line-clamp-2">{episodeTitle}</p>
-        <p className="text-xs text-neutral-600 mt-1">{businessName}</p>
-        <p className="text-xs text-neutral-500 mt-1">2.4K views · 1 hour ago</p>
+        <div className="mt-2 flex items-center gap-2">
+          <LogoTile logoUrl={logoUrl} label={businessName} className="size-7 rounded-full shrink-0" />
+          <p className="text-xs text-neutral-700 font-medium">{businessName}</p>
+          <button
+            type="button"
+            className="ml-1 text-[11px] font-semibold text-white px-2.5 py-1 rounded-full"
+            style={{ background: "#FF0000" }}
+          >
+            Subscribe
+          </button>
+        </div>
+        <p className="text-xs text-neutral-500 mt-2">2.4K views · 1 hour ago</p>
+        <div className="mt-3 flex items-center gap-5 text-neutral-600">
+          <span className="inline-flex items-center gap-1.5 text-xs">
+            <ThumbsUp className="size-4" /> 142
+          </span>
+          <span className="inline-flex items-center gap-1.5 text-xs">
+            <Share2 className="size-4" /> Share
+          </span>
+          <MoreHorizontal className="size-4 ml-auto" />
+        </div>
       </div>
     </div>
   );
