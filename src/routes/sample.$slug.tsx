@@ -274,11 +274,10 @@ function SamplePage() {
           <h2 className="mt-3 text-xl sm:text-2xl text-muted-foreground font-normal">
             Here's What Your Podcast Could Look Like
           </h2>
-          {data.topic && (
-            <p className="mt-6 text-base text-foreground/80 italic">
-              Based on: "{data.topic}"
-            </p>
-          )}
+          <p className="mt-6 text-base text-foreground/80 max-w-2xl mx-auto">
+            {heroCopy}
+          </p>
+
           <p className="mt-6 text-sm text-muted-foreground">
             This is a free custom preview — no commitment required.
           </p>
