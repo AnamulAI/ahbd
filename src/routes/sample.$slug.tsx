@@ -609,9 +609,9 @@ function AppleMock({ businessName, logoUrl, episodeTitle, topic, audioUrl }: {
         <span className="font-semibold text-sm">Apple Podcasts</span>
       </div>
       <div className="px-5 pb-5 text-center">
-        <LogoTile logoUrl={logoUrl} label={businessName} className="size-36 mx-auto rounded-2xl shadow-lg" />
+        <LogoTile logoUrl={logoUrl} label={businessName} className="size-36 mx-auto rounded-[20%] shadow-lg" />
         <h3 className="mt-4 font-bold text-xl">{businessName}</h3>
-        <p className="text-xs" style={{ color: "#9933CC" }}>Business · Updated today</p>
+        <p className="text-xs" style={{ color: "#9933CC" }}>Business · 12 min · Updated today</p>
       </div>
       <div className="border-t border-black/5 px-5 py-4 bg-neutral-50">
         <p className="text-[10px] uppercase tracking-wider text-neutral-500 mb-2">Latest Episode</p>
@@ -627,21 +627,25 @@ function AppleMock({ businessName, logoUrl, episodeTitle, topic, audioUrl }: {
           </div>
         ) : (
           <>
-            <button
-              type="button"
-              onClick={isSc ? () => setScOpen(true) : (available ? toggle : undefined)}
-              className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full text-white"
-              style={{ background: "linear-gradient(135deg, #9933CC, #E91E63)" }}
-            >
-              {playing
-                ? <><Pause className="size-3 fill-white" /> Pause</>
-                : <><Play className="size-3 fill-white" /> Play</>}
-            </button>
-            {available && (
-              <div className="mt-3 h-1 w-full rounded-full bg-black/10 overflow-hidden">
-                <div className="h-full rounded-full transition-[width] duration-200" style={{ width: `${progress * 100}%`, background: "linear-gradient(135deg, #9933CC, #E91E63)" }} />
+            <div className="mt-3 flex items-center gap-3">
+              <button
+                type="button"
+                onClick={isSc ? () => setScOpen(true) : (available ? toggle : undefined)}
+                className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full text-white"
+                style={{ background: "linear-gradient(135deg, #9933CC, #E91E63)" }}
+              >
+                {playing
+                  ? <><Pause className="size-3 fill-white" /> Pause</>
+                  : <><Play className="size-3 fill-white" /> Play</>}
+              </button>
+              <div className="ml-auto flex items-center gap-3 text-neutral-500">
+                <Download className="size-4 hover:text-neutral-800 cursor-pointer" />
+                <MoreHorizontal className="size-4 hover:text-neutral-800 cursor-pointer" />
               </div>
-            )}
+            </div>
+            <div className="mt-3 h-0.5 w-full rounded-full bg-black/10 overflow-hidden">
+              <div className="h-full rounded-full transition-[width] duration-200" style={{ width: `${(available ? progress : 0) * 100}%`, background: "linear-gradient(135deg, #9933CC, #E91E63)" }} />
+            </div>
           </>
         )}
       </div>
