@@ -149,6 +149,7 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
   const isEditing = !!editId;
 
   const [businessName, setBusinessName] = useState("");
+  const [audienceCategory, setAudienceCategory] = useState<AudienceCategory>("businesses");
   const [episodeTitle, setEpisodeTitle] = useState("");
   const [topic, setTopic] = useState("");
   const [platforms, setPlatforms] = useState<string[]>(["spotify", "apple", "youtube"]);
