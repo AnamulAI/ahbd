@@ -221,6 +221,8 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
         setLogoExistingUrl(s.logo_url);
         setLogoDataUrl(null);
         setLogoFilename(null);
+        setLogoLinkUrl("");
+        setLogoMode("upload");
         setLogoCleared(false);
         setAudioUrl(s.audio_url);
         setVideoUrl(s.video_url);
