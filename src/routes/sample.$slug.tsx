@@ -592,7 +592,7 @@ function VideoModule({ businessName, episodeTitle, videoUrl }: { businessName: s
           <div className="relative aspect-video bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900 flex items-center justify-center">
             {videoUrl && playing ? (
               youtube ? (
-                <YouTubeEmbed url={youtube} className="absolute inset-0" />
+                <YouTubeEmbed url={youtube} className="absolute inset-0" autoplay minimal />
               ) : (
                 <video
                   src={videoUrl}
@@ -603,18 +603,23 @@ function VideoModule({ businessName, episodeTitle, videoUrl }: { businessName: s
               )
             ) : (
               <>
-                <div className="absolute inset-x-0 bottom-1/3 flex items-end justify-center gap-1 px-12 opacity-40">
-                  {Array.from({ length: 60 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="w-1 rounded-full"
-                      style={{
-                        height: `${20 + Math.abs(Math.sin(i * 0.6)) * 60}px`,
-                        background: i % 2 === 0 ? "var(--primary)" : "var(--orange)",
-                      }}
-                    />
-                  ))}
-                </div>
+                {youtube ? (
+                  <YouTubeThumb url={youtube} className="absolute inset-0 size-full" />
+                ) : (
+                  <div className="absolute inset-x-0 bottom-1/3 flex items-end justify-center gap-1 px-12 opacity-40">
+                    {Array.from({ length: 60 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className="w-1 rounded-full"
+                        style={{
+                          height: `${20 + Math.abs(Math.sin(i * 0.6)) * 60}px`,
+                          background: i % 2 === 0 ? "var(--primary)" : "var(--orange)",
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
+                {youtube && <div className="absolute inset-0 bg-black/30" />}
                 <button
                   type="button"
                   onClick={videoUrl ? () => setPlaying(true) : undefined}
@@ -626,11 +631,11 @@ function VideoModule({ businessName, episodeTitle, videoUrl }: { businessName: s
                 >
                   <Play className="size-9 text-black fill-black ml-1" />
                 </button>
-                <div className="absolute top-5 left-5 right-5">
-                  <p className="text-white/60 text-xs font-mono">{businessName} · Video Podcast</p>
-                  <p className="text-white font-bold text-xl mt-1 line-clamp-2">{episodeTitle}</p>
+                <div className="absolute top-5 left-5 right-5 z-10">
+                  <p className="text-white/80 text-xs font-mono drop-shadow">{businessName} · Video Podcast</p>
+                  <p className="text-white font-bold text-xl mt-1 line-clamp-2 drop-shadow">{episodeTitle}</p>
                 </div>
-                <div className="absolute bottom-4 left-5 right-5 flex items-center gap-2 bg-black/70 backdrop-blur rounded-lg px-3 py-2">
+                <div className="absolute bottom-4 left-5 right-5 z-10 flex items-center gap-2 bg-black/70 backdrop-blur rounded-lg px-3 py-2">
                   <Captions className="size-4 text-white/80" />
                   <p className="text-xs text-white/90 italic line-clamp-1">
                     "Auto-captioned, perfectly synced for every viewer..."
