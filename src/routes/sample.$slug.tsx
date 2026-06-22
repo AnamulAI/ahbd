@@ -537,7 +537,7 @@ function SpotifyMock({ businessName, logoUrl, episodeTitle, topic, audioUrl }: {
       <div className="px-5 pb-5 flex gap-4 items-end">
         <LogoTile logoUrl={logoUrl} label={businessName} className="size-32 rounded-md shadow-xl" />
         <div className="pb-2">
-          <p className="text-[10px] uppercase text-white/60 tracking-wider">Podcast</p>
+          <p className="text-[10px] uppercase text-white/60 tracking-wider">Podcast · 1 episode</p>
           <h3 className="text-white font-bold text-2xl leading-tight">{businessName}</h3>
         </div>
       </div>
