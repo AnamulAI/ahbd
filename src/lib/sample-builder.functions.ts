@@ -4,17 +4,12 @@ import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 
 const BUCKET = "sample-logos";
+const SUPABASE_URL_FALLBACK = "https://kuqqfgngrwduzxrffyhj.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY_FALLBACK = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt1cXFmZ25ncndkdXp4cmZmeWhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NDU3MjUsImV4cCI6MjA5NzUyMTcyNX0.xh4Ftebp4mV0jf9-7rvN3r-uzOcoZna11r9EY4JA1ig";
 
 function createPublicSupabaseClient() {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_PUBLISHABLE_KEY;
-  if (!url || !key) {
-    const missing = [
-      ...(!url ? ["SUPABASE_URL"] : []),
-      ...(!key ? ["SUPABASE_PUBLISHABLE_KEY"] : []),
-    ];
-    throw new Error(`Missing Supabase public environment variable(s): ${missing.join(", ")}.`);
-  }
+  const url = process.env.SUPABASE_URL || SUPABASE_URL_FALLBACK;
+  const key = process.env.SUPABASE_PUBLISHABLE_KEY || SUPABASE_PUBLISHABLE_KEY_FALLBACK;
 
   return createClient<Database>(url, key, {
     auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
@@ -23,6 +18,10 @@ function createPublicSupabaseClient() {
 
 function isMissingAdminSecret(error: unknown) {
   return error instanceof Error && error.message.includes("SUPABASE_SERVICE_ROLE_KEY");
+}
+
+function errorMessage(error: unknown, fallback = "Something went wrong") {
+  return error instanceof Error ? error.message : fallback;
 }
 
 function slugify(input: string): string {
@@ -69,15 +68,19 @@ export const verifyPin = createServerFn({ method: "POST" })
 export const listSamples = createServerFn({ method: "POST" })
   .inputValidator((d: { pin: string }) => d)
   .handler(async ({ data }) => {
-    checkPin(data.pin);
-    const supabasePublic = createPublicSupabaseClient();
-    const { data: rows, error } = await supabasePublic
-      .from("sample_previews")
-      .select("id, slug, business_name, created_at")
-      .order("created_at", { ascending: false })
-      .limit(200);
-    if (error) throw error;
-    return { samples: rows ?? [] };
+    try {
+      checkPin(data.pin);
+      const supabasePublic = createPublicSupabaseClient();
+      const { data: rows, error } = await supabasePublic
+        .from("sample_previews")
+        .select("id, slug, business_name, created_at")
+        .order("created_at", { ascending: false })
+        .limit(200);
+      if (error) return { samples: [], error: error.message };
+      return { samples: rows ?? [], error: null };
+    } catch (error) {
+      return { samples: [], error: errorMessage(error, "Could not load samples") };
+    }
   });
 
 export type SamplePayload = {
@@ -98,10 +101,11 @@ export type SamplePayload = {
 export const createSample = createServerFn({ method: "POST" })
   .inputValidator((d: SamplePayload) => d)
   .handler(async ({ data }) => {
+    try {
     checkPin(data.pin);
-    if (!data.business_name?.trim()) throw new Error("Business name required");
+    if (!data.business_name?.trim()) return { ok: false, error: "Business name required", slug: null };
     if (!Array.isArray(data.platforms) || data.platforms.length === 0) {
-      throw new Error("Pick at least one platform");
+      return { ok: false, error: "Pick at least one platform", slug: null };
     }
 
     let supabaseAdmin: Awaited<typeof import("@/integrations/supabase/client.server")>["supabaseAdmin"];
@@ -111,9 +115,9 @@ export const createSample = createServerFn({ method: "POST" })
       supabaseAdmin.from("sample_previews");
     } catch (error) {
       if (isMissingAdminSecret(error)) {
-        throw new Error("Sample creation needs the SUPABASE_SERVICE_ROLE_KEY server secret to be available.");
+        return { ok: false, error: "Sample creation needs the SUPABASE_SERVICE_ROLE_KEY server secret to be available.", slug: null };
       }
-      throw error;
+      return { ok: false, error: errorMessage(error, "Could not connect to Supabase"), slug: null };
     }
 
     // Generate a unique slug
@@ -164,6 +168,9 @@ export const createSample = createServerFn({ method: "POST" })
       })
       .select("slug")
       .single();
-    if (insErr) throw insErr;
-    return { slug: row.slug };
+    if (insErr) return { ok: false, error: insErr.message, slug: null };
+    return { ok: true, error: null, slug: row.slug };
+    } catch (error) {
+      return { ok: false, error: errorMessage(error, "Failed to create sample"), slug: null };
+    }
   });
