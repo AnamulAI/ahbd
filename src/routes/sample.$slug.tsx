@@ -68,19 +68,18 @@ function NotFoundView() {
 
 /* ---------- URL helpers ---------- */
 
-function youTubeEmbedUrl(url: string): string | null {
+function youTubeVideoId(url: string): string | null {
   try {
     const u = new URL(url);
     const host = u.hostname.replace(/^www\./, "");
     if (host === "youtu.be") {
       const id = u.pathname.slice(1).split("/")[0];
-      return id ? `https://www.youtube.com/embed/${id}` : null;
+      return id || null;
     }
     if (host === "youtube.com" || host === "m.youtube.com" || host === "music.youtube.com") {
-      if (u.pathname.startsWith("/embed/")) return `https://www.youtube.com/embed/${u.pathname.split("/")[2]}`;
-      if (u.pathname.startsWith("/shorts/")) return `https://www.youtube.com/embed/${u.pathname.split("/")[2]}`;
-      const v = u.searchParams.get("v");
-      if (v) return `https://www.youtube.com/embed/${v}`;
+      if (u.pathname.startsWith("/embed/")) return u.pathname.split("/")[2] || null;
+      if (u.pathname.startsWith("/shorts/")) return u.pathname.split("/")[2] || null;
+      return u.searchParams.get("v");
     }
     return null;
   } catch {
@@ -90,19 +89,94 @@ function youTubeEmbedUrl(url: string): string | null {
 
 function isYouTubeUrl(url: string | null | undefined): boolean {
   if (!url) return false;
-  return youTubeEmbedUrl(url) !== null;
+  return youTubeVideoId(url) !== null;
 }
 
-function YouTubeEmbed({ url, className }: { url: string; className?: string }) {
-  const embed = youTubeEmbedUrl(url);
-  if (!embed) return null;
+function youTubeThumbnail(url: string): string | null {
+  const id = youTubeVideoId(url);
+  return id ? `https://img.youtube.com/vi/${id}/maxresdefault.jpg` : null;
+}
+
+function isSoundCloudUrl(url: string | null | undefined): boolean {
+  if (!url) return false;
+  try {
+    const u = new URL(url);
+    return u.hostname.replace(/^www\./, "").endsWith("soundcloud.com");
+  } catch {
+    return false;
+  }
+}
+
+function soundCloudEmbedSrc(url: string): string {
+  const params = new URLSearchParams({
+    url,
+    color: "#ff5500",
+    auto_play: "true",
+    hide_related: "true",
+    show_comments: "false",
+    show_user: "false",
+    show_reposts: "false",
+    show_teaser: "false",
+  });
+  return `https://w.soundcloud.com/player/?${params.toString()}`;
+}
+
+function YouTubeEmbed({
+  url,
+  className,
+  autoplay = false,
+  minimal = false,
+}: {
+  url: string;
+  className?: string;
+  autoplay?: boolean;
+  minimal?: boolean;
+}) {
+  const id = youTubeVideoId(url);
+  if (!id) return null;
+  const params = new URLSearchParams({
+    autoplay: autoplay ? "1" : "0",
+    playsinline: "1",
+    rel: "0",
+    modestbranding: "1",
+    ...(minimal ? { controls: "0", showinfo: "0", iv_load_policy: "3" } : {}),
+  });
   return (
     <iframe
-      src={embed}
+      src={`https://www.youtube.com/embed/${id}?${params.toString()}`}
       title="YouTube player"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
       allowFullScreen
       className={cn("size-full border-0", className)}
+    />
+  );
+}
+
+function YouTubeThumb({ url, className }: { url: string; className?: string }) {
+  const src = youTubeThumbnail(url);
+  if (!src) return null;
+  const id = youTubeVideoId(url);
+  return (
+    <img
+      src={src}
+      alt=""
+      className={cn("size-full object-cover", className)}
+      onError={(e) => {
+        if (id) (e.currentTarget as HTMLImageElement).src = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+      }}
+    />
+  );
+}
+
+function SoundCloudEmbed({ url, className }: { url: string; className?: string }) {
+  return (
+    <iframe
+      src={soundCloudEmbedSrc(url)}
+      title="SoundCloud player"
+      allow="autoplay"
+      scrolling="no"
+      frameBorder={0}
+      className={cn("w-full border-0", className)}
     />
   );
 }
