@@ -147,9 +147,11 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
   const [showSmm, setShowSmm] = useState(true);
   const [ctaText, setCtaText] = useState("Get This Service →");
   const [ctaLink, setCtaLink] = useState("/services/ai-podcast");
+  const [logoMode, setLogoMode] = useState<"upload" | "link">("upload");
   const [logoDataUrl, setLogoDataUrl] = useState<string | null>(null);
   const [logoFilename, setLogoFilename] = useState<string | null>(null);
   const [logoExistingUrl, setLogoExistingUrl] = useState<string | null>(null);
+  const [logoLinkUrl, setLogoLinkUrl] = useState<string>("");
   const [logoCleared, setLogoCleared] = useState(false);
 
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
