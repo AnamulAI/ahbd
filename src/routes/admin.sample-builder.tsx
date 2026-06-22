@@ -342,6 +342,7 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
       const basePayload = {
         pin,
         business_name: businessName,
+        audience_category: audienceCategory,
         episode_title: episodeTitle,
         topic,
         platforms,
