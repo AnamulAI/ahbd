@@ -147,9 +147,11 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
   const [showSmm, setShowSmm] = useState(true);
   const [ctaText, setCtaText] = useState("Get This Service →");
   const [ctaLink, setCtaLink] = useState("/services/ai-podcast");
+  const [logoMode, setLogoMode] = useState<"upload" | "link">("upload");
   const [logoDataUrl, setLogoDataUrl] = useState<string | null>(null);
   const [logoFilename, setLogoFilename] = useState<string | null>(null);
   const [logoExistingUrl, setLogoExistingUrl] = useState<string | null>(null);
+  const [logoLinkUrl, setLogoLinkUrl] = useState<string>("");
   const [logoCleared, setLogoCleared] = useState(false);
 
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
@@ -219,6 +221,8 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
         setLogoExistingUrl(s.logo_url);
         setLogoDataUrl(null);
         setLogoFilename(null);
+        setLogoLinkUrl("");
+        setLogoMode("upload");
         setLogoCleared(false);
         setAudioUrl(s.audio_url);
         setVideoUrl(s.video_url);
@@ -266,7 +270,10 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
       toast.error(error.message);
       return null;
     }
-    return res.publicUrl;
+    // previewUrl is a freshly-signed URL that works immediately in the
+    // admin form; it's stored verbatim and the public preview re-signs
+    // the bucket+path on every render so links never go stale.
+    return res.previewUrl;
   };
 
   const resetForm = () => {
@@ -278,9 +285,11 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
     setShowSmm(true);
     setCtaText("Get This Service →");
     setCtaLink("/services/ai-podcast");
+    setLogoMode("upload");
     setLogoDataUrl(null);
     setLogoFilename(null);
     setLogoExistingUrl(null);
+    setLogoLinkUrl("");
     setLogoCleared(false);
     setAudioUrl(null);
     setVideoUrl(null);
@@ -295,6 +304,25 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
     if (platforms.length === 0) return toast.error("Select at least one platform");
     setSubmitting(true);
     try {
+      // Resolve logo payload based on chosen mode.
+      // - upload + new file: send base64+filename, server uploads and stores canonical URL.
+      // - link mode with a URL: send logo_direct_url as the string to store.
+      // - any mode with explicit clear: send logo_direct_url: null.
+      // - else: leave all three undefined to keep the existing logo on update.
+      const trimmedLink = logoLinkUrl.trim();
+      let logoFields: {
+        logo_base64?: string | null;
+        logo_filename?: string | null;
+        logo_direct_url?: string | null;
+      } = {};
+      if (logoMode === "upload" && logoDataUrl) {
+        logoFields = { logo_base64: logoDataUrl, logo_filename: logoFilename };
+      } else if (logoMode === "link" && trimmedLink) {
+        logoFields = { logo_direct_url: trimmedLink };
+      } else if (logoCleared) {
+        logoFields = { logo_direct_url: null };
+      }
+
       const basePayload = {
         pin,
         business_name: businessName,
@@ -306,9 +334,7 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
         module_order: moduleOrder,
         cta_text: ctaText,
         cta_link: ctaLink,
-        logo_base64: logoDataUrl,
-        // null filename signals "explicit clear" when no new upload is staged
-        logo_filename: logoDataUrl ? logoFilename : logoCleared ? null : undefined,
+        ...logoFields,
         audio_url: audioUrl,
         video_url: videoUrl,
         clip_instagram_url: clipIg,
@@ -402,46 +428,79 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
               <Input value={businessName} onChange={(e) => setBusinessName(e.target.value)} required />
             </Field>
 
-            <Field label="Logo Upload">
-              <div className="flex items-center gap-4">
-                {logoDataUrl ? (
-                  <img src={logoDataUrl} alt="" className="size-16 rounded bg-white object-contain p-1" />
-                ) : logoExistingUrl && !logoCleared ? (
-                  <img src={logoExistingUrl} alt="" className="size-16 rounded bg-white object-contain p-1" />
-                ) : (
-                  <div className="size-16 rounded border border-dashed border-border flex items-center justify-center text-muted-foreground">
-                    <Upload className="size-5" />
-                  </div>
-                )}
-                <input
-                  ref={fileRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => {
-                    const f = e.target.files?.[0];
-                    if (f) handleLogoFile(f);
-                  }}
-                />
-                <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
-                  {logoDataUrl || (logoExistingUrl && !logoCleared) ? "Replace" : "Upload"}
-                </Button>
-                {(logoDataUrl || (logoExistingUrl && !logoCleared)) && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setLogoDataUrl(null);
-                      setLogoFilename(null);
-                      setLogoCleared(true);
+            <Field label="Logo">
+              <ModeToggle mode={logoMode} onChange={(m) => { setLogoMode(m); setLogoCleared(false); }} />
+              {logoMode === "upload" ? (
+                <div className="flex items-center gap-4 mt-3">
+                  {logoDataUrl ? (
+                    <img src={logoDataUrl} alt="" className="size-16 rounded bg-white object-contain p-1" />
+                  ) : logoExistingUrl && !logoCleared ? (
+                    <img src={logoExistingUrl} alt="" className="size-16 rounded bg-white object-contain p-1" />
+                  ) : (
+                    <div className="size-16 rounded border border-dashed border-border flex items-center justify-center text-muted-foreground">
+                      <Upload className="size-5" />
+                    </div>
+                  )}
+                  <input
+                    ref={fileRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) handleLogoFile(f);
                     }}
-                  >
-                    Remove
+                  />
+                  <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
+                    {logoDataUrl || (logoExistingUrl && !logoCleared) ? "Replace" : "Upload"}
                   </Button>
-                )}
-              </div>
+                  {(logoDataUrl || (logoExistingUrl && !logoCleared)) && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setLogoDataUrl(null);
+                        setLogoFilename(null);
+                        setLogoCleared(true);
+                      }}
+                    >
+                      Remove
+                    </Button>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-3 mt-3">
+                  <Input
+                    type="url"
+                    placeholder="https://example.com/logo.png"
+                    value={logoLinkUrl}
+                    onChange={(e) => { setLogoLinkUrl(e.target.value); setLogoCleared(false); }}
+                  />
+                  {(logoLinkUrl.trim() || (logoExistingUrl && !logoCleared)) && (
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={logoLinkUrl.trim() || logoExistingUrl || ""}
+                        alt=""
+                        className="size-16 rounded bg-white object-contain p-1"
+                        onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0.3"; }}
+                      />
+                      {logoExistingUrl && !logoLinkUrl.trim() && !logoCleared && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setLogoCleared(true)}
+                        >
+                          Remove
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
             </Field>
+
 
             <Field label="Episode Title">
               <Input
@@ -631,6 +690,45 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
   );
 }
 
+function isYouTubeUrl(url: string): boolean {
+  try {
+    const host = new URL(url).hostname.replace(/^www\./, "");
+    return host === "youtu.be" || host.endsWith("youtube.com");
+  } catch { return false; }
+}
+
+function ModeToggle({
+  mode, onChange,
+}: {
+  mode: "upload" | "link";
+  onChange: (m: "upload" | "link") => void;
+}) {
+  return (
+    <div className="inline-flex rounded-md border border-white/10 bg-secondary/30 p-0.5 text-xs">
+      <button
+        type="button"
+        onClick={() => onChange("upload")}
+        className={cn(
+          "px-3 py-1 rounded transition-colors",
+          mode === "upload" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground",
+        )}
+      >
+        Upload File
+      </button>
+      <button
+        type="button"
+        onClick={() => onChange("link")}
+        className={cn(
+          "px-3 py-1 rounded transition-colors",
+          mode === "link" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground",
+        )}
+      >
+        Paste Link
+      </button>
+    </div>
+  );
+}
+
 function MediaUploadField({
   label,
   accept,
@@ -654,6 +752,18 @@ function MediaUploadField({
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [mode, setMode] = useState<"upload" | "link">("upload");
+  const [linkDraft, setLinkDraft] = useState<string>("");
+
+  // If a value exists that doesn't look like a storage signed/public URL,
+  // default the view to "link" mode so Anamul sees what was saved.
+  useEffect(() => {
+    if (value && !/\/storage\/v1\/object\//.test(value)) {
+      setMode("link");
+      setLinkDraft(value);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleFile = async (file: File) => {
     setUploading(true);
@@ -665,44 +775,75 @@ function MediaUploadField({
     }
   };
 
+  const commitLink = (raw: string) => {
+    const trimmed = raw.trim();
+    onChange(trimmed ? trimmed : null);
+  };
+
+  const isYoutube = value ? isYouTubeUrl(value) : false;
+
   return (
     <div className="space-y-2">
       <Label>{label}</Label>
-      <div className={cn("flex flex-wrap items-start gap-3", compact && "items-center")}>
-        <input
-          ref={inputRef}
-          type="file"
-          accept={accept}
-          className="hidden"
-          onChange={(e) => {
-            const f = e.target.files?.[0];
-            if (f) handleFile(f);
-            e.target.value = "";
-          }}
-        />
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={() => inputRef.current?.click()}
-          disabled={uploading}
-        >
-          {uploading ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />}
-          {uploading ? "Uploading…" : value ? "Replace" : "Upload"}
-        </Button>
-        {value && (
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => onChange(null)}
-          >
-            <X className="size-4" /> Remove
-          </Button>
+      <ModeToggle mode={mode} onChange={setMode} />
+      <div className={cn("flex flex-wrap items-start gap-3 mt-2", compact && "items-center")}>
+        {mode === "upload" ? (
+          <>
+            <input
+              ref={inputRef}
+              type="file"
+              accept={accept}
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) handleFile(f);
+                e.target.value = "";
+              }}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => inputRef.current?.click()}
+              disabled={uploading}
+            >
+              {uploading ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />}
+              {uploading ? "Uploading…" : value && /\/storage\/v1\/object\//.test(value) ? "Replace" : "Upload"}
+            </Button>
+            {value && (
+              <Button type="button" variant="ghost" size="sm" onClick={() => onChange(null)}>
+                <X className="size-4" /> Remove
+              </Button>
+            )}
+          </>
+        ) : (
+          <div className="flex w-full flex-wrap items-center gap-2">
+            <Input
+              type="url"
+              value={linkDraft}
+              onChange={(e) => setLinkDraft(e.target.value)}
+              onBlur={(e) => commitLink(e.target.value)}
+              placeholder="https://… (YouTube link or direct .mp4/.mp3 URL)"
+              className="flex-1 min-w-[200px]"
+            />
+            <Button type="button" size="sm" onClick={() => commitLink(linkDraft)}>
+              Save Link
+            </Button>
+            {value && (
+              <Button type="button" variant="ghost" size="sm" onClick={() => { setLinkDraft(""); onChange(null); }}>
+                <X className="size-4" /> Remove
+              </Button>
+            )}
+          </div>
         )}
+
         {value && (
           <div className={cn("w-full", compact ? "max-w-xs" : "max-w-md")}>
-            {previewType === "audio" ? (
+            {isYoutube ? (
+              <p className="text-xs text-muted-foreground font-mono break-all">
+                YouTube link saved · will embed on preview
+              </p>
+            ) : previewType === "audio" ? (
               <audio src={value} controls className="w-full" />
             ) : (
               <video src={value} controls className="w-full rounded-md bg-black" style={{ maxHeight: 200 }} />
@@ -714,6 +855,7 @@ function MediaUploadField({
     </div>
   );
 }
+
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
