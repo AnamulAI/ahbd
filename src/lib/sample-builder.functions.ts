@@ -327,6 +327,7 @@ export const createSample = createServerFn({ method: "POST" })
         .insert({
           slug,
           business_name: data.business_name.trim(),
+          audience_category: normalizeAudience(data.audience_category),
           episode_title: data.episode_title?.trim() || "",
           topic: data.topic?.trim() || "",
           platforms: data.platforms,
