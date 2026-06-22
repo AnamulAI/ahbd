@@ -676,7 +676,7 @@ function SmmClipCard({
       <div className="relative aspect-[9/16]" style={{ background: color }}>
         {clipUrl && playing ? (
           youtube ? (
-            <YouTubeEmbed url={youtube} className="absolute inset-0" />
+            <YouTubeEmbed url={youtube} className="absolute inset-0" autoplay minimal />
           ) : (
             <video
               src={clipUrl}
@@ -688,7 +688,10 @@ function SmmClipCard({
           )
         ) : (
           <>
-            <div className="absolute inset-0 bg-black/20" />
+            {youtube && (
+              <YouTubeThumb url={youtube} className="absolute inset-0 size-full" />
+            )}
+            <div className="absolute inset-0 bg-black/30" />
             <button
               type="button"
               onClick={clipUrl ? () => setPlaying(true) : undefined}
