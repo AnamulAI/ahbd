@@ -68,19 +68,18 @@ function NotFoundView() {
 
 /* ---------- URL helpers ---------- */
 
-function youTubeEmbedUrl(url: string): string | null {
+function youTubeVideoId(url: string): string | null {
   try {
     const u = new URL(url);
     const host = u.hostname.replace(/^www\./, "");
     if (host === "youtu.be") {
       const id = u.pathname.slice(1).split("/")[0];
-      return id ? `https://www.youtube.com/embed/${id}` : null;
+      return id || null;
     }
     if (host === "youtube.com" || host === "m.youtube.com" || host === "music.youtube.com") {
-      if (u.pathname.startsWith("/embed/")) return `https://www.youtube.com/embed/${u.pathname.split("/")[2]}`;
-      if (u.pathname.startsWith("/shorts/")) return `https://www.youtube.com/embed/${u.pathname.split("/")[2]}`;
-      const v = u.searchParams.get("v");
-      if (v) return `https://www.youtube.com/embed/${v}`;
+      if (u.pathname.startsWith("/embed/")) return u.pathname.split("/")[2] || null;
+      if (u.pathname.startsWith("/shorts/")) return u.pathname.split("/")[2] || null;
+      return u.searchParams.get("v");
     }
     return null;
   } catch {
@@ -90,19 +89,94 @@ function youTubeEmbedUrl(url: string): string | null {
 
 function isYouTubeUrl(url: string | null | undefined): boolean {
   if (!url) return false;
-  return youTubeEmbedUrl(url) !== null;
+  return youTubeVideoId(url) !== null;
 }
 
-function YouTubeEmbed({ url, className }: { url: string; className?: string }) {
-  const embed = youTubeEmbedUrl(url);
-  if (!embed) return null;
+function youTubeThumbnail(url: string): string | null {
+  const id = youTubeVideoId(url);
+  return id ? `https://img.youtube.com/vi/${id}/maxresdefault.jpg` : null;
+}
+
+function isSoundCloudUrl(url: string | null | undefined): boolean {
+  if (!url) return false;
+  try {
+    const u = new URL(url);
+    return u.hostname.replace(/^www\./, "").endsWith("soundcloud.com");
+  } catch {
+    return false;
+  }
+}
+
+function soundCloudEmbedSrc(url: string): string {
+  const params = new URLSearchParams({
+    url,
+    color: "#ff5500",
+    auto_play: "true",
+    hide_related: "true",
+    show_comments: "false",
+    show_user: "false",
+    show_reposts: "false",
+    show_teaser: "false",
+  });
+  return `https://w.soundcloud.com/player/?${params.toString()}`;
+}
+
+function YouTubeEmbed({
+  url,
+  className,
+  autoplay = false,
+  minimal = false,
+}: {
+  url: string;
+  className?: string;
+  autoplay?: boolean;
+  minimal?: boolean;
+}) {
+  const id = youTubeVideoId(url);
+  if (!id) return null;
+  const params = new URLSearchParams({
+    autoplay: autoplay ? "1" : "0",
+    playsinline: "1",
+    rel: "0",
+    modestbranding: "1",
+    ...(minimal ? { controls: "0", showinfo: "0", iv_load_policy: "3" } : {}),
+  });
   return (
     <iframe
-      src={embed}
+      src={`https://www.youtube.com/embed/${id}?${params.toString()}`}
       title="YouTube player"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
       allowFullScreen
       className={cn("size-full border-0", className)}
+    />
+  );
+}
+
+function YouTubeThumb({ url, className }: { url: string; className?: string }) {
+  const src = youTubeThumbnail(url);
+  if (!src) return null;
+  const id = youTubeVideoId(url);
+  return (
+    <img
+      src={src}
+      alt=""
+      className={cn("size-full object-cover", className)}
+      onError={(e) => {
+        if (id) (e.currentTarget as HTMLImageElement).src = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+      }}
+    />
+  );
+}
+
+function SoundCloudEmbed({ url, className }: { url: string; className?: string }) {
+  return (
+    <iframe
+      src={soundCloudEmbedSrc(url)}
+      title="SoundCloud player"
+      allow="autoplay"
+      scrolling="no"
+      frameBorder={0}
+      className={cn("w-full border-0", className)}
     />
   );
 }
@@ -331,8 +405,11 @@ function LogoTile({ logoUrl, label, className }: { logoUrl: string | null; label
 function SpotifyMock({ businessName, logoUrl, episodeTitle, topic, audioUrl }: {
   businessName: string; logoUrl: string | null; episodeTitle: string; topic: string; audioUrl: string | null;
 }) {
-  const youtube = audioUrl && isYouTubeUrl(audioUrl) ? audioUrl : null;
-  const { playing, progress, toggle, available } = useAudioPlayer(youtube ? null : audioUrl);
+  const isYt = !!audioUrl && isYouTubeUrl(audioUrl);
+  const isSc = !!audioUrl && isSoundCloudUrl(audioUrl);
+  const nativeSrc = audioUrl && !isYt && !isSc ? audioUrl : null;
+  const { playing, progress, toggle, available } = useAudioPlayer(nativeSrc);
+  const [scOpen, setScOpen] = useState(false);
   return (
     <div className="rounded-xl overflow-hidden border border-white/10 shadow-2xl" style={{ background: "#121212" }}>
       <div className="p-5 flex items-center gap-2 text-white">
@@ -347,17 +424,21 @@ function SpotifyMock({ businessName, logoUrl, episodeTitle, topic, audioUrl }: {
         </div>
       </div>
       <div className="px-5 pb-5">
-        {youtube ? (
+        {isYt && audioUrl ? (
           <div className="mb-3 aspect-video w-full rounded-md overflow-hidden bg-black">
-            <YouTubeEmbed url={youtube} />
+            <YouTubeEmbed url={audioUrl} />
+          </div>
+        ) : isSc && audioUrl && scOpen ? (
+          <div className="mb-3 rounded-md overflow-hidden">
+            <SoundCloudEmbed url={audioUrl} className="h-[166px]" />
           </div>
         ) : (
           <>
             <button
-              onClick={available ? toggle : undefined}
+              onClick={isSc ? () => setScOpen(true) : (available ? toggle : undefined)}
               className={cn(
                 "w-14 h-14 rounded-full flex items-center justify-center mb-4 transition-transform",
-                available && "hover:scale-105 active:scale-95",
+                (available || isSc) && "hover:scale-105 active:scale-95",
               )}
               style={{ background: "#1DB954" }}
               aria-label={playing ? "Pause" : "Play"}
@@ -389,8 +470,11 @@ function SpotifyMock({ businessName, logoUrl, episodeTitle, topic, audioUrl }: {
 function AppleMock({ businessName, logoUrl, episodeTitle, topic, audioUrl }: {
   businessName: string; logoUrl: string | null; episodeTitle: string; topic: string; audioUrl: string | null;
 }) {
-  const youtube = audioUrl && isYouTubeUrl(audioUrl) ? audioUrl : null;
-  const { playing, progress, toggle, available } = useAudioPlayer(youtube ? null : audioUrl);
+  const isYt = !!audioUrl && isYouTubeUrl(audioUrl);
+  const isSc = !!audioUrl && isSoundCloudUrl(audioUrl);
+  const nativeSrc = audioUrl && !isYt && !isSc ? audioUrl : null;
+  const { playing, progress, toggle, available } = useAudioPlayer(nativeSrc);
+  const [scOpen, setScOpen] = useState(false);
   return (
     <div className="rounded-xl overflow-hidden border border-black/10 shadow-2xl bg-white text-neutral-900">
       <div className="p-5 flex items-center gap-2">
@@ -406,15 +490,19 @@ function AppleMock({ businessName, logoUrl, episodeTitle, topic, audioUrl }: {
         <p className="text-[10px] uppercase tracking-wider text-neutral-500 mb-2">Latest Episode</p>
         <p className="font-medium text-sm">{episodeTitle}</p>
         {topic && <p className="text-xs text-neutral-600 mt-1 line-clamp-2">{topic}</p>}
-        {youtube ? (
+        {isYt && audioUrl ? (
           <div className="mt-3 aspect-video w-full rounded-md overflow-hidden bg-black">
-            <YouTubeEmbed url={youtube} />
+            <YouTubeEmbed url={audioUrl} />
+          </div>
+        ) : isSc && audioUrl && scOpen ? (
+          <div className="mt-3 rounded-md overflow-hidden">
+            <SoundCloudEmbed url={audioUrl} className="h-[166px]" />
           </div>
         ) : (
           <>
             <button
               type="button"
-              onClick={available ? toggle : undefined}
+              onClick={isSc ? () => setScOpen(true) : (available ? toggle : undefined)}
               className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full text-white"
               style={{ background: "linear-gradient(135deg, #9933CC, #E91E63)" }}
             >
@@ -448,7 +536,7 @@ function YouTubeMock({ businessName, logoUrl, episodeTitle, videoUrl }: {
       <div className="relative aspect-video bg-neutral-900">
         {videoUrl && playing ? (
           youtube ? (
-            <YouTubeEmbed url={youtube} className="absolute inset-0" />
+            <YouTubeEmbed url={youtube} className="absolute inset-0" autoplay minimal />
           ) : (
             <video
               src={videoUrl}
@@ -459,7 +547,11 @@ function YouTubeMock({ businessName, logoUrl, episodeTitle, videoUrl }: {
           )
         ) : (
           <>
-            <LogoTile logoUrl={logoUrl} label={businessName} className="absolute inset-0 size-full opacity-90" />
+            {youtube ? (
+              <YouTubeThumb url={youtube} className="absolute inset-0 size-full" />
+            ) : (
+              <LogoTile logoUrl={logoUrl} label={businessName} className="absolute inset-0 size-full opacity-90" />
+            )}
             <button
               type="button"
               onClick={videoUrl ? () => setPlaying(true) : undefined}
@@ -500,7 +592,7 @@ function VideoModule({ businessName, episodeTitle, videoUrl }: { businessName: s
           <div className="relative aspect-video bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900 flex items-center justify-center">
             {videoUrl && playing ? (
               youtube ? (
-                <YouTubeEmbed url={youtube} className="absolute inset-0" />
+                <YouTubeEmbed url={youtube} className="absolute inset-0" autoplay minimal />
               ) : (
                 <video
                   src={videoUrl}
@@ -511,18 +603,23 @@ function VideoModule({ businessName, episodeTitle, videoUrl }: { businessName: s
               )
             ) : (
               <>
-                <div className="absolute inset-x-0 bottom-1/3 flex items-end justify-center gap-1 px-12 opacity-40">
-                  {Array.from({ length: 60 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="w-1 rounded-full"
-                      style={{
-                        height: `${20 + Math.abs(Math.sin(i * 0.6)) * 60}px`,
-                        background: i % 2 === 0 ? "var(--primary)" : "var(--orange)",
-                      }}
-                    />
-                  ))}
-                </div>
+                {youtube ? (
+                  <YouTubeThumb url={youtube} className="absolute inset-0 size-full" />
+                ) : (
+                  <div className="absolute inset-x-0 bottom-1/3 flex items-end justify-center gap-1 px-12 opacity-40">
+                    {Array.from({ length: 60 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className="w-1 rounded-full"
+                        style={{
+                          height: `${20 + Math.abs(Math.sin(i * 0.6)) * 60}px`,
+                          background: i % 2 === 0 ? "var(--primary)" : "var(--orange)",
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
+                {youtube && <div className="absolute inset-0 bg-black/30" />}
                 <button
                   type="button"
                   onClick={videoUrl ? () => setPlaying(true) : undefined}
@@ -534,11 +631,11 @@ function VideoModule({ businessName, episodeTitle, videoUrl }: { businessName: s
                 >
                   <Play className="size-9 text-black fill-black ml-1" />
                 </button>
-                <div className="absolute top-5 left-5 right-5">
-                  <p className="text-white/60 text-xs font-mono">{businessName} · Video Podcast</p>
-                  <p className="text-white font-bold text-xl mt-1 line-clamp-2">{episodeTitle}</p>
+                <div className="absolute top-5 left-5 right-5 z-10">
+                  <p className="text-white/80 text-xs font-mono drop-shadow">{businessName} · Video Podcast</p>
+                  <p className="text-white font-bold text-xl mt-1 line-clamp-2 drop-shadow">{episodeTitle}</p>
                 </div>
-                <div className="absolute bottom-4 left-5 right-5 flex items-center gap-2 bg-black/70 backdrop-blur rounded-lg px-3 py-2">
+                <div className="absolute bottom-4 left-5 right-5 z-10 flex items-center gap-2 bg-black/70 backdrop-blur rounded-lg px-3 py-2">
                   <Captions className="size-4 text-white/80" />
                   <p className="text-xs text-white/90 italic line-clamp-1">
                     "Auto-captioned, perfectly synced for every viewer..."
@@ -579,7 +676,7 @@ function SmmClipCard({
       <div className="relative aspect-[9/16]" style={{ background: color }}>
         {clipUrl && playing ? (
           youtube ? (
-            <YouTubeEmbed url={youtube} className="absolute inset-0" />
+            <YouTubeEmbed url={youtube} className="absolute inset-0" autoplay minimal />
           ) : (
             <video
               src={clipUrl}
@@ -591,7 +688,10 @@ function SmmClipCard({
           )
         ) : (
           <>
-            <div className="absolute inset-0 bg-black/20" />
+            {youtube && (
+              <YouTubeThumb url={youtube} className="absolute inset-0 size-full" />
+            )}
+            <div className="absolute inset-0 bg-black/30" />
             <button
               type="button"
               onClick={clipUrl ? () => setPlaying(true) : undefined}
