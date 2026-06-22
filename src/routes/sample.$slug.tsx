@@ -265,7 +265,7 @@ function SamplePage() {
             </div>
           )}
           <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
-            // YOUR CUSTOM PODCAST PREVIEW
+            // YOUR PODCAST PREVIEW
           </p>
           <h1 className="mt-4 text-4xl sm:text-5xl">
             A Podcast Preview for{" "}
@@ -279,7 +279,7 @@ function SamplePage() {
           </p>
 
           <p className="mt-6 text-sm text-muted-foreground">
-            This is a free custom preview — no commitment required.
+            This is a free preview — no commitment required.
           </p>
         </div>
       </section>
@@ -787,7 +787,7 @@ function SmmModule({
   const snippet = (topic || businessName).slice(0, 60);
   const cards = [
     { brand: "instagram", Icon: SiInstagram, color: "linear-gradient(135deg, #F58529, #DD2A7B, #8134AF)", label: "Instagram Reel", clipUrl: clipInstagram, iconBg: "linear-gradient(135deg, #833AB4, #FD1D1D, #F56040)", iconColor: "#ffffff" },
-    { brand: "tiktok", Icon: SiTiktok, color: "#000000", label: "TikTok", clipUrl: clipTiktok, iconColor: "#00F2EA" },
+    { brand: "tiktok", Icon: SiTiktok, color: "#000000", label: "TikTok", clipUrl: clipTiktok, iconBg: "#000000", iconColor: "#00F2EA" },
     { brand: "linkedin", Icon: SiLinkedin, color: "#0A66C2", label: "LinkedIn Clip", clipUrl: clipLinkedin, iconBg: "#ffffff", iconColor: "#0A66C2" },
   ];
 
