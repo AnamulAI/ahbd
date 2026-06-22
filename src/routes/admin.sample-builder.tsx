@@ -445,6 +445,34 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
               <Input value={businessName} onChange={(e) => setBusinessName(e.target.value)} required />
             </Field>
 
+            <Field label="Target Audience *">
+              <div className="grid grid-cols-2 gap-2">
+                {AUDIENCE_CATEGORIES.map((cat) => {
+                  const active = audienceCategory === cat;
+                  return (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => setAudienceCategory(cat)}
+                      className={cn(
+                        "rounded-md border px-4 py-3 text-sm text-left transition-colors",
+                        active
+                          ? "border-primary bg-primary/10 text-foreground"
+                          : "border-white/10 bg-secondary/30 text-muted-foreground hover:text-foreground hover:border-white/20",
+                      )}
+                    >
+                      {AUDIENCE_LABELS[cat]}
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Drives the hero description and closing CTA copy on the public preview.
+              </p>
+            </Field>
+
+
+
             <Field label="Logo">
               <ModeToggle mode={logoMode} onChange={(m) => { setLogoMode(m); setLogoCleared(false); }} />
               {logoMode === "upload" ? (
