@@ -655,7 +655,7 @@ function VideoModule({ businessName, episodeTitle, videoUrl }: { businessName: s
 }
 
 function SmmClipCard({
-  brand, Icon, color, label, snippet, clipUrl, iconColor,
+  brand, Icon, color, label, snippet, clipUrl, iconColor, iconBg,
 }: {
   brand: string;
   Icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
@@ -664,13 +664,20 @@ function SmmClipCard({
   snippet: string;
   clipUrl: string | null;
   iconColor?: string;
+  iconBg?: string;
 }) {
   const [playing, setPlaying] = useState(false);
   const youtube = clipUrl && isYouTubeUrl(clipUrl) ? clipUrl : null;
   return (
     <div key={brand} className="rounded-xl overflow-hidden border border-white/10 bg-neutral-950 shadow-2xl">
       <div className="p-4 flex items-center gap-2 border-b border-white/5">
-        <Icon className="size-5" style={iconColor ? { color: iconColor } : undefined} />
+        {iconBg ? (
+          <div className="size-6 rounded-md flex items-center justify-center shrink-0" style={{ background: iconBg }}>
+            <Icon className="size-4" style={iconColor ? { color: iconColor } : undefined} />
+          </div>
+        ) : (
+          <Icon className="size-5" style={iconColor ? { color: iconColor } : undefined} />
+        )}
         <span className="text-sm font-medium text-white/90">{label}</span>
       </div>
       <div className="relative aspect-[9/16]" style={{ background: color }}>
