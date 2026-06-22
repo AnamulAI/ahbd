@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Pause, Play, Rss } from "lucide-react";
+import { ArrowRight, Pause, Play, Rss, Heart, MoreHorizontal, Shuffle, Download, ThumbsUp, Share2 } from "lucide-react";
 import {
   SiSpotify, SiApplepodcasts, SiYoutube, SiInstagram, SiTiktok,
   SiFacebook, SiX, SiGoogle,
