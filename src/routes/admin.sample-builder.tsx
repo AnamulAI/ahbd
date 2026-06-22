@@ -219,6 +219,11 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
         }
         const s = res.sample;
         setBusinessName(s.business_name || "");
+        setAudienceCategory(
+          (AUDIENCE_CATEGORIES as readonly string[]).includes(s.audience_category)
+            ? (s.audience_category as AudienceCategory)
+            : "businesses",
+        );
         setEpisodeTitle(s.episode_title || "");
         setTopic(s.topic || "");
         setPlatforms((s.platforms as string[]) || []);
