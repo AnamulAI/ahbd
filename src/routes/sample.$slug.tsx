@@ -232,6 +232,71 @@ function normalizeAudience(value: unknown): AudienceCategory {
     : "businesses";
 }
 
+/* ---------- Marquee strip ---------- */
+
+function PillBadge({
+  name,
+  Icon,
+  color,
+}: {
+  name: string;
+  Icon: React.ComponentType<{ size?: number; color?: string; className?: string }>;
+  color: string;
+}) {
+  return (
+    <div className="inline-flex items-center gap-2.5 rounded-full bg-surface px-4 py-2.5 border border-white/[0.06] whitespace-nowrap">
+      <Icon size={16} color={color} />
+      <span className="text-sm font-medium text-foreground/90">{name}</span>
+    </div>
+  );
+}
+
+function PublishEverywhereStrip() {
+  const row1 = [
+    { name: "Instagram", Icon: SiInstagram, color: "#E4405F" },
+    { name: "LinkedIn", Icon: SiLinkedin, color: "#0A66C2" },
+    { name: "Facebook", Icon: SiFacebook, color: "#1877F2" },
+    { name: "Twitter / X", Icon: SiX, color: "#FFFFFF" },
+    { name: "RSS Feed", Icon: Rss, color: "#F26522" },
+    { name: "Spotify", Icon: SiSpotify, color: "#1DB954" },
+    { name: "Apple Podcasts", Icon: SiApplepodcasts, color: "#9933FF" },
+    { name: "YouTube", Icon: SiYoutube, color: "#FF0000" },
+    { name: "TikTok", Icon: SiTiktok, color: "#00F2EA" },
+  ];
+
+  const row2 = [
+    { name: "YouTube", Icon: SiYoutube, color: "#FF0000" },
+    { name: "Instagram", Icon: SiInstagram, color: "#E4405F" },
+    { name: "Facebook", Icon: SiFacebook, color: "#1877F2" },
+    { name: "LinkedIn", Icon: SiLinkedin, color: "#0A66C2" },
+    { name: "Twitter / X", Icon: SiX, color: "#FFFFFF" },
+    { name: "Google Podcasts", Icon: SiGoogle, color: "#4285F4" },
+    { name: "RSS Feed", Icon: Rss, color: "#F26522" },
+    { name: "Spotify", Icon: SiSpotify, color: "#1DB954" },
+    { name: "Apple Podcasts", Icon: SiApplepodcasts, color: "#9933FF" },
+  ];
+
+  return (
+    <section className="py-10">
+      <p className="text-center text-xs font-mono uppercase tracking-wider text-muted-foreground mb-6">
+        Publish Everywhere Your Audience Already Listens
+      </p>
+      <div className="space-y-4 platform-marquee">
+        <div className="platform-marquee-track-left hover:[animation-play-state:paused]">
+          {[...row1, ...row1, ...row1, ...row1].map((item, i) => (
+            <PillBadge key={`r1-${i}`} {...item} />
+          ))}
+        </div>
+        <div className="platform-marquee-track-right hover:[animation-play-state:paused]">
+          {[...row2, ...row2, ...row2, ...row2].map((item, i) => (
+            <PillBadge key={`r2-${i}`} {...item} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function SamplePage() {
   const { slug } = Route.useParams();
   const { data } = useSuspenseQuery(sampleQuery(slug));
