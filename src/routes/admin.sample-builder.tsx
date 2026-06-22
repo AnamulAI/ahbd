@@ -285,9 +285,11 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
     setShowSmm(true);
     setCtaText("Get This Service →");
     setCtaLink("/services/ai-podcast");
+    setLogoMode("upload");
     setLogoDataUrl(null);
     setLogoFilename(null);
     setLogoExistingUrl(null);
+    setLogoLinkUrl("");
     setLogoCleared(false);
     setAudioUrl(null);
     setVideoUrl(null);
