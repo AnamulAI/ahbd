@@ -393,6 +393,7 @@ export const updateSample = createServerFn({ method: "POST" })
         .from("sample_previews")
         .update({
           business_name: data.business_name.trim(),
+          audience_category: normalizeAudience(data.audience_category),
           episode_title: data.episode_title?.trim() || "",
           topic: data.topic?.trim() || "",
           platforms: data.platforms,
