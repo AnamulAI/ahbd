@@ -245,12 +245,6 @@ function SamplePage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <div className="px-6 py-5">
-        <Link to="/" className="font-mono text-sm text-foreground/80 hover:text-foreground transition-colors">
-          {"{AnamDev}"}
-        </Link>
-      </div>
-
       <section className="section-glow-hero relative overflow-hidden">
         <div className="relative mx-auto max-w-4xl px-6 py-16 text-center">
           {data.logo_url ? (
