@@ -428,46 +428,79 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
               <Input value={businessName} onChange={(e) => setBusinessName(e.target.value)} required />
             </Field>
 
-            <Field label="Logo Upload">
-              <div className="flex items-center gap-4">
-                {logoDataUrl ? (
-                  <img src={logoDataUrl} alt="" className="size-16 rounded bg-white object-contain p-1" />
-                ) : logoExistingUrl && !logoCleared ? (
-                  <img src={logoExistingUrl} alt="" className="size-16 rounded bg-white object-contain p-1" />
-                ) : (
-                  <div className="size-16 rounded border border-dashed border-border flex items-center justify-center text-muted-foreground">
-                    <Upload className="size-5" />
-                  </div>
-                )}
-                <input
-                  ref={fileRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => {
-                    const f = e.target.files?.[0];
-                    if (f) handleLogoFile(f);
-                  }}
-                />
-                <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
-                  {logoDataUrl || (logoExistingUrl && !logoCleared) ? "Replace" : "Upload"}
-                </Button>
-                {(logoDataUrl || (logoExistingUrl && !logoCleared)) && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setLogoDataUrl(null);
-                      setLogoFilename(null);
-                      setLogoCleared(true);
+            <Field label="Logo">
+              <ModeToggle mode={logoMode} onChange={(m) => { setLogoMode(m); setLogoCleared(false); }} />
+              {logoMode === "upload" ? (
+                <div className="flex items-center gap-4 mt-3">
+                  {logoDataUrl ? (
+                    <img src={logoDataUrl} alt="" className="size-16 rounded bg-white object-contain p-1" />
+                  ) : logoExistingUrl && !logoCleared ? (
+                    <img src={logoExistingUrl} alt="" className="size-16 rounded bg-white object-contain p-1" />
+                  ) : (
+                    <div className="size-16 rounded border border-dashed border-border flex items-center justify-center text-muted-foreground">
+                      <Upload className="size-5" />
+                    </div>
+                  )}
+                  <input
+                    ref={fileRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) handleLogoFile(f);
                     }}
-                  >
-                    Remove
+                  />
+                  <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
+                    {logoDataUrl || (logoExistingUrl && !logoCleared) ? "Replace" : "Upload"}
                   </Button>
-                )}
-              </div>
+                  {(logoDataUrl || (logoExistingUrl && !logoCleared)) && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setLogoDataUrl(null);
+                        setLogoFilename(null);
+                        setLogoCleared(true);
+                      }}
+                    >
+                      Remove
+                    </Button>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-3 mt-3">
+                  <Input
+                    type="url"
+                    placeholder="https://example.com/logo.png"
+                    value={logoLinkUrl}
+                    onChange={(e) => { setLogoLinkUrl(e.target.value); setLogoCleared(false); }}
+                  />
+                  {(logoLinkUrl.trim() || (logoExistingUrl && !logoCleared)) && (
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={logoLinkUrl.trim() || logoExistingUrl || ""}
+                        alt=""
+                        className="size-16 rounded bg-white object-contain p-1"
+                        onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0.3"; }}
+                      />
+                      {logoExistingUrl && !logoLinkUrl.trim() && !logoCleared && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setLogoCleared(true)}
+                        >
+                          Remove
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
             </Field>
+
 
             <Field label="Episode Title">
               <Input
