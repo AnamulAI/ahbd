@@ -705,8 +705,27 @@ function YouTubeMock({ businessName, logoUrl, episodeTitle, videoUrl }: {
       </div>
       <div className="p-4">
         <p className="font-semibold text-sm leading-snug line-clamp-2">{episodeTitle}</p>
-        <p className="text-xs text-neutral-600 mt-1">{businessName}</p>
-        <p className="text-xs text-neutral-500 mt-1">2.4K views · 1 hour ago</p>
+        <div className="mt-2 flex items-center gap-2">
+          <LogoTile logoUrl={logoUrl} label={businessName} className="size-7 rounded-full shrink-0" />
+          <p className="text-xs text-neutral-700 font-medium">{businessName}</p>
+          <button
+            type="button"
+            className="ml-1 text-[11px] font-semibold text-white px-2.5 py-1 rounded-full"
+            style={{ background: "#FF0000" }}
+          >
+            Subscribe
+          </button>
+        </div>
+        <p className="text-xs text-neutral-500 mt-2">2.4K views · 1 hour ago</p>
+        <div className="mt-3 flex items-center gap-5 text-neutral-600">
+          <span className="inline-flex items-center gap-1.5 text-xs">
+            <ThumbsUp className="size-4" /> 142
+          </span>
+          <span className="inline-flex items-center gap-1.5 text-xs">
+            <Share2 className="size-4" /> Share
+          </span>
+          <MoreHorizontal className="size-4 ml-auto" />
+        </div>
       </div>
     </div>
   );
