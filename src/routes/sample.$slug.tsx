@@ -552,25 +552,34 @@ function SpotifyMock({ businessName, logoUrl, episodeTitle, topic, audioUrl }: {
           </div>
         ) : (
           <>
-            <button
-              onClick={isSc ? () => setScOpen(true) : (available ? toggle : undefined)}
-              className={cn(
-                "w-14 h-14 rounded-full flex items-center justify-center mb-4 transition-transform",
-                (available || isSc) && "hover:scale-105 active:scale-95",
-              )}
-              style={{ background: "#1DB954" }}
-              aria-label={playing ? "Pause" : "Play"}
-              type="button"
-            >
-              {playing
-                ? <Pause className="size-6 text-black fill-black" />
-                : <Play className="size-6 text-black fill-black ml-0.5" />}
-            </button>
-            {available && (
-              <div className="mb-3 h-1 w-full rounded-full bg-white/10 overflow-hidden">
-                <div className="h-full rounded-full transition-[width] duration-200" style={{ width: `${progress * 100}%`, background: "#1DB954" }} />
+            <div className="flex items-center gap-4 mb-3">
+              <button
+                onClick={isSc ? () => setScOpen(true) : (available ? toggle : undefined)}
+                className={cn(
+                  "w-14 h-14 rounded-full flex items-center justify-center transition-transform",
+                  (available || isSc) && "hover:scale-105 active:scale-95",
+                )}
+                style={{ background: "#1DB954" }}
+                aria-label={playing ? "Pause" : "Play"}
+                type="button"
+              >
+                {playing
+                  ? <Pause className="size-6 text-black fill-black" />
+                  : <Play className="size-6 text-black fill-black ml-0.5" />}
+              </button>
+              <div className="flex items-center gap-4 text-white/70">
+                <Shuffle className="size-4 hover:text-white cursor-pointer" />
+                <Heart className="size-4 hover:text-white cursor-pointer" />
+                <MoreHorizontal className="size-4 hover:text-white cursor-pointer" />
               </div>
-            )}
+            </div>
+            <div className="mb-3 flex items-center gap-2">
+              <span className="text-[10px] text-white/50 tabular-nums">0:00</span>
+              <div className="flex-1 h-1 rounded-full bg-white/10 overflow-hidden">
+                <div className="h-full rounded-full transition-[width] duration-200" style={{ width: `${(available ? progress : 0) * 100}%`, background: "#1DB954" }} />
+              </div>
+              <span className="text-[10px] text-white/50 tabular-nums">12:34</span>
+            </div>
           </>
         )}
         <div className="space-y-3">
