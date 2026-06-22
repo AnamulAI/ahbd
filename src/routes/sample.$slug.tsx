@@ -412,6 +412,10 @@ function SamplePage() {
           </p>
         </div>
       </section>
+
+      <p className="py-10 text-center text-xs text-muted-foreground/60">
+        &copy; 2026 AnamDev. All rights reserved.
+      </p>
     </main>
   );
 }
