@@ -304,6 +304,25 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
     if (platforms.length === 0) return toast.error("Select at least one platform");
     setSubmitting(true);
     try {
+      // Resolve logo payload based on chosen mode.
+      // - upload + new file: send base64+filename, server uploads and stores canonical URL.
+      // - link mode with a URL: send logo_direct_url as the string to store.
+      // - any mode with explicit clear: send logo_direct_url: null.
+      // - else: leave all three undefined to keep the existing logo on update.
+      const trimmedLink = logoLinkUrl.trim();
+      let logoFields: {
+        logo_base64?: string | null;
+        logo_filename?: string | null;
+        logo_direct_url?: string | null;
+      } = {};
+      if (logoMode === "upload" && logoDataUrl) {
+        logoFields = { logo_base64: logoDataUrl, logo_filename: logoFilename };
+      } else if (logoMode === "link" && trimmedLink) {
+        logoFields = { logo_direct_url: trimmedLink };
+      } else if (logoCleared) {
+        logoFields = { logo_direct_url: null };
+      }
+
       const basePayload = {
         pin,
         business_name: businessName,
@@ -315,9 +334,7 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
         module_order: moduleOrder,
         cta_text: ctaText,
         cta_link: ctaLink,
-        logo_base64: logoDataUrl,
-        // null filename signals "explicit clear" when no new upload is staged
-        logo_filename: logoDataUrl ? logoFilename : logoCleared ? null : undefined,
+        ...logoFields,
         audio_url: audioUrl,
         video_url: videoUrl,
         clip_instagram_url: clipIg,
