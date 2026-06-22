@@ -405,8 +405,11 @@ function LogoTile({ logoUrl, label, className }: { logoUrl: string | null; label
 function SpotifyMock({ businessName, logoUrl, episodeTitle, topic, audioUrl }: {
   businessName: string; logoUrl: string | null; episodeTitle: string; topic: string; audioUrl: string | null;
 }) {
-  const youtube = audioUrl && isYouTubeUrl(audioUrl) ? audioUrl : null;
-  const { playing, progress, toggle, available } = useAudioPlayer(youtube ? null : audioUrl);
+  const isYt = !!audioUrl && isYouTubeUrl(audioUrl);
+  const isSc = !!audioUrl && isSoundCloudUrl(audioUrl);
+  const nativeSrc = audioUrl && !isYt && !isSc ? audioUrl : null;
+  const { playing, progress, toggle, available } = useAudioPlayer(nativeSrc);
+  const [scOpen, setScOpen] = useState(false);
   return (
     <div className="rounded-xl overflow-hidden border border-white/10 shadow-2xl" style={{ background: "#121212" }}>
       <div className="p-5 flex items-center gap-2 text-white">
@@ -421,17 +424,21 @@ function SpotifyMock({ businessName, logoUrl, episodeTitle, topic, audioUrl }: {
         </div>
       </div>
       <div className="px-5 pb-5">
-        {youtube ? (
+        {isYt && audioUrl ? (
           <div className="mb-3 aspect-video w-full rounded-md overflow-hidden bg-black">
-            <YouTubeEmbed url={youtube} />
+            <YouTubeEmbed url={audioUrl} />
+          </div>
+        ) : isSc && audioUrl && scOpen ? (
+          <div className="mb-3 rounded-md overflow-hidden">
+            <SoundCloudEmbed url={audioUrl} className="h-[166px]" />
           </div>
         ) : (
           <>
             <button
-              onClick={available ? toggle : undefined}
+              onClick={isSc ? () => setScOpen(true) : (available ? toggle : undefined)}
               className={cn(
                 "w-14 h-14 rounded-full flex items-center justify-center mb-4 transition-transform",
-                available && "hover:scale-105 active:scale-95",
+                (available || isSc) && "hover:scale-105 active:scale-95",
               )}
               style={{ background: "#1DB954" }}
               aria-label={playing ? "Pause" : "Play"}
