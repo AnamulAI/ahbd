@@ -15,6 +15,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicesWebDevelopmentRouteImport } from './routes/services.web-development'
 import { Route as ServicesAiPodcastRouteImport } from './routes/services.ai-podcast'
 import { Route as ServicesAiIntegratorRouteImport } from './routes/services.ai-integrator'
+import { Route as SampleSlugRouteImport } from './routes/sample.$slug'
+import { Route as AdminSampleBuilderRouteImport } from './routes/admin.sample-builder'
 
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
@@ -46,11 +48,23 @@ const ServicesAiIntegratorRoute = ServicesAiIntegratorRouteImport.update({
   path: '/services/ai-integrator',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SampleSlugRoute = SampleSlugRouteImport.update({
+  id: '/sample/$slug',
+  path: '/sample/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminSampleBuilderRoute = AdminSampleBuilderRouteImport.update({
+  id: '/admin/sample-builder',
+  path: '/admin/sample-builder',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/admin/sample-builder': typeof AdminSampleBuilderRoute
+  '/sample/$slug': typeof SampleSlugRoute
   '/services/ai-integrator': typeof ServicesAiIntegratorRoute
   '/services/ai-podcast': typeof ServicesAiPodcastRoute
   '/services/web-development': typeof ServicesWebDevelopmentRoute
@@ -59,6 +73,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/admin/sample-builder': typeof AdminSampleBuilderRoute
+  '/sample/$slug': typeof SampleSlugRoute
   '/services/ai-integrator': typeof ServicesAiIntegratorRoute
   '/services/ai-podcast': typeof ServicesAiPodcastRoute
   '/services/web-development': typeof ServicesWebDevelopmentRoute
@@ -68,6 +84,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/admin/sample-builder': typeof AdminSampleBuilderRoute
+  '/sample/$slug': typeof SampleSlugRoute
   '/services/ai-integrator': typeof ServicesAiIntegratorRoute
   '/services/ai-podcast': typeof ServicesAiPodcastRoute
   '/services/web-development': typeof ServicesWebDevelopmentRoute
@@ -78,6 +96,8 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/admin/sample-builder'
+    | '/sample/$slug'
     | '/services/ai-integrator'
     | '/services/ai-podcast'
     | '/services/web-development'
@@ -86,6 +106,8 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/admin/sample-builder'
+    | '/sample/$slug'
     | '/services/ai-integrator'
     | '/services/ai-podcast'
     | '/services/web-development'
@@ -94,6 +116,8 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/admin/sample-builder'
+    | '/sample/$slug'
     | '/services/ai-integrator'
     | '/services/ai-podcast'
     | '/services/web-development'
@@ -103,6 +127,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
+  AdminSampleBuilderRoute: typeof AdminSampleBuilderRoute
+  SampleSlugRoute: typeof SampleSlugRoute
   ServicesAiIntegratorRoute: typeof ServicesAiIntegratorRoute
   ServicesAiPodcastRoute: typeof ServicesAiPodcastRoute
   ServicesWebDevelopmentRoute: typeof ServicesWebDevelopmentRoute
@@ -152,6 +178,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesAiIntegratorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sample/$slug': {
+      id: '/sample/$slug'
+      path: '/sample/$slug'
+      fullPath: '/sample/$slug'
+      preLoaderRoute: typeof SampleSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/sample-builder': {
+      id: '/admin/sample-builder'
+      path: '/admin/sample-builder'
+      fullPath: '/admin/sample-builder'
+      preLoaderRoute: typeof AdminSampleBuilderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -159,6 +199,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
+  AdminSampleBuilderRoute: AdminSampleBuilderRoute,
+  SampleSlugRoute: SampleSlugRoute,
   ServicesAiIntegratorRoute: ServicesAiIntegratorRoute,
   ServicesAiPodcastRoute: ServicesAiPodcastRoute,
   ServicesWebDevelopmentRoute: ServicesWebDevelopmentRoute,

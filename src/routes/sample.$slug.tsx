@@ -2,7 +2,8 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { ArrowRight, Captions, Play } from "lucide-react";
-import { SiSpotify, SiApplepodcasts, SiYoutube, SiInstagram, SiTiktok, SiLinkedin } from "react-icons/si";
+import { SiSpotify, SiApplepodcasts, SiYoutube, SiInstagram, SiTiktok } from "react-icons/si";
+import { Linkedin as SiLinkedin } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
