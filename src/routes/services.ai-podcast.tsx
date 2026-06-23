@@ -272,7 +272,7 @@ function TiltPreviewCard() {
 
   return (
     <div
-      className="mt-12 w-full max-w-[680px]"
+      className="w-full max-w-[680px]"
       style={{ perspective: "1200px" }}
     >
       <div
@@ -307,19 +307,31 @@ function TiltPreviewCard() {
           </span>
 
           {/* waveform */}
+          <style>{`
+            @keyframes vo-wave {
+              0%, 100% { transform: scaleY(0.35); }
+              50% { transform: scaleY(1); }
+            }
+          `}</style>
           <div className="mt-5 flex h-24 items-center justify-between gap-[3px] sm:gap-1">
-            {BAR_HEIGHTS.map((h, i) => (
-              <span
-                key={i}
-                className="block w-[6px] flex-1 rounded-full"
-                style={{
-                  height: `${h}%`,
-                  background:
-                    "linear-gradient(180deg, #3B82F6 0%, #F97316 100%)",
-                  opacity: 0.85,
-                }}
-              />
-            ))}
+            {BAR_HEIGHTS.map((h, i) => {
+              const duration = 0.8 + ((i * 37) % 60) / 100; // 0.80s - 1.39s
+              const delay = -((i * 73) % 100) / 100; // negative so they start mid-cycle, staggered
+              return (
+                <span
+                  key={i}
+                  className="block w-[6px] flex-1 rounded-full"
+                  style={{
+                    height: `${h}%`,
+                    background:
+                      "linear-gradient(180deg, #3B82F6 0%, #F97316 100%)",
+                    opacity: 0.85,
+                    transformOrigin: "center",
+                    animation: `vo-wave ${duration}s ease-in-out ${delay}s infinite`,
+                  }}
+                />
+              );
+            })}
           </div>
 
           {/* platforms */}
@@ -367,7 +379,11 @@ function HeroSection({ onHowItWorksClick }: { onHowItWorksClick: () => void }) {
           studio, no editing skills required on your end.
         </p>
 
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <div className="mt-12 w-full flex justify-center sm:mt-14">
+          <TiltPreviewCard />
+        </div>
+
+        <div className="mt-12 flex flex-wrap items-center justify-center gap-3 sm:mt-14">
           <PrimaryCTA to="/contact">Start Your Podcast</PrimaryCTA>
           <SecondaryButton onClick={onHowItWorksClick}>See How It Works</SecondaryButton>
         </div>
@@ -380,8 +396,6 @@ function HeroSection({ onHowItWorksClick }: { onHowItWorksClick: () => void }) {
             </li>
           ))}
         </ul>
-
-        <TiltPreviewCard />
       </div>
     </section>
   );
