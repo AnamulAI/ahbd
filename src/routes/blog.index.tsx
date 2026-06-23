@@ -188,11 +188,11 @@ function BlogIndexPage() {
                 params={{ slug: featured.slug }}
                 className="group grid overflow-hidden rounded-3xl border border-white/8 bg-[#16181D] transition-all duration-200 hover:border-[color:var(--primary)]/40 hover:bg-[#1C1F26] hover:shadow-[0_24px_70px_-30px_var(--vo-glow)] md:grid-cols-2 motion-reduce:transition-none"
               >
-                <div className="relative aspect-[16/10] overflow-hidden bg-white/5 md:self-center">
+                <div className="relative aspect-[16/10] overflow-hidden bg-white/5 md:aspect-auto md:h-full">
                   <img
                     src={featured.coverImage}
                     alt={featured.title}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                   />
                 </div>
                 <div className="flex flex-col justify-center gap-4 p-6 sm:p-10">
