@@ -11,7 +11,7 @@ export function CategoryBadge({ category }: { category: BlogPost["category"] }) 
   return (
     <span
       className={[
-        "inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em]",
+        "inline-flex items-center self-start rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em]",
         s.badgeClass,
       ].join(" ")}
     >
@@ -25,7 +25,7 @@ export function BlogCard({ post }: { post: BlogPost }) {
     <Link
       to="/blog/$slug"
       params={{ slug: post.slug }}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-white/8 bg-[#16181D] transition-all duration-200 hover:-translate-y-0.5 hover:border-[color:var(--primary)]/40 hover:bg-[#1C1F26] hover:shadow-[0_18px_50px_-24px_var(--vo-glow)] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+      className="group flex h-full w-full flex-col overflow-hidden rounded-2xl border border-white/8 bg-[#16181D] transition-all duration-200 hover:-translate-y-0.5 hover:border-[color:var(--primary)]/40 hover:bg-[#1C1F26] hover:shadow-[0_18px_50px_-24px_var(--vo-glow)] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
     >
       <div className="relative aspect-[16/9] overflow-hidden bg-white/5">
         <img

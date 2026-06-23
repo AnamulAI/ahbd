@@ -3,11 +3,12 @@ import {
   ArrowLeft,
   ArrowRight,
   Clock,
-  Linkedin,
   Sparkles,
 } from "lucide-react";
 import { SiFacebook, SiX } from "react-icons/si";
+import { FaLinkedin } from "react-icons/fa";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import anamAvatar from "@/assets/anam-avatar.png.asset.json";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { BlogCard, CategoryBadge } from "@/components/site/BlogCard";
@@ -373,18 +374,14 @@ function FaqSection({ items }: { items: BlogPost["faq"] }) {
 }
 
 function AuthorShareRow({ post }: { post: BlogPost }) {
-  const shareUrl =
-    typeof window !== "undefined"
-      ? window.location.href
-      : `https://anamdev.com/blog/${post.slug}`;
-  const text = encodeURIComponent(post.title);
-  const url = encodeURIComponent(shareUrl);
   return (
     <div className="mt-16 flex flex-col gap-6 rounded-2xl border border-white/8 bg-[#16181D] p-6 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-start gap-4">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[color:var(--primary)] to-[color:var(--orange)] font-mono text-sm font-bold text-white">
-          MA
-        </div>
+        <img
+          src={anamAvatar.url}
+          alt="Mohammad Anamul Hoque"
+          className="h-12 w-12 shrink-0 rounded-full object-cover ring-1 ring-white/10"
+        />
         <div>
           <p className="text-sm font-semibold text-white">
             Mohammad Anamul Hoque
@@ -397,34 +394,34 @@ function AuthorShareRow({ post }: { post: BlogPost }) {
       </div>
       <div className="flex items-center gap-2">
         <span className="mr-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-          Share
+          Connect
         </span>
         <a
-          href={`https://twitter.com/intent/tweet?text=${text}&url=${url}`}
+          href="https://x.com/ahoqdev"
           target="_blank"
           rel="noreferrer"
-          aria-label="Share on X"
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/80 transition-colors hover:bg-white/[0.06] hover:text-white"
+          aria-label="X profile"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 transition-colors hover:bg-white/[0.06]"
         >
-          <SiX className="h-4 w-4" />
+          <SiX className="h-4 w-4 text-white" />
         </a>
         <a
-          href={`https://www.linkedin.com/sharing/share-offsite/?url=${url}`}
+          href="https://www.linkedin.com/in/helloenamul/"
           target="_blank"
           rel="noreferrer"
-          aria-label="Share on LinkedIn"
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/80 transition-colors hover:bg-white/[0.06] hover:text-white"
+          aria-label="LinkedIn profile"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 transition-colors hover:bg-white/[0.06]"
         >
-          <Linkedin className="h-4 w-4" />
+          <FaLinkedin className="h-4 w-4 text-[#0A66C2]" />
         </a>
         <a
-          href={`https://www.facebook.com/sharer/sharer.php?u=${url}`}
+          href="https://www.facebook.com/helloenamul"
           target="_blank"
           rel="noreferrer"
-          aria-label="Share on Facebook"
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/80 transition-colors hover:bg-white/[0.06] hover:text-white"
+          aria-label="Facebook profile"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 transition-colors hover:bg-white/[0.06]"
         >
-          <SiFacebook className="h-4 w-4" />
+          <SiFacebook className="h-4 w-4 text-[#1877F2]" />
         </a>
       </div>
     </div>
