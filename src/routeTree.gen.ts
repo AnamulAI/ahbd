@@ -19,6 +19,7 @@ import { Route as ServicesWebDevelopmentRouteImport } from './routes/services.we
 import { Route as ServicesAiPodcastRouteImport } from './routes/services.ai-podcast'
 import { Route as ServicesAiIntegratorRouteImport } from './routes/services.ai-integrator'
 import { Route as SampleSlugRouteImport } from './routes/sample.$slug'
+import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AdminSampleBuilderRouteImport } from './routes/admin.sample-builder'
 
@@ -72,6 +73,11 @@ const SampleSlugRoute = SampleSlugRouteImport.update({
   path: '/sample/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProjectsSlugRoute = ProjectsSlugRouteImport.update({
+  id: '/projects/$slug',
+  path: '/projects/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/blog/$slug',
   path: '/blog/$slug',
@@ -89,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/admin/sample-builder': typeof AdminSampleBuilderRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/sample/$slug': typeof SampleSlugRoute
   '/services/ai-integrator': typeof ServicesAiIntegratorRoute
   '/services/ai-podcast': typeof ServicesAiPodcastRoute
@@ -103,6 +110,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/admin/sample-builder': typeof AdminSampleBuilderRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/sample/$slug': typeof SampleSlugRoute
   '/services/ai-integrator': typeof ServicesAiIntegratorRoute
   '/services/ai-podcast': typeof ServicesAiPodcastRoute
@@ -118,6 +126,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/admin/sample-builder': typeof AdminSampleBuilderRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/sample/$slug': typeof SampleSlugRoute
   '/services/ai-integrator': typeof ServicesAiIntegratorRoute
   '/services/ai-podcast': typeof ServicesAiPodcastRoute
@@ -134,6 +143,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/admin/sample-builder'
     | '/blog/$slug'
+    | '/projects/$slug'
     | '/sample/$slug'
     | '/services/ai-integrator'
     | '/services/ai-podcast'
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/admin/sample-builder'
     | '/blog/$slug'
+    | '/projects/$slug'
     | '/sample/$slug'
     | '/services/ai-integrator'
     | '/services/ai-podcast'
@@ -162,6 +173,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/admin/sample-builder'
     | '/blog/$slug'
+    | '/projects/$slug'
     | '/sample/$slug'
     | '/services/ai-integrator'
     | '/services/ai-podcast'
@@ -177,6 +189,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   AdminSampleBuilderRoute: typeof AdminSampleBuilderRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  ProjectsSlugRoute: typeof ProjectsSlugRoute
   SampleSlugRoute: typeof SampleSlugRoute
   ServicesAiIntegratorRoute: typeof ServicesAiIntegratorRoute
   ServicesAiPodcastRoute: typeof ServicesAiPodcastRoute
@@ -258,6 +271,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SampleSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/projects/$slug': {
+      id: '/projects/$slug'
+      path: '/projects/$slug'
+      fullPath: '/projects/$slug'
+      preLoaderRoute: typeof ProjectsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog/$slug': {
       id: '/blog/$slug'
       path: '/blog/$slug'
@@ -281,6 +301,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   AdminSampleBuilderRoute: AdminSampleBuilderRoute,
   BlogSlugRoute: BlogSlugRoute,
+  ProjectsSlugRoute: ProjectsSlugRoute,
   SampleSlugRoute: SampleSlugRoute,
   ServicesAiIntegratorRoute: ServicesAiIntegratorRoute,
   ServicesAiPodcastRoute: ServicesAiPodcastRoute,
