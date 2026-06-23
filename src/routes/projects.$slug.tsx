@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
-import { BrandIcon, brandColor } from "@/components/site/BrandIcon";
+import { BrandIcon } from "@/components/site/BrandIcon";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 type ServiceCategory = "web-development" | "ai-integrator" | "ai-podcast";
@@ -531,7 +531,7 @@ function ProjectDetailPage() {
             </Link>
 
             {/* Tag row */}
-            <div className="mt-6 flex flex-wrap items-center gap-3">
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
               {project.subType && (
                 <span className="inline-flex items-center rounded-full border border-[color:var(--primary)]/40 bg-[color:var(--primary)]/10 px-2.5 py-1 text-[11px] font-semibold text-[color:var(--primary)] backdrop-blur-sm">
                   {SUBTYPE_LABEL[project.subType]}
@@ -552,7 +552,7 @@ function ProjectDetailPage() {
             </div>
 
             {/* Meta row */}
-            <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs text-muted-foreground">
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 text-xs text-muted-foreground">
               {project.timeline && (
                 <span className="inline-flex items-center gap-1.5">
                   <Clock className="h-3.5 w-3.5 text-[color:var(--primary)]" />
@@ -567,35 +567,27 @@ function ProjectDetailPage() {
               )}
             </div>
 
-            <h1 className="mt-5 text-4xl font-bold leading-[1.05] text-white sm:text-5xl md:text-6xl">
+            <h1 className="mt-5 text-center text-4xl font-bold leading-[1.05] text-white sm:text-5xl md:text-6xl">
               <span className="text-gradient-vo">{firstWord}</span>
               {restWords && <span> {restWords}</span>}
             </h1>
-            <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            <p className="mt-4 mx-auto max-w-2xl text-center text-base leading-relaxed text-muted-foreground sm:text-lg">
               {project.oneLiner}
             </p>
 
-            <div className="mt-5 flex flex-wrap gap-1.5">
-              {project.techStack.map((t) => {
-                const color = brandColor(t);
-                return (
-                  <span
-                    key={t}
-                    className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium"
-                    style={{
-                      color,
-                      borderColor: `${color}55`,
-                      backgroundColor: `${color}14`,
-                    }}
-                  >
-                    <BrandIcon name={t} size={12} />
-                    {t}
-                  </span>
-                );
-              })}
+            <div className="mt-5 flex flex-wrap justify-center gap-1.5">
+              {project.techStack.map((t) => (
+                <span
+                  key={t}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-medium text-white/85"
+                >
+                  <BrandIcon name={t} size={12} />
+                  {t}
+                </span>
+              ))}
             </div>
 
-            <div className="mt-7 flex flex-wrap items-center gap-3">
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
               {project.liveUrl && (
                 <a
                   href={project.liveUrl}
