@@ -592,9 +592,9 @@ function AddOnsSection() {
             return (
               <div
                 key={a.title}
-                className="card-elevated card-elevated-hover flex flex-col p-6"
+                className="card-elevated card-elevated-hover flex flex-col items-center text-center p-6"
               >
-                <span className="mx-auto grid h-12 w-12 place-items-center rounded-xl bg-[color:var(--primary)]/15">
+                <span className="grid h-12 w-12 place-items-center rounded-xl bg-[color:var(--primary)]/15">
                   <Icon className="h-5 w-5 text-[color:var(--primary)]" />
                 </span>
                 <h3 className="mt-5 text-lg font-semibold text-white">{a.title}</h3>
