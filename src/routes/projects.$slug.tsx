@@ -70,7 +70,7 @@ function ProjectDetailPage() {
         </p>
 
         <div className="mt-6 flex flex-wrap gap-2">
-          {project.techStack.map((t) => (
+          {project.techStack.map((t: string) => (
             <span
               key={t}
               className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-0.5 text-xs text-white/80"
