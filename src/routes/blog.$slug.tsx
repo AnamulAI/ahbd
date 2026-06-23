@@ -12,6 +12,7 @@ import anamAvatar from "@/assets/anam-avatar.png.asset.json";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { BlogCard, CategoryBadge } from "@/components/site/BlogCard";
+import { FloatingShareBar } from "@/components/site/FloatingShareBar";
 import {
   Accordion,
   AccordionItem,
