@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, useMemo } from "react";
 import { toast } from "sonner";
-import { ArrowRight, Clock, Mail } from "lucide-react";
+import { ArrowRight, Clock, Mail, Search, X } from "lucide-react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { BlogCard, CategoryBadge } from "@/components/site/BlogCard";
@@ -49,7 +49,6 @@ function NewsletterSection() {
       return;
     }
     setSubmitting(true);
-    // TODO: wire to newsletter_subscribers table once admin panel backend is built
     setTimeout(() => {
       toast.success("Thanks for subscribing!");
       setEmail("");
@@ -105,7 +104,21 @@ function NewsletterSection() {
 
 function BlogIndexPage() {
   const posts = getSortedPosts();
-  const [featured, ...rest] = posts;
+  const [query, setQuery] = useState("");
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return posts;
+    return posts.filter(
+      (p) =>
+        p.title.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q),
+    );
+  }, [posts, query]);
+
+  const hasQuery = query.trim().length > 0;
+  const featured = !hasQuery ? filtered[0] : undefined;
+  const rest = hasQuery ? filtered : filtered.slice(1);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -124,6 +137,45 @@ function BlogIndexPage() {
               Real insights from building websites, AI systems, and podcast
               production — no fluff, just what actually works.
             </p>
+
+            {/* Search */}
+            <div className="mx-auto mt-10 flex w-full max-w-md items-center rounded-full border border-white/10 bg-[#16181D] px-1 focus-within:border-[color:var(--primary)]/60 focus-within:ring-2 focus-within:ring-[color:var(--primary)]/30">
+              <div className="flex flex-1 items-center px-4">
+                <Search
+                  className="h-4 w-4 shrink-0 text-muted-foreground"
+                  aria-hidden
+                />
+                <label htmlFor="blog-search" className="sr-only">
+                  Search posts
+                </label>
+                <input
+                  id="blog-search"
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search by title or category..."
+                  className="h-11 w-full bg-transparent pl-3 text-sm text-white placeholder:text-muted-foreground focus:outline-none"
+                />
+              </div>
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => setQuery("")}
+                  className="mr-2 inline-flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-white/5 hover:text-white"
+                  aria-label="Clear search"
+                >
+                  <X className="h-4 w-4" aria-hidden />
+                </button>
+              )}
+            </div>
+
+            {hasQuery && (
+              <p className="mt-4 text-sm text-muted-foreground">
+                {filtered.length === 0
+                  ? "No posts found."
+                  : `${filtered.length} result${filtered.length === 1 ? "" : "s"} found`}
+              </p>
+            )}
           </div>
         </section>
 
@@ -177,6 +229,21 @@ function BlogIndexPage() {
                     <BlogCard post={post} />
                   </div>
                 ))}
+              </div>
+            )}
+
+            {hasQuery && filtered.length === 0 && (
+              <div className="py-16 text-center">
+                <p className="text-lg text-muted-foreground">
+                  No posts match "{query.trim()}".
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setQuery("")}
+                  className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-[color:var(--primary)] hover:underline"
+                >
+                  Clear search
+                </button>
               </div>
             )}
           </div>
