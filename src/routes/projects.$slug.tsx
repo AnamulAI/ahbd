@@ -383,7 +383,7 @@ export const Route = createFileRoute("/projects/$slug")({
       ],
     };
   },
-  loader: ({ params }) => {
+  loader: ({ params }): { project: ProjectDetail } => {
     const project = PROJECTS.find((p) => p.slug === params.slug);
     if (!project) throw notFound();
     return { project };
