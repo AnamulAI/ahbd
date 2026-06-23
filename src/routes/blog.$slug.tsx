@@ -3,11 +3,11 @@ import {
   ArrowLeft,
   ArrowRight,
   Clock,
-  Linkedin,
   Sparkles,
 } from "lucide-react";
-import { SiFacebook, SiX } from "react-icons/si";
+import { SiFacebook, SiLinkedin, SiX } from "react-icons/si";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import anamAvatar from "@/assets/anam-avatar.png.asset.json";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { BlogCard, CategoryBadge } from "@/components/site/BlogCard";
