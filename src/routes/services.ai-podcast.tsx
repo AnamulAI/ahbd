@@ -231,6 +231,117 @@ function TypewriterWord() {
   );
 }
 
+function TiltPreviewCard() {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [tilt, setTilt] = useState({ rx: 0, ry: 0, mx: 50, my: 50, active: false });
+  const isTouch =
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(hover: none)").matches;
+
+  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isTouch) return;
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const x = e.clientX - r.left;
+    const y = e.clientY - r.top;
+    const px = x / r.width;
+    const py = y / r.height;
+    const max = 9;
+    setTilt({
+      ry: (px - 0.5) * 2 * max,
+      rx: -(py - 0.5) * 2 * max,
+      mx: px * 100,
+      my: py * 100,
+      active: true,
+    });
+  };
+
+  const handleLeave = () => {
+    setTilt({ rx: 0, ry: 0, mx: 50, my: 50, active: false });
+  };
+
+  const PLATFORMS = [
+    { Icon: SiSpotify, color: "#1DB954", name: "Spotify" },
+    { Icon: SiApplepodcasts, color: "#A463F2", name: "Apple Podcasts" },
+    { Icon: SiYoutube, color: "#FF0000", name: "YouTube" },
+    { Icon: SiInstagram, color: "#E1306C", name: "Instagram" },
+  ];
+
+  const BAR_HEIGHTS = [22, 38, 58, 44, 72, 30, 88, 52, 68, 40, 80, 28, 60, 46, 76, 34, 64, 50, 84, 26, 56, 42, 70, 36];
+
+  return (
+    <div
+      className="mt-12 w-full max-w-[680px]"
+      style={{ perspective: "1200px" }}
+    >
+      <div
+        ref={ref}
+        onMouseMove={handleMove}
+        onMouseLeave={handleLeave}
+        className="card-elevated relative overflow-hidden rounded-[20px] p-8 sm:p-10 text-left will-change-transform"
+        style={{
+          transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
+          transition: tilt.active
+            ? "transform 120ms ease-out, box-shadow 200ms ease-out"
+            : "transform 380ms ease-out, box-shadow 380ms ease-out",
+          transformStyle: "preserve-3d",
+          boxShadow: tilt.active
+            ? "0 40px 90px -25px rgba(59,130,246,0.45), 0 20px 50px -20px rgba(249,115,22,0.25)"
+            : "0 24px 60px -30px rgba(59,130,246,0.35)",
+        }}
+      >
+        {/* cursor glow */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-[20px] opacity-80 transition-opacity"
+          style={{
+            background: `radial-gradient(420px circle at ${tilt.mx}% ${tilt.my}%, rgba(59,130,246,0.18), rgba(249,115,22,0.06) 35%, transparent 65%)`,
+            opacity: tilt.active ? 1 : 0,
+          }}
+        />
+
+        <div className="relative" style={{ transform: "translateZ(30px)" }}>
+          <span className="font-mono text-[11px] uppercase tracking-wider text-[color:var(--primary)]">
+            // YOUR EPISODE, EVERYWHERE
+          </span>
+
+          {/* waveform */}
+          <div className="mt-5 flex h-24 items-center justify-between gap-[3px] sm:gap-1">
+            {BAR_HEIGHTS.map((h, i) => (
+              <span
+                key={i}
+                className="block w-[6px] flex-1 rounded-full"
+                style={{
+                  height: `${h}%`,
+                  background:
+                    "linear-gradient(180deg, #3B82F6 0%, #F97316 100%)",
+                  opacity: 0.85,
+                }}
+              />
+            ))}
+          </div>
+
+          {/* platforms */}
+          <div className="mt-6 flex items-center justify-center gap-5 border-t border-white/10 pt-5">
+            <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+              Publishes to
+            </span>
+            {PLATFORMS.map(({ Icon, color, name }) => (
+              <Icon
+                key={name}
+                aria-label={name}
+                style={{ color }}
+                className="h-5 w-5"
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function HeroSection({ onHowItWorksClick }: { onHowItWorksClick: () => void }) {
   const features = [
     "No recording equipment needed",
