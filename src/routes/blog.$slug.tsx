@@ -12,6 +12,7 @@ import anamAvatar from "@/assets/anam-avatar.png.asset.json";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { BlogCard, CategoryBadge } from "@/components/site/BlogCard";
+import { FloatingShareBar } from "@/components/site/FloatingShareBar";
 import {
   Accordion,
   AccordionItem,
@@ -550,6 +551,7 @@ function BlogPostPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
+      <FloatingShareBar title={post.title} image={post.coverImage} />
       <main>
         {/* Hero */}
         <section className="pt-12 sm:pt-16">
