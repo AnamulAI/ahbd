@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { ArrowRight, ArrowUpRight, FolderSearch, MessageCircle } from "lucide-react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
-import { BrandIcon, brandColor } from "@/components/site/BrandIcon";
+import { BrandIcon } from "@/components/site/BrandIcon";
 
 export const Route = createFileRoute("/projects/")({
   head: () => ({

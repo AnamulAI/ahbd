@@ -79,7 +79,7 @@ import {
 
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
-import { BrandIcon, brandColor } from "@/components/site/BrandIcon";
+import { BrandIcon } from "@/components/site/BrandIcon";
 
 import {
   Accordion,
