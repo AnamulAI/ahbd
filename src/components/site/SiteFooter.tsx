@@ -10,9 +10,9 @@ const explore: FooterLink[] = [
 ];
 
 const services: FooterLink[] = [
-  { label: "Web Development", href: "/services#web-development" },
-  { label: "AI Integrator", href: "/services#ai-integrator" },
-  { label: "AI Podcast", href: "/services#ai-podcast" },
+  { label: "Web Development", href: "/services/web-development" },
+  { label: "AI Integrator", href: "/services/ai-integrator" },
+  { label: "AI Podcast", href: "/services/ai-podcast" },
 ];
 
 const legal: FooterLink[] = [

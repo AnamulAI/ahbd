@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ServicesIndexRouteImport } from './routes/services.index'
 import { Route as ServicesWebDevelopmentRouteImport } from './routes/services.web-development'
 import { Route as ServicesAiPodcastRouteImport } from './routes/services.ai-podcast'
 import { Route as ServicesAiIntegratorRouteImport } from './routes/services.ai-integrator'
@@ -31,6 +32,11 @@ const AboutRoute = AboutRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesIndexRoute = ServicesIndexRouteImport.update({
+  id: '/services/',
+  path: '/services/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicesWebDevelopmentRoute = ServicesWebDevelopmentRouteImport.update({
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/services/ai-integrator': typeof ServicesAiIntegratorRoute
   '/services/ai-podcast': typeof ServicesAiPodcastRoute
   '/services/web-development': typeof ServicesWebDevelopmentRoute
+  '/services/': typeof ServicesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByTo {
   '/services/ai-integrator': typeof ServicesAiIntegratorRoute
   '/services/ai-podcast': typeof ServicesAiPodcastRoute
   '/services/web-development': typeof ServicesWebDevelopmentRoute
+  '/services': typeof ServicesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/services/ai-integrator': typeof ServicesAiIntegratorRoute
   '/services/ai-podcast': typeof ServicesAiPodcastRoute
   '/services/web-development': typeof ServicesWebDevelopmentRoute
+  '/services/': typeof ServicesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/services/ai-integrator'
     | '/services/ai-podcast'
     | '/services/web-development'
+    | '/services/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/services/ai-integrator'
     | '/services/ai-podcast'
     | '/services/web-development'
+    | '/services'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/services/ai-integrator'
     | '/services/ai-podcast'
     | '/services/web-development'
+    | '/services/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,6 +144,7 @@ export interface RootRouteChildren {
   ServicesAiIntegratorRoute: typeof ServicesAiIntegratorRoute
   ServicesAiPodcastRoute: typeof ServicesAiPodcastRoute
   ServicesWebDevelopmentRoute: typeof ServicesWebDevelopmentRoute
+  ServicesIndexRoute: typeof ServicesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -155,6 +168,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/': {
+      id: '/services/'
+      path: '/services'
+      fullPath: '/services/'
+      preLoaderRoute: typeof ServicesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/services/web-development': {
@@ -204,6 +224,7 @@ const rootRouteChildren: RootRouteChildren = {
   ServicesAiIntegratorRoute: ServicesAiIntegratorRoute,
   ServicesAiPodcastRoute: ServicesAiPodcastRoute,
   ServicesWebDevelopmentRoute: ServicesWebDevelopmentRoute,
+  ServicesIndexRoute: ServicesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
