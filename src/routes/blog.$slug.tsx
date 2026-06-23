@@ -12,7 +12,7 @@ import anamAvatar from "@/assets/anam-avatar.png.asset.json";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { BlogCard, CategoryBadge } from "@/components/site/BlogCard";
-import { FloatingShareBar } from "@/components/site/FloatingShareBar";
+import { FloatingShareBar, InlineShareBar } from "@/components/site/FloatingShareBar";
 import {
   Accordion,
   AccordionItem,
@@ -604,6 +604,8 @@ function BlogPostPage() {
               <RenderBlocks blocks={post.body} />
 
               <FaqSection items={post.faq} />
+
+              <InlineShareBar title={post.title} image={post.coverImage} />
 
               <AuthorShareRow post={post} />
             </article>
