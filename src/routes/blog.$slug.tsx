@@ -376,7 +376,7 @@ function FaqSection({ items }: { items: BlogPost["faq"] }) {
 
 function AuthorShareRow({ post }: { post: BlogPost }) {
   return (
-    <div className="mt-16 flex flex-col gap-6 rounded-2xl border border-white/8 bg-[#16181D] p-6 sm:flex-row sm:items-center sm:justify-between">
+    <div className="mt-8 flex flex-col gap-6 rounded-2xl border border-white/8 bg-[#16181D] p-6 sm:mt-12 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-start gap-4">
         <img
           src={anamAvatar.url}

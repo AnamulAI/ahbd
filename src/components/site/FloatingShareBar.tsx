@@ -215,7 +215,7 @@ export function InlineShareBar({ title, image }: Props) {
       <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[color:var(--primary)]">
         // Share This Post
       </p>
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="grid grid-cols-4 gap-2">
         {items.map((it) => (
           <ShareButton key={it.label} item={it} />
         ))}
