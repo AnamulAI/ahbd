@@ -272,7 +272,7 @@ function TiltPreviewCard() {
 
   return (
     <div
-      className="mt-12 w-full max-w-[680px]"
+      className="w-full max-w-[680px]"
       style={{ perspective: "1200px" }}
     >
       <div
