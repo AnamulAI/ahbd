@@ -301,23 +301,15 @@ function ProjectCard({ project }: { project: Project }) {
           {project.oneLiner}
         </p>
         <div className="mt-4 flex flex-wrap gap-1.5">
-          {visibleTech.map((t) => {
-            const color = brandColor(t);
-            return (
-              <span
-                key={t}
-                className="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-medium"
-                style={{
-                  color,
-                  borderColor: `${color}40`,
-                  backgroundColor: `${color}14`,
-                }}
-              >
-                <BrandIcon name={t} size={11} />
-                {t}
-              </span>
-            );
-          })}
+          {visibleTech.map((t) => (
+            <span
+              key={t}
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[11px] font-medium text-white/85"
+            >
+              <BrandIcon name={t} size={11} />
+              {t}
+            </span>
+          ))}
           {extra > 0 && (
             <span className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
               +{extra}
