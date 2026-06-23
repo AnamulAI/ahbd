@@ -493,7 +493,200 @@ const POST_PODCAST: BlogPost = {
   },
 };
 
-export const BLOG_POSTS: BlogPost[] = [POST_PODCAST, POST_WEB, POST_AI];
+// ---------- Post 4: AI Podcast — RSS Feed ----------
+const POST_RSS: BlogPost = {
+  slug: "what-is-a-podcast-rss-feed",
+  title: "What Is a Podcast RSS Feed? (Plain-Language Guide for 2026)",
+  excerpt:
+    "Every podcast platform pulls your episodes from one file you'll probably never see. Here's what an RSS feed actually is, what's inside it, and why it's the reason your show can be everywhere at once.",
+  category: "AI Podcast",
+  readTime: "8 min read",
+  publishedDate: "2026-06-22",
+  coverImage:
+    "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1600&q=80",
+  quickAnswer:
+    "A podcast RSS feed is a specially formatted XML file hosted at a public URL containing all the metadata and audio file links for your podcast. Platforms like Spotify, Apple Podcasts, Amazon Music, and iHeart subscribe to this feed URL and automatically pull in new episodes whenever you publish — making it the universal standard that puts a podcast everywhere at once without manually uploading to every platform separately.",
+  body: [
+    { type: "h2", text: "What Is a Podcast RSS Feed?", id: "definition" },
+    {
+      type: "p",
+      text: "RSS stands for Really Simple Syndication — and for podcasting, it genuinely is that simple in concept, even if the underlying XML files and feed URLs can feel opaque the first time you encounter them.",
+    },
+    {
+      type: "p",
+      text: "A podcast RSS feed is a text file in XML format that lives at a public web address. It contains structured information about a podcast and every episode published. Instead of manually uploading a podcast to each platform separately, the feed URL is given to each platform once — from that point forward, every new episode is fetched automatically.",
+    },
+    {
+      type: "p",
+      text: "Think of it like a newspaper subscription: the paper comes to you, you don't go collect it from the printer. RSS is the subscription system for podcasts — platforms subscribe to a feed, and new episodes arrive automatically.",
+    },
+    {
+      type: "p",
+      text: "RSS is not a proprietary format owned by any single podcast company — it's an open standard (the RSS 2.0 specification) with podcast-specific extensions that every major directory recognizes.",
+    },
+    { type: "h2", text: "Why Podcasts Use RSS", id: "why-rss" },
+    {
+      type: "p",
+      text: "RSS became the podcast distribution standard for a practical reason: when podcasting emerged in the early 2000s, there was no central platform. Creators needed a way to signal that new audio was available — and RSS, already used for blog syndication, was the natural fit.",
+    },
+    {
+      type: "p",
+      text: "RSS remains the backbone of podcast distribution today because:",
+    },
+    {
+      type: "ul",
+      items: [
+        "**It's platform-neutral** — a feed works on every directory simultaneously, with no dependency on any single company's infrastructure",
+        "**It's automatic** — once a platform subscribes, episode delivery is fully automated, with no manual re-uploads",
+        "**It gives creators ownership** — the feed URL belongs to the creator; switching hosting means moving the feed, and subscribers follow automatically",
+        "**It carries all metadata** — titles, descriptions, artwork, categories, durations, and audio file URLs all live in the feed, so every platform displays a show consistently",
+      ],
+    },
+    { type: "h2", text: "What's Inside a Podcast RSS Feed", id: "inside-rss" },
+    {
+      type: "p",
+      text: "An RSS feed is an XML file — a plain text file with a specific hierarchical structure. Writing or reading raw XML isn't necessary day-to-day (a podcast hosting platform generates it automatically), but understanding the key tags helps clarify what information actually matters.",
+    },
+    {
+      type: "table",
+      title: "Channel-Level Tags (Appear Once, Describe the Whole Show)",
+      headers: ["XML Tag", "What It Contains", "Example"],
+      rows: [
+        ["`<title>`", "Podcast name", "The AnamDev Show"],
+        ["`<description>`", "Show description", "Insights on web, AI, and podcasting"],
+        ["`<link>`", "Podcast website URL", "https://example.com"],
+        ["`<language>`", "Language code", "en-us"],
+        ["`<itunes:image>`", "Cover art URL (3000×3000px recommended)", "https://host.com/cover.jpg"],
+        ["`<itunes:category>`", "Podcast category for directories", "Technology"],
+        ["`<itunes:author>`", "Host/creator name", "Jane Smith"],
+        ["`<itunes:explicit>`", "Content rating", "false"],
+      ],
+    },
+    {
+      type: "table",
+      title: "Item-Level Tags (Repeat for Every Episode)",
+      headers: ["XML Tag", "What It Contains"],
+      rows: [
+        ["`<title>`", "Episode title"],
+        ["`<description>`", "Episode show notes"],
+        ["`<enclosure>`", "The most critical tag — direct URL to the audio file, file size, and MIME type"],
+        ["`<pubDate>`", "Publication date and time"],
+        ["`<itunes:duration>`", "Episode length"],
+        ["`<itunes:episode>`", "Episode number"],
+        ["`<itunes:season>`", "Season number"],
+        ["`<guid>`", "Unique episode identifier — must never change once set"],
+      ],
+    },
+    {
+      type: "p",
+      text: "The `<enclosure>` tag is the single most critical element — it tells every podcast app exactly where to find and stream the audio file. If that URL breaks or changes, the episode stops working across every platform simultaneously.",
+    },
+    {
+      type: "pullquote",
+      text: "RSS is the lifeblood of podcasting — it's what makes the medium open, interoperable, and creator-owned.",
+    },
+    { type: "h2", text: "How to Get a Podcast RSS Feed", id: "how-to-get" },
+    {
+      type: "p",
+      text: "There are two practical paths to getting an RSS feed for a podcast:",
+    },
+    {
+      type: "p",
+      text: "**Traditional podcast hosting platforms** store audio files and generate an RSS feed automatically — upload the audio, fill in episode metadata, and the host builds the XML. That host-provided feed URL is then submitted to each directory manually.",
+    },
+    {
+      type: "p",
+      text: "**End-to-end [AI podcast production services](/services/ai-podcast)** handle RSS generation and directory submission as part of the publishing workflow itself — produce the episode, publish it, and the feed plus submission to Spotify, Apple Podcasts, YouTube, TikTok, and LinkedIn happens automatically, with no manual feed management required.",
+    },
+    {
+      type: "infographic",
+      title: "RSS Feed Setup: 2 Paths",
+      items: [
+        {
+          title: "Traditional Hosting",
+          text: "Upload audio manually, host generates the feed, you submit it to each directory yourself.",
+        },
+        {
+          title: "Done-For-You AI Production",
+          text: "Episode is produced and published in one step, feed + submission handled automatically.",
+        },
+      ],
+    },
+    { type: "h2", text: "RSS vs. Direct Upload: What's the Difference?", id: "rss-vs-direct" },
+    {
+      type: "p",
+      text: "Some platforms — notably YouTube, and certain content types on other platforms — allow direct upload of audio/video without using RSS at all. Here's the comparison:",
+    },
+    {
+      type: "table",
+      title: "RSS-Based Distribution vs. Direct Upload",
+      headers: ["Factor", "RSS-Based Distribution", "Direct Upload"],
+      rows: [
+        ["Reach", "All directories simultaneously, from one feed", "One platform at a time"],
+        ["Ownership", "Creator controls the feed and audience data", "Platform controls the relationship"],
+        ["Portability", "Switch hosts, keep all subscribers", "Locked to the platform"],
+        ["Automation", "Publish once, every platform updates automatically", "Manual re-upload to each platform"],
+        ["Best for", "Broad reach and long-term ownership", "Platform-exclusive content strategy"],
+      ],
+    },
+    {
+      type: "p",
+      text: "For most podcasters, RSS-based [podcast distribution](/services/ai-podcast) is strongly preferable — it maximizes reach while keeping the creator in control.",
+    },
+    { type: "h2", text: "Common RSS Problems and Fixes", id: "common-problems" },
+    {
+      type: "p",
+      text: "**Episodes not updating on a platform.** Most directories check an RSS feed every 1–24 hours. If a new episode was just published, wait up to 24 hours before assuming there's a real problem. If episodes still aren't appearing after that, verify the feed URL is publicly accessible (opening it in a browser should show XML code).",
+    },
+    {
+      type: "p",
+      text: "**Feed validation errors.** Usually caused by missing required tags, malformed XML, or invalid characters. A free RSS feed validator tool can identify the specific line-by-line errors.",
+    },
+    {
+      type: "p",
+      text: "**Cover art rejected.** Apple Podcasts requires cover art between 1400×1400 and 3000×3000 pixels in JPEG or PNG format — anything below that resolution gets rejected. Re-export at 3000×3000px and update the feed's image tag.",
+    },
+    {
+      type: "p",
+      text: "**Episodes have the wrong duration or missing metadata.** Often caused by a hosting platform not reading the audio file's embedded metadata correctly. Embedding duration, title, and author metadata directly into the audio file before uploading usually resolves this.",
+    },
+    {
+      type: "p",
+      text: "**GUID changed, causing duplicate episodes.** If an episode's unique identifier (GUID) changes — often after migrating hosting platforms — directories treat it as a brand-new episode and may show duplicates. A GUID should never change once an episode is published; when migrating hosts, confirm the original GUIDs are preserved.",
+    },
+  ],
+  faq: [
+    {
+      q: "What is a podcast RSS feed?",
+      a: "A podcast RSS feed is a public XML file containing all the metadata and audio file links for a podcast. When that feed URL is submitted to Spotify, Apple Podcasts, or other directories, they subscribe to it and automatically receive every new episode published — it's the universal standard that powers podcast discovery and delivery across all platforms.",
+    },
+    {
+      q: "Do I need an RSS feed to publish a podcast?",
+      a: "To distribute across multiple major platforms simultaneously — Spotify, Apple Podcasts, Amazon Music, iHeart — yes, an RSS feed is required. Some platforms (like YouTube) offer direct upload instead, but RSS is the only way to be available everywhere from one publishing action.",
+    },
+    {
+      q: "How do I find my podcast's RSS feed URL?",
+      a: "The RSS feed URL is provided by whatever podcast hosting platform or production service is being used — look for 'RSS Feed,' 'Feed URL,' or 'Distribution' in the account settings. It typically looks like a direct link to an XML file.",
+    },
+    {
+      q: "How often do podcast directories check my RSS feed?",
+      a: "Most major directories check RSS feeds every 1–24 hours. Some hosts allow 'pinging' a directory after publishing to trigger a faster check if needed.",
+    },
+    {
+      q: "Can I change my RSS feed URL?",
+      a: "Yes, but it requires a proper redirect from the old URL to the new one so directories and subscribers follow automatically. The old feed URL should never simply be abandoned — every platform pointing to it would stop receiving new episodes.",
+    },
+  ],
+  sidebarCta: {
+    headline: "Want This Handled Automatically?",
+    subtext:
+      "Skip the XML entirely — publish an episode and let distribution happen on its own.",
+    ctaLabel: "Start Your Podcast",
+    href: "/services/ai-podcast",
+  },
+};
+
+export const BLOG_POSTS: BlogPost[] = [POST_RSS, POST_PODCAST, POST_WEB, POST_AI];
 
 export function getSortedPosts(): BlogPost[] {
   return [...BLOG_POSTS].sort(
