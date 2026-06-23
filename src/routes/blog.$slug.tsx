@@ -551,6 +551,7 @@ function BlogPostPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
+      <FloatingShareBar title={post.title} image={post.coverImage} />
       <main>
         {/* Hero */}
         <section className="pt-12 sm:pt-16">
