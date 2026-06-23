@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   ArrowRight,
@@ -175,6 +175,62 @@ const PUBLISH_BRANDS: Brand[] = [
 
 // ---------- 1. HERO ----------
 
+const TYPEWRITER_WORDS = [
+  "Keyword",
+  "Blog Post",
+  "URL",
+  "PDF",
+  "Topic",
+  "YouTube Video",
+];
+
+function TypewriterWord() {
+  const [wordIndex, setWordIndex] = useState(0);
+  const [text, setText] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const [cursorOn, setCursorOn] = useState(true);
+
+  useEffect(() => {
+    const id = setInterval(() => setCursorOn((v) => !v), 530);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const current = TYPEWRITER_WORDS[wordIndex];
+    let delay: number;
+    if (!deleting && text === current) {
+      delay = 1800;
+    } else if (deleting && text === "") {
+      setDeleting(false);
+      setWordIndex((i) => (i + 1) % TYPEWRITER_WORDS.length);
+      return;
+    } else {
+      delay = deleting ? 35 : 65;
+    }
+    const t = setTimeout(() => {
+      if (!deleting && text === current) {
+        setDeleting(true);
+      } else if (deleting) {
+        setText(current.slice(0, text.length - 1));
+      } else {
+        setText(current.slice(0, text.length + 1));
+      }
+    }, delay);
+    return () => clearTimeout(t);
+  }, [text, deleting, wordIndex]);
+
+  return (
+    <span className="inline-flex items-baseline justify-center whitespace-nowrap">
+      <span className="text-gradient-vo">{text}</span>
+      <span
+        aria-hidden="true"
+        className="ml-0.5 inline-block w-[1px] self-stretch bg-[#3B82F6]"
+        style={{ opacity: cursorOn ? 1 : 0 }}
+      />
+    </span>
+  );
+}
+
 function HeroSection({ onHowItWorksClick }: { onHowItWorksClick: () => void }) {
   const features = [
     "No recording equipment needed",
@@ -187,10 +243,10 @@ function HeroSection({ onHowItWorksClick }: { onHowItWorksClick: () => void }) {
       <div className="mx-auto flex max-w-6xl flex-col items-center px-4 pt-20 pb-16 text-center sm:px-6 sm:pt-28 sm:pb-24">
         <Eyebrow>// AI PODCAST PRODUCTION</Eyebrow>
         <h1 className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-white text-balance sm:text-5xl lg:text-6xl">
-          Turn a Topic, Blog, or PDF Into a{" "}
-          <span className="text-gradient-vo">Professional Podcast</span>
-          {" "}— Without Recording a Word.
+          Turn a <TypewriterWord /> Into a Professional Podcast —
+          {" "}Without Recording a Word.
         </h1>
+
         <p className="mt-6 max-w-[700px] text-base text-muted-foreground sm:text-lg">
           I turn your existing content — a topic, a blog post, a URL, or a PDF
           — into a fully produced, publish-ready podcast. No microphone, no
