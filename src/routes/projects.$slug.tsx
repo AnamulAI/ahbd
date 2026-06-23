@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
-import { BrandIcon, brandColor } from "@/components/site/BrandIcon";
+import { BrandIcon } from "@/components/site/BrandIcon";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 type ServiceCategory = "web-development" | "ai-integrator" | "ai-podcast";
