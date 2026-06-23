@@ -533,7 +533,7 @@ function ProjectDetailPage() {
             {/* Tag row */}
             <div className="mt-6 flex flex-wrap items-center gap-3">
               {project.subType && (
-                <span className="inline-flex items-center rounded-full bg-amber-400 px-2.5 py-1 text-[11px] font-semibold text-black">
+                <span className="inline-flex items-center rounded-full border border-[color:var(--primary)]/40 bg-[color:var(--primary)]/10 px-2.5 py-1 text-[11px] font-semibold text-[color:var(--primary)] backdrop-blur-sm">
                   {SUBTYPE_LABEL[project.subType]}
                 </span>
               )}
