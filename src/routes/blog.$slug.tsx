@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, Clock, CheckCircle2 } from "lucide-react";
-import { SiFacebook, SiLinkedin, SiX } from "react-icons/si";
+import { ArrowLeft, ArrowRight, Clock, CheckCircle2, Linkedin } from "lucide-react";
+import { SiFacebook, SiX } from "react-icons/si";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { BlogCard, CategoryBadge } from "@/components/site/BlogCard";
@@ -214,7 +214,7 @@ function AuthorShareRow({ post }: { post: BlogPost }) {
           aria-label="Share on LinkedIn"
           className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/80 transition-colors hover:bg-white/[0.06] hover:text-white"
         >
-          <SiLinkedin className="h-4 w-4" />
+          <Linkedin className="h-4 w-4" />
         </a>
         <a
           href={`https://www.facebook.com/sharer/sharer.php?u=${url}`}
