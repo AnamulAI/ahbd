@@ -176,11 +176,11 @@ const PUBLISH_BRANDS: Brand[] = [
 // ---------- 1. HERO ----------
 
 const TYPEWRITER_WORDS = [
+  "Topic",
   "Keyword",
   "Blog Post",
   "URL",
   "PDF",
-  "Topic",
   "YouTube Video",
 ];
 
@@ -220,11 +220,11 @@ function TypewriterWord() {
   }, [text, deleting, wordIndex]);
 
   return (
-    <span className="inline-flex items-baseline justify-center whitespace-nowrap">
+    <span className="inline-flex items-baseline whitespace-nowrap align-baseline">
       <span className="text-gradient-vo">{text}</span>
       <span
         aria-hidden="true"
-        className="ml-0.5 inline-block w-[1px] self-stretch bg-[#3B82F6]"
+        className="ml-1 inline-block h-[0.9em] w-[2px] translate-y-[0.1em] bg-[#3B82F6]"
         style={{ opacity: cursorOn ? 1 : 0 }}
       />
     </span>
@@ -242,9 +242,16 @@ function HeroSection({ onHowItWorksClick }: { onHowItWorksClick: () => void }) {
     <section className="section-glow-hero">
       <div className="mx-auto flex max-w-6xl flex-col items-center px-4 pt-20 pb-16 text-center sm:px-6 sm:pt-28 sm:pb-24">
         <Eyebrow>// AI PODCAST PRODUCTION</Eyebrow>
-        <h1 className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-white text-balance sm:text-5xl lg:text-6xl">
-          Turn a <TypewriterWord /> Into a Professional Podcast —
-          {" "}Without Recording a Word.
+        <h1 className="mt-4 text-[2.6rem] font-extrabold leading-[1.08] tracking-tight text-white text-balance sm:text-6xl lg:text-7xl">
+          <span className="block">
+            Turn a{" "}
+            <span className="inline-block min-w-[6ch] sm:min-w-[8.5ch] text-left align-baseline">
+              <TypewriterWord />
+            </span>{" "}
+            Into a
+          </span>
+          <span className="block text-gradient-vo">Professional Podcast...</span>
+          <span className="block">Without Recording a Word.</span>
         </h1>
 
         <p className="mt-6 max-w-[700px] text-base text-muted-foreground sm:text-lg">
