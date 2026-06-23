@@ -5,7 +5,8 @@ import {
   Clock,
   Sparkles,
 } from "lucide-react";
-import { SiFacebook, SiLinkedin, SiX } from "react-icons/si";
+import { SiFacebook, SiX } from "react-icons/si";
+import { FaLinkedin } from "react-icons/fa";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import anamAvatar from "@/assets/anam-avatar.png.asset.json";
 import { SiteHeader } from "@/components/site/SiteHeader";
