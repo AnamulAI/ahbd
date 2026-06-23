@@ -277,11 +277,11 @@ function PublishEverywhereStrip() {
   ];
 
   return (
-    <section className="py-10">
+    <section className="py-10 overflow-hidden">
       <p className="text-center text-xs font-mono uppercase tracking-wider text-muted-foreground mb-6">
         Publish Everywhere Your Audience Already Listens
       </p>
-      <div className="space-y-4 platform-marquee">
+      <div className="space-y-4 platform-marquee overflow-hidden">
         <div className="platform-marquee-track-left hover:[animation-play-state:paused]">
           {[...row1, ...row1, ...row1, ...row1].map((item, i) => (
             <PillBadge key={`r1-${i}`} {...item} />
