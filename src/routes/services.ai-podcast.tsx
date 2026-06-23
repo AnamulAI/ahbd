@@ -379,7 +379,11 @@ function HeroSection({ onHowItWorksClick }: { onHowItWorksClick: () => void }) {
           studio, no editing skills required on your end.
         </p>
 
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <div className="mt-12 w-full flex justify-center sm:mt-14">
+          <TiltPreviewCard />
+        </div>
+
+        <div className="mt-12 flex flex-wrap items-center justify-center gap-3 sm:mt-14">
           <PrimaryCTA to="/contact">Start Your Podcast</PrimaryCTA>
           <SecondaryButton onClick={onHowItWorksClick}>See How It Works</SecondaryButton>
         </div>
@@ -392,8 +396,6 @@ function HeroSection({ onHowItWorksClick }: { onHowItWorksClick: () => void }) {
             </li>
           ))}
         </ul>
-
-        <TiltPreviewCard />
       </div>
     </section>
   );
