@@ -195,7 +195,7 @@ function BlogIndexPage() {
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                   />
                 </div>
-                <div className="flex flex-col gap-4 p-6 sm:p-10">
+                <div className="flex flex-col justify-center gap-4 p-6 sm:p-10">
                   <div className="flex items-center gap-3">
                     <CategoryBadge category={featured.category} />
                     <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[color:var(--orange)]">
