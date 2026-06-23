@@ -270,60 +270,7 @@ function HeroSection({ onHowItWorksClick }: { onHowItWorksClick: () => void }) {
           ))}
         </ul>
 
-        {/* Mock editor card */}
-        <div className="mt-12 w-full max-w-2xl">
-          <div className="card-elevated rounded-2xl p-5 text-left shadow-[0_30px_80px_-30px_rgba(59,130,246,0.4)]">
-            <div className="flex items-center gap-2 border-b border-white/10 pb-3">
-              <span className="h-2.5 w-2.5 rounded-full bg-red-500/70" />
-              <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/70" />
-              <span className="h-2.5 w-2.5 rounded-full bg-green-500/70" />
-              <span className="ml-2 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
-                // create new episode
-              </span>
-            </div>
-            <div className="mt-4">
-              <label className="font-mono text-[11px] uppercase tracking-wider text-[color:var(--primary)]">
-                Source
-              </label>
-              <div className="mt-2 flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5">
-                <Upload className="h-4 w-4 shrink-0 text-[color:var(--primary)]" />
-                <span className="truncate font-mono text-xs text-muted-foreground">
-                  https://yourblog.com/the-future-of-ai-podcasts
-                </span>
-              </div>
-            </div>
-            <div className="mt-4">
-              <label className="font-mono text-[11px] uppercase tracking-wider text-[color:var(--primary)]">
-                Voice
-              </label>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {["A", "B", "C", "D", "E", "F"].map((v, i) => (
-                  <span
-                    key={v}
-                    className={[
-                      "grid h-9 w-9 place-items-center rounded-full text-xs font-bold",
-                      i === 0
-                        ? "bg-gradient-to-br from-[color:var(--primary)] to-[color:var(--orange)] text-black"
-                        : "bg-white/[0.05] text-white/70 border border-white/10",
-                    ].join(" ")}
-                  >
-                    {v}
-                  </span>
-                ))}
-                <span className="grid h-9 px-3 place-items-center rounded-full bg-white/[0.05] text-xs text-white/60 border border-white/10">
-                  +294 more
-                </span>
-              </div>
-            </div>
-            <button
-              type="button"
-              className="btn-gradient mt-5 inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg px-5 text-sm font-semibold text-black"
-              disabled
-            >
-              Generate Episode <ArrowRight className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
+        <TiltPreviewCard />
       </div>
     </section>
   );
