@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   ArrowRight,
@@ -231,6 +231,117 @@ function TypewriterWord() {
   );
 }
 
+function TiltPreviewCard() {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [tilt, setTilt] = useState({ rx: 0, ry: 0, mx: 50, my: 50, active: false });
+  const isTouch =
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(hover: none)").matches;
+
+  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isTouch) return;
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const x = e.clientX - r.left;
+    const y = e.clientY - r.top;
+    const px = x / r.width;
+    const py = y / r.height;
+    const max = 9;
+    setTilt({
+      ry: (px - 0.5) * 2 * max,
+      rx: -(py - 0.5) * 2 * max,
+      mx: px * 100,
+      my: py * 100,
+      active: true,
+    });
+  };
+
+  const handleLeave = () => {
+    setTilt({ rx: 0, ry: 0, mx: 50, my: 50, active: false });
+  };
+
+  const PLATFORMS = [
+    { Icon: SiSpotify, color: "#1DB954", name: "Spotify" },
+    { Icon: SiApplepodcasts, color: "#A463F2", name: "Apple Podcasts" },
+    { Icon: SiYoutube, color: "#FF0000", name: "YouTube" },
+    { Icon: SiInstagram, color: "#E1306C", name: "Instagram" },
+  ];
+
+  const BAR_HEIGHTS = [22, 38, 58, 44, 72, 30, 88, 52, 68, 40, 80, 28, 60, 46, 76, 34, 64, 50, 84, 26, 56, 42, 70, 36];
+
+  return (
+    <div
+      className="mt-12 w-full max-w-[680px]"
+      style={{ perspective: "1200px" }}
+    >
+      <div
+        ref={ref}
+        onMouseMove={handleMove}
+        onMouseLeave={handleLeave}
+        className="card-elevated relative overflow-hidden rounded-[20px] p-8 sm:p-10 text-left will-change-transform"
+        style={{
+          transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
+          transition: tilt.active
+            ? "transform 120ms ease-out, box-shadow 200ms ease-out"
+            : "transform 380ms ease-out, box-shadow 380ms ease-out",
+          transformStyle: "preserve-3d",
+          boxShadow: tilt.active
+            ? "0 40px 90px -25px rgba(59,130,246,0.45), 0 20px 50px -20px rgba(249,115,22,0.25)"
+            : "0 24px 60px -30px rgba(59,130,246,0.35)",
+        }}
+      >
+        {/* cursor glow */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-[20px] opacity-80 transition-opacity"
+          style={{
+            background: `radial-gradient(420px circle at ${tilt.mx}% ${tilt.my}%, rgba(59,130,246,0.18), rgba(249,115,22,0.06) 35%, transparent 65%)`,
+            opacity: tilt.active ? 1 : 0,
+          }}
+        />
+
+        <div className="relative" style={{ transform: "translateZ(30px)" }}>
+          <span className="font-mono text-[11px] uppercase tracking-wider text-[color:var(--primary)]">
+            // YOUR EPISODE, EVERYWHERE
+          </span>
+
+          {/* waveform */}
+          <div className="mt-5 flex h-24 items-center justify-between gap-[3px] sm:gap-1">
+            {BAR_HEIGHTS.map((h, i) => (
+              <span
+                key={i}
+                className="block w-[6px] flex-1 rounded-full"
+                style={{
+                  height: `${h}%`,
+                  background:
+                    "linear-gradient(180deg, #3B82F6 0%, #F97316 100%)",
+                  opacity: 0.85,
+                }}
+              />
+            ))}
+          </div>
+
+          {/* platforms */}
+          <div className="mt-6 flex items-center justify-center gap-5 border-t border-white/10 pt-5">
+            <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+              Publishes to
+            </span>
+            {PLATFORMS.map(({ Icon, color, name }) => (
+              <Icon
+                key={name}
+                aria-label={name}
+                style={{ color }}
+                className="h-5 w-5"
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function HeroSection({ onHowItWorksClick }: { onHowItWorksClick: () => void }) {
   const features = [
     "No recording equipment needed",
@@ -270,60 +381,7 @@ function HeroSection({ onHowItWorksClick }: { onHowItWorksClick: () => void }) {
           ))}
         </ul>
 
-        {/* Mock editor card */}
-        <div className="mt-12 w-full max-w-2xl">
-          <div className="card-elevated rounded-2xl p-5 text-left shadow-[0_30px_80px_-30px_rgba(59,130,246,0.4)]">
-            <div className="flex items-center gap-2 border-b border-white/10 pb-3">
-              <span className="h-2.5 w-2.5 rounded-full bg-red-500/70" />
-              <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/70" />
-              <span className="h-2.5 w-2.5 rounded-full bg-green-500/70" />
-              <span className="ml-2 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
-                // create new episode
-              </span>
-            </div>
-            <div className="mt-4">
-              <label className="font-mono text-[11px] uppercase tracking-wider text-[color:var(--primary)]">
-                Source
-              </label>
-              <div className="mt-2 flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5">
-                <Upload className="h-4 w-4 shrink-0 text-[color:var(--primary)]" />
-                <span className="truncate font-mono text-xs text-muted-foreground">
-                  https://yourblog.com/the-future-of-ai-podcasts
-                </span>
-              </div>
-            </div>
-            <div className="mt-4">
-              <label className="font-mono text-[11px] uppercase tracking-wider text-[color:var(--primary)]">
-                Voice
-              </label>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {["A", "B", "C", "D", "E", "F"].map((v, i) => (
-                  <span
-                    key={v}
-                    className={[
-                      "grid h-9 w-9 place-items-center rounded-full text-xs font-bold",
-                      i === 0
-                        ? "bg-gradient-to-br from-[color:var(--primary)] to-[color:var(--orange)] text-black"
-                        : "bg-white/[0.05] text-white/70 border border-white/10",
-                    ].join(" ")}
-                  >
-                    {v}
-                  </span>
-                ))}
-                <span className="grid h-9 px-3 place-items-center rounded-full bg-white/[0.05] text-xs text-white/60 border border-white/10">
-                  +294 more
-                </span>
-              </div>
-            </div>
-            <button
-              type="button"
-              className="btn-gradient mt-5 inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg px-5 text-sm font-semibold text-black"
-              disabled
-            >
-              Generate Episode <ArrowRight className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
+        <TiltPreviewCard />
       </div>
     </section>
   );
