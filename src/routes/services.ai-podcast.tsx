@@ -243,12 +243,8 @@ function HeroSection({ onHowItWorksClick }: { onHowItWorksClick: () => void }) {
       <div className="mx-auto flex max-w-6xl flex-col items-center px-4 pt-20 pb-16 text-center sm:px-6 sm:pt-28 sm:pb-24">
         <Eyebrow>// AI PODCAST PRODUCTION</Eyebrow>
         <h1 className="mt-4 text-[2.6rem] font-extrabold leading-[1.08] tracking-tight text-white text-balance sm:text-6xl lg:text-7xl">
-          <span className="block">
-            Turn a{" "}
-            <span className="inline-block min-w-[6ch] sm:min-w-[8.5ch] text-left align-baseline">
-              <TypewriterWord />
-            </span>{" "}
-            Into a
+        <span className="block">
+            Turn a <TypewriterWord /> Into a
           </span>
           <span className="block text-gradient-vo">Professional Podcast...</span>
           <span className="block">Without Recording a Word.</span>
