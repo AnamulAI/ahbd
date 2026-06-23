@@ -726,7 +726,7 @@ function TagBadges({ tags }: { tags: string[] }) {
       {tags.map((tag) => (
         <span
           key={tag}
-          className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
+          className="inline-flex items-center rounded-full border border-[#3B82F6]/25 bg-[#3B82F6]/[0.12] px-2.5 py-1 text-[11px] font-medium text-[#93C5FD] transition-colors duration-200 group-hover:bg-[#3B82F6]/[0.18] group-hover:text-[#BFDBFE]"
         >
           {tag}
         </span>
