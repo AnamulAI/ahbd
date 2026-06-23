@@ -57,7 +57,7 @@ function NewsletterSection() {
   }
 
   return (
-    <section className="py-20 sm:py-24">
+    <section className="relative section-glow-cta py-20 sm:py-24">
       <div className="mx-auto max-w-2xl px-4 text-center sm:px-6">
         <Eyebrow>// STAY UPDATED</Eyebrow>
         <h2 className="mt-4 text-3xl font-bold leading-tight text-white sm:text-4xl">
@@ -188,7 +188,7 @@ function BlogIndexPage() {
                 params={{ slug: featured.slug }}
                 className="group grid overflow-hidden rounded-3xl border border-white/8 bg-[#16181D] transition-all duration-200 hover:border-[color:var(--primary)]/40 hover:bg-[#1C1F26] hover:shadow-[0_24px_70px_-30px_var(--vo-glow)] md:grid-cols-2 motion-reduce:transition-none"
               >
-                <div className="relative aspect-[16/10] overflow-hidden bg-white/5 md:aspect-auto">
+                <div className="relative aspect-[16/10] overflow-hidden bg-white/5 md:self-center">
                   <img
                     src={featured.coverImage}
                     alt={featured.title}
