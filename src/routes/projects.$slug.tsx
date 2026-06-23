@@ -500,7 +500,7 @@ function renderInline(s: string): React.ReactNode {
 }
 
 function ProjectDetailPage() {
-  const { project } = Route.useLoaderData();
+  const { project } = Route.useLoaderData() as { project: ProjectDetail };
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
   const idx = PROJECTS.findIndex((p) => p.slug === project.slug);
