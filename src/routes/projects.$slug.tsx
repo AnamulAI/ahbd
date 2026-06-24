@@ -492,7 +492,7 @@ function ProjectDetailPage() {
               <span>{project.industry}</span>
             </div>
             {(project.duration || project.role) && (
-              <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+              <div className="mt-3 flex w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
                 {project.duration && (
                   <span className="inline-flex items-center gap-1.5">
                     <Clock className="h-3.5 w-3.5 text-[color:var(--primary)]/80" aria-hidden />
