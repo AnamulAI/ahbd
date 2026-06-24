@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, MessageCircle, Globe, Bot, TrendingUp, Mic2 } from "lucide-react";
+import { ArrowRight, MessageCircle, Globe, Bot, TrendingUp, Mic } from "lucide-react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 
 
@@ -215,7 +215,7 @@ function Index() {
               {/* Connecting line: horizontal on desktop, vertical on mobile */}
               <div
                 aria-hidden
-                className="absolute left-6 top-0 h-full w-px bg-gradient-to-b from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] md:left-0 md:right-0 md:top-6 md:h-px md:w-auto md:bg-gradient-to-r md:from-[#3B82F6] md:via-[#3B82F6]/50 md:to-[#F97316]"
+                className="absolute left-6 top-0 h-full w-px bg-gradient-to-b from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] md:left-0 md:right-0 md:top-6 md:h-px md:w-auto md:bg-gradient-to-r md:from-[#3B82F6] md:via-[#3B82F6] md:to-[#F97316]"
               />
 
               <div className="grid gap-10 md:grid-cols-3 md:gap-8">
@@ -235,7 +235,7 @@ function Index() {
                 />
                 <PhaseCard
                   number={3}
-                  icon={Mic2}
+                  icon={Mic}
                   title="Podcast for Authority"
                   description="A consistent show that builds trust and visibility in the niche — while most competitors are still silent."
                   href="/services/ai-podcast"
