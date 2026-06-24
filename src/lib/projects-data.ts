@@ -395,6 +395,43 @@ const PROJECT_BRIGHTPATH: Project = {
   },
 };
 
+// ---------- Project 10: Web Development — Web Apps & Dashboards ----------
+const PROJECT_FLEETPULSE: Project = {
+  slug: "web-app-dashboard-fleetpulse-logistics",
+  category: "Web Development",
+  title: "A Real-Time Fleet Dashboard That Replaced Three Spreadsheets",
+  clientName: "FleetPulse Logistics",
+  industry: "Logistics & Fleet Management",
+  coverImage:
+    "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=1600&q=80",
+  shortDescription:
+    "A custom web app with real-time vehicle tracking, dispatch tools, and driver performance dashboards.",
+  challenge: [
+    "FleetPulse was coordinating a growing fleet across three regions using a patchwork of spreadsheets, group chats, and phone calls. Dispatchers had no live view of where trucks actually were, drivers were getting routed inefficiently, and management had no reliable performance data to act on.",
+  ],
+  solution: [
+    "I built a custom web application with real-time vehicle tracking on an interactive map, a dispatcher console for assigning jobs in a few clicks, and per-driver performance dashboards with delivery times, idle hours, and route efficiency. Role-based access keeps dispatchers, drivers, and managers in their own focused views.",
+  ],
+  techStack: ["React", "TypeScript", "Tailwind CSS", "Supabase", "Mapbox GL", "Vercel"],
+  results: [
+    { value: "37%", label: "Reduction in average dispatch time" },
+    { value: "Real-time", label: "Vehicle tracking across the entire fleet" },
+    { value: "3 → 1", label: "Spreadsheets replaced by a single dashboard" },
+  ],
+  galleryImages: [
+    "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1494412651409-8963ce7935a7?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1581090700227-1e37b190418e?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1551836022-deb4988cc6c0?auto=format&fit=crop&w=1400&q=80",
+  ],
+  testimonial: {
+    quote:
+      "We used to find out about delays from angry phone calls. Now we see them coming on the map before they happen.",
+    name: "Marcus Reilly",
+    title: "Operations Director, FleetPulse Logistics",
+  },
+};
+
 // ---------- Project 11: AI Podcast — Apple Podcasts Daily Brief ----------
 const PROJECT_DAILYBUILDER: Project = {
   slug: "podcast-launch-the-daily-builder",
