@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Eye, Star } from "lucide-react";
+import { ArrowRight, Eye, ExternalLink, Star } from "lucide-react";
 import { CATEGORY_STYLES } from "@/lib/blog-data";
 import type { Project, ProjectCategory } from "@/lib/projects-data";
 import { TechTag } from "@/lib/tech-icons";
