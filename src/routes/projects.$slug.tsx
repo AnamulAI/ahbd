@@ -121,18 +121,31 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
+function gradientLastWord(text: string) {
+  const trimmed = text.trim();
+  const idx = trimmed.lastIndexOf(" ");
+  if (idx === -1)
+    return <span className="text-gradient-vo">{trimmed}</span>;
+  return (
+    <>
+      {trimmed.slice(0, idx + 1)}
+      <span className="text-gradient-vo">{trimmed.slice(idx + 1)}</span>
+    </>
+  );
+}
+
 function SectionHeading({
   eyebrow,
   children,
 }: {
   eyebrow: string;
-  children: React.ReactNode;
+  children: string;
 }) {
   return (
     <>
       <Eyebrow>// {eyebrow}</Eyebrow>
-      <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
-        {children}
+      <h2 className="mt-3 text-balance text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
+        {gradientLastWord(children)}
       </h2>
     </>
   );
