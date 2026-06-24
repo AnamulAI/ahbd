@@ -109,7 +109,7 @@ export function ProjectCard({ project }: { project: Project }) {
             className={[
               "inline-flex items-center gap-1",
               project.liveDemoUrl && project.liveDemoUrl !== "#"
-                ? "font-medium text-[color:var(--primary)] hover:underline"
+                ? "font-medium text-[color:var(--orange)] hover:underline"
                 : "cursor-default text-muted-foreground opacity-60",
             ].join(" ")}
           >
