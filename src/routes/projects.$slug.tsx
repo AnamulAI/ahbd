@@ -166,6 +166,32 @@ function ChallengeSolution({
   );
 }
 
+const TECH_ICONS: Record<string, { Icon: IconType; color: string }> = {
+  "next.js": { Icon: SiNextdotjs, color: "#FFFFFF" },
+  nextjs: { Icon: SiNextdotjs, color: "#FFFFFF" },
+  "tailwind css": { Icon: SiTailwindcss, color: "#38BDF8" },
+  tailwind: { Icon: SiTailwindcss, color: "#38BDF8" },
+  supabase: { Icon: SiSupabase, color: "#3ECF8E" },
+  vercel: { Icon: SiVercel, color: "#FFFFFF" },
+  react: { Icon: SiReact, color: "#61DAFB" },
+  typescript: { Icon: SiTypescript, color: "#3178C6" },
+  openai: { Icon: SiOpenai, color: "#FFFFFF" },
+  "gpt-4": { Icon: SiOpenai, color: "#FFFFFF" },
+  stripe: { Icon: SiStripe, color: "#635BFF" },
+  "node.js": { Icon: SiNodedotjs, color: "#5FA04E" },
+  nodejs: { Icon: SiNodedotjs, color: "#5FA04E" },
+  python: { Icon: SiPython, color: "#3776AB" },
+  postgresql: { Icon: SiPostgresql, color: "#4169E1" },
+  postgres: { Icon: SiPostgresql, color: "#4169E1" },
+  figma: { Icon: SiFigma, color: "#F24E1E" },
+  wordpress: { Icon: SiWordpress, color: "#21759B" },
+  shopify: { Icon: SiShopify, color: "#7AB55C" },
+  notion: { Icon: SiNotion, color: "#FFFFFF" },
+  zapier: { Icon: SiZapier, color: "#FF4F00" },
+  airtable: { Icon: SiAirtable, color: "#FCB400" },
+  "google analytics": { Icon: SiGoogleanalytics, color: "#E37400" },
+};
+
 function TechStack({ stack }: { stack: string[] }) {
   return (
     <div className="mx-auto mt-8 max-w-3xl">
@@ -173,40 +199,85 @@ function TechStack({ stack }: { stack: string[] }) {
         // Tech Stack
       </p>
       <div className="mt-3 flex flex-wrap gap-2">
-        {stack.map((t) => (
-          <span
-            key={t}
-            className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-medium text-white/85"
-          >
-            {t}
-          </span>
-        ))}
+        {stack.map((t) => {
+          const match = TECH_ICONS[t.toLowerCase().trim()];
+          return (
+            <span
+              key={t}
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-medium text-white/85"
+            >
+              {match ? (
+                <match.Icon
+                  size={14}
+                  color={match.color}
+                  aria-hidden
+                  className="shrink-0"
+                />
+              ) : (
+                <CreditCard
+                  className="h-3.5 w-3.5 shrink-0 text-[color:var(--primary)]"
+                  aria-hidden
+                />
+              )}
+              {t}
+            </span>
+          );
+        })}
       </div>
     </div>
   );
 }
 
+function pickResultIcon(value: string, label: string): LucideIcon {
+  const v = value.toLowerCase();
+  const l = label.toLowerCase();
+  if (/^0\b/.test(v.trim()) || /\bzero\b|manual|eliminat|no more|reduc/.test(l))
+    return Ban;
+  if (v.includes("%") || /growth|sales|increase|conversion|revenue|roi|lift|uplift|engagement/.test(l))
+    return TrendingUp;
+  if (v.includes("/") || /hour|24\/7|time|always|round[- ]?the[- ]?clock|availab/.test(l))
+    return Clock;
+  if (/users|customers|subscribers|followers|leads|clients|audience|listeners/.test(l))
+    return Users;
+  if (/faster|speed|response|quick|instant/.test(l)) return Zap;
+  if (/rank|metric|data|score/.test(l)) return BarChart3;
+  return Sparkles;
+}
+
 function ResultsGrid({ results }: { results: Project["results"] }) {
   return (
-    <section className="py-12 sm:py-16">
+    <section className="py-16 sm:py-20 bg-white/[0.02]">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <div className="mx-auto max-w-3xl">
           <SectionHeading eyebrow="THE RESULTS">The Results</SectionHeading>
         </div>
         <div className="mt-10 grid gap-4 sm:grid-cols-3">
-          {results.map((r, i) => (
-            <div
-              key={i}
-              className="rounded-2xl border border-white/8 bg-[#16181D] p-6 text-center transition-colors hover:border-[color:var(--primary)]/40 hover:bg-[#1C1F26]"
-            >
-              <div className="font-display text-3xl font-bold leading-tight text-white sm:text-4xl">
-                <span className="text-gradient-vo">{r.value}</span>
+          {results.map((r, i) => {
+            const Icon = pickResultIcon(r.value, r.label);
+            return (
+              <div
+                key={i}
+                className="rounded-2xl border border-white/8 bg-[#16181D] p-7 text-center transition-colors hover:border-[color:var(--primary)]/40 hover:bg-[#1C1F26] sm:p-8"
+              >
+                <div className="mx-auto inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[color:var(--primary)]/20 bg-[color:var(--primary)]/10">
+                  <Icon
+                    className="h-5 w-5 text-[color:var(--primary)]"
+                    aria-hidden
+                  />
+                </div>
+                <div className="mt-5 font-display text-3xl font-bold leading-tight text-white sm:text-4xl">
+                  <span className="text-gradient-vo">{r.value}</span>
+                </div>
+                <span
+                  aria-hidden
+                  className="mx-auto mt-3 block h-[2px] w-10 rounded-full bg-gradient-to-r from-[color:var(--primary)] to-[color:var(--orange)]"
+                />
+                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                  {r.label}
+                </p>
               </div>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                {r.label}
-              </p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
@@ -214,47 +285,81 @@ function ResultsGrid({ results }: { results: Project["results"] }) {
 }
 
 function Gallery({ images, alt }: { images: string[]; alt: string }) {
+  const [lead, ...rest] = images;
   return (
-    <section className="py-12 sm:py-16">
+    <section className="py-16 sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="mx-auto max-w-3xl">
           <SectionHeading eyebrow="PROJECT GALLERY">A Closer Look</SectionHeading>
         </div>
-        <div className="mt-10 grid gap-4 sm:grid-cols-2">
-          {images.map((src, i) => (
-            <div
-              key={i}
-              className="overflow-hidden rounded-2xl border border-white/8 bg-white/5"
-            >
-              <img
-                src={src}
-                alt={`${alt} — image ${i + 1}`}
-                loading="lazy"
-                className="aspect-[16/10] w-full object-cover transition-transform duration-300 hover:scale-[1.02] motion-reduce:transition-none motion-reduce:hover:scale-100"
-              />
-            </div>
-          ))}
-        </div>
+        {lead && (
+          <div className="mt-10 overflow-hidden rounded-2xl border border-white/8 bg-white/5">
+            <img
+              src={lead}
+              alt={`${alt} — image 1`}
+              loading="lazy"
+              className="aspect-[16/9] w-full object-cover transition-transform duration-300 hover:scale-[1.02] motion-reduce:transition-none motion-reduce:hover:scale-100"
+            />
+          </div>
+        )}
+        {rest.length > 0 && (
+          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {rest.map((src, i) => (
+              <div
+                key={i}
+                className="overflow-hidden rounded-2xl border border-white/8 bg-white/5"
+              >
+                <img
+                  src={src}
+                  alt={`${alt} — image ${i + 2}`}
+                  loading="lazy"
+                  className="aspect-[16/10] w-full object-cover transition-transform duration-300 hover:scale-[1.02] motion-reduce:transition-none motion-reduce:hover:scale-100"
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
 }
 
+function initialsOf(name: string) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((s) => s[0]?.toUpperCase() ?? "")
+    .join("");
+}
+
 function TestimonialCard({ t }: { t: Project["testimonial"] }) {
   return (
-    <section className="py-12 sm:py-16">
+    <section className="py-16 sm:py-20 bg-white/[0.02]">
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
-        <blockquote className="relative rounded-2xl border border-white/8 bg-[#16181D] p-8 pl-10 sm:p-10 sm:pl-12">
+        <blockquote className="relative overflow-hidden rounded-2xl border border-white/8 bg-[#16181D] p-8 pl-10 sm:p-10 sm:pl-14">
           <span
             aria-hidden
-            className="absolute left-0 top-6 h-[calc(100%-3rem)] w-[3px] rounded-full bg-gradient-to-b from-[color:var(--primary)] to-[color:var(--orange)]"
+            className="absolute left-0 top-0 h-full w-[4px] bg-gradient-to-b from-[color:var(--primary)] to-[color:var(--orange)]"
           />
-          <p className="font-display text-xl italic leading-snug text-white sm:text-2xl">
+          <Quote
+            aria-hidden
+            className="pointer-events-none absolute right-6 top-6 h-20 w-20 text-[color:var(--primary)]/10 sm:h-24 sm:w-24"
+          />
+          <p className="relative font-display text-xl italic leading-snug text-white sm:text-2xl">
             "{t.quote}"
           </p>
-          <footer className="mt-6 text-sm">
-            <span className="font-semibold text-white">{t.name}</span>
-            <span className="text-muted-foreground"> — {t.title}</span>
+          <footer className="relative mt-6 flex items-center gap-3 text-sm">
+            <span
+              aria-hidden
+              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[color:var(--primary)] to-[color:var(--orange)] font-display text-[13px] font-bold text-white shadow-[0_4px_14px_-4px_var(--vo-glow)]"
+            >
+              {initialsOf(t.name)}
+            </span>
+            <span>
+              <span className="font-semibold text-white">{t.name}</span>
+              <span className="text-muted-foreground"> — {t.title}</span>
+            </span>
           </footer>
         </blockquote>
       </div>
