@@ -121,18 +121,31 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
+function gradientLastWord(text: string) {
+  const trimmed = text.trim();
+  const idx = trimmed.lastIndexOf(" ");
+  if (idx === -1)
+    return <span className="text-gradient-vo">{trimmed}</span>;
+  return (
+    <>
+      {trimmed.slice(0, idx + 1)}
+      <span className="text-gradient-vo">{trimmed.slice(idx + 1)}</span>
+    </>
+  );
+}
+
 function SectionHeading({
   eyebrow,
   children,
 }: {
   eyebrow: string;
-  children: React.ReactNode;
+  children: string;
 }) {
   return (
     <>
       <Eyebrow>// {eyebrow}</Eyebrow>
-      <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
-        {children}
+      <h2 className="mt-3 text-balance text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
+        {gradientLastWord(children)}
       </h2>
     </>
   );
@@ -257,7 +270,7 @@ function ResultsGrid({ results }: { results: Project["results"] }) {
             return (
               <div
                 key={i}
-                className="rounded-2xl border border-white/8 bg-[#16181D] p-7 text-center transition-colors hover:border-[color:var(--primary)]/40 hover:bg-[#1C1F26] sm:p-8"
+                className="rounded-2xl border border-white/8 bg-[#16181D] p-7 text-center transition-all duration-200 hover:-translate-y-1 hover:border-[color:var(--primary)]/40 hover:bg-[#1C1F26] hover:shadow-[0_10px_30px_-12px_var(--vo-glow)] motion-reduce:hover:translate-y-0 sm:p-8"
               >
                 <div className="mx-auto inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[color:var(--primary)]/20 bg-[color:var(--primary)]/10">
                   <Icon
@@ -377,7 +390,7 @@ function ProjectDetailPage() {
       <SiteHeader />
       <main>
         {/* Hero */}
-        <section className="pt-12 sm:pt-16">
+        <section className="relative section-glow-hero pt-12 sm:pt-16">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <Link
               to="/projects"
@@ -388,8 +401,8 @@ function ProjectDetailPage() {
             <div className="mt-6">
               <ProjectCategoryBadge category={project.category} />
             </div>
-            <h1 className="mt-4 max-w-4xl text-3xl font-bold leading-[1.15] text-white sm:text-4xl md:text-5xl">
-              {project.title}
+            <h1 className="mt-4 max-w-4xl text-balance text-3xl font-bold leading-[1.15] text-white sm:text-4xl md:text-5xl">
+              {gradientLastWord(project.title)}
             </h1>
             <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
               <span className="font-medium text-white/85">
