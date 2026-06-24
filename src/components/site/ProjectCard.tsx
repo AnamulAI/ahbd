@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Eye, Star } from "lucide-react";
 import { CATEGORY_STYLES } from "@/lib/blog-data";
 import type { Project, ProjectCategory } from "@/lib/projects-data";
+import { TechTag } from "@/lib/tech-icons";
 
 export function ProjectCategoryBadge({
   category,
@@ -24,7 +25,43 @@ export function ProjectCategoryBadge({
   );
 }
 
+function formatViews(n: number): string {
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
+  return String(n);
+}
+
+// TODO: placeholder rating/view data — replace with real analytics before public launch per Honesty Rule
+function StatOverlay({ rating, viewCount }: { rating?: number; viewCount?: number }) {
+  if (rating == null && viewCount == null) return null;
+  return (
+    <div className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full border border-white/10 bg-black/55 px-2 py-0.5 font-mono text-[10px] text-white backdrop-blur-sm">
+      {rating != null && (
+        <span className="inline-flex items-center gap-1">
+          <Star
+            className="h-3 w-3 shrink-0 text-[color:var(--orange)]"
+            fill="currentColor"
+            aria-hidden
+          />
+          <span className="tabular-nums">{rating.toFixed(1)}</span>
+        </span>
+      )}
+      {rating != null && viewCount != null && (
+        <span aria-hidden className="text-white/25">
+          •
+        </span>
+      )}
+      {viewCount != null && (
+        <span className="inline-flex items-center gap-1">
+          <Eye className="h-3 w-3 shrink-0 text-[color:var(--primary)]" aria-hidden />
+          <span className="tabular-nums">{formatViews(viewCount)}</span>
+        </span>
+      )}
+    </div>
+  );
+}
+
 export function ProjectCard({ project }: { project: Project }) {
+  const tags = project.techStack.slice(0, 3);
   return (
     <Link
       to="/projects/$slug"
@@ -44,6 +81,7 @@ export function ProjectCard({ project }: { project: Project }) {
         <div className="absolute left-3 top-3">
           <ProjectCategoryBadge category={project.category} />
         </div>
+        <StatOverlay rating={project.rating} viewCount={project.viewCount} />
       </div>
       <div className="flex flex-1 flex-col gap-3 p-5 sm:p-6">
         <h3 className="font-display text-lg font-bold leading-snug text-white">
@@ -52,6 +90,13 @@ export function ProjectCard({ project }: { project: Project }) {
         <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
           {project.shortDescription}
         </p>
+        {tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {tags.map((t) => (
+              <TechTag key={t} name={t} compact />
+            ))}
+          </div>
+        )}
         <div className="mt-auto flex items-center justify-between gap-3 pt-4 text-xs text-muted-foreground">
           <span className="truncate">{project.clientName}</span>
           <span className="inline-flex items-center gap-1 font-medium text-[color:var(--primary)]">
