@@ -521,7 +521,7 @@ const PROJECT_CLEARVIEW: Project = {
   },
 };
 
-const PROJECTS: Project[] = [
+const PROJECTS_RAW: Project[] = [
   PROJECT_CEDAR,
   PROJECT_SUMMIT,
   PROJECT_FITTRACK,
@@ -535,6 +535,100 @@ const PROJECTS: Project[] = [
   PROJECT_DAILYBUILDER,
   PROJECT_CLEARVIEW,
 ];
+
+/** Per-project duration + role meta (additive, kept colocated for easy edits). */
+const PROJECT_META: Record<string, { duration: string; role: string }> = {
+  "ecommerce-store-cedar-leather-co": {
+    duration: "2 weeks",
+    role: "Full-Stack Developer (Solo) — Design through Development",
+  },
+  "podcast-launch-summit-strategy-group": {
+    duration: "10 days",
+    role: "Podcast Producer (Solo) — Strategy through Distribution",
+  },
+  "conversion-landing-page-fittrack": {
+    duration: "5 days",
+    role: "Full-Stack Developer (Solo) — Design through Development",
+  },
+  "multi-page-business-site-northbridge-legal": {
+    duration: "2 weeks",
+    role: "Full-Stack Developer (Solo) — Design through Development",
+  },
+  "personal-brand-portfolio-elena-castro": {
+    duration: "7 days",
+    role: "Full-Stack Developer (Solo) — Design through Development",
+  },
+  "course-platform-growthlab-academy": {
+    duration: "3 weeks",
+    role: "Full-Stack Developer (Solo) — Design through Development",
+  },
+  "web-app-dashboard-fleetpulse-logistics": {
+    duration: "4 weeks",
+    role: "Full-Stack Developer (Solo) — Design through Development",
+  },
+  "custom-gpt-harborline-insurance": {
+    duration: "6 days",
+    role: "AI Integrator (Solo) — Knowledge Base through Deployment",
+  },
+  "copilot-agent-westfield-manufacturing": {
+    duration: "10 days",
+    role: "AI Integrator (Solo) — Configuration through Rollout",
+  },
+  "api-integration-brightpath-realty": {
+    duration: "2 weeks",
+    role: "AI Integrator (Solo) — Backend through Integration",
+  },
+  "podcast-launch-the-daily-builder": {
+    duration: "8 days",
+    role: "Podcast Producer (Solo) — Pipeline through Distribution",
+  },
+  "podcast-launch-clearview-coaching": {
+    duration: "2 weeks",
+    role: "Podcast Producer (Solo) — Production through Distribution",
+  },
+};
+
+function defaultProcessSteps(p: Project): ProjectProcessStep[] {
+  const stack = p.techStack.join(", ");
+  return [
+    {
+      title: "Discovery",
+      description:
+        "Understood the target audience, required features, and gathered the necessary content and requirements.",
+    },
+    {
+      title: "Design Direction",
+      description:
+        "Defined the visual direction and UX approach to match the brand and project goals.",
+    },
+    {
+      title: "Development",
+      description: `Built the solution using ${stack}.`,
+    },
+    {
+      title: "Content & Integration",
+      description:
+        "Organized and integrated all content, data, and third-party connections.",
+    },
+    {
+      title: "Deployment & Delivery",
+      description:
+        "Tested, deployed, and delivered the finished project to the client.",
+    },
+  ];
+}
+
+function hydrate(p: Project): Project {
+  const meta = PROJECT_META[p.slug];
+  return {
+    ...p,
+    duration: p.duration ?? meta?.duration,
+    role: p.role ?? meta?.role,
+    processSteps: p.processSteps ?? defaultProcessSteps(p),
+  };
+}
+
+const PROJECTS: Project[] = PROJECTS_RAW.map(hydrate);
 
 export const FEATURED_PROJECT_SLUG = "ecommerce-store-cedar-leather-co";
 
@@ -552,4 +646,15 @@ export function getRelatedProjects(slug: string, limit = 3): Project[] {
   return PROJECTS.filter(
     (p) => p.slug !== slug && p.category === current.category,
   ).slice(0, limit);
+}
+
+/** Sequential prev/next in gallery order, with wrap-around. */
+export function getAdjacentProjects(
+  slug: string,
+): { prev: Project; next: Project } | null {
+  const idx = PROJECTS.findIndex((p) => p.slug === slug);
+  if (idx === -1) return null;
+  const prev = PROJECTS[(idx - 1 + PROJECTS.length) % PROJECTS.length];
+  const next = PROJECTS[(idx + 1) % PROJECTS.length];
+  return { prev, next };
 }
