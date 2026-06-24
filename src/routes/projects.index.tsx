@@ -122,7 +122,7 @@ function FeaturedSpotlight() {
               <div className="text-gradient-vo font-display text-5xl font-bold leading-none sm:text-6xl">
                 58%
               </div>
-              <div className="max-w-[14rem] text-xs leading-snug text-muted-foreground">
+              <div className="mt-2 max-w-[14rem] text-xs leading-snug text-muted-foreground">
                 of total sales now online within 90 days
               </div>
             </div>
