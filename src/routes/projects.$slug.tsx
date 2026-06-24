@@ -270,7 +270,7 @@ function ResultsGrid({ results }: { results: Project["results"] }) {
             return (
               <div
                 key={i}
-                className="rounded-2xl border border-white/8 bg-[#16181D] p-7 text-center transition-colors hover:border-[color:var(--primary)]/40 hover:bg-[#1C1F26] sm:p-8"
+                className="rounded-2xl border border-white/8 bg-[#16181D] p-7 text-center transition-all duration-200 hover:-translate-y-1 hover:border-[color:var(--primary)]/40 hover:bg-[#1C1F26] hover:shadow-[0_10px_30px_-12px_var(--vo-glow)] motion-reduce:hover:translate-y-0 sm:p-8"
               >
                 <div className="mx-auto inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[color:var(--primary)]/20 bg-[color:var(--primary)]/10">
                   <Icon
