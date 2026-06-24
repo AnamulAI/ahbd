@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, MessageCircle, Globe, Bot, TrendingUp, Mic2 } from "lucide-react";
+import { ArrowRight, MessageCircle, Globe, Bot, TrendingUp, Mic } from "lucide-react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 
 
