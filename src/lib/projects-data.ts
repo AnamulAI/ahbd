@@ -136,7 +136,276 @@ const PROJECT_SUMMIT: Project = {
   },
 };
 
-const PROJECTS: Project[] = [PROJECT_CEDAR, PROJECT_SUMMIT];
+// ---------- Project 3: Web Development — Landing Pages ----------
+const PROJECT_FITTRACK: Project = {
+  slug: "conversion-landing-page-fittrack",
+  category: "Web Development",
+  title: "A Single Page That Outperformed Their Entire Old Site",
+  clientName: "FitTrack Coaching",
+  industry: "Fitness Coaching",
+  coverImage:
+    "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1600&q=80",
+  shortDescription:
+    "A conversion-focused landing page built to turn ad traffic into booked consultations.",
+  challenge: [
+    "FitTrack Coaching was running paid ads to their old multi-page website, but visitors had too many places to click and too little reason to act immediately. Ad spend was going up while consultation bookings stayed flat — a classic sign that the destination page, not the traffic, was the problem.",
+  ],
+  solution: [
+    "I built a single, tightly-focused landing page built around one goal: booking a free consultation call. Every section — the headline, the transformation gallery, the pricing breakdown, the FAQ — was structured to remove hesitation and lead toward one clear action, with no navigation menu to distract or let visitors wander away.",
+  ],
+  techStack: ["React", "Tailwind CSS", "Supabase", "Vercel"],
+  results: [
+    { value: "94%", label: "Visitor focus retained (no nav exits)" },
+    { value: "3.1x", label: "Consultation booking rate vs. old site" },
+    { value: "1.8s", label: "Page load time" },
+  ],
+  galleryImages: [
+    "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?auto=format&fit=crop&w=1400&q=80",
+  ],
+  testimonial: {
+    quote:
+      "Our ad spend didn't change, but our bookings tripled. The page just makes it obvious what to do next.",
+    name: "Sarah Mitchell",
+    title: "Founder, FitTrack Coaching",
+  },
+};
+
+// ---------- Project 4: Web Development — Business Websites ----------
+const PROJECT_NORTHBRIDGE: Project = {
+  slug: "multi-page-business-site-northbridge-legal",
+  category: "Web Development",
+  title: "A Full Website That Finally Matched Their Reputation",
+  clientName: "Northbridge Legal Partners",
+  industry: "Legal Services",
+  coverImage:
+    "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1600&q=80",
+  shortDescription:
+    "A multi-page business website that brands the firm's story, services, and trust signals clearly.",
+  challenge: [
+    "Northbridge Legal Partners had a strong local reputation built over a decade, but their existing website looked like it hadn't been touched since they opened. Prospective clients researching online before calling were landing on a site that didn't reflect the firm's actual credibility.",
+  ],
+  solution: [
+    "I built a full multi-page site — Home, Practice Areas, Attorney Profiles, Case Results, and Contact — structured around trust signals: credentials, case history, and a clear path to schedule a consultation from every page. The content management area was kept simple enough for their office manager to update attorney bios and case results without calling a developer.",
+  ],
+  techStack: ["Next.js", "Tailwind CSS", "Sanity CMS", "Vercel"],
+  results: [
+    { value: "6 pages", label: "Fully structured, SEO-optimized" },
+    { value: "40%", label: "Increase in contact form submissions (first 60 days)" },
+    { value: "100%", label: "Self-manageable by office staff" },
+  ],
+  galleryImages: [
+    "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1400&q=80",
+  ],
+  testimonial: {
+    quote:
+      "Clients tell us they read the case results page before their first call now. That never happened with the old site.",
+    name: "David Chen",
+    title: "Managing Partner, Northbridge Legal Partners",
+  },
+};
+
+// ---------- Project 5: Web Development — Personal Brand Sites ----------
+const PROJECT_ELENA: Project = {
+  slug: "personal-brand-portfolio-elena-castro",
+  category: "Web Development",
+  title: "A Portfolio That Turns Visitors Into Bookings",
+  clientName: "Elena Castro Coaching",
+  industry: "Career Coaching",
+  coverImage:
+    "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1600&q=80",
+  shortDescription:
+    "A combined portfolio, authority, and booking site for a solo career coach.",
+  challenge: [
+    "Elena had built a following through speaking and writing but had no central place to send people — her booking link, portfolio of client wins, and bio were scattered across three different tools, and prospective clients regularly got lost trying to figure out how to actually work with her.",
+  ],
+  solution: [
+    "I built one site combining her portfolio (client transformation stories), authority signals (press mentions, speaking history), and a direct booking calendar — all in one cohesive brand experience. Every page funnels toward the same action: book an intro call.",
+  ],
+  techStack: ["React", "Tailwind CSS", "Cal.com integration", "Vercel"],
+  results: [
+    { value: "1 link", label: "Replaced 3 scattered tools" },
+    { value: "2.4x", label: "Booking calendar conversion vs. old Linktree setup" },
+    { value: "5", label: "Press features now showcased in one place" },
+  ],
+  galleryImages: [
+    "https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1531545514256-b1400bc00f31?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1400&q=80",
+  ],
+  testimonial: {
+    quote:
+      "I finally have one place to send people that actually represents what I do.",
+    name: "Elena Castro",
+    title: "Career Coach",
+  },
+};
+
+// ---------- Project 6: Web Development — LMS & Course Platforms ----------
+const PROJECT_GROWTHLAB: Project = {
+  slug: "course-platform-growthlab-academy",
+  category: "Web Development",
+  title: "A Course Platform Built for Real Student Completion",
+  clientName: "GrowthLab Academy",
+  industry: "Online Education",
+  coverImage:
+    "https://images.unsplash.com/photo-1501504905252-473c47e087f8?auto=format&fit=crop&w=1600&q=80",
+  shortDescription:
+    "A full LMS with student management, progress tracking, and payment handling.",
+  challenge: [
+    "GrowthLab Academy had course content ready but was distributing it through a folder of unlisted YouTube videos and a spreadsheet for tracking who paid. Students had no sense of progress, no certificate of completion, and the founder had no visibility into who was actually finishing the material.",
+  ],
+  solution: [
+    "I built a dedicated course platform: structured modules with progress tracking, gated content that unlocks as students complete prior lessons, payment processing tied directly to enrollment, and a simple instructor dashboard showing real completion data across every student.",
+  ],
+  techStack: ["Next.js", "Supabase", "Stripe", "Tailwind CSS", "Vercel"],
+  results: [
+    { value: "73%", label: "Course completion rate (up from ~20% estimated)" },
+    { value: "100%", label: "Automated enrollment-to-access flow" },
+    { value: "1 dashboard", label: "Replaced the founder's tracking spreadsheet entirely" },
+  ],
+  galleryImages: [
+    "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1523240795612-9a1b4704e4bb?auto=format&fit=crop&w=1400&q=80",
+  ],
+  testimonial: {
+    quote:
+      "I finally know who's actually completing the course instead of guessing from a spreadsheet.",
+    name: "James Okafor",
+    title: "Founder, GrowthLab Academy",
+  },
+};
+
+// ---------- Project 7: AI Integrator — Custom GPT Assistant ----------
+const PROJECT_HARBORLINE: Project = {
+  slug: "custom-gpt-harborline-insurance",
+  category: "AI Integrator",
+  title: "A Custom GPT That Answers Policy Questions Instantly",
+  clientName: "Harborline Insurance Group",
+  industry: "Insurance",
+  coverImage:
+    "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1600&q=80",
+  shortDescription:
+    "A focused AI assistant trained on policy documents, deployed via a shareable link.",
+  challenge: [
+    "Harborline's small customer service team fielded the same 15-20 policy questions repeatedly every single day — coverage details, claim procedures, renewal terms — pulling staff away from genuinely complex cases that actually needed a human.",
+  ],
+  solution: [
+    "I built a Custom GPT trained on Harborline's actual policy documents, FAQs, and claim procedures, deployed via a simple shareable link the team could send directly to customers or embed on the website. It answers consistently, every time, without anyone re-explaining the same policy details in a new conversation.",
+  ],
+  techStack: ["OpenAI Custom GPT", "structured knowledge base", "embed integration"],
+  results: [
+    { value: "68%", label: "Of routine policy questions now self-served" },
+    { value: "~12 hrs/week", label: "Staff time freed up" },
+    { value: "<5 sec", label: "Average response time vs. hours waiting for email reply" },
+  ],
+  galleryImages: [
+    "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1400&q=80",
+  ],
+  testimonial: {
+    quote:
+      "Our team finally has time for the complicated cases instead of answering the same renewal question for the tenth time that day.",
+    name: "Linda Park",
+    title: "Customer Service Lead, Harborline Insurance Group",
+  },
+};
+
+// ---------- Project 8: AI Integrator — Microsoft Copilot Agent ----------
+const PROJECT_WESTFIELD: Project = {
+  slug: "copilot-agent-westfield-manufacturing",
+  category: "AI Integrator",
+  title: "An Office AI Assistant That Knows Company Policy Cold",
+  clientName: "Westfield Manufacturing",
+  industry: "Manufacturing",
+  coverImage:
+    "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1600&q=80",
+  shortDescription:
+    "A corporate Copilot agent integrated with company documents and Office 365.",
+  challenge: [
+    "Westfield's HR and operations teams spent significant time each week answering employee questions about internal policies — safety procedures, leave requests, equipment protocols — that were all technically documented, just buried across dozens of SharePoint files nobody could quickly search.",
+  ],
+  solution: [
+    "I configured a Microsoft Copilot agent connected directly to Westfield's SharePoint document library, trained on their actual policy and safety documentation. Employees can now ask questions in natural language and get accurate answers pulled from real company documents, plus draft routine Word/Excel reports directly through the same assistant.",
+  ],
+  techStack: ["Microsoft Copilot", "SharePoint integration", "Office 365"],
+  results: [
+    { value: "45%", label: "Reduction in routine HR policy questions to staff" },
+    { value: "100%", label: "Answers sourced from real, current documents" },
+    { value: "Enterprise-wide", label: "Rollout across all departments" },
+  ],
+  galleryImages: [
+    "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1504384308090-c54be3855833?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1400&q=80",
+  ],
+  testimonial: {
+    quote:
+      "Employees stopped emailing HR for things that were already written down somewhere — they just ask Copilot now.",
+    name: "Robert Kim",
+    title: "HR Director, Westfield Manufacturing",
+  },
+};
+
+// ---------- Project 9: AI Integrator — API Integration ----------
+const PROJECT_BRIGHTPATH: Project = {
+  slug: "api-integration-brightpath-realty",
+  category: "AI Integrator",
+  title: "AI That Lives Inside WhatsApp, Not a Separate Chat Window",
+  clientName: "BrightPath Realty",
+  industry: "Real Estate",
+  coverImage:
+    "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1600&q=80",
+  shortDescription:
+    "AI connected directly into WhatsApp and the website — no separate chat tool needed.",
+  challenge: [
+    "BrightPath Realty's leads came in primarily through WhatsApp, but the team could only respond during business hours. After-hours inquiries — often the most motivated buyers browsing listings at night — went unanswered until the next morning, and many never followed up again.",
+  ],
+  solution: [
+    "I connected an AI assistant directly into BrightPath's existing WhatsApp Business number and website chat — not a separate app leads had to be redirected to. It answers property questions, qualifies leads by budget and timeline, and hands off to a human agent automatically when a conversation needs one.",
+  ],
+  techStack: ["WhatsApp Business API", "custom backend integration", "OpenAI API"],
+  results: [
+    { value: "24/7", label: "Lead response coverage, up from business-hours-only" },
+    { value: "31%", label: "Increase in qualified leads reaching an agent" },
+    { value: "0", label: "New tools the team had to learn — works inside WhatsApp" },
+  ],
+  galleryImages: [
+    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1400&q=80",
+  ],
+  testimonial: {
+    quote:
+      "Leads stopped going cold overnight. The AI is just there, inside WhatsApp, where our clients already are.",
+    name: "Amara Osei",
+    title: "Sales Director, BrightPath Realty",
+  },
+};
+
+const PROJECTS: Project[] = [
+  PROJECT_CEDAR,
+  PROJECT_SUMMIT,
+  PROJECT_FITTRACK,
+  PROJECT_NORTHBRIDGE,
+  PROJECT_ELENA,
+  PROJECT_GROWTHLAB,
+  PROJECT_HARBORLINE,
+  PROJECT_WESTFIELD,
+  PROJECT_BRIGHTPATH,
+];
 
 export function getAllProjects(): Project[] {
   return PROJECTS;
@@ -147,5 +416,9 @@ export function getProjectBySlug(slug: string): Project | undefined {
 }
 
 export function getRelatedProjects(slug: string, limit = 3): Project[] {
-  return PROJECTS.filter((p) => p.slug !== slug).slice(0, limit);
+  const current = PROJECTS.find((p) => p.slug === slug);
+  if (!current) return [];
+  return PROJECTS.filter(
+    (p) => p.slug !== slug && p.category === current.category,
+  ).slice(0, limit);
 }
