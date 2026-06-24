@@ -66,6 +66,49 @@ function ProblemCard({
   );
 }
 
+function PhaseCard({
+  number,
+  icon: Icon,
+  title,
+  description,
+  href,
+}: {
+  number: number;
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  description: string;
+  href: string;
+}) {
+  return (
+    <div className="relative flex flex-row gap-5 md:flex-col md:items-start md:gap-4">
+      {/* Numbered badge */}
+      <div className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full btn-gradient font-display text-lg font-bold text-white shadow-[0_8px_24px_-8px_var(--vo-glow)] ring-4 ring-background">
+        {number}
+      </div>
+      <div className="flex-1 pt-1 md:pt-2">
+        <div className="flex items-center gap-2">
+          <Icon className="h-4 w-4 text-[color:var(--primary)]" />
+          <h3 className="text-lg font-semibold text-white">{title}</h3>
+        </div>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+          {description}
+        </p>
+        <Link
+          to={href}
+          className="group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[color:var(--primary)] transition-colors hover:text-[#F97316]"
+        >
+          Explore
+          <ArrowRight
+            className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
+            aria-hidden
+          />
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+
 function Index() {
   return (
     <div className="min-h-screen bg-background text-foreground">
