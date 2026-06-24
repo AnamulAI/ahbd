@@ -478,38 +478,40 @@ function ProjectDetailPage() {
             >
               <ArrowLeft className="h-4 w-4" aria-hidden /> Back to Projects
             </Link>
-            <div className="mt-6">
-              <ProjectCategoryBadge category={project.category} />
-            </div>
-            <h1 className="mt-4 max-w-4xl text-balance text-3xl font-bold leading-[1.15] text-white sm:text-4xl md:text-5xl">
-              {gradientLastWord(project.title)}
-            </h1>
-            <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
-              <span className="font-medium text-white/85">
-                {project.clientName}
-              </span>
-              <span aria-hidden>·</span>
-              <span>{project.industry}</span>
-            </div>
-            {(project.duration || project.role) && (
-              <div className="mt-3 flex w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-                {project.duration && (
-                  <span className="inline-flex items-center gap-1.5">
-                    <Clock className="h-3.5 w-3.5 text-[color:var(--primary)]/80" aria-hidden />
-                    {project.duration}
-                  </span>
-                )}
-                {project.duration && project.role && (
-                  <span aria-hidden className="h-3 w-px bg-white/10" />
-                )}
-                {project.role && (
-                  <span className="inline-flex items-center gap-1.5">
-                    <User className="h-3.5 w-3.5 text-[color:var(--primary)]/80" aria-hidden />
-                    {project.role}
-                  </span>
-                )}
+            <div className="text-center">
+              <div className="mt-6">
+                <ProjectCategoryBadge category={project.category} />
               </div>
-            )}
+              <h1 className="mt-4 mx-auto max-w-4xl text-balance text-3xl font-bold leading-[1.15] text-white sm:text-4xl md:text-5xl">
+                {gradientLastWord(project.title)}
+              </h1>
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+                <span className="font-medium text-white/85">
+                  {project.clientName}
+                </span>
+                <span aria-hidden>·</span>
+                <span>{project.industry}</span>
+              </div>
+              {(project.duration || project.role) && (
+                <div className="mt-3 flex w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+                  {project.duration && (
+                    <span className="inline-flex items-center gap-1.5">
+                      <Clock className="h-3.5 w-3.5 text-[color:var(--primary)]/80" aria-hidden />
+                      {project.duration}
+                    </span>
+                  )}
+                  {project.duration && project.role && (
+                    <span aria-hidden className="h-3 w-px bg-white/10" />
+                  )}
+                  {project.role && (
+                    <span className="inline-flex items-center gap-1.5">
+                      <User className="h-3.5 w-3.5 text-[color:var(--primary)]/80" aria-hidden />
+                      {project.role}
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
 
             <div className="mt-10 overflow-hidden rounded-2xl border border-white/8 bg-white/5">
               <img
