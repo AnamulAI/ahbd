@@ -639,11 +639,14 @@ function defaultProcessSteps(p: Project): ProjectProcessStep[] {
 
 function hydrate(p: Project): Project {
   const meta = PROJECT_META[p.slug];
+  const stats = PROJECT_STATS[p.slug];
   return {
     ...p,
     duration: p.duration ?? meta?.duration,
     role: p.role ?? meta?.role,
     processSteps: p.processSteps ?? defaultProcessSteps(p),
+    rating: p.rating ?? stats?.rating,
+    viewCount: p.viewCount ?? stats?.viewCount,
   };
 }
 
