@@ -1,5 +1,39 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Ban,
+  TrendingUp,
+  Clock,
+  Quote,
+  CreditCard,
+  Sparkles,
+  BarChart3,
+  Users,
+  Zap,
+  type LucideIcon,
+} from "lucide-react";
+import type { IconType } from "react-icons";
+import {
+  SiNextdotjs,
+  SiTailwindcss,
+  SiSupabase,
+  SiVercel,
+  SiReact,
+  SiTypescript,
+  SiOpenai,
+  SiStripe,
+  SiNodedotjs,
+  SiPython,
+  SiPostgresql,
+  SiFigma,
+  SiWordpress,
+  SiShopify,
+  SiNotion,
+  SiZapier,
+  SiAirtable,
+  SiGoogleanalytics,
+} from "react-icons/si";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import {
