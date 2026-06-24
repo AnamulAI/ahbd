@@ -552,6 +552,8 @@ function ProjectDetailPage() {
 
         <TestimonialCard t={project.testimonial} />
 
+        {adjacent && <PrevNextNav prev={adjacent.prev} next={adjacent.next} />}
+
         {/* Related projects */}
         {related.length > 0 && (
           <section className="pb-20 pt-4">
