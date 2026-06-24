@@ -1,0 +1,352 @@
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { SiteHeader } from "@/components/site/SiteHeader";
+import { SiteFooter } from "@/components/site/SiteFooter";
+import {
+  ProjectCard,
+  ProjectCategoryBadge,
+} from "@/components/site/ProjectCard";
+import {
+  CATEGORY_CTA,
+  getProjectBySlug,
+  getRelatedProjects,
+  type Project,
+} from "@/lib/projects-data";
+
+export const Route = createFileRoute("/projects/$slug")({
+  loader: ({ params }) => {
+    const project = getProjectBySlug(params.slug);
+    if (!project) throw notFound();
+    return { project };
+  },
+  head: ({ loaderData }) => {
+    const p = loaderData?.project;
+    if (!p) return { meta: [{ title: "Project Not Found — AnamDev" }] };
+    return {
+      meta: [
+        { title: `${p.title} — AnamDev Projects` },
+        { name: "description", content: p.shortDescription },
+        { property: "og:title", content: p.title },
+        { property: "og:description", content: p.shortDescription },
+        { property: "og:type", content: "article" },
+        { property: "og:image", content: p.coverImage },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:image", content: p.coverImage },
+      ],
+    };
+  },
+  notFoundComponent: NotFoundProject,
+  errorComponent: ({ error }) => (
+    <div className="min-h-screen bg-background text-foreground">
+      <SiteHeader />
+      <main className="mx-auto max-w-3xl px-6 py-32 text-center">
+        <h1 className="text-3xl font-bold text-white">Something went wrong</h1>
+        <p className="mt-4 text-muted-foreground">{String(error)}</p>
+        <Link
+          to="/projects"
+          className="mt-8 inline-flex items-center gap-2 text-[color:var(--primary)]"
+        >
+          <ArrowLeft className="h-4 w-4" /> Back to Projects
+        </Link>
+      </main>
+      <SiteFooter />
+    </div>
+  ),
+  component: ProjectDetailPage,
+});
+
+function NotFoundProject() {
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <SiteHeader />
+      <main className="mx-auto max-w-3xl px-6 py-32 text-center">
+        <p className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--orange)]">
+          // 404
+        </p>
+        <h1 className="mt-4 text-4xl font-bold text-white">Project not found</h1>
+        <p className="mt-4 text-muted-foreground">
+          That project doesn't exist or has been moved.
+        </p>
+        <Link
+          to="/projects"
+          className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/10 px-5 py-2.5 text-sm text-white hover:bg-white/[0.04]"
+        >
+          <ArrowLeft className="h-4 w-4" /> Back to Projects
+        </Link>
+      </main>
+      <SiteFooter />
+    </div>
+  );
+}
+
+function Eyebrow({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
+      {children}
+    </p>
+  );
+}
+
+function SectionHeading({
+  eyebrow,
+  children,
+}: {
+  eyebrow: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <>
+      <Eyebrow>// {eyebrow}</Eyebrow>
+      <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
+        {children}
+      </h2>
+    </>
+  );
+}
+
+function ChallengeSolution({
+  eyebrow,
+  heading,
+  paragraphs,
+}: {
+  eyebrow: string;
+  heading: string;
+  paragraphs: string[];
+}) {
+  return (
+    <section className="py-12 sm:py-16">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6">
+        <SectionHeading eyebrow={eyebrow}>{heading}</SectionHeading>
+        <div className="mt-6 space-y-5">
+          {paragraphs.map((p, i) => (
+            <p
+              key={i}
+              className="text-base leading-[1.8] text-muted-foreground sm:text-[17px]"
+            >
+              {p}
+            </p>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function TechStack({ stack }: { stack: string[] }) {
+  return (
+    <div className="mx-auto mt-8 max-w-3xl">
+      <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[color:var(--orange)]">
+        // Tech Stack
+      </p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {stack.map((t) => (
+          <span
+            key={t}
+            className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-medium text-white/85"
+          >
+            {t}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ResultsGrid({ results }: { results: Project["results"] }) {
+  return (
+    <section className="py-12 sm:py-16">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="mx-auto max-w-3xl">
+          <SectionHeading eyebrow="THE RESULTS">The Results</SectionHeading>
+        </div>
+        <div className="mt-10 grid gap-4 sm:grid-cols-3">
+          {results.map((r, i) => (
+            <div
+              key={i}
+              className="rounded-2xl border border-white/8 bg-[#16181D] p-6 text-center transition-colors hover:border-[color:var(--primary)]/40 hover:bg-[#1C1F26]"
+            >
+              <div className="font-display text-3xl font-bold leading-tight text-white sm:text-4xl">
+                <span className="text-gradient-vo">{r.value}</span>
+              </div>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                {r.label}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Gallery({ images, alt }: { images: string[]; alt: string }) {
+  return (
+    <section className="py-12 sm:py-16">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        <div className="mx-auto max-w-3xl">
+          <SectionHeading eyebrow="PROJECT GALLERY">A Closer Look</SectionHeading>
+        </div>
+        <div className="mt-10 grid gap-4 sm:grid-cols-2">
+          {images.map((src, i) => (
+            <div
+              key={i}
+              className="overflow-hidden rounded-2xl border border-white/8 bg-white/5"
+            >
+              <img
+                src={src}
+                alt={`${alt} — image ${i + 1}`}
+                loading="lazy"
+                className="aspect-[16/10] w-full object-cover transition-transform duration-300 hover:scale-[1.02] motion-reduce:transition-none motion-reduce:hover:scale-100"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function TestimonialCard({ t }: { t: Project["testimonial"] }) {
+  return (
+    <section className="py-12 sm:py-16">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6">
+        <blockquote className="relative rounded-2xl border border-white/8 bg-[#16181D] p-8 pl-10 sm:p-10 sm:pl-12">
+          <span
+            aria-hidden
+            className="absolute left-0 top-6 h-[calc(100%-3rem)] w-[3px] rounded-full bg-gradient-to-b from-[color:var(--primary)] to-[color:var(--orange)]"
+          />
+          <p className="font-display text-xl italic leading-snug text-white sm:text-2xl">
+            "{t.quote}"
+          </p>
+          <footer className="mt-6 text-sm">
+            <span className="font-semibold text-white">{t.name}</span>
+            <span className="text-muted-foreground"> — {t.title}</span>
+          </footer>
+        </blockquote>
+      </div>
+    </section>
+  );
+}
+
+function ProjectDetailPage() {
+  const { project } = Route.useLoaderData();
+  const related = getRelatedProjects(project.slug);
+  const cta = CATEGORY_CTA[project.category];
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <SiteHeader />
+      <main>
+        {/* Hero */}
+        <section className="pt-12 sm:pt-16">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <Link
+              to="/projects"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-[color:var(--primary)]"
+            >
+              <ArrowLeft className="h-4 w-4" aria-hidden /> Back to Projects
+            </Link>
+            <div className="mt-6">
+              <ProjectCategoryBadge category={project.category} />
+            </div>
+            <h1 className="mt-4 max-w-4xl text-3xl font-bold leading-[1.15] text-white sm:text-4xl md:text-5xl">
+              {project.title}
+            </h1>
+            <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+              <span className="font-medium text-white/85">
+                {project.clientName}
+              </span>
+              <span aria-hidden>·</span>
+              <span>{project.industry}</span>
+            </div>
+
+            <div className="mt-10 overflow-hidden rounded-2xl border border-white/8 bg-white/5">
+              <img
+                src={project.coverImage}
+                alt={project.title}
+                className="aspect-[16/9] w-full object-cover"
+              />
+            </div>
+          </div>
+        </section>
+
+        <ChallengeSolution
+          eyebrow="THE CHALLENGE"
+          heading="The Challenge"
+          paragraphs={project.challenge}
+        />
+
+        <section className="py-12 sm:py-16">
+          <div className="mx-auto max-w-3xl px-4 sm:px-6">
+            <SectionHeading eyebrow="THE SOLUTION">The Solution</SectionHeading>
+            <div className="mt-6 space-y-5">
+              {project.solution.map((p, i) => (
+                <p
+                  key={i}
+                  className="text-base leading-[1.8] text-muted-foreground sm:text-[17px]"
+                >
+                  {p}
+                </p>
+              ))}
+            </div>
+            <TechStack stack={project.techStack} />
+          </div>
+        </section>
+
+        <ResultsGrid results={project.results} />
+
+        <Gallery images={project.galleryImages} alt={project.title} />
+
+        <TestimonialCard t={project.testimonial} />
+
+        {/* Related projects */}
+        {related.length > 0 && (
+          <section className="pb-20 pt-4">
+            <div className="mx-auto max-w-6xl px-4 sm:px-6">
+              <div className="mb-6 flex items-center justify-between">
+                <h2 className="text-xl font-bold text-white sm:text-2xl">
+                  Related Projects
+                </h2>
+                <Link
+                  to="/projects"
+                  className="inline-flex items-center gap-1 text-sm text-[color:var(--primary)]"
+                >
+                  All projects <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+                </Link>
+              </div>
+              <div className="grid gap-6 max-md:place-items-center sm:grid-cols-2 lg:grid-cols-3">
+                {related.map((p) => (
+                  <div key={p.slug} className="w-full max-w-sm sm:max-w-none">
+                    <ProjectCard project={p} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Closing CTA */}
+        <section className="relative section-glow-cta">
+          <div className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 sm:py-28">
+            <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">
+              Ready to Build{" "}
+              <span className="text-gradient-vo">Something Like This?</span>
+            </h2>
+            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+              {cta.subheadline}
+            </p>
+            <div className="mt-8">
+              <Link
+                to={cta.href}
+                className="inline-flex h-12 items-center gap-2 rounded-full btn-gradient px-7 text-sm font-semibold text-white shadow-[0_10px_36px_-10px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:scale-100"
+              >
+                {cta.ctaLabel} <ArrowRight className="h-4 w-4" aria-hidden />
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
+      <SiteFooter />
+    </div>
+  );
+}
