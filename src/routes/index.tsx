@@ -235,7 +235,7 @@ function Index() {
                 />
                 <PhaseCard
                   number={3}
-                  icon={Mic2}
+                  icon={Mic}
                   title="Podcast for Authority"
                   description="A consistent show that builds trust and visibility in the niche — while most competitors are still silent."
                   href="/services/ai-podcast"
