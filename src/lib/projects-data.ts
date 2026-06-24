@@ -591,6 +591,22 @@ const PROJECT_META: Record<string, { duration: string; role: string }> = {
   },
 };
 
+// TODO: placeholder rating/view data — replace with real analytics before public launch per Honesty Rule
+const PROJECT_STATS: Record<string, { rating: number; viewCount: number }> = {
+  "ecommerce-store-cedar-leather-co": { rating: 4.9, viewCount: 487 },
+  "podcast-launch-summit-strategy-group": { rating: 4.8, viewCount: 312 },
+  "conversion-landing-page-fittrack": { rating: 4.7, viewCount: 226 },
+  "multi-page-business-site-northbridge-legal": { rating: 4.9, viewCount: 184 },
+  "personal-brand-portfolio-elena-castro": { rating: 4.6, viewCount: 142 },
+  "course-platform-growthlab-academy": { rating: 4.8, viewCount: 358 },
+  "web-app-dashboard-fleetpulse-logistics": { rating: 5.0, viewCount: 271 },
+  "custom-gpt-harborline-insurance": { rating: 4.7, viewCount: 198 },
+  "copilot-agent-westfield-manufacturing": { rating: 4.8, viewCount: 163 },
+  "api-integration-brightpath-realty": { rating: 4.9, viewCount: 245 },
+  "podcast-launch-the-daily-builder": { rating: 4.7, viewCount: 119 },
+  "podcast-launch-clearview-coaching": { rating: 4.8, viewCount: 294 },
+};
+
 function defaultProcessSteps(p: Project): ProjectProcessStep[] {
   const stack = p.techStack.join(", ");
   return [
