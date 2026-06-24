@@ -7,6 +7,7 @@ export type ProjectCategory = BlogCategory; // reuse same 3-category scheme
 
 export type ProjectResult = { value: string; label: string };
 export type ProjectTestimonial = { quote: string; name: string; title: string };
+export type ProjectProcessStep = { title: string; description: string };
 
 export type Project = {
   slug: string;
@@ -22,6 +23,10 @@ export type Project = {
   results: ProjectResult[];
   galleryImages: string[];
   testimonial: ProjectTestimonial;
+  // Optional, additive fields (populated via PROJECT_META + default process steps).
+  duration?: string;
+  role?: string;
+  processSteps?: ProjectProcessStep[];
 };
 
 export const PROJECT_FILTERS: ReadonlyArray<"All" | ProjectCategory> = [
