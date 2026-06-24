@@ -43,6 +43,9 @@ import {
 } from "@/components/site/ProjectCard";
 import {
   CATEGORY_CTA,
+import {
+  CATEGORY_CTA,
+  getAdjacentProjects,
   getProjectBySlug,
   getRelatedProjects,
   type Project,
