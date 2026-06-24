@@ -544,6 +544,8 @@ function ProjectDetailPage() {
           </div>
         </section>
 
+        <ProcessTimeline steps={project.processSteps} />
+
         <ResultsGrid results={project.results} />
 
         <Gallery images={project.galleryImages} alt={project.title} />
