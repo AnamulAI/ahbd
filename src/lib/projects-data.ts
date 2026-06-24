@@ -30,6 +30,7 @@ export type Project = {
   // TODO: placeholder rating/view data — replace with real analytics before public launch per Honesty Rule
   rating?: number;
   viewCount?: number;
+  liveDemoUrl?: string;
 };
 
 export const PROJECT_FILTERS: ReadonlyArray<"All" | ProjectCategory> = [
@@ -647,6 +648,7 @@ function hydrate(p: Project): Project {
     processSteps: p.processSteps ?? defaultProcessSteps(p),
     rating: p.rating ?? stats?.rating,
     viewCount: p.viewCount ?? stats?.viewCount,
+    liveDemoUrl: p.liveDemoUrl ?? "#",
   };
 }
 
