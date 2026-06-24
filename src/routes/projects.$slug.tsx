@@ -390,7 +390,7 @@ function ProjectDetailPage() {
       <SiteHeader />
       <main>
         {/* Hero */}
-        <section className="pt-12 sm:pt-16">
+        <section className="relative section-glow-hero pt-12 sm:pt-16">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <Link
               to="/projects"
@@ -401,8 +401,8 @@ function ProjectDetailPage() {
             <div className="mt-6">
               <ProjectCategoryBadge category={project.category} />
             </div>
-            <h1 className="mt-4 max-w-4xl text-3xl font-bold leading-[1.15] text-white sm:text-4xl md:text-5xl">
-              {project.title}
+            <h1 className="mt-4 max-w-4xl text-balance text-3xl font-bold leading-[1.15] text-white sm:text-4xl md:text-5xl">
+              {gradientLastWord(project.title)}
             </h1>
             <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
               <span className="font-medium text-white/85">
