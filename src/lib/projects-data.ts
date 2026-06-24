@@ -523,12 +523,15 @@ const PROJECTS: Project[] = [
   PROJECT_NORTHBRIDGE,
   PROJECT_ELENA,
   PROJECT_GROWTHLAB,
+  PROJECT_FLEETPULSE,
   PROJECT_HARBORLINE,
   PROJECT_WESTFIELD,
   PROJECT_BRIGHTPATH,
   PROJECT_DAILYBUILDER,
   PROJECT_CLEARVIEW,
 ];
+
+export const FEATURED_PROJECT_SLUG = "ecommerce-store-cedar-leather-co";
 
 export function getAllProjects(): Project[] {
   return PROJECTS;
