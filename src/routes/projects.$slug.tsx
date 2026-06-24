@@ -491,6 +491,25 @@ function ProjectDetailPage() {
               <span aria-hidden>·</span>
               <span>{project.industry}</span>
             </div>
+            {(project.duration || project.role) && (
+              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+                {project.duration && (
+                  <span className="inline-flex items-center gap-1.5">
+                    <Clock className="h-3.5 w-3.5 text-[color:var(--primary)]/80" aria-hidden />
+                    {project.duration}
+                  </span>
+                )}
+                {project.duration && project.role && (
+                  <span aria-hidden className="h-3 w-px bg-white/10" />
+                )}
+                {project.role && (
+                  <span className="inline-flex items-center gap-1.5">
+                    <User className="h-3.5 w-3.5 text-[color:var(--primary)]/80" aria-hidden />
+                    {project.role}
+                  </span>
+                )}
+              </div>
+            )}
 
             <div className="mt-10 overflow-hidden rounded-2xl border border-white/8 bg-white/5">
               <img
