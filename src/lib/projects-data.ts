@@ -395,6 +395,90 @@ const PROJECT_BRIGHTPATH: Project = {
   },
 };
 
+// ---------- Project 11: AI Podcast — Apple Podcasts Daily Brief ----------
+const PROJECT_DAILYBUILDER: Project = {
+  slug: "podcast-launch-the-daily-builder",
+  category: "AI Podcast",
+  title: "A Daily Brief Show Built for Apple Podcasts' Loyal Listeners",
+  clientName: "The Daily Builder",
+  industry: "Construction/Trade Media",
+  coverImage:
+    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1600&q=80",
+  shortDescription:
+    "A daily news-brief podcast adapted from an existing newsletter, optimized for Apple Podcasts.",
+  challenge: [
+    "The Daily Builder had a loyal newsletter readership in the construction trade but wanted to reach people who preferred listening during their commute or on a job site — an audience that newsletters simply couldn't reach.",
+  ],
+  solution: [
+    "Each daily newsletter issue is converted into a short, daily-brief-style podcast episode — same content, audio-first format — published consistently every weekday morning. The show was structured specifically for Apple Podcasts' daily-show category placement and its notably loyal, habitual listening audience.",
+  ],
+  techStack: [
+    "AI voice production",
+    "newsletter-to-audio pipeline",
+    "Apple Podcasts Connect",
+    "RSS distribution",
+  ],
+  results: [
+    { value: "Daily", label: "Consistent publishing schedule, zero missed days" },
+    { value: "1,200+", label: "Apple Podcasts subscribers in first 6 months" },
+    { value: "40%", label: "Of newsletter subscribers now also listen" },
+  ],
+  galleryImages: [
+    "https://images.unsplash.com/photo-1589903308904-1010c2294adc?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1581578731548-c64695cc5c60?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1400&q=80",
+  ],
+  testimonial: {
+    quote:
+      "Our readers wanted this in their ears on the job site, not just their inbox. Now they have it every single morning.",
+    name: "Mike Donovan",
+    title: "Editor, The Daily Builder",
+  },
+};
+
+// ---------- Project 12: AI Podcast — YouTube Video Podcast ----------
+const PROJECT_CLEARVIEW: Project = {
+  slug: "podcast-launch-clearview-coaching",
+  category: "AI Podcast",
+  title: "A Video Podcast Built for YouTube's Long-Form Audience",
+  clientName: "ClearView Coaching",
+  industry: "Executive Coaching",
+  coverImage:
+    "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1600&q=80",
+  shortDescription:
+    "A video-first interview-style podcast launched specifically for YouTube's discovery and search.",
+  challenge: [
+    "ClearView's founder wanted a podcast specifically to build a YouTube presence — not just audio — since most of her target audience of executives discovered new content through YouTube search and recommendations, not podcast apps.",
+  ],
+  solution: [
+    "I produced a video podcast version of her show — animated speaker visuals, auto-captions, and full video export — optimized for YouTube's format and SEO-friendly titles/descriptions, while still distributing the audio version to Spotify and Apple Podcasts simultaneously from the same production.",
+  ],
+  techStack: [
+    "AI voice + video production",
+    "auto-captioning",
+    "YouTube optimization",
+    "multi-platform RSS distribution",
+  ],
+  results: [
+    { value: "22K+", label: "YouTube views across first 10 episodes" },
+    { value: "4.2 min", label: "Average watch time per video episode" },
+    { value: "1 production", label: "Powering video AND audio distribution simultaneously" },
+  ],
+  galleryImages: [
+    "https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1586899028174-e7098604235b?auto=format&fit=crop&w=1400&q=80",
+    "https://images.unsplash.com/photo-1598488035139-bdbb2231c04a?auto=format&fit=crop&w=1400&q=80",
+  ],
+  testimonial: {
+    quote:
+      "I didn't think I had time to be 'on video' every week. Turns out I didn't need to be — the production handled all of it.",
+    name: "Dr. Naomi Reyes",
+    title: "Founder, ClearView Coaching",
+  },
+};
+
 const PROJECTS: Project[] = [
   PROJECT_CEDAR,
   PROJECT_SUMMIT,
@@ -405,6 +489,8 @@ const PROJECTS: Project[] = [
   PROJECT_HARBORLINE,
   PROJECT_WESTFIELD,
   PROJECT_BRIGHTPATH,
+  PROJECT_DAILYBUILDER,
+  PROJECT_CLEARVIEW,
 ];
 
 export function getAllProjects(): Project[] {
