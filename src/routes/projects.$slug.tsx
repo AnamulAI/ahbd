@@ -148,7 +148,7 @@ function ChallengeSolution({
   paragraphs: string[];
 }) {
   return (
-    <section className="py-12 sm:py-16">
+    <section className="py-16 sm:py-20">
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <SectionHeading eyebrow={eyebrow}>{heading}</SectionHeading>
         <div className="mt-6 space-y-5">
