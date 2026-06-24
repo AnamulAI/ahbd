@@ -229,7 +229,7 @@ function TestimonialCard({ t }: { t: Project["testimonial"] }) {
 }
 
 function ProjectDetailPage() {
-  const { project } = Route.useLoaderData();
+  const { project } = Route.useLoaderData() as { project: Project };
   const related = getRelatedProjects(project.slug);
   const cta = CATEGORY_CTA[project.category];
 
