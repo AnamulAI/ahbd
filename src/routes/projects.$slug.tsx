@@ -5,6 +5,7 @@ import {
   Ban,
   TrendingUp,
   Clock,
+  User,
   Quote,
   CreditCard,
   Sparkles,
