@@ -27,6 +27,9 @@ export type Project = {
   duration?: string;
   role?: string;
   processSteps?: ProjectProcessStep[];
+  // TODO: placeholder rating/view data — replace with real analytics before public launch per Honesty Rule
+  rating?: number;
+  viewCount?: number;
 };
 
 export const PROJECT_FILTERS: ReadonlyArray<"All" | ProjectCategory> = [
