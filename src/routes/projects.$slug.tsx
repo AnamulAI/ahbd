@@ -382,9 +382,87 @@ function TestimonialCard({ t }: { t: Project["testimonial"] }) {
   );
 }
 
+function ProcessTimeline({ steps }: { steps: Project["processSteps"] }) {
+  if (!steps || steps.length === 0) return null;
+  return (
+    <section className="py-16 sm:py-20">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6">
+        <SectionHeading eyebrow="HOW I BUILT IT">Process — Step by Step</SectionHeading>
+        <ol className="relative mt-10 space-y-8 sm:space-y-10">
+          {/* connecting vertical line */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute left-5 top-3 bottom-3 w-px bg-gradient-to-b from-[color:var(--primary)]/30 via-white/10 to-[color:var(--orange)]/30"
+          />
+          {steps.map((s, i) => (
+            <li key={i} className="relative flex gap-5 sm:gap-6">
+              <span
+                aria-hidden
+                className="relative z-10 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[color:var(--primary)] to-[color:var(--orange)] font-display text-sm font-bold text-white shadow-[0_4px_14px_-4px_var(--vo-glow)] ring-4 ring-background"
+              >
+                {i + 1}
+              </span>
+              <div className="pt-1">
+                <h3 className="font-display text-base font-bold text-white sm:text-lg">
+                  {s.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
+                  {s.description}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
+function PrevNextNav({
+  prev,
+  next,
+}: {
+  prev: Project;
+  next: Project;
+}) {
+  return (
+    <section className="pb-12 pt-4">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Link
+            to="/projects/$slug"
+            params={{ slug: prev.slug }}
+            className="group rounded-2xl border border-white/8 bg-[#16181D] p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[color:var(--primary)]/40 hover:bg-[#1C1F26] hover:shadow-[0_10px_30px_-12px_var(--vo-glow)] motion-reduce:hover:translate-y-0 sm:p-6"
+          >
+            <span className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-[color:var(--primary)]">
+              <ArrowLeft className="h-3.5 w-3.5" aria-hidden /> Previous Project
+            </span>
+            <p className="mt-2 text-base font-semibold text-white transition-colors group-hover:text-[color:var(--primary)] sm:text-[17px]">
+              {prev.title}
+            </p>
+          </Link>
+          <Link
+            to="/projects/$slug"
+            params={{ slug: next.slug }}
+            className="group rounded-2xl border border-white/8 bg-[#16181D] p-5 text-right transition-all duration-200 hover:-translate-y-0.5 hover:border-[color:var(--primary)]/40 hover:bg-[#1C1F26] hover:shadow-[0_10px_30px_-12px_var(--vo-glow)] motion-reduce:hover:translate-y-0 sm:p-6"
+          >
+            <span className="flex items-center justify-end gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-[color:var(--primary)]">
+              Next Project <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+            </span>
+            <p className="mt-2 text-base font-semibold text-white transition-colors group-hover:text-[color:var(--primary)] sm:text-[17px]">
+              {next.title}
+            </p>
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function ProjectDetailPage() {
   const { project } = Route.useLoaderData() as { project: Project };
   const related = getRelatedProjects(project.slug);
+  const adjacent = getAdjacentProjects(project.slug);
   const cta = CATEGORY_CTA[project.category];
 
   return (
