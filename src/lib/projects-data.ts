@@ -648,6 +648,7 @@ function hydrate(p: Project): Project {
     processSteps: p.processSteps ?? defaultProcessSteps(p),
     rating: p.rating ?? stats?.rating,
     viewCount: p.viewCount ?? stats?.viewCount,
+    liveDemoUrl: p.liveDemoUrl ?? "#",
   };
 }
 
