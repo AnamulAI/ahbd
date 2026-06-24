@@ -97,8 +97,25 @@ export function ProjectCard({ project }: { project: Project }) {
             ))}
           </div>
         )}
-        <div className="mt-auto flex items-center justify-between gap-3 pt-4 text-xs text-muted-foreground">
-          <span className="truncate">{project.clientName}</span>
+        <div className="mt-auto flex items-center justify-between gap-3 pt-4 text-xs">
+          <a
+            href={project.liveDemoUrl}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (!project.liveDemoUrl || project.liveDemoUrl === "#") {
+                e.preventDefault();
+              }
+            }}
+            className={[
+              "inline-flex items-center gap-1",
+              project.liveDemoUrl && project.liveDemoUrl !== "#"
+                ? "font-medium text-[color:var(--primary)] hover:underline"
+                : "cursor-default text-muted-foreground opacity-60",
+            ].join(" ")}
+          >
+            <ExternalLink className="h-3 w-3" aria-hidden />
+            Live Demo
+          </a>
           <span className="inline-flex items-center gap-1 font-medium text-[color:var(--primary)]">
             View Project{" "}
             <ArrowRight
