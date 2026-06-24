@@ -13,13 +13,11 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
-import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as ServicesWebDevelopmentRouteImport } from './routes/services.web-development'
 import { Route as ServicesAiPodcastRouteImport } from './routes/services.ai-podcast'
 import { Route as ServicesAiIntegratorRouteImport } from './routes/services.ai-integrator'
 import { Route as SampleSlugRouteImport } from './routes/sample.$slug'
-import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AdminSampleBuilderRouteImport } from './routes/admin.sample-builder'
 
@@ -41,11 +39,6 @@ const IndexRoute = IndexRouteImport.update({
 const ServicesIndexRoute = ServicesIndexRouteImport.update({
   id: '/services/',
   path: '/services/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
-  id: '/projects/',
-  path: '/projects/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
@@ -73,11 +66,6 @@ const SampleSlugRoute = SampleSlugRouteImport.update({
   path: '/sample/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProjectsSlugRoute = ProjectsSlugRouteImport.update({
-  id: '/projects/$slug',
-  path: '/projects/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/blog/$slug',
   path: '/blog/$slug',
@@ -95,13 +83,11 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/admin/sample-builder': typeof AdminSampleBuilderRoute
   '/blog/$slug': typeof BlogSlugRoute
-  '/projects/$slug': typeof ProjectsSlugRoute
   '/sample/$slug': typeof SampleSlugRoute
   '/services/ai-integrator': typeof ServicesAiIntegratorRoute
   '/services/ai-podcast': typeof ServicesAiPodcastRoute
   '/services/web-development': typeof ServicesWebDevelopmentRoute
   '/blog/': typeof BlogIndexRoute
-  '/projects/': typeof ProjectsIndexRoute
   '/services/': typeof ServicesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -110,13 +96,11 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/admin/sample-builder': typeof AdminSampleBuilderRoute
   '/blog/$slug': typeof BlogSlugRoute
-  '/projects/$slug': typeof ProjectsSlugRoute
   '/sample/$slug': typeof SampleSlugRoute
   '/services/ai-integrator': typeof ServicesAiIntegratorRoute
   '/services/ai-podcast': typeof ServicesAiPodcastRoute
   '/services/web-development': typeof ServicesWebDevelopmentRoute
   '/blog': typeof BlogIndexRoute
-  '/projects': typeof ProjectsIndexRoute
   '/services': typeof ServicesIndexRoute
 }
 export interface FileRoutesById {
@@ -126,13 +110,11 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/admin/sample-builder': typeof AdminSampleBuilderRoute
   '/blog/$slug': typeof BlogSlugRoute
-  '/projects/$slug': typeof ProjectsSlugRoute
   '/sample/$slug': typeof SampleSlugRoute
   '/services/ai-integrator': typeof ServicesAiIntegratorRoute
   '/services/ai-podcast': typeof ServicesAiPodcastRoute
   '/services/web-development': typeof ServicesWebDevelopmentRoute
   '/blog/': typeof BlogIndexRoute
-  '/projects/': typeof ProjectsIndexRoute
   '/services/': typeof ServicesIndexRoute
 }
 export interface FileRouteTypes {
@@ -143,13 +125,11 @@ export interface FileRouteTypes {
     | '/contact'
     | '/admin/sample-builder'
     | '/blog/$slug'
-    | '/projects/$slug'
     | '/sample/$slug'
     | '/services/ai-integrator'
     | '/services/ai-podcast'
     | '/services/web-development'
     | '/blog/'
-    | '/projects/'
     | '/services/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -158,13 +138,11 @@ export interface FileRouteTypes {
     | '/contact'
     | '/admin/sample-builder'
     | '/blog/$slug'
-    | '/projects/$slug'
     | '/sample/$slug'
     | '/services/ai-integrator'
     | '/services/ai-podcast'
     | '/services/web-development'
     | '/blog'
-    | '/projects'
     | '/services'
   id:
     | '__root__'
@@ -173,13 +151,11 @@ export interface FileRouteTypes {
     | '/contact'
     | '/admin/sample-builder'
     | '/blog/$slug'
-    | '/projects/$slug'
     | '/sample/$slug'
     | '/services/ai-integrator'
     | '/services/ai-podcast'
     | '/services/web-development'
     | '/blog/'
-    | '/projects/'
     | '/services/'
   fileRoutesById: FileRoutesById
 }
@@ -189,13 +165,11 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   AdminSampleBuilderRoute: typeof AdminSampleBuilderRoute
   BlogSlugRoute: typeof BlogSlugRoute
-  ProjectsSlugRoute: typeof ProjectsSlugRoute
   SampleSlugRoute: typeof SampleSlugRoute
   ServicesAiIntegratorRoute: typeof ServicesAiIntegratorRoute
   ServicesAiPodcastRoute: typeof ServicesAiPodcastRoute
   ServicesWebDevelopmentRoute: typeof ServicesWebDevelopmentRoute
   BlogIndexRoute: typeof BlogIndexRoute
-  ProjectsIndexRoute: typeof ProjectsIndexRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
 }
 
@@ -227,13 +201,6 @@ declare module '@tanstack/react-router' {
       path: '/services'
       fullPath: '/services/'
       preLoaderRoute: typeof ServicesIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/projects/': {
-      id: '/projects/'
-      path: '/projects'
-      fullPath: '/projects/'
-      preLoaderRoute: typeof ProjectsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/blog/': {
@@ -271,13 +238,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SampleSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/projects/$slug': {
-      id: '/projects/$slug'
-      path: '/projects/$slug'
-      fullPath: '/projects/$slug'
-      preLoaderRoute: typeof ProjectsSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/blog/$slug': {
       id: '/blog/$slug'
       path: '/blog/$slug'
@@ -301,13 +261,11 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   AdminSampleBuilderRoute: AdminSampleBuilderRoute,
   BlogSlugRoute: BlogSlugRoute,
-  ProjectsSlugRoute: ProjectsSlugRoute,
   SampleSlugRoute: SampleSlugRoute,
   ServicesAiIntegratorRoute: ServicesAiIntegratorRoute,
   ServicesAiPodcastRoute: ServicesAiPodcastRoute,
   ServicesWebDevelopmentRoute: ServicesWebDevelopmentRoute,
   BlogIndexRoute: BlogIndexRoute,
-  ProjectsIndexRoute: ProjectsIndexRoute,
   ServicesIndexRoute: ServicesIndexRoute,
 }
 export const routeTree = rootRouteImport
