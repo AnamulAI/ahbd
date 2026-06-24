@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, MessageCircle } from "lucide-react";
+import { createFileRoute } from "@tanstack/react-router";
+import { ArrowRight, MessageCircle, Globe, Bot, TrendingUp } from "lucide-react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 
 export const Route = createFileRoute("/")({
@@ -39,6 +39,28 @@ function StatItem({ value, label }: { value: string; label: string }) {
       <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
         {label}
       </div>
+    </div>
+  );
+}
+
+function ProblemCard({
+  icon: Icon,
+  title,
+  description,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="rounded-xl border border-white/[0.06] bg-[oklch(0.15_0.02_260)] p-5 sm:p-6">
+      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[oklch(0.62_0.19_255/12%)]">
+        <Icon className="h-4 w-4 text-[color:var(--primary)]" />
+      </div>
+      <h3 className="mt-4 text-base font-semibold text-white">{title}</h3>
+      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+        {description}
+      </p>
     </div>
   );
 }
@@ -91,6 +113,41 @@ function Index() {
                 <MessageCircle className="h-4 w-4" aria-hidden />
                 WhatsApp Me
               </a>
+            </div>
+          </div>
+        </section>
+
+        {/* The Problem */}
+        <section className="relative bg-background py-20 sm:py-28">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <div className="text-center">
+              <Eyebrow>// THE PROBLEM</Eyebrow>
+              <h2 className="mt-4 text-3xl font-bold leading-[1.1] text-white sm:text-4xl md:text-5xl">
+                Most Businesses Stay{" "}
+                <span className="text-gradient-vo">Invisible</span>
+              </h2>
+              <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+                Not because the idea is bad — because nothing online proves it's
+                worth trusting yet.
+              </p>
+            </div>
+
+            <div className="mt-12 grid gap-5 sm:grid-cols-3">
+              <ProblemCard
+                icon={Globe}
+                title="No Real Website"
+                description="A Facebook page or nothing at all — customers can't find or trust what they can't see."
+              />
+              <ProblemCard
+                icon={Bot}
+                title="No Automation"
+                description="Every question, every booking, every message handled manually — there's no system working while you sleep."
+              />
+              <ProblemCard
+                icon={TrendingUp}
+                title="No Consistent Presence"
+                description="No content, no voice, no reason for anyone to remember the brand a week later."
+              />
             </div>
           </div>
         </section>
