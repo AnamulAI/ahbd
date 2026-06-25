@@ -184,7 +184,7 @@ function ProjectsIndexPage() {
             </p>
 
             {/* Stats strip */}
-            <div className="mx-auto mt-9 flex max-w-3xl flex-wrap items-center justify-center divide-x divide-white/10">
+            <div className="mx-auto mt-9 flex max-w-3xl items-center justify-center divide-x divide-white/10">
               <StatItem value="12" label="Projects Delivered" />
               <StatItem value="3" label="Service Lines" />
               <StatItem value="100%" label="Client Satisfaction" />
