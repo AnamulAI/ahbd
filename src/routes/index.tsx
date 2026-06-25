@@ -2,6 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, MessageCircle, Globe, Bot, TrendingUp, Mic, Check, Target, ShieldCheck, Zap, Users, Mic2 } from "lucide-react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { PackageBuilder } from "@/components/site/PackageBuilder";
+import { ProjectCard } from "@/components/site/ProjectCard";
+import { getProjectBySlug } from "@/lib/projects-data";
+import anamAvatar from "@/assets/anam-avatar.png.asset.json";
 
 
 export const Route = createFileRoute("/")({
