@@ -55,7 +55,7 @@ function ProblemCard({
   description: string;
 }) {
   return (
-    <div className="rounded-xl border border-white/[0.06] bg-[oklch(0.15_0.02_260)] p-5 sm:p-6">
+    <div className="flex flex-col items-center text-center rounded-xl border border-white/[0.06] bg-[oklch(0.15_0.02_260)] p-5 sm:p-6">
       <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[oklch(0.62_0.19_255/12%)]">
         <Icon className="h-4 w-4 text-[color:var(--primary)]" />
       </div>
