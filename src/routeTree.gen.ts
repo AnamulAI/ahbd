@@ -20,6 +20,7 @@ import { Route as ServicesAiPodcastRouteImport } from './routes/services.ai-podc
 import { Route as ServicesAiIntegratorRouteImport } from './routes/services.ai-integrator'
 import { Route as SampleSlugRouteImport } from './routes/sample.$slug'
 import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
+import { Route as InternalBuilderDataTestRouteImport } from './routes/internal.builder-data-test'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AdminSampleBuilderRouteImport } from './routes/admin.sample-builder'
 
@@ -78,6 +79,11 @@ const ProjectsSlugRoute = ProjectsSlugRouteImport.update({
   path: '/projects/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InternalBuilderDataTestRoute = InternalBuilderDataTestRouteImport.update({
+  id: '/internal/builder-data-test',
+  path: '/internal/builder-data-test',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/blog/$slug',
   path: '/blog/$slug',
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/admin/sample-builder': typeof AdminSampleBuilderRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/internal/builder-data-test': typeof InternalBuilderDataTestRoute
   '/projects/$slug': typeof ProjectsSlugRoute
   '/sample/$slug': typeof SampleSlugRoute
   '/services/ai-integrator': typeof ServicesAiIntegratorRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/admin/sample-builder': typeof AdminSampleBuilderRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/internal/builder-data-test': typeof InternalBuilderDataTestRoute
   '/projects/$slug': typeof ProjectsSlugRoute
   '/sample/$slug': typeof SampleSlugRoute
   '/services/ai-integrator': typeof ServicesAiIntegratorRoute
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/admin/sample-builder': typeof AdminSampleBuilderRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/internal/builder-data-test': typeof InternalBuilderDataTestRoute
   '/projects/$slug': typeof ProjectsSlugRoute
   '/sample/$slug': typeof SampleSlugRoute
   '/services/ai-integrator': typeof ServicesAiIntegratorRoute
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/admin/sample-builder'
     | '/blog/$slug'
+    | '/internal/builder-data-test'
     | '/projects/$slug'
     | '/sample/$slug'
     | '/services/ai-integrator'
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/admin/sample-builder'
     | '/blog/$slug'
+    | '/internal/builder-data-test'
     | '/projects/$slug'
     | '/sample/$slug'
     | '/services/ai-integrator'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/admin/sample-builder'
     | '/blog/$slug'
+    | '/internal/builder-data-test'
     | '/projects/$slug'
     | '/sample/$slug'
     | '/services/ai-integrator'
@@ -189,6 +201,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   AdminSampleBuilderRoute: typeof AdminSampleBuilderRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  InternalBuilderDataTestRoute: typeof InternalBuilderDataTestRoute
   ProjectsSlugRoute: typeof ProjectsSlugRoute
   SampleSlugRoute: typeof SampleSlugRoute
   ServicesAiIntegratorRoute: typeof ServicesAiIntegratorRoute
@@ -278,6 +291,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/internal/builder-data-test': {
+      id: '/internal/builder-data-test'
+      path: '/internal/builder-data-test'
+      fullPath: '/internal/builder-data-test'
+      preLoaderRoute: typeof InternalBuilderDataTestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog/$slug': {
       id: '/blog/$slug'
       path: '/blog/$slug'
@@ -301,6 +321,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   AdminSampleBuilderRoute: AdminSampleBuilderRoute,
   BlogSlugRoute: BlogSlugRoute,
+  InternalBuilderDataTestRoute: InternalBuilderDataTestRoute,
   ProjectsSlugRoute: ProjectsSlugRoute,
   SampleSlugRoute: SampleSlugRoute,
   ServicesAiIntegratorRoute: ServicesAiIntegratorRoute,
@@ -313,13 +334,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
