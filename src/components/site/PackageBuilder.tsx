@@ -286,7 +286,7 @@ function CheckboxGroup({
             <label
               key={o.id}
               className={[
-                "flex items-start gap-3 rounded-lg border border-white/[0.08] bg-background/60 p-3 text-sm",
+                "flex items-center gap-3 rounded-lg border border-white/[0.08] bg-background/60 p-3 text-sm",
                 locked ? "opacity-80" : "cursor-pointer hover:border-white/20",
               ].join(" ")}
             >
@@ -294,8 +294,8 @@ function CheckboxGroup({
                 checked={isChecked}
                 disabled={locked}
                 onCheckedChange={() => !locked && onToggle(o.id)}
-                className="mt-0.5"
               />
+              <OptionIconBadge label={o.label} group={group} />
               <span className="flex-1 text-white">{o.label}</span>
               <span className="font-mono text-xs text-muted-foreground">
                 {o.price_delta > 0 ? `+${fmt(o.price_delta)}` : locked ? "included" : "included"}
