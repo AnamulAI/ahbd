@@ -353,7 +353,6 @@ export function PackageBuilder() {
   const [useCaseId, setUseCaseId] = useState<string>("");
   const [tierId, setTierId] = useState<string>("");
   const [subOptions, setSubOptions] = useState<Record<string, string>>({});
-  const [hostingBannerDismissed, setHostingBannerDismissed] = useState(false);
 
   // Step 3
   const [aiEnabled, setAiEnabled] = useState(false);
