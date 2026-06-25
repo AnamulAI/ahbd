@@ -432,11 +432,23 @@ export function PackageBuilder() {
   const aiGroups = useMemo(() => (data ? groupBy(data.aiOptions) : {}), [data]);
   const podGroups = useMemo(() => (data ? groupBy(data.podcastOptions) : {}), [data]);
 
-  // Hosting banner trigger: "own hosting" = is_default option in hosting group
+  // Promo card visibility: "I have my own hosting" = is_default option in hosting group
   const hostingOptId = subOptions["hosting"];
   const hostingOpt = data?.websiteOptions.find((o) => o.id === hostingOptId);
-  const showHostingBanner =
-    !!hostingOpt && hostingOpt.is_default && !hostingBannerDismissed;
+  const hostingSelfManaged = !!hostingOpt && hostingOpt.is_default;
+  const techIsCustom = techApproach?.key === "custom";
+
+  const visiblePromoCards = useMemo(() => {
+    if (!data) return [];
+    return data.promoCards.filter((c) => {
+      switch (c.visibility_condition) {
+        case "hosting_self_managed": return hostingSelfManaged;
+        case "tech_approach_custom": return techIsCustom;
+        case "always": return true;
+        default: return false;
+      }
+    });
+  }, [data, hostingSelfManaged, techIsCustom]);
 
   // ---------- Price lines ----------
   const priceLines: PriceLine[] = useMemo(() => {
