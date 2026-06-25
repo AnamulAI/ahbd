@@ -369,6 +369,18 @@ export function PackageBuilder() {
   const [podSelects, setPodSelects] = useState<Record<string, string>>({});
   const [podAddons, setPodAddons] = useState<Set<string>>(new Set());
 
+  // Part 4: payment + contact
+  const [paymentOpen, setPaymentOpen] = useState(false);
+  const [paymentPlan, setPaymentPlan] = useState<PaymentPlan | "">("");
+  const [leadName, setLeadName] = useState("");
+  const [leadEmail, setLeadEmail] = useState("");
+  const [leadWhatsapp, setLeadWhatsapp] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitted, setSubmitted] = useState(false);
+  const paymentRef = useRef<HTMLDivElement | null>(null);
+  const contactRef = useRef<HTMLDivElement | null>(null);
+
   const techApproach = data?.techApproaches.find((t) => t.id === techId);
   const useCase = data?.useCases.find((u) => u.id === useCaseId);
 
