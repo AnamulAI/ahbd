@@ -442,5 +442,9 @@ html {
   .card-glow:hover::before { animation: none !important; }
 }
 
+@media (min-width: 1024px) {
+  #dfy-bundle { overflow: visible !important; }
+}
+
 
 
