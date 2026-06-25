@@ -865,7 +865,7 @@ export function PackageBuilder() {
       </div>
 
       {/* Right column: ENTIRE stacked column is sticky as one unit */}
-      <aside className="lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
+      <aside className="lg:sticky lg:top-24 lg:self-start">
         <div className="flex flex-col gap-6">
           {/* Live Quote — Pricing Reveal Card pattern (permanent featured glow) */}
           <div key={`quote-${cardBump}`} className="relative quote-card-bump">
