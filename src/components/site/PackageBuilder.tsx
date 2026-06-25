@@ -812,7 +812,7 @@ export function PackageBuilder() {
       </div>
 
       {/* Live price sidebar */}
-      <aside className="lg:sticky lg:top-24 lg:self-start">
+      <aside className="lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
         <div className="rounded-xl border border-white/[0.08] bg-[oklch(0.15_0.02_260)] p-6">
           <Eyebrow>// LIVE QUOTE</Eyebrow>
           <h3 className="mt-2 text-lg font-semibold text-white">Your custom build</h3>
