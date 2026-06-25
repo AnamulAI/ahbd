@@ -671,6 +671,42 @@ function Index() {
             </Accordion>
           </div>
         </section>
+
+        {/* Section 11 — Closing CTA */}
+        <section className="section-glow-cta">
+          <div className="mx-auto flex max-w-3xl flex-col items-center px-4 py-24 text-center sm:px-6 sm:py-32">
+            <Eyebrow>// LET'S BUILD</Eyebrow>
+            <h2 className="mt-4 font-display text-3xl font-bold leading-[1.1] text-white sm:text-4xl md:text-5xl">
+              Ready to Build a Brand People{" "}
+              <span className="text-gradient-vo">Trust</span>?
+            </h2>
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+              Start with the full DFY package, or just one phase — either way,
+              let's talk about what you're building.
+            </p>
+            <div className="mx-auto mt-9 flex w-full max-w-md flex-col gap-3 sm:mt-10 sm:flex-row sm:justify-center">
+              <a
+                href="#dfy-bundle"
+                className="group inline-flex h-12 items-center justify-center gap-2 rounded-full btn-gradient px-7 text-sm font-semibold text-white shadow-[0_10px_36px_-10px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_18px_50px_-12px_var(--vo-glow)] active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:scale-100"
+              >
+                See the Full DFY Package
+                <ArrowRight
+                  className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
+                  aria-hidden
+                />
+              </a>
+              <a
+                href="https://wa.me/8801777768353"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-input bg-background px-7 text-sm font-semibold text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+              >
+                <MessageCircle className="h-4 w-4" aria-hidden />
+                WhatsApp Me
+              </a>
+            </div>
+          </div>
+        </section>
       </main>
 
     </div>
