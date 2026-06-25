@@ -37,6 +37,7 @@ export type PromoCardData = {
   cta_label: string;
   cta_url: string;
   feature_pills: { label: string; icon_name: string }[];
+  visibility_condition: string;
 };
 
 // Choose readable text color for a given brand background (WCAG-ish luma).
