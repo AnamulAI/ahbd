@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, MessageCircle, Globe, Bot, TrendingUp, Mic, Check } from "lucide-react";
+import { ArrowRight, MessageCircle, Globe, Bot, TrendingUp, Mic, Check, Target, ShieldCheck, Zap, Users, Mic2 } from "lucide-react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { PackageBuilder } from "@/components/site/PackageBuilder";
 
@@ -109,6 +109,37 @@ function PhaseCard({
   );
 }
 
+function ServiceCard({
+  icon: Icon,
+  title,
+  description,
+  href,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  description: string;
+  href: string;
+}) {
+  return (
+    <div className="rounded-xl border border-white/[0.04] bg-white/[0.02] p-5 transition-transform duration-200 hover:-translate-y-1">
+      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[oklch(0.62_0.19_255/8%)]">
+        <Icon className="h-4 w-4 text-[color:var(--primary)]" />
+      </div>
+      <h3 className="mt-3 text-base font-semibold text-white">{title}</h3>
+      <p className="mt-1.5 text-sm text-muted-foreground">{description}</p>
+      <Link
+        to={href}
+        className="group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[color:var(--primary)] transition-colors hover:text-[#F97316]"
+      >
+        Learn more
+        <ArrowRight
+          className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
+          aria-hidden
+        />
+      </Link>
+    </div>
+  );
+}
 
 function Index() {
   return (
@@ -409,6 +440,81 @@ function Index() {
             {/* Package Builder */}
             <div className="mt-10">
               <PackageBuilder />
+            </div>
+          </div>
+        </section>
+
+        {/* Why This Works */}
+        <section className="relative bg-background py-20 sm:py-28">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <div className="text-center">
+              <Eyebrow>// WHY THIS WORKS</Eyebrow>
+              <h2 className="mt-4 text-3xl font-bold leading-[1.1] text-white sm:text-4xl md:text-5xl">
+                Built to Make This an{" "}
+                <span className="text-gradient-vo">Easy</span> Decision
+              </h2>
+              <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+                Four reasons working with one person, on one connected process, beats hiring separately.
+              </p>
+            </div>
+
+            <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              <ProblemCard
+                icon={Target}
+                title="The Big Outcome"
+                description="Not just a website, or just an AI agent — an actual brand people recognize and trust."
+              />
+              <ProblemCard
+                icon={ShieldCheck}
+                title="Real Confidence"
+                description="12 completed projects across web, AI, and podcast — see the proof in the Projects gallery."
+              />
+              <ProblemCard
+                icon={Zap}
+                title="Faster Delivery"
+                description="One person who already knows your full build moves faster than three vendors trying to coordinate."
+              />
+              <ProblemCard
+                icon={Users}
+                title="Less Friction"
+                description="One point of contact for everything — no re-explaining your business to a new vendor at every phase."
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Individual Services */}
+        <section className="relative bg-background py-14 sm:py-20">
+          <div className="mx-auto max-w-5xl px-4 sm:px-6">
+            <div className="text-center">
+              <Eyebrow>// OR START WITH ONE PIECE</Eyebrow>
+              <h2 className="mt-4 text-2xl font-bold leading-[1.1] text-white sm:text-3xl">
+                Prefer to Start with Just One Service?
+              </h2>
+              <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+                Each phase is also available on its own.
+              </p>
+            </div>
+
+            <div className="mt-10 grid gap-4 sm:grid-cols-3">
+              <ServiceCard
+                icon={Globe}
+                title="Web Development"
+                description="Websites and web apps built to convert."
+                href="/services/web-development"
+              />
+              <ServiceCard
+                icon={Bot}
+                title="AI Integrator"
+                description="Custom AI agents for your website, WhatsApp, or systems."
+                href="/services/ai-integrator"
+              />
+              <ServiceCard
+                icon={Mic2}
+                title="AI Podcast"
+                description="A consistent show that builds niche authority."
+                href="/services/ai-podcast"
+              />
             </div>
           </div>
         </section>
