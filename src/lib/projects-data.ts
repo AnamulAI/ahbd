@@ -660,6 +660,16 @@ export function getAllProjects(): Project[] {
   return PROJECTS;
 }
 
+/**
+ * Returns the N most recently added projects.
+ * TODO: when migrated to Supabase `projects` table, sort by `created_at` desc.
+ * For now, "most recent" = last entries in PROJECTS_RAW (insertion order).
+ */
+export function getLatestProjects(limit = 3): Project[] {
+  return PROJECTS.slice(-limit).reverse();
+}
+
+
 export function getProjectBySlug(slug: string): Project | undefined {
   return PROJECTS.find((p) => p.slug === slug);
 }
