@@ -854,7 +854,272 @@ export function PackageBuilder() {
           )}
         </StepCard>
 
-        {/* Builder FAQ */}
+        {/* Continue → reveal payment cards */}
+        <div className="flex justify-center">
+          <button
+            type="button"
+            onClick={() => {
+              setPaymentOpen(true);
+              setTimeout(() => paymentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+            }}
+            className="group relative inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 transition-transform hover:scale-[1.02] sm:text-base"
+          >
+            See Payment Options
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </button>
+        </div>
+
+        {/* Payment Plan Cards */}
+        {paymentOpen && (() => {
+          const installments = Math.round(total / 3);
+          const payInFull = Math.round(total * 0.75);
+          const phases = ["Website", aiEnabled && "AI Agent", podEnabled && "Podcast"].filter(Boolean) as string[];
+          const plans: { id: PaymentPlan; label: string; desc: string; highlight?: boolean; render: React.ReactNode }[] = [
+            {
+              id: "installments",
+              label: "Installments",
+              desc: "Split into 3 payments",
+              render: (
+                <div>
+                  <div className="font-display text-3xl font-bold text-white">{fmt(installments)}</div>
+                  <div className="mt-1 font-mono text-xs text-muted-foreground">× 3 payments</div>
+                </div>
+              ),
+            },
+            {
+              id: "pay_in_full",
+              label: "Pay in Full",
+              desc: "One upfront payment — biggest savings",
+              highlight: true,
+              render: (
+                <div>
+                  <div className="font-mono text-sm text-muted-foreground line-through">{fmt(total)}</div>
+                  <div className="font-display text-4xl font-bold text-gradient-vo">{fmt(payInFull)}</div>
+                  <div className="mt-1 font-mono text-xs text-muted-foreground">save 25%</div>
+                </div>
+              ),
+            },
+            {
+              id: "milestone",
+              label: "Milestone-Based",
+              desc: `Pay per phase as it completes — ${phases.join(" → ")}`,
+              render: (
+                <div>
+                  <div className="font-display text-3xl font-bold text-white">{fmt(total)}</div>
+                  <div className="mt-1 font-mono text-xs text-muted-foreground">across {phases.length} milestone{phases.length === 1 ? "" : "s"}</div>
+                </div>
+              ),
+            },
+          ];
+
+          return (
+            <div ref={paymentRef} className="animate-fade-in">
+              <div className="mb-5 text-center">
+                <Eyebrow>// CHOOSE A PAYMENT PLAN</Eyebrow>
+                <h3 className="mt-2 text-xl font-semibold text-white sm:text-2xl">How would you like to pay?</h3>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-3 sm:items-stretch">
+                {plans.map((p) => {
+                  const selected = paymentPlan === p.id;
+                  const isFeatured = !!p.highlight;
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => {
+                        setPaymentPlan(p.id);
+                        setTimeout(() => contactRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+                      }}
+                      className={[
+                        "relative text-left transition-transform",
+                        isFeatured ? "sm:scale-[1.04]" : "",
+                      ].join(" ")}
+                    >
+                      {isFeatured && (
+                        <>
+                          <div aria-hidden className="absolute -inset-px rounded-[1.25rem] bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/40 to-[#F97316] opacity-60 blur-2xl" />
+                          <div aria-hidden className="absolute -inset-px rounded-[1.25rem] bg-gradient-to-r from-[#3B82F6] to-[#F97316] opacity-80" />
+                        </>
+                      )}
+                      <div
+                        className={[
+                          "relative h-full rounded-[1.15rem] bg-[oklch(0.15_0.02_260)] p-6",
+                          !isFeatured && "border",
+                          !isFeatured && (selected
+                            ? "border-[color:var(--primary)]"
+                            : "border-white/[0.08]"),
+                          isFeatured && selected ? "ring-2 ring-[color:var(--primary)] ring-offset-2 ring-offset-[oklch(0.15_0.02_260)]" : "",
+                        ].filter(Boolean).join(" ")}
+                      >
+                        {isFeatured && (
+                          <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-white flex items-center gap-1">
+                            <Star className="h-3 w-3 fill-white" />
+                            Most Popular
+                          </div>
+                        )}
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <div className="text-base font-semibold text-white">{p.label}</div>
+                            <div className="mt-1 text-xs leading-relaxed text-muted-foreground">{p.desc}</div>
+                          </div>
+                          <div
+                            className={[
+                              "mt-1 h-4 w-4 shrink-0 rounded-full border",
+                              selected ? "border-[color:var(--primary)] bg-[color:var(--primary)]" : "border-white/30",
+                            ].join(" ")}
+                          />
+                        </div>
+                        <div className="mt-5">{p.render}</div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <p className="mt-5 text-center text-xs text-muted-foreground">
+                All plans require a 10% advance (<span className="font-mono text-white">{fmt(advance)}</span>) to secure your spot.
+              </p>
+            </div>
+          );
+        })()}
+
+        {/* Contact form */}
+        {paymentOpen && paymentPlan && (
+          <div ref={contactRef} className="animate-fade-in rounded-xl border border-white/[0.08] bg-[oklch(0.15_0.02_260)] p-5 sm:p-7">
+            <Eyebrow>// FINAL STEP</Eyebrow>
+            <h3 className="mt-2 text-lg font-semibold text-white sm:text-xl">Your contact details</h3>
+
+            {submitted ? (
+              <div className="mt-6 flex items-start gap-3 rounded-lg border border-[color:var(--primary)]/30 bg-[color:var(--primary)]/5 p-5">
+                <CheckCircle2 className="h-5 w-5 shrink-0 text-[color:var(--primary)]" />
+                <p className="text-sm leading-relaxed text-white">
+                  Thanks! I've received your build details and will reach out on WhatsApp within 24 hours to confirm everything.
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="mt-4 rounded-lg border border-white/[0.08] bg-background/60 p-4 text-xs text-muted-foreground">
+                  <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
+                    <span>Total: <span className="font-mono text-white">{fmt(total)}</span></span>
+                    <span>Plan: <span className="text-white">{paymentPlan === "installments" ? "Installments (× 3)" : paymentPlan === "pay_in_full" ? "Pay in Full (25% off)" : "Milestone-Based"}</span></span>
+                    <span>10% advance: <span className="font-mono text-white">{fmt(advance)}</span></span>
+                  </div>
+                </div>
+
+                <form
+                  className="mt-5 space-y-4"
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    setSubmitError(null);
+                    const name = leadName.trim();
+                    const email = leadEmail.trim();
+                    const whatsapp = leadWhatsapp.trim();
+                    if (!name || !email || !whatsapp) {
+                      setSubmitError("Please fill in name, email, and WhatsApp number.");
+                      return;
+                    }
+                    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+                      setSubmitError("Please enter a valid email address.");
+                      return;
+                    }
+                    setSubmitting(true);
+
+                    // Build snapshot of every selection
+                    const labelOf = (id: string, pool: BuilderOption[]) => pool.find((o) => o.id === id)?.label ?? null;
+                    const snapshot = {
+                      starting_point: startingPoint || null,
+                      idea_description: ideaDescription || null,
+                      website: techApproach && useCase ? {
+                        tech_approach: techApproach.label,
+                        use_case: useCase.label,
+                        tier: tiersForUseCase.find((t) => t.id === tierId)?.label ?? null,
+                        sub_options: Object.fromEntries(
+                          Object.entries(subOptions).map(([g, id]) => [
+                            OPTION_GROUP_LABELS[g] ?? g,
+                            labelOf(id, data.websiteOptions),
+                          ]),
+                        ),
+                      } : null,
+                      ai_agent: aiEnabled ? {
+                        type: data.aiTypes.find((t) => t.id === aiTypeId)?.label ?? null,
+                        where: [...aiWhereChecked].map((id) => labelOf(id, data.aiOptions)).filter(Boolean),
+                        selections: Object.fromEntries(
+                          Object.entries(aiSelects).map(([g, id]) => [
+                            OPTION_GROUP_LABELS[g] ?? g,
+                            labelOf(id, data.aiOptions),
+                          ]),
+                        ),
+                      } : null,
+                      podcast: podEnabled ? {
+                        type: data.podcastTypes.find((t) => t.id === podTypeId)?.label ?? null,
+                        selections: Object.fromEntries(
+                          Object.entries(podSelects).map(([g, id]) => [
+                            OPTION_GROUP_LABELS[g] ?? g,
+                            labelOf(id, data.podcastOptions),
+                          ]),
+                        ),
+                        addons: [...podAddons].map((id) => labelOf(id, data.podcastOptions)).filter(Boolean),
+                      } : null,
+                      price_lines: priceLines,
+                      advance,
+                    };
+
+                    const { error: insertErr } = await supabase.from("builder_leads").insert({
+                      starting_point: startingPoint || null,
+                      idea_description: ideaDescription || null,
+                      name,
+                      email,
+                      whatsapp,
+                      selected_config: snapshot as any,
+                      total_price: total,
+                      chosen_payment_plan: paymentPlan,
+                      status: "new",
+                    });
+
+                    setSubmitting(false);
+                    if (insertErr) {
+                      setSubmitError(insertErr.message || "Something went wrong. Please try again.");
+                      return;
+                    }
+                    setSubmitted(true);
+                  }}
+                >
+                  <div className="grid gap-4 sm:grid-cols-3">
+                    <div>
+                      <FieldLabel>Name</FieldLabel>
+                      <Input value={leadName} onChange={(e) => setLeadName(e.target.value)} placeholder="Your name" className="bg-background" required />
+                    </div>
+                    <div>
+                      <FieldLabel>Email</FieldLabel>
+                      <Input type="email" value={leadEmail} onChange={(e) => setLeadEmail(e.target.value)} placeholder="you@example.com" className="bg-background" required />
+                    </div>
+                    <div>
+                      <FieldLabel>WhatsApp</FieldLabel>
+                      <Input value={leadWhatsapp} onChange={(e) => setLeadWhatsapp(e.target.value)} placeholder="+1 555 123 4567" className="bg-background" required />
+                    </div>
+                  </div>
+
+                  {submitError && (
+                    <p className="text-sm text-red-400">{submitError}</p>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="group relative inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 transition-transform hover:scale-[1.01] disabled:opacity-60 sm:text-base"
+                  >
+                    {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                    {submitting ? "Submitting…" : "Confirm My Build"}
+                    {!submitting && <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />}
+                  </button>
+                </form>
+              </>
+            )}
+          </div>
+        )}
+
+
         <div className="rounded-xl border border-white/[0.08] bg-[oklch(0.15_0.02_260)] p-5 sm:p-7">
           <Eyebrow>// BUILDER FAQ</Eyebrow>
           <h3 className="mt-2 text-lg font-semibold text-white sm:text-xl">
