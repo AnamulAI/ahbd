@@ -249,7 +249,29 @@ function Index() {
           </div>
         </section>
 
-        {/* The Complete DFY Bundle Offer — primary conversion section */}
+        {/**
+         * PRICING REVEAL CARD — Named reusable pattern
+         *
+         * Two-column layout (value stack + price reveal on one side,
+         * checklist + CTA on the other), stacking vertically on mobile.
+         *
+         * Left/top side:
+         *   - Itemized value stack with strikethrough muted prices
+         *   - Divider + "Total Value" strikethrough
+         *   - "// YOUR PRICE" label
+         *   - Large bold gradient price
+         *   - "Save $X" pill badge in accent color
+         *
+         * Right/bottom side:
+         *   - "// WHAT'S INCLUDED" checklist (checkmark icons + items)
+         *   - Large primary gradient CTA button
+         *
+         * Outer card uses the site's permanent-glow Featured Card treatment
+         * (not hover-only).
+         *
+         * Whenever a future prompt says "use the Pricing Reveal Card pattern,"
+         * apply this exact structure with new content substituted in.
+         */}
         <section
           id="dfy-bundle"
           className="relative section-glow-cta py-20 sm:py-28"
