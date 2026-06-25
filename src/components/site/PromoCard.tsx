@@ -65,7 +65,7 @@ export function PromoCard({ card }: { card: PromoCardData }) {
         className="pointer-events-none absolute -top-16 -right-16 h-44 w-44 rounded-full blur-3xl opacity-30"
         style={{ background: brand }}
       />
-      <div className="relative">
+      <div className="relative text-center">
         <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-[color:var(--primary)]">
           {card.eyebrow_text}
         </div>
@@ -89,7 +89,7 @@ export function PromoCard({ card }: { card: PromoCardData }) {
         </a>
 
         {card.feature_pills?.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2">
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
             {card.feature_pills.map((p, i) => {
               const Icon = pickIcon(p.icon_name);
               return (
