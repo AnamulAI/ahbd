@@ -226,6 +226,24 @@ export function PackageBuilder() {
     setTierId("");
   }, [useCaseId]);
 
+  // Pre-select default sub-options once data loads
+  useEffect(() => {
+    if (!data) return;
+    const defaults: Record<string, string> = {};
+    for (const o of data.websiteOptions) {
+      if (o.is_default) {
+        defaults[o.option_group] = o.id;
+      }
+    }
+    setSubOptions((prev) => {
+      const next = { ...defaults };
+      for (const [k, v] of Object.entries(prev)) {
+        if (v) next[k] = v;
+      }
+      return next;
+    });
+  }, [data?.websiteOptions]);
+
   const tiersForUseCase = useMemo(() => {
     if (!data || !useCaseId) return [];
     return data.tiers
