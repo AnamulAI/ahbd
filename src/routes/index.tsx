@@ -3,7 +3,15 @@ import { ArrowRight, MessageCircle, Globe, Bot, TrendingUp, Mic, Check, Target, 
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { PackageBuilder } from "@/components/site/PackageBuilder";
 import { ProjectCard } from "@/components/site/ProjectCard";
+import { BlogCard } from "@/components/site/BlogCard";
 import { getProjectBySlug } from "@/lib/projects-data";
+import { getPostBySlug } from "@/lib/blog-data";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import anamAvatar from "@/assets/anam-avatar.png.asset.json";
 
 
@@ -594,8 +602,104 @@ function Index() {
             </div>
           </div>
         </section>
+
+        {/* Section 9 — From the Blog */}
+        <section className="relative bg-background py-16 sm:py-24">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <div className="text-center">
+              <Eyebrow>// FROM THE BLOG</Eyebrow>
+              <h2 className="mt-4 font-display text-3xl font-bold leading-[1.1] text-white sm:text-4xl">
+                Thinking <span className="text-gradient-vo">Behind</span> the Work
+              </h2>
+              <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+                Notes on web development, AI integration, and building a podcast-driven brand.
+              </p>
+            </div>
+
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {[
+                "custom-code-vs-wordpress-2026",
+                "custom-gpt-vs-chatgpt-plus-business",
+                "ai-voice-cloning-guide-for-podcasters",
+              ]
+                .map((slug) => getPostBySlug(slug))
+                .filter((p): p is NonNullable<typeof p> => Boolean(p))
+                .map((post) => (
+                  <BlogCard key={post.slug} post={post} />
+                ))}
+            </div>
+
+            <div className="mt-12 text-center">
+              <Link
+                to="/blog"
+                className="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)] hover:opacity-80"
+              >
+                Read the Blog <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 10 — FAQ */}
+        <section className="relative bg-background py-16 sm:py-24">
+          <div className="mx-auto max-w-3xl px-4 sm:px-6">
+            <div className="text-center">
+              <Eyebrow>// FAQ</Eyebrow>
+              <h2 className="mt-4 font-display text-3xl font-bold leading-[1.1] text-white sm:text-4xl">
+                Common <span className="text-gradient-vo">Questions</span>
+              </h2>
+              <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+                If you don't see your question here, the full breakdown is in the custom builder above, or just ask directly.
+              </p>
+            </div>
+
+            <Accordion type="single" collapsible className="mt-10 space-y-3">
+              {HOME_FAQS.map((f, i) => (
+                <AccordionItem
+                  key={f.q}
+                  value={`home-faq-${i}`}
+                  className="card-elevated border-b-0 px-5"
+                >
+                  <AccordionTrigger className="py-5 text-left text-base font-semibold text-white hover:no-underline">
+                    {f.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+                    {f.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </section>
       </main>
 
     </div>
   );
 }
+
+const HOME_FAQS: ReadonlyArray<{ q: string; a: string }> = [
+  {
+    q: "Do I have to take the full $4,990 package?",
+    a: "No — every phase (website, AI agent, podcast) is also available on its own. The full package is for people who want the complete journey done together.",
+  },
+  {
+    q: "How is this different from hiring three separate freelancers?",
+    a: "One person handles the entire build, so nothing gets lost between vendors, timelines stay tighter, and the final result is designed to work together from day one — not stitched together after the fact.",
+  },
+  {
+    q: "I already have a website — can I still use the AI Agent or Podcast services?",
+    a: "Yes — each phase works independently. We can integrate an AI agent into your existing site, or launch a podcast for your existing brand, without rebuilding anything.",
+  },
+  {
+    q: "What if I'm not based in Bangladesh?",
+    a: "Most of my clients are international. Everything is handled remotely — calls, WhatsApp, and async updates — regardless of timezone.",
+  },
+  {
+    q: "How long does the full DFY process take?",
+    a: "It depends on the scope you choose in the builder — a simple site moves faster than a full eCommerce build with AI and podcast included. We'll confirm a realistic timeline together once your build is finalized.",
+  },
+  {
+    q: "What happens after I submit my build in the custom builder?",
+    a: "I'll review everything and reach out on WhatsApp within 24 hours to confirm the details before any work begins.",
+  },
+];
