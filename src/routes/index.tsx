@@ -81,13 +81,13 @@ function PhaseCard({
   href: string;
 }) {
   return (
-    <div className="relative flex flex-row gap-5 md:flex-col md:items-start md:gap-4">
+    <div className="relative flex flex-col items-center text-center gap-4">
       {/* Numbered badge */}
       <div className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full btn-gradient font-display text-lg font-bold text-white shadow-[0_8px_24px_-8px_var(--vo-glow)] ring-4 ring-background">
         {number}
       </div>
-      <div className="flex-1 pt-1 md:pt-2">
-        <div className="flex items-center gap-2">
+      <div className="flex-1 pt-1 md:pt-2 flex flex-col items-center text-center">
+        <div className="flex items-center justify-center gap-2">
           <Icon className="h-4 w-4 text-[color:var(--primary)]" />
           <h3 className="text-lg font-semibold text-white">{title}</h3>
         </div>
@@ -96,7 +96,7 @@ function PhaseCard({
         </p>
         <Link
           to={href}
-          className="group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[color:var(--primary)] transition-colors hover:text-[#F97316]"
+          className="group mt-4 inline-flex items-center justify-center gap-1.5 text-sm font-semibold text-[color:var(--primary)] transition-colors hover:text-[#F97316]"
         >
           Explore
           <ArrowRight
