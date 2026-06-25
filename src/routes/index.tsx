@@ -5,7 +5,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { PackageBuilder } from "@/components/site/PackageBuilder";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { BlogCard } from "@/components/site/BlogCard";
-import { getProjectBySlug, getLatestProjects } from "@/lib/projects-data";
+import { getLatestProjects } from "@/lib/projects-data";
 import { getPostBySlug } from "@/lib/blog-data";
 import {
   Accordion,
