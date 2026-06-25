@@ -93,16 +93,29 @@ function PhaseCard({
   href: string;
 }) {
   return (
-    <div className="relative flex flex-col items-center text-center gap-4">
+    <div className="relative flex flex-col items-center text-center gap-5">
       {/* Numbered badge */}
       <div className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full btn-gradient font-display text-lg font-bold text-white shadow-[0_8px_24px_-8px_var(--vo-glow)] ring-4 ring-background">
         {number}
       </div>
-      <div className="flex-1 pt-1 md:pt-2 flex flex-col items-center text-center">
-        <div className="flex items-center justify-center gap-2">
-          <Icon className="h-4 w-4 text-[color:var(--primary)]" />
-          <h3 className="text-lg font-semibold text-white">{title}</h3>
+
+      {/* Premium icon container — gradient border + inner glow */}
+      <div className="relative">
+        <div
+          aria-hidden
+          className="absolute -inset-px rounded-2xl bg-gradient-to-br from-[#3B82F6] via-[#3B82F6]/40 to-[#F97316] opacity-90"
+        />
+        <div
+          aria-hidden
+          className="absolute -inset-2 rounded-2xl bg-gradient-to-br from-[#3B82F6]/30 to-[#F97316]/30 blur-xl opacity-60"
+        />
+        <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-[oklch(0.15_0.02_260)]">
+          <Icon className="h-7 w-7 text-[color:var(--primary)]" />
         </div>
+      </div>
+
+      <div className="flex-1 flex flex-col items-center text-center">
+        <h3 className="text-lg font-semibold text-white">{title}</h3>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
           {description}
         </p>
