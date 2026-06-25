@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -16,7 +16,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ExternalLink, Loader2, X } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { PromoCard, type PromoCardData } from "./PromoCard";
+import { OptionIconBadge } from "./OptionIconBadge";
 
 // ---------- Types ----------
 type TechApproach = {
