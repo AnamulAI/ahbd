@@ -2,6 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, MessageCircle, Globe, Bot, TrendingUp, Mic, Check, Target, ShieldCheck, Zap, Users, Mic2 } from "lucide-react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { PackageBuilder } from "@/components/site/PackageBuilder";
+import { ProjectCard } from "@/components/site/ProjectCard";
+import { getProjectBySlug } from "@/lib/projects-data";
+import anamAvatar from "@/assets/anam-avatar.png.asset.json";
 
 
 export const Route = createFileRoute("/")({
@@ -515,6 +518,79 @@ function Index() {
                 description="A consistent show that builds niche authority."
                 href="/services/ai-podcast"
               />
+            </div>
+          </div>
+        </section>
+
+        {/* Section 7 — About (condensed) */}
+        <section className="relative bg-background py-16 sm:py-24">
+          <div className="mx-auto max-w-5xl px-4 sm:px-6">
+            <div className="grid items-center gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:gap-14">
+              <div className="order-1 mx-auto w-full max-w-sm md:order-none">
+                <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
+                  <img
+                    src={anamAvatar.url}
+                    alt="Mohammad Anamul Hoque"
+                    className="aspect-square w-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+              <div className="order-2 md:order-none">
+                <Eyebrow>// THE PERSON BEHIND THIS</Eyebrow>
+                <h2 className="mt-4 font-display text-3xl font-bold leading-[1.1] text-white sm:text-4xl">
+                  Built by One{" "}
+                  <span className="text-gradient-vo">Person</span>, Not an Agency
+                </h2>
+                <p className="mt-5 text-base leading-relaxed text-muted-foreground">
+                  I'm Mohammad Anamul Hoque — a web developer and AI integrator based in Chattogram, Bangladesh, working with clients internationally. I handle every phase of this process myself, from first conversation to final delivery, so nothing gets lost in translation between vendors.
+                </p>
+                <Link
+                  to="/about"
+                  className="mt-6 inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)] hover:opacity-80"
+                >
+                  Read My Full Story <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 8 — Selected Work */}
+        <section className="relative bg-background py-16 sm:py-24">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <div className="text-center">
+              <Eyebrow>// SELECTED WORK</Eyebrow>
+              <h2 className="mt-4 font-display text-3xl font-bold leading-[1.1] text-white sm:text-4xl">
+                See the Work Behind the{" "}
+                <span className="text-gradient-vo">Process</span>
+              </h2>
+              <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+                A look at real projects across web development, AI integration, and podcast production.
+              </p>
+            </div>
+
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {[
+                "ecommerce-store-cedar-leather-co",
+                "custom-gpt-harborline-insurance",
+                "podcast-launch-the-daily-builder",
+                "conversion-landing-page-fittrack",
+              ]
+                .map((slug) => getProjectBySlug(slug))
+                .filter((p): p is NonNullable<typeof p> => Boolean(p))
+                .map((project) => (
+                  <ProjectCard key={project.slug} project={project} />
+                ))}
+            </div>
+
+            <div className="mt-12 text-center">
+              <Link
+                to="/projects"
+                className="inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)] hover:opacity-80"
+              >
+                View All Projects <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
             </div>
           </div>
         </section>
