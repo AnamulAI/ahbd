@@ -121,7 +121,7 @@ function ServiceCard({
   href: string;
 }) {
   return (
-    <div className="rounded-xl border border-white/[0.04] bg-white/[0.02] p-5 transition-transform duration-200 hover:-translate-y-1">
+    <div className="flex flex-col items-center text-center rounded-xl border border-white/[0.04] bg-white/[0.02] p-5 transition-transform duration-200 hover:-translate-y-1">
       <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[oklch(0.62_0.19_255/8%)]">
         <Icon className="h-4 w-4 text-[color:var(--primary)]" />
       </div>
@@ -129,7 +129,7 @@ function ServiceCard({
       <p className="mt-1.5 text-sm text-muted-foreground">{description}</p>
       <Link
         to={href}
-        className="group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[color:var(--primary)] transition-colors hover:text-[#F97316]"
+        className="group mt-4 inline-flex items-center justify-center gap-1.5 text-sm font-semibold text-[color:var(--primary)] transition-colors hover:text-[#F97316]"
       >
         Learn more
         <ArrowRight
