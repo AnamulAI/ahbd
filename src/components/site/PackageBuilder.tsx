@@ -92,7 +92,7 @@ function useBuilderData() {
     let cancelled = false;
     (async () => {
       try {
-        const [tech, uc, price, tiers, opts, aiT, podT] = await Promise.all([
+        const [tech, uc, price, tiers, opts, aiT, podT, promo] = await Promise.all([
           supabase.from("builder_tech_approaches").select("*").eq("is_active", true).order("display_order"),
           supabase.from("builder_use_cases").select("*").eq("is_active", true).order("display_order"),
           supabase.from("builder_use_case_pricing").select("*"),
@@ -100,8 +100,9 @@ function useBuilderData() {
           supabase.from("builder_options").select("*").eq("is_active", true).in("category_key", ["website", "ai_agent", "podcast"]).order("display_order"),
           supabase.from("builder_ai_types").select("*").eq("is_active", true).order("display_order"),
           supabase.from("builder_podcast_types").select("*").eq("is_active", true).order("display_order"),
+          supabase.from("builder_promo_cards").select("*").eq("is_active", true).order("display_order"),
         ]);
-        const firstErr = [tech, uc, price, tiers, opts, aiT, podT].find((r) => r.error);
+        const firstErr = [tech, uc, price, tiers, opts, aiT, podT, promo].find((r) => r.error);
         if (firstErr?.error) throw firstErr.error;
         if (cancelled) return;
         const allOpts = (opts.data ?? []) as BuilderOption[];
@@ -115,6 +116,18 @@ function useBuilderData() {
           podcastOptions: allOpts.filter((o) => o.category_key === "podcast"),
           aiTypes: (aiT.data ?? []) as TypeRow[],
           podcastTypes: (podT.data ?? []) as TypeRow[],
+          promoCards: ((promo.data ?? []) as any[]).map((p) => ({
+            id: p.id,
+            brand_name: p.brand_name,
+            brand_color: p.brand_color,
+            eyebrow_text: p.eyebrow_text,
+            heading_prefix: p.heading_prefix,
+            description: p.description,
+            cta_label: p.cta_label,
+            cta_url: p.cta_url,
+            feature_pills: Array.isArray(p.feature_pills) ? p.feature_pills : [],
+            visibility_condition: p.visibility_condition,
+          })) as any,
         });
       } catch (e: any) {
         if (!cancelled) setError(e?.message ?? "Failed to load builder data");
