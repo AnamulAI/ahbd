@@ -3,7 +3,15 @@ import { ArrowRight, MessageCircle, Globe, Bot, TrendingUp, Mic, Check, Target, 
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { PackageBuilder } from "@/components/site/PackageBuilder";
 import { ProjectCard } from "@/components/site/ProjectCard";
+import { BlogCard } from "@/components/site/BlogCard";
 import { getProjectBySlug } from "@/lib/projects-data";
+import { getPostBySlug } from "@/lib/blog-data";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import anamAvatar from "@/assets/anam-avatar.png.asset.json";
 
 
