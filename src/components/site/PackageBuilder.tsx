@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -16,7 +16,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ExternalLink, Loader2, X } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { PromoCard, type PromoCardData } from "./PromoCard";
+import { OptionIconBadge } from "./OptionIconBadge";
 
 // ---------- Types ----------
 type TechApproach = {
@@ -78,6 +80,7 @@ type BuilderData = {
   podcastTypes: TypeRow[];
   aiOptions: BuilderOption[];
   podcastOptions: BuilderOption[];
+  promoCards: PromoCardData[];
 };
 
 // ---------- Hook ----------
@@ -89,7 +92,7 @@ function useBuilderData() {
     let cancelled = false;
     (async () => {
       try {
-        const [tech, uc, price, tiers, opts, aiT, podT] = await Promise.all([
+        const [tech, uc, price, tiers, opts, aiT, podT, promo] = await Promise.all([
           supabase.from("builder_tech_approaches").select("*").eq("is_active", true).order("display_order"),
           supabase.from("builder_use_cases").select("*").eq("is_active", true).order("display_order"),
           supabase.from("builder_use_case_pricing").select("*"),
@@ -97,8 +100,9 @@ function useBuilderData() {
           supabase.from("builder_options").select("*").eq("is_active", true).in("category_key", ["website", "ai_agent", "podcast"]).order("display_order"),
           supabase.from("builder_ai_types").select("*").eq("is_active", true).order("display_order"),
           supabase.from("builder_podcast_types").select("*").eq("is_active", true).order("display_order"),
+          supabase.from("builder_promo_cards").select("*").eq("is_active", true).order("display_order"),
         ]);
-        const firstErr = [tech, uc, price, tiers, opts, aiT, podT].find((r) => r.error);
+        const firstErr = [tech, uc, price, tiers, opts, aiT, podT, promo].find((r) => r.error);
         if (firstErr?.error) throw firstErr.error;
         if (cancelled) return;
         const allOpts = (opts.data ?? []) as BuilderOption[];
@@ -112,6 +116,18 @@ function useBuilderData() {
           podcastOptions: allOpts.filter((o) => o.category_key === "podcast"),
           aiTypes: (aiT.data ?? []) as TypeRow[],
           podcastTypes: (podT.data ?? []) as TypeRow[],
+          promoCards: ((promo.data ?? []) as any[]).map((p) => ({
+            id: p.id,
+            brand_name: p.brand_name,
+            brand_color: p.brand_color,
+            eyebrow_text: p.eyebrow_text,
+            heading_prefix: p.heading_prefix,
+            description: p.description,
+            cta_label: p.cta_label,
+            cta_url: p.cta_url,
+            feature_pills: Array.isArray(p.feature_pills) ? p.feature_pills : [],
+            visibility_condition: p.visibility_condition,
+          })) as any,
         });
       } catch (e: any) {
         if (!cancelled) setError(e?.message ?? "Failed to load builder data");
@@ -270,7 +286,7 @@ function CheckboxGroup({
             <label
               key={o.id}
               className={[
-                "flex items-start gap-3 rounded-lg border border-white/[0.08] bg-background/60 p-3 text-sm",
+                "flex items-center gap-3 rounded-lg border border-white/[0.08] bg-background/60 p-3 text-sm",
                 locked ? "opacity-80" : "cursor-pointer hover:border-white/20",
               ].join(" ")}
             >
@@ -278,8 +294,8 @@ function CheckboxGroup({
                 checked={isChecked}
                 disabled={locked}
                 onCheckedChange={() => !locked && onToggle(o.id)}
-                className="mt-0.5"
               />
+              <OptionIconBadge label={o.label} group={group} />
               <span className="flex-1 text-white">{o.label}</span>
               <span className="font-mono text-xs text-muted-foreground">
                 {o.price_delta > 0 ? `+${fmt(o.price_delta)}` : locked ? "included" : "included"}
@@ -337,7 +353,6 @@ export function PackageBuilder() {
   const [useCaseId, setUseCaseId] = useState<string>("");
   const [tierId, setTierId] = useState<string>("");
   const [subOptions, setSubOptions] = useState<Record<string, string>>({});
-  const [hostingBannerDismissed, setHostingBannerDismissed] = useState(false);
 
   // Step 3
   const [aiEnabled, setAiEnabled] = useState(false);
@@ -417,11 +432,23 @@ export function PackageBuilder() {
   const aiGroups = useMemo(() => (data ? groupBy(data.aiOptions) : {}), [data]);
   const podGroups = useMemo(() => (data ? groupBy(data.podcastOptions) : {}), [data]);
 
-  // Hosting banner trigger: "own hosting" = is_default option in hosting group
+  // Promo card visibility: "I have my own hosting" = is_default option in hosting group
   const hostingOptId = subOptions["hosting"];
   const hostingOpt = data?.websiteOptions.find((o) => o.id === hostingOptId);
-  const showHostingBanner =
-    !!hostingOpt && hostingOpt.is_default && !hostingBannerDismissed;
+  const hostingSelfManaged = !!hostingOpt && hostingOpt.is_default;
+  const techIsCustom = techApproach?.key === "custom";
+
+  const visiblePromoCards = useMemo(() => {
+    if (!data) return [];
+    return data.promoCards.filter((c) => {
+      switch (c.visibility_condition) {
+        case "hosting_self_managed": return hostingSelfManaged;
+        case "tech_approach_custom": return techIsCustom;
+        case "always": return true;
+        default: return false;
+      }
+    });
+  }, [data, hostingSelfManaged, techIsCustom]);
 
   // ---------- Price lines ----------
   const priceLines: PriceLine[] = useMemo(() => {
@@ -486,6 +513,24 @@ export function PackageBuilder() {
 
   const total = priceLines.reduce((s, l) => s + l.amount, 0);
   const advance = Math.round(total * 0.1);
+
+  // Track which line items just appeared or changed so we can bump-animate them.
+  const prevSigsRef = useRef<Map<string, string>>(new Map());
+  const [bumpedIds, setBumpedIds] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    const next = new Map<string, string>();
+    const justBumped = new Set<string>();
+    for (const l of priceLines) {
+      const sig = `${l.label}|${l.amount}`;
+      next.set(l.id, sig);
+      if (prevSigsRef.current.get(l.id) !== sig) justBumped.add(l.id);
+    }
+    prevSigsRef.current = next;
+    if (justBumped.size === 0) return;
+    setBumpedIds(justBumped);
+    const t = window.setTimeout(() => setBumpedIds(new Set()), 420);
+    return () => window.clearTimeout(t);
+  }, [priceLines]);
 
   if (error) {
     return (
@@ -625,31 +670,6 @@ export function PackageBuilder() {
                 selections={subOptions}
                 onChange={(g, v) => setSubOptions((prev) => ({ ...prev, [g]: v }))}
               />
-
-              {showHostingBanner && (
-                <div className="flex items-start gap-3 rounded-lg border border-[color:var(--orange)]/30 bg-[color:var(--orange)]/[0.06] px-4 py-3 text-xs leading-relaxed text-muted-foreground">
-                  <div className="flex-1">
-                    Don't have hosting yet? Get a discount on Hostinger via this link{" "}
-                    <span className="text-muted-foreground/80">(affiliate link)</span> — then let me know and I'll handle the setup.{" "}
-                    <a
-                      href="#"
-                      target="_blank"
-                      rel="noopener noreferrer sponsored"
-                      className="ml-1 inline-flex items-center gap-1 font-medium text-[color:var(--orange)] hover:underline"
-                    >
-                      Get Hostinger Discount <ExternalLink className="h-3 w-3" />
-                    </a>
-                  </div>
-                  <button
-                    type="button"
-                    aria-label="Dismiss"
-                    onClick={() => setHostingBannerDismissed(true)}
-                    className="text-muted-foreground hover:text-white"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                </div>
-              )}
             </div>
           )}
         </StepCard>
@@ -811,44 +831,60 @@ export function PackageBuilder() {
         </div>
       </div>
 
-      {/* Live price sidebar */}
-      <aside className="lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
-        <div className="rounded-xl border border-white/[0.08] bg-[oklch(0.15_0.02_260)] p-6">
-          <Eyebrow>// LIVE QUOTE</Eyebrow>
-          <h3 className="mt-2 text-lg font-semibold text-white">Your custom build</h3>
+      {/* Right column: sticky live quote, plus promo cards that scroll below it */}
+      <aside className="flex flex-col gap-6">
+        <div className="lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
+          <div className="rounded-xl border border-white/[0.08] bg-[oklch(0.15_0.02_260)] p-6">
+            <Eyebrow>// LIVE QUOTE</Eyebrow>
+            <h3 className="mt-2 text-lg font-semibold text-white">Your custom build</h3>
 
-          <ul className="mt-5 space-y-3 text-sm">
-            {priceLines.length === 0 ? (
-              <li className="text-muted-foreground">
-                Make selections to see your price build up live.
-              </li>
-            ) : (
-              priceLines.map((l) => (
-                <li key={l.id} className="flex items-start justify-between gap-4">
-                  <span className="text-muted-foreground">{l.label}</span>
-                  <span className="shrink-0 font-mono text-white">
-                    {l.amount > 0 ? fmt(l.amount) : "included"}
-                  </span>
+            <ul className="mt-5 space-y-3 text-sm">
+              {priceLines.length === 0 ? (
+                <li className="text-muted-foreground">
+                  Make selections to see your price build up live.
                 </li>
-              ))
-            )}
-          </ul>
+              ) : (
+                priceLines.map((l) => (
+                  <li
+                    key={l.id}
+                    className={[
+                      "flex items-start justify-between gap-4 px-2 py-1 -mx-2 animate-fade-in",
+                      bumpedIds.has(l.id) ? "quote-line-bump" : "",
+                    ].join(" ")}
+                  >
+                    <span className="text-muted-foreground">{l.label}</span>
+                    <span className="shrink-0 font-mono text-white">
+                      {l.amount > 0 ? fmt(l.amount) : "included"}
+                    </span>
+                  </li>
+                ))
+              )}
+            </ul>
 
-          <div className="my-5 h-px w-full bg-white/10" />
+            <div className="my-5 h-px w-full bg-white/10" />
 
-          <div className="flex items-baseline justify-between">
-            <span className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">Total</span>
-            <span className="font-display text-3xl font-bold text-gradient-vo">{fmt(total)}</span>
+            <div className="flex items-baseline justify-between">
+              <span className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">Total</span>
+              <span className="font-display text-3xl font-bold text-gradient-vo">{fmt(total)}</span>
+            </div>
+            <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
+              <span>10% advance to secure the order</span>
+              <span className="font-mono">{fmt(advance)}</span>
+            </div>
+
+            <p className="mt-5 text-[11px] leading-relaxed text-muted-foreground">
+              Payment options shown after your build is complete.
+            </p>
           </div>
-          <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
-            <span>10% advance to secure the order</span>
-            <span className="font-mono">{fmt(advance)}</span>
-          </div>
-
-          <p className="mt-5 text-[11px] leading-relaxed text-muted-foreground">
-            Payment options shown after your build is complete.
-          </p>
         </div>
+
+        {visiblePromoCards.length > 0 && (
+          <div className="flex flex-col gap-4">
+            {visiblePromoCards.map((c) => (
+              <PromoCard key={c.id} card={c} />
+            ))}
+          </div>
+        )}
       </aside>
     </div>
   );

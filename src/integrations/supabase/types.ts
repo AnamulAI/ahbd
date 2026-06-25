@@ -179,6 +179,57 @@ export type Database = {
         }
         Relationships: []
       }
+      builder_promo_cards: {
+        Row: {
+          brand_color: string
+          brand_name: string
+          created_at: string
+          cta_label: string
+          cta_url: string
+          description: string
+          display_order: number
+          eyebrow_text: string
+          feature_pills: Json
+          heading_prefix: string
+          id: string
+          is_active: boolean
+          updated_at: string
+          visibility_condition: string
+        }
+        Insert: {
+          brand_color: string
+          brand_name: string
+          created_at?: string
+          cta_label: string
+          cta_url?: string
+          description: string
+          display_order?: number
+          eyebrow_text?: string
+          feature_pills?: Json
+          heading_prefix?: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          visibility_condition?: string
+        }
+        Update: {
+          brand_color?: string
+          brand_name?: string
+          created_at?: string
+          cta_label?: string
+          cta_url?: string
+          description?: string
+          display_order?: number
+          eyebrow_text?: string
+          feature_pills?: Json
+          heading_prefix?: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          visibility_condition?: string
+        }
+        Relationships: []
+      }
       builder_tech_approaches: {
         Row: {
           created_at: string
