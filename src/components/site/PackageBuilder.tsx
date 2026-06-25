@@ -652,31 +652,6 @@ export function PackageBuilder() {
                 selections={subOptions}
                 onChange={(g, v) => setSubOptions((prev) => ({ ...prev, [g]: v }))}
               />
-
-              {showHostingBanner && (
-                <div className="flex items-start gap-3 rounded-lg border border-[color:var(--orange)]/30 bg-[color:var(--orange)]/[0.06] px-4 py-3 text-xs leading-relaxed text-muted-foreground">
-                  <div className="flex-1">
-                    Don't have hosting yet? Get a discount on Hostinger via this link{" "}
-                    <span className="text-muted-foreground/80">(affiliate link)</span> — then let me know and I'll handle the setup.{" "}
-                    <a
-                      href="#"
-                      target="_blank"
-                      rel="noopener noreferrer sponsored"
-                      className="ml-1 inline-flex items-center gap-1 font-medium text-[color:var(--orange)] hover:underline"
-                    >
-                      Get Hostinger Discount <ExternalLink className="h-3 w-3" />
-                    </a>
-                  </div>
-                  <button
-                    type="button"
-                    aria-label="Dismiss"
-                    onClick={() => setHostingBannerDismissed(true)}
-                    className="text-muted-foreground hover:text-white"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                </div>
-              )}
             </div>
           )}
         </StepCard>
