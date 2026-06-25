@@ -187,11 +187,12 @@ function Index() {
             </p>
 
             {/* Stats strip */}
-            <div className="mx-auto mt-9 flex max-w-3xl flex-wrap items-center justify-center divide-x divide-white/10">
+            <div className="mx-auto mt-9 flex max-w-3xl items-center justify-center divide-x divide-white/10">
               <StatItem value="12" label="PROJECTS DELIVERED" />
               <StatItem value="3" label="SERVICE LINES" />
               <StatItem value="100%" label="CLIENT SATISFACTION" />
             </div>
+
 
             {/* Dual CTAs */}
             <div className="mx-auto mt-9 flex w-full max-w-md flex-col gap-3 sm:mt-10 sm:flex-row sm:justify-center">
