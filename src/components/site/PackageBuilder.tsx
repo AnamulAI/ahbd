@@ -474,37 +474,71 @@ export function PackageBuilder() {
       });
     }
 
-    // AI Agent combined line
+    // AI Agent — itemized
     if (aiEnabled && data) {
       const aiType = data.aiTypes.find((t) => t.id === aiTypeId);
       if (aiType) {
-        let total = Number(aiType.base_price);
+        if (Number(aiType.base_price) > 0) {
+          lines.push({
+            id: "ai-type",
+            label: `AI Agent: ${aiType.label}`,
+            amount: Number(aiType.base_price),
+          });
+        }
         for (const id of aiWhereChecked) {
           const o = data.aiOptions.find((x) => x.id === id);
-          if (o) total += Number(o.price_delta);
+          if (o && Number(o.price_delta) > 0) {
+            lines.push({
+              id: `ai-where-${o.id}`,
+              label: `${OPTION_GROUP_LABELS[o.option_group] ?? o.option_group}: ${o.label}`,
+              amount: Number(o.price_delta),
+            });
+          }
         }
-        for (const id of Object.values(aiSelects)) {
+        for (const [group, id] of Object.entries(aiSelects)) {
           const o = data.aiOptions.find((x) => x.id === id);
-          if (o) total += Number(o.price_delta);
+          if (o && Number(o.price_delta) > 0) {
+            lines.push({
+              id: `ai-${group}`,
+              label: `${OPTION_GROUP_LABELS[group] ?? group}: ${o.label}`,
+              amount: Number(o.price_delta),
+            });
+          }
         }
-        lines.push({ id: "ai-agent", label: `AI Agent: ${aiType.label}`, amount: total });
       }
     }
 
-    // Podcast combined line
+    // Podcast — itemized
     if (podEnabled && data) {
       const podType = data.podcastTypes.find((t) => t.id === podTypeId);
       if (podType) {
-        let total = Number(podType.base_price);
-        for (const id of Object.values(podSelects)) {
+        if (Number(podType.base_price) > 0) {
+          lines.push({
+            id: "pod-type",
+            label: `Podcast: ${podType.label}`,
+            amount: Number(podType.base_price),
+          });
+        }
+        for (const [group, id] of Object.entries(podSelects)) {
           const o = data.podcastOptions.find((x) => x.id === id);
-          if (o) total += Number(o.price_delta);
+          if (o && Number(o.price_delta) > 0) {
+            lines.push({
+              id: `pod-${group}`,
+              label: `${OPTION_GROUP_LABELS[group] ?? group}: ${o.label}`,
+              amount: Number(o.price_delta),
+            });
+          }
         }
         for (const id of podAddons) {
           const o = data.podcastOptions.find((x) => x.id === id);
-          if (o) total += Number(o.price_delta);
+          if (o && Number(o.price_delta) > 0) {
+            lines.push({
+              id: `pod-addon-${o.id}`,
+              label: `Add-on: ${o.label}`,
+              amount: Number(o.price_delta),
+            });
+          }
         }
-        lines.push({ id: "podcast", label: `Podcast: ${podType.label}`, amount: total });
       }
     }
 
