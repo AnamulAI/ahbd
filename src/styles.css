@@ -448,3 +448,14 @@ html {
 
 
 
+
+@keyframes quote-line-bump {
+  0% { transform: scale(1); background-color: color-mix(in oklab, var(--primary) 26%, transparent); }
+  40% { transform: scale(1.05); background-color: color-mix(in oklab, var(--primary) 22%, transparent); }
+  100% { transform: scale(1); background-color: transparent; }
+}
+.quote-line-bump {
+  animation: quote-line-bump 380ms ease-out;
+  transform-origin: right center;
+  border-radius: 6px;
+}
