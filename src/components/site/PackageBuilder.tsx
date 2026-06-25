@@ -242,7 +242,7 @@ export function PackageBuilder() {
       }
       return next;
     });
-  }, [data]);
+  }, [data?.websiteOptions]);
 
   const tiersForUseCase = useMemo(() => {
     if (!data || !useCaseId) return [];
