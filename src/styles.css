@@ -459,3 +459,13 @@ html {
   transform-origin: right center;
   border-radius: 6px;
 }
+
+@keyframes quote-card-bump {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 color-mix(in oklab, var(--primary) 0%, transparent); }
+  40% { transform: scale(1.025); box-shadow: 0 0 28px 6px color-mix(in oklab, var(--primary) 35%, transparent); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 color-mix(in oklab, var(--primary) 0%, transparent); }
+}
+.quote-card-bump {
+  animation: quote-card-bump 380ms ease-out;
+  transform-origin: center center;
+}

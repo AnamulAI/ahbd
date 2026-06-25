@@ -474,37 +474,71 @@ export function PackageBuilder() {
       });
     }
 
-    // AI Agent combined line
+    // AI Agent — itemized
     if (aiEnabled && data) {
       const aiType = data.aiTypes.find((t) => t.id === aiTypeId);
       if (aiType) {
-        let total = Number(aiType.base_price);
+        if (Number(aiType.base_price) > 0) {
+          lines.push({
+            id: "ai-type",
+            label: `AI Agent: ${aiType.label}`,
+            amount: Number(aiType.base_price),
+          });
+        }
         for (const id of aiWhereChecked) {
           const o = data.aiOptions.find((x) => x.id === id);
-          if (o) total += Number(o.price_delta);
+          if (o && Number(o.price_delta) > 0) {
+            lines.push({
+              id: `ai-where-${o.id}`,
+              label: `${OPTION_GROUP_LABELS[o.option_group] ?? o.option_group}: ${o.label}`,
+              amount: Number(o.price_delta),
+            });
+          }
         }
-        for (const id of Object.values(aiSelects)) {
+        for (const [group, id] of Object.entries(aiSelects)) {
           const o = data.aiOptions.find((x) => x.id === id);
-          if (o) total += Number(o.price_delta);
+          if (o && Number(o.price_delta) > 0) {
+            lines.push({
+              id: `ai-${group}`,
+              label: `${OPTION_GROUP_LABELS[group] ?? group}: ${o.label}`,
+              amount: Number(o.price_delta),
+            });
+          }
         }
-        lines.push({ id: "ai-agent", label: `AI Agent: ${aiType.label}`, amount: total });
       }
     }
 
-    // Podcast combined line
+    // Podcast — itemized
     if (podEnabled && data) {
       const podType = data.podcastTypes.find((t) => t.id === podTypeId);
       if (podType) {
-        let total = Number(podType.base_price);
-        for (const id of Object.values(podSelects)) {
+        if (Number(podType.base_price) > 0) {
+          lines.push({
+            id: "pod-type",
+            label: `Podcast: ${podType.label}`,
+            amount: Number(podType.base_price),
+          });
+        }
+        for (const [group, id] of Object.entries(podSelects)) {
           const o = data.podcastOptions.find((x) => x.id === id);
-          if (o) total += Number(o.price_delta);
+          if (o && Number(o.price_delta) > 0) {
+            lines.push({
+              id: `pod-${group}`,
+              label: `${OPTION_GROUP_LABELS[group] ?? group}: ${o.label}`,
+              amount: Number(o.price_delta),
+            });
+          }
         }
         for (const id of podAddons) {
           const o = data.podcastOptions.find((x) => x.id === id);
-          if (o) total += Number(o.price_delta);
+          if (o && Number(o.price_delta) > 0) {
+            lines.push({
+              id: `pod-addon-${o.id}`,
+              label: `Add-on: ${o.label}`,
+              amount: Number(o.price_delta),
+            });
+          }
         }
-        lines.push({ id: "podcast", label: `Podcast: ${podType.label}`, amount: total });
       }
     }
 
@@ -514,23 +548,22 @@ export function PackageBuilder() {
   const total = priceLines.reduce((s, l) => s + l.amount, 0);
   const advance = Math.round(total * 0.1);
 
-  // Track which line items just appeared or changed so we can bump-animate them.
-  const prevSigsRef = useRef<Map<string, string>>(new Map());
-  const [bumpedIds, setBumpedIds] = useState<Set<string>>(new Set());
+  // Bump the entire Live Quote card whenever ANY selection changes.
+  const selectionSig = useMemo(() => {
+    return JSON.stringify({
+      techId, useCaseId, tierId, subOptions,
+      aiEnabled, aiTypeId, aiSelects, aiWhere: [...aiWhereChecked].sort(),
+      podEnabled, podTypeId, podSelects, podAddons: [...podAddons].sort(),
+    });
+  }, [techId, useCaseId, tierId, subOptions, aiEnabled, aiTypeId, aiSelects, aiWhereChecked, podEnabled, podTypeId, podSelects, podAddons]);
+  const firstSigRef = useRef(true);
+  const [cardBump, setCardBump] = useState(0);
   useEffect(() => {
-    const next = new Map<string, string>();
-    const justBumped = new Set<string>();
-    for (const l of priceLines) {
-      const sig = `${l.label}|${l.amount}`;
-      next.set(l.id, sig);
-      if (prevSigsRef.current.get(l.id) !== sig) justBumped.add(l.id);
-    }
-    prevSigsRef.current = next;
-    if (justBumped.size === 0) return;
-    setBumpedIds(justBumped);
-    const t = window.setTimeout(() => setBumpedIds(new Set()), 420);
+    if (firstSigRef.current) { firstSigRef.current = false; return; }
+    setCardBump((n) => n + 1);
+    const t = window.setTimeout(() => {}, 420);
     return () => window.clearTimeout(t);
-  }, [priceLines]);
+  }, [selectionSig]);
 
   if (error) {
     return (
@@ -831,60 +864,61 @@ export function PackageBuilder() {
         </div>
       </div>
 
-      {/* Right column: sticky live quote, plus promo cards that scroll below it */}
-      <aside className="flex flex-col gap-6">
-        <div className="lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
-          <div className="rounded-xl border border-white/[0.08] bg-[oklch(0.15_0.02_260)] p-6">
-            <Eyebrow>// LIVE QUOTE</Eyebrow>
-            <h3 className="mt-2 text-lg font-semibold text-white">Your custom build</h3>
+      {/* Right column: ENTIRE stacked column is sticky as one unit */}
+      <aside className="lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
+        <div className="flex flex-col gap-6">
+          {/* Live Quote — Pricing Reveal Card pattern (permanent featured glow) */}
+          <div key={`quote-${cardBump}`} className="relative quote-card-bump">
+            <div
+              aria-hidden
+              className="absolute -inset-px rounded-[1.25rem] bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/40 to-[#F97316] opacity-60 blur-2xl"
+            />
+            <div
+              aria-hidden
+              className="absolute -inset-px rounded-[1.25rem] bg-gradient-to-r from-[#3B82F6] to-[#F97316] opacity-80"
+            />
+            <div className="relative rounded-[1.15rem] bg-[oklch(0.15_0.02_260)] p-6">
+              <Eyebrow>// LIVE QUOTE</Eyebrow>
+              <h3 className="mt-2 text-lg font-semibold text-white">Your custom build</h3>
 
-            <ul className="mt-5 space-y-3 text-sm">
-              {priceLines.length === 0 ? (
-                <li className="text-muted-foreground">
-                  Make selections to see your price build up live.
-                </li>
-              ) : (
-                priceLines.map((l) => (
-                  <li
-                    key={l.id}
-                    className={[
-                      "flex items-start justify-between gap-4 px-2 py-1 -mx-2 animate-fade-in",
-                      bumpedIds.has(l.id) ? "quote-line-bump" : "",
-                    ].join(" ")}
-                  >
-                    <span className="text-muted-foreground">{l.label}</span>
-                    <span className="shrink-0 font-mono text-white">
-                      {l.amount > 0 ? fmt(l.amount) : "included"}
-                    </span>
+              <ul className="mt-5 space-y-3 text-sm">
+                {priceLines.length === 0 ? (
+                  <li className="text-muted-foreground">
+                    Make selections to see your price build up live.
                   </li>
-                ))
-              )}
-            </ul>
+                ) : (
+                  priceLines.map((l) => (
+                    <li
+                      key={l.id}
+                      className="flex items-start justify-between gap-4 animate-fade-in"
+                    >
+                      <span className="text-muted-foreground">{l.label}</span>
+                      <span className="shrink-0 font-mono text-white">{fmt(l.amount)}</span>
+                    </li>
+                  ))
+                )}
+              </ul>
 
-            <div className="my-5 h-px w-full bg-white/10" />
+              <div className="my-5 h-px w-full bg-white/10" />
 
-            <div className="flex items-baseline justify-between">
-              <span className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">Total</span>
-              <span className="font-display text-3xl font-bold text-gradient-vo">{fmt(total)}</span>
+              <div className="flex items-baseline justify-between">
+                <span className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">Total</span>
+                <span className="font-display text-3xl font-bold text-gradient-vo">{fmt(total)}</span>
+              </div>
+              <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
+                <span>10% advance to secure the order</span>
+                <span className="font-mono">{fmt(advance)}</span>
+              </div>
+
+              <p className="mt-5 text-[11px] leading-relaxed text-muted-foreground">
+                Payment options shown after your build is complete.
+              </p>
             </div>
-            <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
-              <span>10% advance to secure the order</span>
-              <span className="font-mono">{fmt(advance)}</span>
-            </div>
-
-            <p className="mt-5 text-[11px] leading-relaxed text-muted-foreground">
-              Payment options shown after your build is complete.
-            </p>
           </div>
+
+          {visiblePromoCards.length > 0 &&
+            visiblePromoCards.map((c) => <PromoCard key={c.id} card={c} />)}
         </div>
-
-        {visiblePromoCards.length > 0 && (
-          <div className="flex flex-col gap-4">
-            {visiblePromoCards.map((c) => (
-              <PromoCard key={c.id} card={c} />
-            ))}
-          </div>
-        )}
       </aside>
     </div>
   );
