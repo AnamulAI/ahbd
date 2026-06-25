@@ -831,44 +831,60 @@ export function PackageBuilder() {
         </div>
       </div>
 
-      {/* Live price sidebar */}
-      <aside className="lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
-        <div className="rounded-xl border border-white/[0.08] bg-[oklch(0.15_0.02_260)] p-6">
-          <Eyebrow>// LIVE QUOTE</Eyebrow>
-          <h3 className="mt-2 text-lg font-semibold text-white">Your custom build</h3>
+      {/* Right column: sticky live quote, plus promo cards that scroll below it */}
+      <aside className="flex flex-col gap-6">
+        <div className="lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
+          <div className="rounded-xl border border-white/[0.08] bg-[oklch(0.15_0.02_260)] p-6">
+            <Eyebrow>// LIVE QUOTE</Eyebrow>
+            <h3 className="mt-2 text-lg font-semibold text-white">Your custom build</h3>
 
-          <ul className="mt-5 space-y-3 text-sm">
-            {priceLines.length === 0 ? (
-              <li className="text-muted-foreground">
-                Make selections to see your price build up live.
-              </li>
-            ) : (
-              priceLines.map((l) => (
-                <li key={l.id} className="flex items-start justify-between gap-4">
-                  <span className="text-muted-foreground">{l.label}</span>
-                  <span className="shrink-0 font-mono text-white">
-                    {l.amount > 0 ? fmt(l.amount) : "included"}
-                  </span>
+            <ul className="mt-5 space-y-3 text-sm">
+              {priceLines.length === 0 ? (
+                <li className="text-muted-foreground">
+                  Make selections to see your price build up live.
                 </li>
-              ))
-            )}
-          </ul>
+              ) : (
+                priceLines.map((l) => (
+                  <li
+                    key={l.id}
+                    className={[
+                      "flex items-start justify-between gap-4 px-2 py-1 -mx-2 animate-fade-in",
+                      bumpedIds.has(l.id) ? "quote-line-bump" : "",
+                    ].join(" ")}
+                  >
+                    <span className="text-muted-foreground">{l.label}</span>
+                    <span className="shrink-0 font-mono text-white">
+                      {l.amount > 0 ? fmt(l.amount) : "included"}
+                    </span>
+                  </li>
+                ))
+              )}
+            </ul>
 
-          <div className="my-5 h-px w-full bg-white/10" />
+            <div className="my-5 h-px w-full bg-white/10" />
 
-          <div className="flex items-baseline justify-between">
-            <span className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">Total</span>
-            <span className="font-display text-3xl font-bold text-gradient-vo">{fmt(total)}</span>
+            <div className="flex items-baseline justify-between">
+              <span className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">Total</span>
+              <span className="font-display text-3xl font-bold text-gradient-vo">{fmt(total)}</span>
+            </div>
+            <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
+              <span>10% advance to secure the order</span>
+              <span className="font-mono">{fmt(advance)}</span>
+            </div>
+
+            <p className="mt-5 text-[11px] leading-relaxed text-muted-foreground">
+              Payment options shown after your build is complete.
+            </p>
           </div>
-          <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
-            <span>10% advance to secure the order</span>
-            <span className="font-mono">{fmt(advance)}</span>
-          </div>
-
-          <p className="mt-5 text-[11px] leading-relaxed text-muted-foreground">
-            Payment options shown after your build is complete.
-          </p>
         </div>
+
+        {visiblePromoCards.length > 0 && (
+          <div className="flex flex-col gap-4">
+            {visiblePromoCards.map((c) => (
+              <PromoCard key={c.id} card={c} />
+            ))}
+          </div>
+        )}
       </aside>
     </div>
   );
