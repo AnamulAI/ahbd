@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
 import {
   Accordion,
   AccordionItem,
@@ -16,9 +17,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, Loader2, Star } from "lucide-react";
 import { PromoCard, type PromoCardData } from "./PromoCard";
 import { OptionIconBadge } from "./OptionIconBadge";
+
+type PaymentPlan = "installments" | "pay_in_full" | "milestone";
 
 // ---------- Types ----------
 type TechApproach = {
