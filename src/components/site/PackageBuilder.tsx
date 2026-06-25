@@ -514,6 +514,24 @@ export function PackageBuilder() {
   const total = priceLines.reduce((s, l) => s + l.amount, 0);
   const advance = Math.round(total * 0.1);
 
+  // Track which line items just appeared or changed so we can bump-animate them.
+  const prevSigsRef = useRef<Map<string, string>>(new Map());
+  const [bumpedIds, setBumpedIds] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    const next = new Map<string, string>();
+    const justBumped = new Set<string>();
+    for (const l of priceLines) {
+      const sig = `${l.label}|${l.amount}`;
+      next.set(l.id, sig);
+      if (prevSigsRef.current.get(l.id) !== sig) justBumped.add(l.id);
+    }
+    prevSigsRef.current = next;
+    if (justBumped.size === 0) return;
+    setBumpedIds(justBumped);
+    const t = window.setTimeout(() => setBumpedIds(new Set()), 420);
+    return () => window.clearTimeout(t);
+  }, [priceLines]);
+
   if (error) {
     return (
       <div className="rounded-xl border border-white/[0.08] bg-[oklch(0.15_0.02_260)] p-6 text-sm text-muted-foreground">
