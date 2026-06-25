@@ -46,7 +46,7 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 
 function StatItem({ value, label }: { value: string; label: string }) {
   return (
-    <div className="flex flex-col items-center gap-1 px-5 sm:px-7">
+    <div className="flex flex-col items-center gap-1 px-3 sm:px-7">
       <div className="font-display text-2xl font-bold text-white sm:text-3xl">
         {value}
       </div>
