@@ -80,6 +80,7 @@ type BuilderData = {
   podcastTypes: TypeRow[];
   aiOptions: BuilderOption[];
   podcastOptions: BuilderOption[];
+  promoCards: PromoCardData[];
 };
 
 // ---------- Hook ----------
