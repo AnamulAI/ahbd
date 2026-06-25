@@ -593,18 +593,11 @@ function Index() {
             </div>
 
             <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {[
-                "ecommerce-store-cedar-leather-co",
-                "custom-gpt-harborline-insurance",
-                "podcast-launch-the-daily-builder",
-                "conversion-landing-page-fittrack",
-              ]
-                .map((slug) => getProjectBySlug(slug))
-                .filter((p): p is NonNullable<typeof p> => Boolean(p))
-                .map((project) => (
-                  <ProjectCard key={project.slug} project={project} />
-                ))}
+              {getLatestProjects(3).map((project) => (
+                <ProjectCard key={project.slug} project={project} />
+              ))}
             </div>
+
 
             <div className="mt-12 text-center">
               <Link
