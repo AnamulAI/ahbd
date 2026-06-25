@@ -548,23 +548,22 @@ export function PackageBuilder() {
   const total = priceLines.reduce((s, l) => s + l.amount, 0);
   const advance = Math.round(total * 0.1);
 
-  // Track which line items just appeared or changed so we can bump-animate them.
-  const prevSigsRef = useRef<Map<string, string>>(new Map());
-  const [bumpedIds, setBumpedIds] = useState<Set<string>>(new Set());
+  // Bump the entire Live Quote card whenever ANY selection changes.
+  const selectionSig = useMemo(() => {
+    return JSON.stringify({
+      techId, useCaseId, tierId, subOptions,
+      aiEnabled, aiTypeId, aiSelects, aiWhere: [...aiWhereChecked].sort(),
+      podEnabled, podTypeId, podSelects, podAddons: [...podAddons].sort(),
+    });
+  }, [techId, useCaseId, tierId, subOptions, aiEnabled, aiTypeId, aiSelects, aiWhereChecked, podEnabled, podTypeId, podSelects, podAddons]);
+  const firstSigRef = useRef(true);
+  const [cardBump, setCardBump] = useState(0);
   useEffect(() => {
-    const next = new Map<string, string>();
-    const justBumped = new Set<string>();
-    for (const l of priceLines) {
-      const sig = `${l.label}|${l.amount}`;
-      next.set(l.id, sig);
-      if (prevSigsRef.current.get(l.id) !== sig) justBumped.add(l.id);
-    }
-    prevSigsRef.current = next;
-    if (justBumped.size === 0) return;
-    setBumpedIds(justBumped);
-    const t = window.setTimeout(() => setBumpedIds(new Set()), 420);
+    if (firstSigRef.current) { firstSigRef.current = false; return; }
+    setCardBump((n) => n + 1);
+    const t = window.setTimeout(() => {}, 420);
     return () => window.clearTimeout(t);
-  }, [priceLines]);
+  }, [selectionSig]);
 
   if (error) {
     return (
