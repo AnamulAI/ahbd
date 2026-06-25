@@ -366,29 +366,27 @@ export function PackageBuilder() {
                   <SelectValue placeholder="Choose use case…" />
                 </SelectTrigger>
                 <SelectContent>
-                  {data.useCases.map((u) => {
-                    const p = data.pricing.find(
-                      (x) =>
-                        x.use_case_id === u.id && x.tech_approach_id === techId,
-                    );
-                    const available = !!p && p.is_available;
-                    return (
-                      <SelectItem
-                        key={u.id}
-                        value={u.id}
-                        disabled={!available}
-                      >
-                        <span className="flex w-full items-center justify-between gap-4">
-                          <span>{u.label}</span>
-                          <span className="font-mono text-xs text-muted-foreground">
-                            {available
-                              ? fmt(p!.base_price)
-                              : "Not available — switch to Custom"}
+                  {data.useCases
+                    .map((u) => {
+                      const p = data.pricing.find(
+                        (x) =>
+                          x.use_case_id === u.id &&
+                          x.tech_approach_id === techId,
+                      );
+                      const available = !!p && p.is_available;
+                      if (!available) return null;
+                      return (
+                        <SelectItem key={u.id} value={u.id}>
+                          <span className="flex w-full items-center justify-between gap-4">
+                            <span>{u.label}</span>
+                            <span className="font-mono text-xs text-muted-foreground">
+                              {fmt(p!.base_price)}
+                            </span>
                           </span>
-                        </span>
-                      </SelectItem>
-                    );
-                  })}
+                        </SelectItem>
+                      );
+                    })
+                    .filter(Boolean)}
                 </SelectContent>
               </Select>
             </div>
