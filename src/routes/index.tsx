@@ -46,14 +46,15 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 
 function StatItem({ value, label }: { value: string; label: string }) {
   return (
-    <div className="flex flex-col items-center gap-1 px-5 sm:px-7">
-      <div className="font-display text-2xl font-bold text-white sm:text-3xl">
+    <div className="flex flex-col items-center gap-1 px-2 sm:px-7">
+      <div className="font-display text-xl font-bold text-white sm:text-3xl">
         {value}
       </div>
-      <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+      <div className="text-center font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground sm:text-[10px] sm:tracking-[0.18em]">
         {label}
       </div>
     </div>
+
   );
 }
 
@@ -187,11 +188,12 @@ function Index() {
             </p>
 
             {/* Stats strip */}
-            <div className="mx-auto mt-9 flex max-w-3xl flex-wrap items-center justify-center divide-x divide-white/10">
+            <div className="mx-auto mt-9 flex max-w-3xl items-center justify-center divide-x divide-white/10">
               <StatItem value="12" label="PROJECTS DELIVERED" />
               <StatItem value="3" label="SERVICE LINES" />
               <StatItem value="100%" label="CLIENT SATISFACTION" />
             </div>
+
 
             {/* Dual CTAs */}
             <div className="mx-auto mt-9 flex w-full max-w-md flex-col gap-3 sm:mt-10 sm:flex-row sm:justify-center">
@@ -272,7 +274,7 @@ function Index() {
               {/* Connecting line: horizontal on desktop, vertical on mobile */}
               <div
                 aria-hidden
-                className="absolute left-6 top-0 h-full w-px bg-gradient-to-b from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] md:left-0 md:right-0 md:top-6 md:h-px md:w-auto md:bg-gradient-to-r md:from-[#3B82F6] md:via-[#3B82F6] md:to-[#F97316]"
+                className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-gradient-to-b from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] md:left-0 md:right-0 md:top-6 md:h-px md:w-auto md:translate-x-0 md:bg-gradient-to-r md:from-[#3B82F6] md:via-[#3B82F6] md:to-[#F97316]"
               />
 
               <div className="grid gap-10 md:grid-cols-3 md:gap-8">

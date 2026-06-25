@@ -53,14 +53,15 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 
 function StatItem({ value, label }: { value: string; label: string }) {
   return (
-    <div className="flex flex-col items-center gap-1 px-5 sm:px-7">
-      <div className="font-display text-2xl font-bold text-white sm:text-3xl">
+    <div className="flex flex-col items-center gap-1 px-2 sm:px-7">
+      <div className="font-display text-xl font-bold text-white sm:text-3xl">
         {value}
       </div>
-      <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+      <div className="text-center font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground sm:text-[10px] sm:tracking-[0.18em]">
         {label}
       </div>
     </div>
+
   );
 }
 
@@ -184,7 +185,7 @@ function ProjectsIndexPage() {
             </p>
 
             {/* Stats strip */}
-            <div className="mx-auto mt-9 flex max-w-3xl flex-wrap items-center justify-center divide-x divide-white/10">
+            <div className="mx-auto mt-9 flex max-w-3xl items-center justify-center divide-x divide-white/10">
               <StatItem value="12" label="Projects Delivered" />
               <StatItem value="3" label="Service Lines" />
               <StatItem value="100%" label="Client Satisfaction" />
