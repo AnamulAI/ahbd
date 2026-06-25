@@ -248,6 +248,133 @@ function Index() {
             </p>
           </div>
         </section>
+
+        {/* The Complete DFY Bundle Offer — primary conversion section */}
+        <section
+          id="dfy-bundle"
+          className="relative section-glow-cta py-20 sm:py-28"
+        >
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <div className="text-center">
+              <Eyebrow>// THE COMPLETE PACKAGE</Eyebrow>
+              <h2 className="mt-4 text-3xl font-bold leading-[1.1] text-white sm:text-4xl md:text-5xl">
+                The Complete Brand{" "}
+                <span className="text-gradient-vo">Authority</span> Build
+              </h2>
+              <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+                Everything it takes to go from idea to a brand people trust —
+                built and launched as one connected package.
+              </p>
+            </div>
+
+            {/* Featured offer card */}
+            <div className="relative mt-12">
+              {/* Permanent accent glow behind card */}
+              <div
+                aria-hidden
+                className="absolute -inset-px rounded-[1.25rem] bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/40 to-[#F97316] opacity-60 blur-2xl"
+              />
+              <div
+                aria-hidden
+                className="absolute -inset-px rounded-[1.25rem] bg-gradient-to-r from-[#3B82F6] to-[#F97316] opacity-80"
+              />
+              <div className="relative rounded-[1.15rem] bg-[oklch(0.15_0.02_260)] p-6 sm:p-10 lg:p-12">
+                <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
+                  {/* Left: value stack + price reveal */}
+                  <div>
+                    <div className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
+                      // VALUE STACK
+                    </div>
+                    <ul className="mt-5 space-y-4">
+                      {[
+                        { label: "Web Development — Business Website", price: "$2,500" },
+                        { label: "AI Integrator — API Integration", price: "$1,500" },
+                        { label: "AI Podcast — Business Authority (Setup + Month 1)", price: "$2,499" },
+                      ].map((item) => (
+                        <li
+                          key={item.label}
+                          className="flex items-start justify-between gap-4 text-sm sm:text-base"
+                        >
+                          <span className="text-muted-foreground">{item.label}</span>
+                          <span className="font-mono text-muted-foreground line-through shrink-0">
+                            {item.price}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="my-6 h-px w-full bg-white/10" />
+
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="font-mono uppercase tracking-[0.14em] text-muted-foreground">
+                        Total Value
+                      </span>
+                      <span className="font-mono text-base text-muted-foreground line-through">
+                        $6,499
+                      </span>
+                    </div>
+
+                    <div className="mt-8 rounded-xl border border-white/[0.08] bg-[oklch(0.12_0.02_260)] p-6">
+                      <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                        // YOUR PRICE
+                      </div>
+                      <div className="mt-2 flex flex-wrap items-baseline gap-x-4 gap-y-2">
+                        <span className="font-display text-5xl font-bold sm:text-6xl text-gradient-vo">
+                          $4,990
+                        </span>
+                        <span className="inline-flex items-center rounded-full bg-[#F97316] px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
+                          Save $1,509
+                        </span>
+                      </div>
+                      <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+                        After month 1, Podcast Management continues at $1,500/mo
+                        to keep your show running — cancel anytime.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Right: included checklist + CTA */}
+                  <div className="flex flex-col">
+                    <div className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
+                      // WHAT'S INCLUDED
+                    </div>
+                    <ul className="mt-5 space-y-4">
+                      {[
+                        "A complete website or web app built for the business",
+                        "A custom AI agent integrated into the website, WhatsApp, or internal systems",
+                        "A fully launched podcast with Business Authority setup",
+                        "First month of podcast management included",
+                        "One point of contact for the entire build — no coordinating between vendors",
+                      ].map((item) => (
+                        <li key={item} className="flex items-start gap-3">
+                          <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[oklch(0.62_0.19_255/15%)]">
+                            <Check className="h-3 w-3 text-[color:var(--primary)]" aria-hidden />
+                          </span>
+                          <span className="text-sm leading-relaxed text-white/90 sm:text-base">
+                            {item}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="mt-8 lg:mt-auto lg:pt-8">
+                      <Link
+                        to="/contact"
+                        className="group inline-flex h-14 w-full items-center justify-center gap-2 rounded-full btn-gradient px-8 text-base font-semibold text-white shadow-[0_18px_50px_-12px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_22px_60px_-12px_var(--vo-glow)] active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:scale-100 sm:w-auto sm:min-w-[320px]"
+                      >
+                        Start Your Brand Build
+                        <ArrowRight
+                          className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
+                          aria-hidden
+                        />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
 
     </div>
