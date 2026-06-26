@@ -68,10 +68,10 @@ function ProblemCard({
   description: string;
 }) {
   return (
-    <div className="flex flex-col items-center text-center rounded-xl border border-white/[0.06] bg-[oklch(0.15_0.02_260)] p-5 sm:p-6">
-      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[oklch(0.62_0.19_255/12%)]">
-        <Icon className="h-4 w-4 text-[color:var(--primary)]" />
-      </div>
+    <div className="card-elevated card-elevated-hover flex flex-col items-center text-center p-6">
+      <span className="grid h-12 w-12 place-items-center rounded-xl bg-[color:var(--primary)]/15">
+        <Icon className="h-6 w-6 text-[color:var(--primary)]" />
+      </span>
       <h3 className="mt-4 text-base font-semibold text-white">{title}</h3>
       <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
         {description}
@@ -147,12 +147,12 @@ function ServiceCard({
   href: string;
 }) {
   return (
-    <div className="flex flex-col items-center text-center rounded-xl border border-white/[0.04] bg-white/[0.02] p-5 transition-transform duration-200 hover:-translate-y-1">
-      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[oklch(0.62_0.19_255/8%)]">
-        <Icon className="h-4 w-4 text-[color:var(--primary)]" />
-      </div>
-      <h3 className="mt-3 text-base font-semibold text-white">{title}</h3>
-      <p className="mt-1.5 text-sm text-muted-foreground">{description}</p>
+    <div className="card-elevated card-elevated-hover flex flex-col items-center text-center p-6">
+      <span className="grid h-12 w-12 place-items-center rounded-xl bg-[color:var(--primary)]/15">
+        <Icon className="h-6 w-6 text-[color:var(--primary)]" />
+      </span>
+      <h3 className="mt-4 text-base font-semibold text-white">{title}</h3>
+      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p>
       <Link
         to={href}
         className="group mt-4 inline-flex items-center justify-center gap-1.5 text-sm font-semibold text-[color:var(--primary)] transition-colors hover:text-[#F97316]"
@@ -571,9 +571,10 @@ function Index() {
                 </p>
                 <Link
                   to="/about"
-                  className="mt-6 inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)] hover:opacity-80"
+                  className="group mt-6 inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)] hover:opacity-80"
                 >
-                  Read My Full Story <ArrowRight className="h-3.5 w-3.5" />
+                  Read My Full Story
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" aria-hidden />
                 </Link>
               </div>
             </div>
