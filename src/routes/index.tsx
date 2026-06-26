@@ -174,7 +174,7 @@ function Index() {
       <main>
         {/* Hero */}
         <section className="relative section-glow-hero">
-          <div className="mx-auto max-w-5xl px-4 py-16 text-center sm:px-6 sm:py-24">
+          <div className="mx-auto max-w-5xl px-4 py-20 text-center sm:px-6 sm:py-28">
             <Eyebrow>// DONE-FOR-YOU BRAND AUTHORITY</Eyebrow>
             <h1 className="mt-4 text-4xl font-bold leading-[1.05] text-white sm:text-5xl md:text-6xl">
               From Zero to a Brand People{" "}
