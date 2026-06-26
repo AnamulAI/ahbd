@@ -291,9 +291,9 @@ function QuickContact() {
 
 function SocialsCard() {
   const socials = [
-    { icon: Github, name: "GitHub", handle: "@AnamulAI", href: "https://github.com/AnamulAI" },
-    { icon: Linkedin, name: "LinkedIn", handle: "in/helloenamul", href: "https://linkedin.com/in/helloenamul" },
-    { icon: Facebook, name: "Facebook", handle: "@helloenamul", href: "https://facebook.com/helloenamul" },
+    { icon: SiGithub, name: "GitHub", handle: "@AnamulAI", href: "https://github.com/AnamulAI", color: "#FFFFFF" },
+    { icon: FaLinkedin, name: "LinkedIn", handle: "in/helloenamul", href: "https://linkedin.com/in/helloenamul", color: "#0A66C2" },
+    { icon: SiFacebook, name: "Facebook", handle: "@helloenamul", href: "https://facebook.com/helloenamul", color: "#1877F2" },
   ];
   return (
     <div className="card-elevated card-elevated-hover overflow-hidden">
@@ -320,8 +320,8 @@ function SocialsCard() {
                 rel="noopener noreferrer"
                 className="group flex min-h-[56px] items-center gap-3 rounded-lg border border-transparent px-2 py-2 transition-colors duration-200 hover:border-white/10 hover:bg-white/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)]/50 motion-reduce:transition-none"
               >
-                <span className="grid h-10 w-10 place-items-center rounded-md bg-white/5 text-white/90 transition-colors duration-200 group-hover:text-[color:var(--primary)] motion-reduce:transition-none">
-                  <Icon className="h-5 w-5" />
+                <span className="grid h-10 w-10 place-items-center rounded-md bg-white/5 transition-colors duration-200 motion-reduce:transition-none">
+                  <Icon size={20} style={{ color: s.color }} aria-hidden />
                 </span>
                 <div className="min-w-0">
                   <div className="text-sm font-semibold text-white">{s.name}</div>
