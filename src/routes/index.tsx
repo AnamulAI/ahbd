@@ -708,7 +708,7 @@ function Index() {
                 href="https://wa.me/8801777768353"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-input bg-background px-7 text-sm font-semibold text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-input bg-background px-6 text-sm font-semibold text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
               >
                 <MessageCircle className="h-4 w-4" aria-hidden />
                 WhatsApp Me
