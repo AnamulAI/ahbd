@@ -173,7 +173,7 @@ function ProjectsIndexPage() {
       <main>
         {/* Hero */}
         <section className="relative section-glow-hero">
-          <div className="mx-auto max-w-5xl px-4 py-16 text-center sm:px-6 sm:py-24">
+          <div className="mx-auto max-w-5xl px-4 py-20 text-center sm:px-6 sm:py-28">
             <Eyebrow>// SELECTED WORK</Eyebrow>
             <h1 className="mt-4 text-4xl font-bold leading-[1.05] text-white sm:text-5xl md:text-6xl">
               Real Projects,{" "}
@@ -270,7 +270,7 @@ function ProjectsIndexPage() {
 
         {/* Closing CTA */}
         <section className="relative section-glow-cta">
-          <div className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 sm:py-28">
+          <div className="mx-auto max-w-3xl px-4 py-24 text-center sm:px-6 sm:py-32">
             <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">
               Have a Similar{" "}
               <span className="text-gradient-vo">Project</span>?

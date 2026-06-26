@@ -587,7 +587,7 @@ function BlogPostPage() {
         </section>
 
         {/* Two-column body */}
-        <section className="py-12 sm:py-16">
+        <section className="py-20 sm:py-28">
           <div className="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-14">
             {/* LEFT: article content */}
             <article className="min-w-0">
@@ -643,7 +643,7 @@ function BlogPostPage() {
 
         {/* Closing CTA */}
         <section className="relative section-glow-cta">
-          <div className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 sm:py-28">
+          <div className="mx-auto max-w-3xl px-4 py-24 text-center sm:px-6 sm:py-32">
             <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">
               Have a <span className="text-gradient-vo">Project</span> in Mind?
             </h2>

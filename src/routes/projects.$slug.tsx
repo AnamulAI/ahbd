@@ -163,7 +163,7 @@ function ChallengeSolution({
   paragraphs: string[];
 }) {
   return (
-    <section className="py-16 sm:py-20">
+    <section className="py-20 sm:py-28">
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <SectionHeading eyebrow={eyebrow}>{heading}</SectionHeading>
         <div className="mt-6 space-y-5">
@@ -261,7 +261,7 @@ function pickResultIcon(value: string, label: string): LucideIcon {
 
 function ResultsGrid({ results }: { results: Project["results"] }) {
   return (
-    <section className="py-16 sm:py-20 bg-white/[0.02]">
+    <section className="py-20 sm:py-28 bg-white/[0.02]">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <div className="mx-auto max-w-3xl">
           <SectionHeading eyebrow="THE RESULTS">The Results</SectionHeading>
@@ -302,7 +302,7 @@ function ResultsGrid({ results }: { results: Project["results"] }) {
 function Gallery({ images, alt }: { images: string[]; alt: string }) {
   const [lead, ...rest] = images;
   return (
-    <section className="py-16 sm:py-20">
+    <section className="py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="mx-auto max-w-3xl">
           <SectionHeading eyebrow="PROJECT GALLERY">A Closer Look</SectionHeading>
@@ -350,7 +350,7 @@ function initialsOf(name: string) {
 
 function TestimonialCard({ t }: { t: Project["testimonial"] }) {
   return (
-    <section className="py-16 sm:py-20 bg-white/[0.02]">
+    <section className="py-20 sm:py-28 bg-white/[0.02]">
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <blockquote className="relative overflow-hidden rounded-2xl border border-white/8 bg-[#16181D] p-8 pl-10 sm:p-10 sm:pl-14">
           <span
@@ -385,7 +385,7 @@ function TestimonialCard({ t }: { t: Project["testimonial"] }) {
 function ProcessTimeline({ steps }: { steps: Project["processSteps"] }) {
   if (!steps || steps.length === 0) return null;
   return (
-    <section className="py-16 sm:py-20">
+    <section className="py-20 sm:py-28">
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <SectionHeading eyebrow="HOW I BUILT IT">Process — Step by Step</SectionHeading>
         <ol className="relative mt-10 space-y-8 sm:space-y-10">
@@ -529,7 +529,7 @@ function ProjectDetailPage() {
           paragraphs={project.challenge}
         />
 
-        <section className="py-16 sm:py-20">
+        <section className="py-20 sm:py-28">
           <div className="mx-auto max-w-3xl px-4 sm:px-6">
             <SectionHeading eyebrow="THE SOLUTION">The Solution</SectionHeading>
             <div className="mt-6 space-y-5">
@@ -584,7 +584,7 @@ function ProjectDetailPage() {
 
         {/* Closing CTA */}
         <section className="relative section-glow-cta">
-          <div className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 sm:py-28">
+          <div className="mx-auto max-w-3xl px-4 py-24 text-center sm:px-6 sm:py-32">
             <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">
               Ready to Build{" "}
               <span className="text-gradient-vo">Something Like This?</span>
