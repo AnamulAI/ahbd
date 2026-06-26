@@ -496,17 +496,17 @@ function ClosingCTA() {
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
             to="/contact"
-            className="group inline-flex h-14 items-center gap-2 rounded-full btn-gradient px-8 text-base font-semibold text-black shadow-[0_20px_60px_-15px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.04] hover:shadow-[0_28px_70px_-15px_var(--vo-glow)] hover:brightness-110 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100"
+            className="group inline-flex h-12 items-center gap-2 rounded-full btn-gradient px-6 text-sm font-semibold text-black shadow-[0_12px_40px_-12px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_20px_55px_-12px_var(--vo-glow)] hover:brightness-110 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100"
           >
             Discuss Your Project
-            <ArrowRight className="h-5 w-5 transition group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
+            <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
           </Link>
           <Link
             to="/projects"
-            className="group inline-flex h-14 items-center gap-2 rounded-full border border-[color:var(--primary)]/50 px-8 text-base font-semibold text-white transition-all duration-200 hover:border-[color:var(--primary)] hover:bg-[color:var(--primary)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)] motion-reduce:transition-none"
+            className="group inline-flex h-12 items-center gap-2 rounded-full border border-[color:var(--primary)]/50 px-6 text-sm font-semibold text-white transition-all duration-200 hover:border-[color:var(--primary)] hover:bg-[color:var(--primary)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)] motion-reduce:transition-none"
           >
             See My Work
-            <ArrowRight className="h-5 w-5 transition group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
+            <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
           </Link>
         </div>
       </div>
