@@ -174,7 +174,7 @@ function Index() {
       <main>
         {/* Hero */}
         <section className="relative section-glow-hero">
-          <div className="mx-auto max-w-5xl px-4 py-16 text-center sm:px-6 sm:py-24">
+          <div className="mx-auto max-w-5xl px-4 py-20 text-center sm:px-6 sm:py-28">
             <Eyebrow>// DONE-FOR-YOU BRAND AUTHORITY</Eyebrow>
             <h1 className="mt-4 text-4xl font-bold leading-[1.05] text-white sm:text-5xl md:text-6xl">
               From Zero to a Brand People{" "}
@@ -199,7 +199,7 @@ function Index() {
             <div className="mx-auto mt-9 flex w-full max-w-md flex-col gap-3 sm:mt-10 sm:flex-row sm:justify-center">
               <a
                 href="#dfy-bundle"
-                className="group inline-flex h-12 items-center justify-center gap-2 rounded-full btn-gradient px-7 text-sm font-semibold text-white shadow-[0_10px_36px_-10px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_18px_50px_-12px_var(--vo-glow)] active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:scale-100"
+                className="group inline-flex h-12 items-center justify-center gap-2 rounded-full btn-gradient px-6 text-sm font-semibold text-white shadow-[0_10px_36px_-10px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_18px_50px_-12px_var(--vo-glow)] active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:scale-100"
               >
                 See the Full DFY Package
                 <ArrowRight
@@ -211,7 +211,7 @@ function Index() {
                 href="https://wa.me/8801777768353"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-input bg-background px-7 text-sm font-semibold text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-input bg-background px-6 text-sm font-semibold text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
               >
                 <MessageCircle className="h-4 w-4" aria-hidden />
                 WhatsApp Me
@@ -511,7 +511,7 @@ function Index() {
         </section>
 
         {/* Individual Services */}
-        <section className="relative bg-background py-14 sm:py-20">
+        <section className="relative bg-background py-20 sm:py-28">
           <div className="mx-auto max-w-5xl px-4 sm:px-6">
             <div className="text-center">
               <Eyebrow>// OR START WITH ONE PIECE</Eyebrow>
@@ -547,7 +547,7 @@ function Index() {
         </section>
 
         {/* Section 7 — About (condensed) */}
-        <section className="relative bg-background py-16 sm:py-24">
+        <section className="relative bg-background py-20 sm:py-28">
           <div className="mx-auto max-w-5xl px-4 sm:px-6">
             <div className="grid items-center gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:gap-14">
               <div className="order-1 mx-auto w-full max-w-sm md:order-none">
@@ -581,7 +581,7 @@ function Index() {
         </section>
 
         {/* Section 8 — Selected Work */}
-        <section className="relative bg-background py-16 sm:py-24">
+        <section className="relative bg-background py-20 sm:py-28">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <div className="text-center">
               <Eyebrow>// SELECTED WORK</Eyebrow>
@@ -613,7 +613,7 @@ function Index() {
         </section>
 
         {/* Section 9 — From the Blog */}
-        <section className="relative bg-background py-16 sm:py-24">
+        <section className="relative bg-background py-20 sm:py-28">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <div className="text-center">
               <Eyebrow>// FROM THE BLOG</Eyebrow>
@@ -650,7 +650,7 @@ function Index() {
         </section>
 
         {/* Section 10 — FAQ */}
-        <section className="relative bg-background py-16 sm:py-24">
+        <section className="relative bg-background py-20 sm:py-28">
           <div className="mx-auto max-w-3xl px-4 sm:px-6">
             <div className="text-center">
               <Eyebrow>// FAQ</Eyebrow>
@@ -696,7 +696,7 @@ function Index() {
             <div className="mx-auto mt-9 flex w-full max-w-md flex-col gap-3 sm:mt-10 sm:flex-row sm:justify-center">
               <a
                 href="#dfy-bundle"
-                className="group inline-flex h-12 items-center justify-center gap-2 rounded-full btn-gradient px-7 text-sm font-semibold text-white shadow-[0_10px_36px_-10px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_18px_50px_-12px_var(--vo-glow)] active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:scale-100"
+                className="group inline-flex h-12 items-center justify-center gap-2 rounded-full btn-gradient px-6 text-sm font-semibold text-white shadow-[0_10px_36px_-10px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_18px_50px_-12px_var(--vo-glow)] active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:scale-100"
               >
                 See the Full DFY Package
                 <ArrowRight
@@ -708,7 +708,7 @@ function Index() {
                 href="https://wa.me/8801777768353"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-input bg-background px-7 text-sm font-semibold text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-input bg-background px-6 text-sm font-semibold text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
               >
                 <MessageCircle className="h-4 w-4" aria-hidden />
                 WhatsApp Me

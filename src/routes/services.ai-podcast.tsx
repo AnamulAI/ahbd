@@ -412,7 +412,7 @@ const MARKET_STATS = [
 
 function MarketOpportunitySection() {
   return (
-    <section className="bg-surface border-y border-white/[0.06] py-16 sm:py-20">
+    <section className="py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
           <Eyebrow>// MARKET OPPORTUNITY</Eyebrow>

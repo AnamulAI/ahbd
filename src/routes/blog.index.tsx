@@ -180,7 +180,7 @@ function BlogIndexPage() {
         </section>
 
         {/* Featured + grid */}
-        <section className="pb-16">
+        <section className="pb-20 sm:pb-28">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             {featured && (
               <Link
