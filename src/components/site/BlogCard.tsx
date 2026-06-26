@@ -48,8 +48,8 @@ export function BlogCard({ post }: { post: BlogPost }) {
             <Clock className="h-3.5 w-3.5" aria-hidden />
             {post.readTime} · {formatPublishedDate(post.publishedDate)}
           </span>
-          <span className="inline-flex items-center gap-1 text-[color:var(--primary)] transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">
-            Read <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+          <span className="group/arrow inline-flex items-center gap-1 text-[color:var(--primary)]">
+            Read <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" aria-hidden />
           </span>
         </div>
       </div>
