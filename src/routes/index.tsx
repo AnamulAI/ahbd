@@ -147,12 +147,12 @@ function ServiceCard({
   href: string;
 }) {
   return (
-    <div className="flex flex-col items-center text-center rounded-xl border border-white/[0.04] bg-white/[0.02] p-5 transition-transform duration-200 hover:-translate-y-1">
-      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[oklch(0.62_0.19_255/8%)]">
-        <Icon className="h-4 w-4 text-[color:var(--primary)]" />
-      </div>
-      <h3 className="mt-3 text-base font-semibold text-white">{title}</h3>
-      <p className="mt-1.5 text-sm text-muted-foreground">{description}</p>
+    <div className="card-elevated card-elevated-hover flex flex-col items-center text-center p-6">
+      <span className="grid h-12 w-12 place-items-center rounded-xl bg-[color:var(--primary)]/15">
+        <Icon className="h-6 w-6 text-[color:var(--primary)]" />
+      </span>
+      <h3 className="mt-4 text-base font-semibold text-white">{title}</h3>
+      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p>
       <Link
         to={href}
         className="group mt-4 inline-flex items-center justify-center gap-1.5 text-sm font-semibold text-[color:var(--primary)] transition-colors hover:text-[#F97316]"
