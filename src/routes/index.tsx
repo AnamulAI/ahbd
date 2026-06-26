@@ -511,7 +511,7 @@ function Index() {
         </section>
 
         {/* Individual Services */}
-        <section className="relative bg-background py-14 sm:py-20">
+        <section className="relative bg-background py-20 sm:py-28">
           <div className="mx-auto max-w-5xl px-4 sm:px-6">
             <div className="text-center">
               <Eyebrow>// OR START WITH ONE PIECE</Eyebrow>
