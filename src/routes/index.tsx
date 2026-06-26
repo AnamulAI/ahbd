@@ -547,7 +547,7 @@ function Index() {
         </section>
 
         {/* Section 7 — About (condensed) */}
-        <section className="relative bg-background py-16 sm:py-24">
+        <section className="relative bg-background py-20 sm:py-28">
           <div className="mx-auto max-w-5xl px-4 sm:px-6">
             <div className="grid items-center gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:gap-14">
               <div className="order-1 mx-auto w-full max-w-sm md:order-none">
@@ -581,7 +581,7 @@ function Index() {
         </section>
 
         {/* Section 8 — Selected Work */}
-        <section className="relative bg-background py-16 sm:py-24">
+        <section className="relative bg-background py-20 sm:py-28">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <div className="text-center">
               <Eyebrow>// SELECTED WORK</Eyebrow>
@@ -613,7 +613,7 @@ function Index() {
         </section>
 
         {/* Section 9 — From the Blog */}
-        <section className="relative bg-background py-16 sm:py-24">
+        <section className="relative bg-background py-20 sm:py-28">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <div className="text-center">
               <Eyebrow>// FROM THE BLOG</Eyebrow>
@@ -650,7 +650,7 @@ function Index() {
         </section>
 
         {/* Section 10 — FAQ */}
-        <section className="relative bg-background py-16 sm:py-24">
+        <section className="relative bg-background py-20 sm:py-28">
           <div className="mx-auto max-w-3xl px-4 sm:px-6">
             <div className="text-center">
               <Eyebrow>// FAQ</Eyebrow>
