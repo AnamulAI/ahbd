@@ -259,7 +259,7 @@ function PublishEverywhereStrip() {
     { name: "Twitter / X", Icon: SiX, color: "#FFFFFF" },
     { name: "RSS Feed", Icon: Rss, color: "#F26522" },
     { name: "Spotify", Icon: SiSpotify, color: "#1DB954" },
-    { name: "Apple Podcasts", Icon: SiApplepodcasts, color: "#9933FF" },
+    { name: "Apple Podcasts", Icon: SiApplepodcasts, color: "#9933CC" },
     { name: "YouTube", Icon: SiYoutube, color: "#FF0000" },
     { name: "TikTok", Icon: SiTiktok, color: "#00F2EA" },
   ];
@@ -273,7 +273,7 @@ function PublishEverywhereStrip() {
     { name: "Google Podcasts", Icon: SiGoogle, color: "#4285F4" },
     { name: "RSS Feed", Icon: Rss, color: "#F26522" },
     { name: "Spotify", Icon: SiSpotify, color: "#1DB954" },
-    { name: "Apple Podcasts", Icon: SiApplepodcasts, color: "#9933FF" },
+    { name: "Apple Podcasts", Icon: SiApplepodcasts, color: "#9933CC" },
   ];
 
   return (
