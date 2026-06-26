@@ -297,7 +297,7 @@ function AvatarCodeCard() {
 function BackstorySection() {
   return (
     <section>
-      <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
+      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
         <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
           <div className="text-left">
             <Eyebrow>// the backstory</Eyebrow>
@@ -370,7 +370,7 @@ function JourneySection() {
 
   return (
     <section>
-      <div className="mx-auto max-w-3xl px-4 py-24 sm:px-6 sm:py-32">
+      <div className="mx-auto max-w-3xl px-4 py-20 sm:px-6 sm:py-28">
         <div className="text-center">
           <Eyebrow center>// the journey</Eyebrow>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
@@ -441,7 +441,7 @@ function ApproachSection() {
 
   return (
     <section>
-      <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32">
+      <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
         <div className="text-center">
           <Eyebrow center>// my approach</Eyebrow>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
@@ -482,7 +482,7 @@ function ApproachSection() {
 function ClosingCTA() {
   return (
     <section className="section-glow-cta">
-      <div className="mx-auto max-w-3xl px-4 py-28 text-center sm:px-6 sm:py-36">
+      <div className="mx-auto max-w-3xl px-4 py-24 text-center sm:px-6 sm:py-32">
         <Eyebrow center>// let's build together</Eyebrow>
         <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
           Ready to Build a{" "}
