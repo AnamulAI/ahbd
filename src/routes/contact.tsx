@@ -5,15 +5,14 @@ import {
   Mail,
   MessageCircle,
   Calendar,
-  Github,
-  Linkedin,
-  Facebook,
   MapPin,
   CheckCircle2,
   Rocket,
   ArrowRight,
   CalendarDays,
 } from "lucide-react";
+import { SiGithub, SiFacebook } from "react-icons/si";
+import { FaLinkedin } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
