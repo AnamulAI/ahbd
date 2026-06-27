@@ -551,11 +551,16 @@ function Index() {
           <div className="mx-auto max-w-5xl px-4 sm:px-6">
             <div className="grid items-center gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:gap-14">
               <div className="order-1 mx-auto w-full max-w-sm md:order-none">
-                <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
+                <div className="relative mx-auto aspect-square w-full max-w-[320px]">
+                  {/* Gradient glow halo */}
+                  <div
+                    aria-hidden
+                    className="absolute -inset-3 rounded-full bg-gradient-to-br from-[#3B82F6]/30 to-[#F97316]/30 blur-xl opacity-60"
+                  />
                   <img
                     src={anamAvatar.url}
                     alt="Mohammad Anamul Hoque"
-                    className="aspect-square w-full object-cover"
+                    className="relative aspect-square w-full rounded-full object-cover"
                     loading="lazy"
                   />
                 </div>
