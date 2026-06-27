@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, MessageCircle, Globe, Bot, TrendingUp, Mic, Check, Target, ShieldCheck, Zap, Users, Mic2 } from "lucide-react";
 import { SiteHeader } from "@/components/site/SiteHeader";
@@ -86,15 +87,17 @@ function PhaseCard({
   title,
   description,
   href,
+  isVisible = true,
 }: {
   number: number;
   icon: React.ComponentType<{ className?: string }>;
   title: string;
   description: string;
   href: string;
+  isVisible?: boolean;
 }) {
   return (
-    <div className="relative flex flex-col items-center text-center gap-5">
+    <div className={`relative flex flex-col items-center text-center gap-5 transition-all duration-500 ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90'} motion-reduce:opacity-100 motion-reduce:scale-100`}>
       {/* Numbered badge */}
       <div className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full btn-gradient font-display text-lg font-bold text-white shadow-[0_8px_24px_-8px_var(--vo-glow)] ring-4 ring-background">
         {number}
@@ -168,6 +171,22 @@ function ServiceCard({
 }
 
 function Index() {
+  const [journeyBadge1, setJourneyBadge1] = useState(false);
+  const [journeyLine1, setJourneyLine1] = useState(false);
+  const [journeyBadge2, setJourneyBadge2] = useState(false);
+  const [journeyLine2, setJourneyLine2] = useState(false);
+  const [journeyBadge3, setJourneyBadge3] = useState(false);
+
+  useEffect(() => {
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    timers.push(setTimeout(() => setJourneyBadge1(true), 100));
+    timers.push(setTimeout(() => setJourneyLine1(true), 500));
+    timers.push(setTimeout(() => setJourneyBadge2(true), 1000));
+    timers.push(setTimeout(() => setJourneyLine2(true), 1500));
+    timers.push(setTimeout(() => setJourneyBadge3(true), 2000));
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
@@ -271,10 +290,20 @@ function Index() {
 
             {/* Timeline */}
             <div className="relative mt-16">
-              {/* Connecting line: horizontal on desktop, vertical on mobile */}
+              {/* Desktop line segment 1→2 */}
               <div
                 aria-hidden
-                className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-gradient-to-b from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] md:left-0 md:right-0 md:top-6 md:h-px md:w-auto md:translate-x-0 md:bg-gradient-to-r md:from-[#3B82F6] md:via-[#3B82F6] md:to-[#F97316]"
+                className={`hidden md:block absolute top-6 left-[16.67%] right-1/2 h-px bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] origin-left transition-transform duration-500 ${journeyLine1 ? 'scale-x-100' : 'scale-x-0'} motion-reduce:scale-x-100`}
+              />
+              {/* Desktop line segment 2→3 */}
+              <div
+                aria-hidden
+                className={`hidden md:block absolute top-6 left-1/2 right-[16.67%] h-px bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] origin-left transition-transform duration-500 ${journeyLine2 ? 'scale-x-100' : 'scale-x-0'} motion-reduce:scale-x-100`}
+              />
+              {/* Mobile constrained vertical line */}
+              <div
+                aria-hidden
+                className="md:hidden absolute left-1/2 top-[8%] bottom-[8%] w-px -translate-x-1/2 bg-gradient-to-b from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316]"
               />
 
               <div className="grid gap-10 md:grid-cols-3 md:gap-8">
@@ -284,6 +313,7 @@ function Index() {
                   title="Brand Build"
                   description="A complete website or web app that finally looks and feels as credible as the business actually is."
                   href="/services/web-development"
+                  isVisible={journeyBadge1}
                 />
                 <PhaseCard
                   number={2}
@@ -291,6 +321,7 @@ function Index() {
                   title="AI Agent Integration"
                   description="A custom AI assistant connected directly into the website, WhatsApp, or internal systems — automating what used to take a full team."
                   href="/services/ai-integrator"
+                  isVisible={journeyBadge2}
                 />
                 <PhaseCard
                   number={3}
@@ -298,6 +329,7 @@ function Index() {
                   title="Podcast for Authority"
                   description="A consistent show that builds trust and visibility in the niche — while most competitors are still silent."
                   href="/services/ai-podcast"
+                  isVisible={journeyBadge3}
                 />
               </div>
             </div>
