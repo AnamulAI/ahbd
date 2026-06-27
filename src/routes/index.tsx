@@ -293,12 +293,14 @@ function Index() {
               {/* Desktop line segment 1→2 */}
               <div
                 aria-hidden
-                className={`hidden md:block absolute top-6 left-[16.67%] right-1/2 h-px bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] origin-left transition-transform duration-500 ${journeyLine1 ? 'scale-x-100' : 'scale-x-0'} motion-reduce:scale-x-100`}
+                className={`hidden md:block absolute top-6 h-px bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] origin-left transition-transform duration-500 ${journeyLine1 ? 'scale-x-100' : 'scale-x-0'} motion-reduce:scale-x-100`}
+                style={{ left: 'calc((100% - 4rem) / 6)', right: '50%' }}
               />
               {/* Desktop line segment 2→3 */}
               <div
                 aria-hidden
-                className={`hidden md:block absolute top-6 left-1/2 right-[16.67%] h-px bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] origin-left transition-transform duration-500 ${journeyLine2 ? 'scale-x-100' : 'scale-x-0'} motion-reduce:scale-x-100`}
+                className={`hidden md:block absolute top-6 h-px bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] origin-left transition-transform duration-500 ${journeyLine2 ? 'scale-x-100' : 'scale-x-0'} motion-reduce:scale-x-100`}
+                style={{ left: '50%', right: 'calc((100% - 4rem) / 6)' }}
               />
               {/* Mobile constrained vertical line */}
               <div
