@@ -171,6 +171,22 @@ function ServiceCard({
 }
 
 function Index() {
+  const [journeyBadge1, setJourneyBadge1] = useState(false);
+  const [journeyLine1, setJourneyLine1] = useState(false);
+  const [journeyBadge2, setJourneyBadge2] = useState(false);
+  const [journeyLine2, setJourneyLine2] = useState(false);
+  const [journeyBadge3, setJourneyBadge3] = useState(false);
+
+  useEffect(() => {
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    timers.push(setTimeout(() => setJourneyBadge1(true), 100));
+    timers.push(setTimeout(() => setJourneyLine1(true), 500));
+    timers.push(setTimeout(() => setJourneyBadge2(true), 1000));
+    timers.push(setTimeout(() => setJourneyLine2(true), 1500));
+    timers.push(setTimeout(() => setJourneyBadge3(true), 2000));
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
