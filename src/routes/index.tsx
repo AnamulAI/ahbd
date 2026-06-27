@@ -552,10 +552,14 @@ function Index() {
             <div className="grid items-center gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:gap-14">
               <div className="order-1 mx-auto w-full max-w-sm md:order-none">
                 <div className="relative mx-auto aspect-square w-full max-w-[320px]">
-                  {/* Gradient glow halo */}
+                  {/* Blue→orange gradient glow halo — two offset radial blobs */}
                   <div
                     aria-hidden
-                    className="absolute -inset-3 rounded-full bg-gradient-to-br from-[#3B82F6]/30 to-[#F97316]/30 blur-xl opacity-60"
+                    className="absolute -inset-4 rounded-full bg-[radial-gradient(65%_65%_at_25%_25%,rgba(59,130,246,0.45),transparent_70%)] blur-xl"
+                  />
+                  <div
+                    aria-hidden
+                    className="absolute -inset-4 rounded-full bg-[radial-gradient(65%_65%_at_75%_75%,rgba(249,115,22,0.40),transparent_70%)] blur-xl"
                   />
                   <img
                     src={anamAvatar.url}
