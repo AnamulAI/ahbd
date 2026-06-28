@@ -97,7 +97,7 @@ function PhaseCard({
   isVisible?: boolean;
 }) {
   return (
-    <div className={`relative flex flex-col items-center text-center gap-5 transition-all duration-500 ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90'} motion-reduce:opacity-100 motion-reduce:scale-100`}>
+    <div className={`relative flex flex-col items-center text-center gap-5 transition-all duration-[750ms] ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90'} motion-reduce:opacity-100 motion-reduce:scale-100`}>
       {/* Numbered badge */}
       <div className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full btn-gradient font-display text-lg font-bold text-white shadow-[0_8px_24px_-8px_var(--vo-glow)] ring-4 ring-background">
         {number}
