@@ -586,15 +586,14 @@ function Index() {
             <div className="grid items-center gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:gap-14">
               <div className="order-1 mx-auto w-full max-w-sm md:order-none">
                 <div className="relative mx-auto aspect-square w-full max-w-[320px]">
-                  {/* Outer glow — matches Pricing Reveal Card halo */}
+                  {/* Soft ambient blue→orange glow — two radial blobs like hero background */}
                   <div
                     aria-hidden
-                    className="absolute -inset-4 rounded-full bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/40 to-[#F97316] opacity-60 blur-2xl"
+                    className="absolute -inset-8 rounded-full bg-[radial-gradient(65%_65%_at_25%_25%,rgba(59,130,246,0.35),transparent_70%)] blur-[40px] opacity-50"
                   />
-                  {/* Gradient border ring — matches Pricing Reveal Card edge */}
                   <div
                     aria-hidden
-                    className="absolute -inset-[2px] rounded-full bg-gradient-to-r from-[#3B82F6] to-[#F97316] opacity-80"
+                    className="absolute -inset-8 rounded-full bg-[radial-gradient(65%_65%_at_75%_75%,rgba(249,115,22,0.30),transparent_70%)] blur-[40px] opacity-50"
                   />
                   <img
                     src={anamAvatar.url}
