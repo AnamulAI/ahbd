@@ -586,14 +586,16 @@ function Index() {
             <div className="grid items-center gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:gap-14">
               <div className="order-1 mx-auto w-full max-w-sm md:order-none">
                 <div className="relative mx-auto aspect-square w-full max-w-[320px]">
-                  {/* Soft ambient blue→orange glow — two radial blobs like hero background */}
+                  {/* Soft ambient blue + orange glow — two solid blurred circles */}
                   <div
                     aria-hidden
-                    className="absolute -inset-8 rounded-full bg-[radial-gradient(65%_65%_at_25%_25%,rgba(59,130,246,0.35),transparent_70%)] blur-[40px] opacity-50"
+                    className="absolute -inset-6 rounded-full bg-[#3B82F6] blur-[56px] opacity-50"
+                    style={{ transform: "translate(-12%, -12%)" }}
                   />
                   <div
                     aria-hidden
-                    className="absolute -inset-8 rounded-full bg-[radial-gradient(65%_65%_at_75%_75%,rgba(249,115,22,0.30),transparent_70%)] blur-[40px] opacity-50"
+                    className="absolute -inset-6 rounded-full bg-[#F97316] blur-[56px] opacity-45"
+                    style={{ transform: "translate(12%, 12%)" }}
                   />
                   <img
                     src={anamAvatar.url}
