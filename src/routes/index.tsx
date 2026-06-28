@@ -179,11 +179,11 @@ function Index() {
 
   useEffect(() => {
     const timers: ReturnType<typeof setTimeout>[] = [];
-    timers.push(setTimeout(() => setJourneyBadge1(true), 100));
-    timers.push(setTimeout(() => setJourneyLine1(true), 500));
-    timers.push(setTimeout(() => setJourneyBadge2(true), 1000));
-    timers.push(setTimeout(() => setJourneyLine2(true), 1500));
-    timers.push(setTimeout(() => setJourneyBadge3(true), 2000));
+    timers.push(setTimeout(() => setJourneyBadge1(true), 0));
+    timers.push(setTimeout(() => setJourneyLine1(true), 1000));
+    timers.push(setTimeout(() => setJourneyBadge2(true), 2200));
+    timers.push(setTimeout(() => setJourneyLine2(true), 3200));
+    timers.push(setTimeout(() => setJourneyBadge3(true), 4400));
     return () => timers.forEach(clearTimeout);
   }, []);
 
