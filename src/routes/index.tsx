@@ -293,7 +293,7 @@ function Index() {
               {/* Desktop line segment 1→2 */}
               <div
                 aria-hidden
-                className={`hidden md:block absolute top-6 h-px bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] origin-left transition-transform duration-500 ${journeyLine1 ? 'scale-x-100' : 'scale-x-0'} motion-reduce:scale-x-100`}
+                className={`hidden md:block absolute top-6 h-px bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] origin-left transition-transform duration-[950ms] ${journeyLine1 ? 'scale-x-100' : 'scale-x-0'} motion-reduce:scale-x-100`}
                 style={{ left: 'calc((100% - 4rem) / 6)', right: '50%' }}
               />
               {/* Desktop line segment 2→3 */}
