@@ -97,7 +97,7 @@ function PhaseCard({
   isVisible?: boolean;
 }) {
   return (
-    <div className={`relative flex flex-col items-center text-center gap-5 transition-all duration-500 ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90'} motion-reduce:opacity-100 motion-reduce:scale-100`}>
+    <div className={`relative flex flex-col items-center text-center gap-5 transition-all duration-[750ms] ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90'} motion-reduce:opacity-100 motion-reduce:scale-100`}>
       {/* Numbered badge */}
       <div className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full btn-gradient font-display text-lg font-bold text-white shadow-[0_8px_24px_-8px_var(--vo-glow)] ring-4 ring-background">
         {number}
@@ -179,11 +179,11 @@ function Index() {
 
   useEffect(() => {
     const timers: ReturnType<typeof setTimeout>[] = [];
-    timers.push(setTimeout(() => setJourneyBadge1(true), 100));
-    timers.push(setTimeout(() => setJourneyLine1(true), 500));
-    timers.push(setTimeout(() => setJourneyBadge2(true), 1000));
-    timers.push(setTimeout(() => setJourneyLine2(true), 1500));
-    timers.push(setTimeout(() => setJourneyBadge3(true), 2000));
+    timers.push(setTimeout(() => setJourneyBadge1(true), 0));
+    timers.push(setTimeout(() => setJourneyLine1(true), 1000));
+    timers.push(setTimeout(() => setJourneyBadge2(true), 2200));
+    timers.push(setTimeout(() => setJourneyLine2(true), 3200));
+    timers.push(setTimeout(() => setJourneyBadge3(true), 4400));
     return () => timers.forEach(clearTimeout);
   }, []);
 
@@ -293,13 +293,13 @@ function Index() {
               {/* Desktop line segment 1→2 */}
               <div
                 aria-hidden
-                className={`hidden md:block absolute top-6 h-px bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] origin-left transition-transform duration-500 ${journeyLine1 ? 'scale-x-100' : 'scale-x-0'} motion-reduce:scale-x-100`}
+                className={`hidden md:block absolute top-6 h-px bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] origin-left transition-transform duration-[950ms] ${journeyLine1 ? 'scale-x-100' : 'scale-x-0'} motion-reduce:scale-x-100`}
                 style={{ left: 'calc((100% - 4rem) / 6)', right: '50%' }}
               />
               {/* Desktop line segment 2→3 */}
               <div
                 aria-hidden
-                className={`hidden md:block absolute top-6 h-px bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] origin-left transition-transform duration-500 ${journeyLine2 ? 'scale-x-100' : 'scale-x-0'} motion-reduce:scale-x-100`}
+                className={`hidden md:block absolute top-6 h-px bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] origin-left transition-transform duration-[950ms] ${journeyLine2 ? 'scale-x-100' : 'scale-x-0'} motion-reduce:scale-x-100`}
                 style={{ left: '50%', right: 'calc((100% - 4rem) / 6)' }}
               />
               {/* Mobile constrained vertical line */}
@@ -586,15 +586,14 @@ function Index() {
             <div className="grid items-center gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:gap-14">
               <div className="order-1 mx-auto w-full max-w-sm md:order-none">
                 <div className="relative mx-auto aspect-square w-full max-w-[320px]">
-                  {/* Outer glow — matches Pricing Reveal Card halo */}
+                  {/* Soft ambient blue→orange glow — two radial blobs like hero background */}
                   <div
                     aria-hidden
-                    className="absolute -inset-4 rounded-full bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/40 to-[#F97316] opacity-60 blur-2xl"
+                    className="absolute -inset-8 rounded-full bg-[radial-gradient(65%_65%_at_25%_25%,rgba(59,130,246,0.35),transparent_70%)] blur-[40px] opacity-50"
                   />
-                  {/* Gradient border ring — matches Pricing Reveal Card edge */}
                   <div
                     aria-hidden
-                    className="absolute -inset-[2px] rounded-full bg-gradient-to-r from-[#3B82F6] to-[#F97316] opacity-80"
+                    className="absolute -inset-8 rounded-full bg-[radial-gradient(65%_65%_at_75%_75%,rgba(249,115,22,0.30),transparent_70%)] blur-[40px] opacity-50"
                   />
                   <img
                     src={anamAvatar.url}
