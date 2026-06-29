@@ -139,6 +139,7 @@ function FeaturedSpotlight() {
             </div>
           </div>
         </Link>
+        </div>
       </div>
     </section>
   );
