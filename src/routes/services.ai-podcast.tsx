@@ -611,7 +611,7 @@ function CoreServiceDialog({ children }: { children: React.ReactNode }) {
             <p className="text-sm text-muted-foreground">Ready to launch your show?</p>
             <Link
               to="/contact"
-              className="btn-gradient inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold text-white transition-transform duration-200 hover:scale-[1.03]"
+              className="btn-primary-dark"
             >
               Discuss Your Project <ArrowRight className="h-4 w-4" />
             </Link>
