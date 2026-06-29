@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { ArrowRight, Clock, Mail, Search, X } from "lucide-react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { CtaRevealCard } from "@/components/site/CtaRevealCard";
 import { BlogCard, CategoryBadge } from "@/components/site/BlogCard";
 import { formatPublishedDate, getSortedPosts } from "@/lib/blog-data";
 

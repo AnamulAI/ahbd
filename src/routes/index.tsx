@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, MessageCircle, Globe, Bot, TrendingUp, Mic, Check, Target, ShieldCheck, Zap, Users, Mic2 } from "lucide-react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { CtaRevealCard } from "@/components/site/CtaRevealCard";
 import { PackageBuilder } from "@/components/site/PackageBuilder";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { BlogCard } from "@/components/site/BlogCard";

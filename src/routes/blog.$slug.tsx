@@ -11,6 +11,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import anamAvatar from "@/assets/anam-avatar.png.asset.json";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { CtaRevealCard } from "@/components/site/CtaRevealCard";
 import { BlogCard, CategoryBadge } from "@/components/site/BlogCard";
 import { FloatingShareBar, InlineShareBar } from "@/components/site/FloatingShareBar";
 import {
