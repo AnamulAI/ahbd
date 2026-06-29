@@ -1052,7 +1052,8 @@ export function PackageBuilder() {
                 <div className="mt-4 rounded-lg border border-white/[0.08] bg-background/60 p-4 text-xs text-muted-foreground">
                   <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
                     <span>Total: <span className="font-mono text-white">{fmt(total)}</span></span>
-                    <span>Plan: <span className="text-white">{paymentPlan === "installments" ? "Installments (× 3)" : paymentPlan === "pay_in_full" ? "Pay in Full (25% off)" : "Milestone-Based"}</span></span>
+                    <span>Plan: <span className="text-white">{paymentPlan === "installments" ? `${planSettings.installments_label} (× ${Math.max(1, planSettings.installment_count)})` : paymentPlan === "pay_in_full" ? `${planSettings.pay_in_full_label} (${Math.round(planSettings.pay_in_full_discount_percent)}% off)` : planSettings.milestone_label}</span></span>
+                    <span>{advancePctLabel} advance: <span className="font-mono text-white">{fmt(advance)}</span></span>
                     <span>10% advance: <span className="font-mono text-white">{fmt(advance)}</span></span>
                   </div>
                 </div>
