@@ -11,7 +11,7 @@ export function CategoryBadge({ category }: { category: BlogPost["category"] }) 
   return (
     <span
       className={[
-        "inline-flex items-center self-start rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em]",
+        "inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em]",
         s.badgeClass,
       ].join(" ")}
     >
