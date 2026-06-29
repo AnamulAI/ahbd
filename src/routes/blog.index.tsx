@@ -112,6 +112,127 @@ function NewsletterSection() {
   );
 }
 
+type CategorySectionConfig = {
+  category: BlogCategory;
+  slug: string;
+  eyebrow: string;
+  headlineBefore: string;
+  headlineGradient: string;
+  headlineAfter: string;
+  intro: string;
+  Icon: ComponentType<{ className?: string; "aria-hidden"?: boolean }>;
+  iconTint: string;
+  iconBorder: string;
+  iconColor: string;
+};
+
+const CATEGORY_SECTIONS: CategorySectionConfig[] = [
+  {
+    category: "Web Development",
+    slug: "web-development",
+    eyebrow: "// WEB DEVELOPMENT",
+    headlineBefore: "Build a Site That ",
+    headlineGradient: "Sells",
+    headlineAfter: ", Not Just Looks Good",
+    intro:
+      "Notes on what actually makes a website convert — design choices, tech decisions, and the difference between a brochure site and one that brings in business.",
+    Icon: Code2,
+    iconTint: "bg-[color:var(--primary)]/12",
+    iconBorder: "border-[color:var(--primary)]/30",
+    iconColor: "text-[color:var(--primary)]",
+  },
+  {
+    category: "AI Integrator",
+    slug: "ai-integrator",
+    eyebrow: "// AI INTEGRATOR",
+    headlineBefore: "Make AI Work Where Your Business ",
+    headlineGradient: "Already",
+    headlineAfter: " Lives",
+    intro:
+      "How custom AI agents save time, cut busywork, and connect directly into the tools your team and customers already use — without a separate chat window.",
+    Icon: Bot,
+    iconTint: "bg-[#8B5CF6]/12",
+    iconBorder: "border-[#8B5CF6]/30",
+    iconColor: "text-[#A78BFA]",
+  },
+  {
+    category: "AI Podcast",
+    slug: "ai-podcast",
+    eyebrow: "// AI PODCAST",
+    headlineBefore: "Build Authority While Your Competitors Stay ",
+    headlineGradient: "Quiet",
+    headlineAfter: "",
+    intro:
+      "What it actually takes to launch and grow a podcast — and why it's still one of the lowest-competition ways to build trust in a niche.",
+    Icon: Mic2,
+    iconTint: "bg-[color:var(--orange)]/12",
+    iconBorder: "border-[color:var(--orange)]/30",
+    iconColor: "text-[color:var(--orange)]",
+  },
+];
+
+function CategorySection({
+  section,
+  posts,
+  totalCount,
+}: {
+  section: CategorySectionConfig;
+  posts: BlogPost[];
+  totalCount: number;
+}) {
+  const { Icon } = section;
+  return (
+    <div>
+      <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+        <span
+          className={[
+            "inline-flex h-14 w-14 items-center justify-center rounded-2xl border",
+            section.iconTint,
+            section.iconBorder,
+          ].join(" ")}
+          aria-hidden
+        >
+          <Icon className={`h-7 w-7 ${section.iconColor}`} aria-hidden />
+        </span>
+        <div className="mt-5 font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
+          {section.eyebrow}
+        </div>
+        <h2 className="mt-4 text-3xl font-bold leading-tight text-white sm:text-4xl">
+          {section.headlineBefore}
+          <span className="text-gradient-vo">{section.headlineGradient}</span>
+          {section.headlineAfter}
+        </h2>
+        <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
+          {section.intro}
+        </p>
+      </div>
+
+      <div className="mt-10 grid gap-6 max-md:place-items-center sm:grid-cols-2 lg:grid-cols-3">
+        {posts.map((post) => (
+          <div key={post.slug} className="w-full max-w-sm sm:max-w-none">
+            <BlogCard post={post} />
+          </div>
+        ))}
+      </div>
+
+      {totalCount > 3 && (
+        <div className="mt-8 text-center">
+          <a
+            href={`/blog?category=${section.slug}`}
+            className="group inline-flex items-center gap-1.5 text-sm font-medium text-[color:var(--primary)] hover:underline"
+          >
+            See all {section.category} posts
+            <ArrowRight
+              className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
+              aria-hidden
+            />
+          </a>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function BlogIndexPage() {
   const posts = getSortedPosts();
   const [query, setQuery] = useState("");
