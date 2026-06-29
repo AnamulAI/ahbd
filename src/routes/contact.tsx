@@ -455,7 +455,7 @@ function ClosingCTA({ onSend }: { onSend: () => void }) {
             <div className="mt-8">
               <Button
                 onClick={onSend}
-                className="group h-14 rounded-full btn-gradient px-8 text-base font-semibold text-black shadow-[0_20px_60px_-15px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.04] hover:shadow-[0_28px_70px_-15px_var(--vo-glow)] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100"
+                className="btn-primary-dark group"
               >
                 Send a Message
                 <ArrowRight className="ml-1 h-5 w-5 transition group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
