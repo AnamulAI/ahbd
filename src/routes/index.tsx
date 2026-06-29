@@ -383,18 +383,10 @@ function Index() {
               </p>
             </div>
 
-            {/* Featured offer card */}
-            <div className="relative mt-12">
-              {/* Permanent accent glow behind card */}
-              <div
-                aria-hidden
-                className="absolute -inset-px rounded-[1.25rem] bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/40 to-[#F97316] opacity-60 blur-2xl"
-              />
-              <div
-                aria-hidden
-                className="absolute -inset-px rounded-[1.25rem] bg-gradient-to-r from-[#3B82F6] to-[#F97316] opacity-80"
-              />
-              <div className="relative rounded-[1.15rem] bg-[oklch(0.15_0.02_260)] p-6 sm:p-10 lg:p-12">
+            {/* Featured offer card — Pricing Reveal Card pattern */}
+            <div className="group/reveal relative mt-12">
+              <RevealBorder rounded="rounded-[1.25rem]" radius={20} />
+              <div className="relative rounded-[1.25rem] bg-[oklch(0.15_0.02_260)] p-6 sm:p-10 lg:p-12">
                 <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
                   {/* Left: value stack + price reveal */}
                   <div>
