@@ -686,7 +686,7 @@ function EcommerceCaseStudyDialog({ children }: { children: React.ReactNode }) {
             </p>
             <Link
               to="/contact"
-              className="btn-gradient inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold text-white"
+              className="btn-primary-dark"
             >
               Discuss Your Project <ArrowRight className="h-4 w-4" />
             </Link>
