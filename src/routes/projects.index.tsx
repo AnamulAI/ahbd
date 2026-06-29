@@ -113,7 +113,7 @@ function FeaturedSpotlight() {
               {project.shortDescription}
             </p>
 
-            <div className="mt-2 flex items-center justify-center gap-3 sm:justify-start">
+            <div className="mt-2 flex items-center justify-center gap-3 ">
               <div className="text-gradient-vo font-display text-5xl font-bold leading-none sm:text-6xl">
                 58%
               </div>
@@ -122,7 +122,7 @@ function FeaturedSpotlight() {
               </div>
             </div>
 
-            <div className="mt-2 flex justify-center sm:justify-start">
+            <div className="mt-2 flex justify-center ">
               <span className="inline-flex h-11 items-center gap-2 rounded-full btn-gradient px-5 text-sm font-semibold text-white shadow-[0_10px_36px_-10px_var(--vo-glow)] transition-all duration-200 group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100">
                 View Case Study{" "}
                 <ArrowRight
