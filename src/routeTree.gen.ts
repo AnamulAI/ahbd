@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ServicesWebDevelopmentRouteImport } from './routes/services.web-development'
 import { Route as ServicesAiPodcastRouteImport } from './routes/services.ai-podcast'
 import { Route as ServicesAiIntegratorRouteImport } from './routes/services.ai-integrator'
@@ -23,6 +24,9 @@ import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
 import { Route as InternalBuilderDataTestRouteImport } from './routes/internal.builder-data-test'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AdminSampleBuilderRouteImport } from './routes/admin.sample-builder'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
+import { Route as AdminComingSoonKeyRouteImport } from './routes/admin.coming-soon.$key'
 
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
@@ -52,6 +56,11 @@ const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
 const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicesWebDevelopmentRoute = ServicesWebDevelopmentRouteImport.update({
@@ -94,11 +103,28 @@ const AdminSampleBuilderRoute = AdminSampleBuilderRouteImport.update({
   path: '/admin/sample-builder',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin/login',
+  path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLeadsRoute = AdminLeadsRouteImport.update({
+  id: '/admin/leads',
+  path: '/admin/leads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminComingSoonKeyRoute = AdminComingSoonKeyRouteImport.update({
+  id: '/admin/coming-soon/$key',
+  path: '/admin/coming-soon/$key',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/admin/leads': typeof AdminLeadsRoute
+  '/admin/login': typeof AdminLoginRoute
   '/admin/sample-builder': typeof AdminSampleBuilderRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/internal/builder-data-test': typeof InternalBuilderDataTestRoute
@@ -107,14 +133,18 @@ export interface FileRoutesByFullPath {
   '/services/ai-integrator': typeof ServicesAiIntegratorRoute
   '/services/ai-podcast': typeof ServicesAiPodcastRoute
   '/services/web-development': typeof ServicesWebDevelopmentRoute
+  '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/services/': typeof ServicesIndexRoute
+  '/admin/coming-soon/$key': typeof AdminComingSoonKeyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/admin/leads': typeof AdminLeadsRoute
+  '/admin/login': typeof AdminLoginRoute
   '/admin/sample-builder': typeof AdminSampleBuilderRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/internal/builder-data-test': typeof InternalBuilderDataTestRoute
@@ -123,15 +153,19 @@ export interface FileRoutesByTo {
   '/services/ai-integrator': typeof ServicesAiIntegratorRoute
   '/services/ai-podcast': typeof ServicesAiPodcastRoute
   '/services/web-development': typeof ServicesWebDevelopmentRoute
+  '/admin': typeof AdminIndexRoute
   '/blog': typeof BlogIndexRoute
   '/projects': typeof ProjectsIndexRoute
   '/services': typeof ServicesIndexRoute
+  '/admin/coming-soon/$key': typeof AdminComingSoonKeyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/admin/leads': typeof AdminLeadsRoute
+  '/admin/login': typeof AdminLoginRoute
   '/admin/sample-builder': typeof AdminSampleBuilderRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/internal/builder-data-test': typeof InternalBuilderDataTestRoute
@@ -140,9 +174,11 @@ export interface FileRoutesById {
   '/services/ai-integrator': typeof ServicesAiIntegratorRoute
   '/services/ai-podcast': typeof ServicesAiPodcastRoute
   '/services/web-development': typeof ServicesWebDevelopmentRoute
+  '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/services/': typeof ServicesIndexRoute
+  '/admin/coming-soon/$key': typeof AdminComingSoonKeyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -150,6 +186,8 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/admin/leads'
+    | '/admin/login'
     | '/admin/sample-builder'
     | '/blog/$slug'
     | '/internal/builder-data-test'
@@ -158,14 +196,18 @@ export interface FileRouteTypes {
     | '/services/ai-integrator'
     | '/services/ai-podcast'
     | '/services/web-development'
+    | '/admin/'
     | '/blog/'
     | '/projects/'
     | '/services/'
+    | '/admin/coming-soon/$key'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/contact'
+    | '/admin/leads'
+    | '/admin/login'
     | '/admin/sample-builder'
     | '/blog/$slug'
     | '/internal/builder-data-test'
@@ -174,14 +216,18 @@ export interface FileRouteTypes {
     | '/services/ai-integrator'
     | '/services/ai-podcast'
     | '/services/web-development'
+    | '/admin'
     | '/blog'
     | '/projects'
     | '/services'
+    | '/admin/coming-soon/$key'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/contact'
+    | '/admin/leads'
+    | '/admin/login'
     | '/admin/sample-builder'
     | '/blog/$slug'
     | '/internal/builder-data-test'
@@ -190,15 +236,19 @@ export interface FileRouteTypes {
     | '/services/ai-integrator'
     | '/services/ai-podcast'
     | '/services/web-development'
+    | '/admin/'
     | '/blog/'
     | '/projects/'
     | '/services/'
+    | '/admin/coming-soon/$key'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
+  AdminLeadsRoute: typeof AdminLeadsRoute
+  AdminLoginRoute: typeof AdminLoginRoute
   AdminSampleBuilderRoute: typeof AdminSampleBuilderRoute
   BlogSlugRoute: typeof BlogSlugRoute
   InternalBuilderDataTestRoute: typeof InternalBuilderDataTestRoute
@@ -207,9 +257,11 @@ export interface RootRouteChildren {
   ServicesAiIntegratorRoute: typeof ServicesAiIntegratorRoute
   ServicesAiPodcastRoute: typeof ServicesAiPodcastRoute
   ServicesWebDevelopmentRoute: typeof ServicesWebDevelopmentRoute
+  AdminIndexRoute: typeof AdminIndexRoute
   BlogIndexRoute: typeof BlogIndexRoute
   ProjectsIndexRoute: typeof ProjectsIndexRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
+  AdminComingSoonKeyRoute: typeof AdminComingSoonKeyRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -254,6 +306,13 @@ declare module '@tanstack/react-router' {
       path: '/blog'
       fullPath: '/blog/'
       preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/services/web-development': {
@@ -312,6 +371,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSampleBuilderRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/leads': {
+      id: '/admin/leads'
+      path: '/admin/leads'
+      fullPath: '/admin/leads'
+      preLoaderRoute: typeof AdminLeadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/coming-soon/$key': {
+      id: '/admin/coming-soon/$key'
+      path: '/admin/coming-soon/$key'
+      fullPath: '/admin/coming-soon/$key'
+      preLoaderRoute: typeof AdminComingSoonKeyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -319,6 +399,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
+  AdminLeadsRoute: AdminLeadsRoute,
+  AdminLoginRoute: AdminLoginRoute,
   AdminSampleBuilderRoute: AdminSampleBuilderRoute,
   BlogSlugRoute: BlogSlugRoute,
   InternalBuilderDataTestRoute: InternalBuilderDataTestRoute,
@@ -327,9 +409,11 @@ const rootRouteChildren: RootRouteChildren = {
   ServicesAiIntegratorRoute: ServicesAiIntegratorRoute,
   ServicesAiPodcastRoute: ServicesAiPodcastRoute,
   ServicesWebDevelopmentRoute: ServicesWebDevelopmentRoute,
+  AdminIndexRoute: AdminIndexRoute,
   BlogIndexRoute: BlogIndexRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,
   ServicesIndexRoute: ServicesIndexRoute,
+  AdminComingSoonKeyRoute: AdminComingSoonKeyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
