@@ -232,13 +232,32 @@ function BlogIndexPage() {
               </Link>
             )}
 
-            {rest.length > 0 && (
-              <div className="mt-10 grid gap-6 max-md:place-items-center sm:grid-cols-2 lg:grid-cols-3">
-                {rest.map((post) => (
-                  <div key={post.slug} className="w-full max-w-sm sm:max-w-none">
-                    <BlogCard post={post} />
-                  </div>
-                ))}
+            {hasQuery ? (
+              rest.length > 0 && (
+                <div className="mt-10 grid gap-6 max-md:place-items-center sm:grid-cols-2 lg:grid-cols-3">
+                  {rest.map((post) => (
+                    <div key={post.slug} className="w-full max-w-sm sm:max-w-none">
+                      <BlogCard post={post} />
+                    </div>
+                  ))}
+                </div>
+              )
+            ) : (
+              <div className="mt-20 space-y-24 sm:mt-24 sm:space-y-28">
+                {CATEGORY_SECTIONS.map((section) => {
+                  const categoryPosts = posts.filter(
+                    (p) => p.category === section.category,
+                  );
+                  if (categoryPosts.length === 0) return null;
+                  return (
+                    <CategorySection
+                      key={section.category}
+                      section={section}
+                      posts={categoryPosts.slice(0, 3)}
+                      totalCount={categoryPosts.length}
+                    />
+                  );
+                })}
               </div>
             )}
 
