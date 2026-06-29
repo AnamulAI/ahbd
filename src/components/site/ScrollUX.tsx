@@ -51,7 +51,7 @@ export function ScrollUX() {
         className="pointer-events-none fixed inset-x-0 top-0 z-[60] h-[3px]"
       >
         <div
-          className="h-full origin-left btn-gradient scroll-progress-bar"
+          className="h-full origin-left btn-gradient min-h-9 text-center scroll-progress-bar"
           style={{ transform: `scaleX(${progress / 100})` }}
         />
       </div>
@@ -75,7 +75,7 @@ export function ScrollUX() {
       >
         <span
           aria-hidden="true"
-          className="absolute inset-0 rounded-full opacity-60 blur-md btn-gradient -z-10"
+          className="absolute inset-0 rounded-full opacity-60 blur-md btn-gradient min-h-9 text-center -z-10"
         />
         <ChevronUp className="h-5 w-5 text-white" strokeWidth={2.5} />
       </button>

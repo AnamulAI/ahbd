@@ -126,7 +126,7 @@ function PinGate({ onUnlock }: { onUnlock: (pin: string) => void }) {
             autoComplete="off"
           />
         </div>
-        <Button type="submit" disabled={loading || !value} className="btn-gradient w-full">
+        <Button type="submit" disabled={loading || !value} className="btn-gradient min-h-9 text-center w-full">
           {loading ? <Loader2 className="size-4 animate-spin" /> : "Unlock"}
         </Button>
       </form>
@@ -676,7 +676,7 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
               </Field>
             </div>
 
-            <Button type="submit" className="btn-gradient w-full" disabled={submitting}>
+            <Button type="submit" className="btn-gradient min-h-9 text-center w-full" disabled={submitting}>
               {submitting ? <Loader2 className="size-4 animate-spin" /> : isEditing ? "Save Changes" : "Create Sample"}
             </Button>
           </form>
