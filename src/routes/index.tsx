@@ -90,6 +90,8 @@ function PhaseCard({
   description,
   href,
   isVisible = true,
+  showTopConnector = false,
+  connectorVisible = false,
 }: {
   number: number;
   icon: React.ComponentType<{ className?: string }>;
@@ -97,9 +99,19 @@ function PhaseCard({
   description: string;
   href: string;
   isVisible?: boolean;
+  showTopConnector?: boolean;
+  connectorVisible?: boolean;
 }) {
   return (
     <div className={`relative flex flex-col items-center text-center gap-5 transition-all duration-[750ms] ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90'} motion-reduce:opacity-100 motion-reduce:scale-100`}>
+      {/* Mobile-only vertical connector — sits in the gap BETWEEN this card
+          and the previous card so it never overlaps the icon container. */}
+      {showTopConnector && (
+        <span
+          aria-hidden
+          className={`md:hidden absolute -top-10 left-1/2 h-10 w-px -translate-x-1/2 origin-top bg-gradient-to-b from-[#3B82F6] to-[#F97316] transition-transform duration-[950ms] ${connectorVisible ? 'scale-y-100' : 'scale-y-0'} motion-reduce:scale-y-100`}
+        />
+      )}
       {/* Numbered badge */}
       <div className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full btn-gradient font-display text-lg font-bold text-white shadow-[0_8px_24px_-8px_var(--vo-glow)] ring-4 ring-background">
         {number}
@@ -139,6 +151,7 @@ function PhaseCard({
     </div>
   );
 }
+
 
 
 function Index() {
