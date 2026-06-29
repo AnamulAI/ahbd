@@ -325,35 +325,16 @@ function CheckboxGroup({
 // ---------- Main component ----------
 export type PriceLine = { id: string; label: string; amount: number };
 
-const BUILDER_FAQS: { q: string; a: React.ReactNode }[] = [
-  {
-    q: "What if I already have a domain or hosting?",
-    a: "Just select 'I have my own hosting' in Step 2 — no extra charge. If you don't have one yet, I can set it up for a small fee, or you can grab a discount through my Hostinger link.",
-  },
-  {
-    q: "Do I have to add AI Agent or Podcast?",
-    a: "No — only the website is required. AI Agent and Podcast are optional add-ons you can include now or discuss separately later.",
-  },
-  {
-    q: "How does the 10% advance work?",
-    a: "A 10% advance secures your spot in the project queue once you confirm your build. The remaining balance follows whichever payment plan you choose.",
-  },
-  {
-    q: "Can I change my selections after submitting?",
-    a: "Yes — this is just a starting quote. We'll review everything together over a quick call or WhatsApp before anything is finalized.",
-  },
-  {
-    q: "Where can I read the full terms?",
-    a: (
-      <span>
-        See our{" "}
-        <a href="/terms" className="text-[color:var(--primary)] underline-offset-4 hover:underline">
-          full Terms of Service →
-        </a>
-      </span>
-    ),
-  },
-];
+function buildFaqs(copy: Record<string, string>): { q: string; a: React.ReactNode }[] {
+  const faqs: { q: string; a: React.ReactNode }[] = [];
+  for (let i = 1; i <= 5; i++) {
+    const q = copy[`faq_${i}_question`];
+    const a = copy[`faq_${i}_answer`];
+    if (q && a) faqs.push({ q, a });
+  }
+  return faqs;
+}
+
 
 export function PackageBuilder() {
   const { data, error } = useBuilderData();
