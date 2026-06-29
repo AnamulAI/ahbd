@@ -73,20 +73,13 @@ function FeaturedSpotlight() {
   return (
     <section className="pt-4 sm:pt-8">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="relative">
-          <div
-            aria-hidden
-            className="absolute -inset-px rounded-3xl bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/40 to-[#F97316] opacity-60 blur-2xl"
-          />
-          <div
-            aria-hidden
-            className="absolute -inset-px rounded-3xl bg-gradient-to-r from-[#3B82F6] to-[#F97316] opacity-80"
-          />
+        <div className="group/reveal relative">
+          <RevealBorder rounded="rounded-3xl" radius={24} />
           <Link
             to="/projects/$slug"
             params={{ slug: project.slug }}
             aria-label={`Featured project: ${project.title}`}
-            className="group relative grid overflow-hidden rounded-3xl bg-[#16181D] transition-all duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ring)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:grid-cols-2"
+            className="group relative grid overflow-hidden rounded-3xl bg-[#16181D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ring)] md:grid-cols-2"
           >
             {/* Image */}
           <div className="relative aspect-[16/10] w-full overflow-hidden md:aspect-auto md:h-full">
