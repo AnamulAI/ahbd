@@ -469,3 +469,11 @@ html {
   animation: quote-card-bump 380ms ease-out;
   transform-origin: center center;
 }
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+@utility no-scrollbar {
+  &::-webkit-scrollbar { display: none; }
+}
