@@ -57,7 +57,7 @@ function Eyebrow({ children, center = false }: { children: React.ReactNode; cent
 function HeroSection() {
   return (
     <section className="section-glow-hero">
-      <div className="mx-auto flex max-w-6xl flex-col items-center px-4 pt-20 pb-16 text-center sm:px-6 sm:pt-28 sm:pb-24">
+      <div className="mx-auto flex max-w-6xl flex-col items-center px-4 pt-14 pb-16 text-center sm:px-6 sm:pt-28 sm:pb-24">
         <Eyebrow>// ABOUT ANAM DEV</Eyebrow>
         <h1 className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">
           I Help Brands Build Stronger Authority
@@ -70,7 +70,7 @@ function HeroSection() {
           trusted — without adding unnecessary complexity.
         </p>
 
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
           <Link
             to="/contact"
             className="group inline-flex h-11 items-center gap-2 rounded-full btn-gradient px-5 text-sm font-semibold text-black shadow-[0_12px_40px_-12px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_20px_55px_-12px_var(--vo-glow)] hover:brightness-110 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100"
@@ -88,22 +88,22 @@ function HeroSection() {
 
         </div>
 
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+        <div className="mt-10 grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-3">
           {[
-            { icon: Calendar, num: "5+", label: "Years Experience" },
-            { icon: Trophy, num: "100+", label: "Projects Delivered" },
-            { icon: Briefcase, num: "3", label: "Active Services" },
+            { icon: Calendar, num: "5+", label: "Years Exp." },
+            { icon: Trophy, num: "100+", label: "Projects" },
+            { icon: Briefcase, num: "3", label: "Services" },
           ].map((s) => {
             const Icon = s.icon;
             return (
               <div
                 key={s.label}
-                className="card-elevated inline-flex items-center gap-3 rounded-full px-4 py-2"
+                className="card-elevated flex flex-col items-center rounded-xl px-2 py-3 text-center sm:inline-flex sm:flex-row sm:gap-3 sm:rounded-full sm:px-4 sm:py-2"
               >
-                <span className="grid h-8 w-8 place-items-center rounded-full bg-[color:var(--primary)]/15">
-                  <Icon className="h-4 w-4 text-[color:var(--primary)]" />
+                <span className="grid h-7 w-7 place-items-center rounded-full bg-[color:var(--primary)]/15 sm:h-8 sm:w-8">
+                  <Icon className="h-3.5 w-3.5 text-[color:var(--primary)] sm:h-4 sm:w-4" />
                 </span>
-                <div className="text-sm">
+                <div className="mt-1 text-xs leading-tight sm:mt-0 sm:text-sm">
                   <span className="font-semibold text-white">{s.num}</span>{" "}
                   <span className="text-muted-foreground">{s.label}</span>
                 </div>
