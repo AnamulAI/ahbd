@@ -125,6 +125,7 @@ type CategorySectionConfig = {
   iconTint: string;
   iconBorder: string;
   iconColor: string;
+  glowColor: string;
 };
 
 const CATEGORY_SECTIONS: CategorySectionConfig[] = [
