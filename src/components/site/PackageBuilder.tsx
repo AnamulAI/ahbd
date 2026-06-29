@@ -596,7 +596,8 @@ export function PackageBuilder() {
   }, [techApproach, useCase, currentPricing, tiersForUseCase, tierId, subOptions, data, aiEnabled, aiTypeId, aiSelects, aiWhereChecked, podEnabled, podTypeId, podSelects, podAddons]);
 
   const total = priceLines.reduce((s, l) => s + l.amount, 0);
-  const advance = Math.round(total * 0.1);
+  const advance = Math.round(total * (planSettings.advance_percent / 100));
+  const advancePctLabel = `${Math.round(planSettings.advance_percent)}%`;
 
   // Ref to the Live Quote card DOM for share-as-image capture.
   const quoteCardRef = useRef<HTMLDivElement>(null);
