@@ -389,28 +389,32 @@ function SamplePage() {
         return null;
       })}
 
-      <section className="section-glow-cta relative overflow-hidden">
-        <div className="relative mx-auto max-w-3xl px-6 py-20 text-center">
-          <h2 className="text-4xl sm:text-5xl">
-            {ctaCopy.headlinePrefix}
-            <span className="text-gradient-vo">{ctaCopy.emphasis}</span>
-            {ctaCopy.headlineSuffix}
-          </h2>
-          <p className="mt-5 text-lg text-muted-foreground">
-            {ctaCopy.subheadline}
-          </p>
+      <section className="py-20 sm:py-24">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6">
+          <CtaRevealCard>
+            <div className="flex flex-col items-center text-center">
+              <h2 className="text-4xl sm:text-5xl">
+                {ctaCopy.headlinePrefix}
+                <span className="text-gradient-vo">{ctaCopy.emphasis}</span>
+                {ctaCopy.headlineSuffix}
+              </h2>
+              <p className="mt-5 text-lg text-muted-foreground">
+                {ctaCopy.subheadline}
+              </p>
 
-          <div className="mt-8">
-            <a
-              href={data.cta_link}
-              className="btn-gradient inline-flex items-center gap-2 rounded-full px-8 py-4 text-base font-semibold"
-            >
-              {data.cta_text} <ArrowRight className="size-4" />
-            </a>
-          </div>
-          <p className="mt-6 text-xs text-muted-foreground">
-            No recording equipment needed · Real episodes delivered in days
-          </p>
+              <div className="mt-8">
+                <a
+                  href={data.cta_link}
+                  className="btn-gradient inline-flex items-center gap-2 rounded-full px-8 py-4 text-base font-semibold"
+                >
+                  {data.cta_text} <ArrowRight className="size-4" />
+                </a>
+              </div>
+              <p className="mt-6 text-xs text-muted-foreground">
+                No recording equipment needed · Real episodes delivered in days
+              </p>
+            </div>
+          </CtaRevealCard>
         </div>
       </section>
 
