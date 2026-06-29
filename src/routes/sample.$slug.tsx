@@ -405,7 +405,7 @@ function SamplePage() {
               <div className="mt-8">
                 <a
                   href={data.cta_link}
-                  className="btn-gradient inline-flex items-center gap-2 rounded-full px-8 py-4 text-base font-semibold"
+                  className="btn-gradient inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-base font-semibold"
                 >
                   {data.cta_text} <ArrowRight className="size-4" />
                 </a>
