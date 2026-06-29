@@ -17,6 +17,43 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import anamAvatar from "@/assets/anam-avatar.png.asset.json";
+import { supabase } from "@/integrations/supabase/client";
+
+type SignaturePackage = {
+  web_dev_label: string;
+  web_dev_price: number;
+  ai_integrator_label: string;
+  ai_integrator_price: number;
+  podcast_label: string;
+  podcast_price: number;
+  bundle_price: number;
+  disclosure_text: string;
+  whats_included: string[];
+  cta_label: string;
+};
+
+const SIGNATURE_DEFAULTS: SignaturePackage = {
+  web_dev_label: "Web Development — Business Website",
+  web_dev_price: 2500,
+  ai_integrator_label: "AI Integrator — API Integration",
+  ai_integrator_price: 1500,
+  podcast_label: "AI Podcast — Business Authority (Setup + Month 1)",
+  podcast_price: 2499,
+  bundle_price: 4990,
+  disclosure_text:
+    "After month 1, Podcast Management continues at $1,500/mo to keep your show running — cancel anytime.",
+  whats_included: [
+    "A complete website or web app built for the business",
+    "A custom AI agent integrated into the website, WhatsApp, or internal systems",
+    "A fully launched podcast with Business Authority setup",
+    "First month of podcast management included",
+    "One point of contact for the entire build — no coordinating between vendors",
+  ],
+  cta_label: "Start Your Brand Build",
+};
+
+const fmtUsd = (n: number) =>
+  `$${Math.round(n).toLocaleString("en-US")}`;
 
 
 export const Route = createFileRoute("/")({
@@ -160,6 +197,41 @@ function Index() {
   const [journeyBadge2, setJourneyBadge2] = useState(false);
   const [journeyLine2, setJourneyLine2] = useState(false);
   const [journeyBadge3, setJourneyBadge3] = useState(false);
+  const [sig, setSig] = useState<SignaturePackage>(SIGNATURE_DEFAULTS);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("signature_package_settings" as never)
+        .select("*")
+        .limit(1)
+        .maybeSingle();
+      if (cancelled || !data) return;
+      const r = data as Record<string, unknown>;
+      setSig({
+        web_dev_label: String(r.web_dev_label ?? SIGNATURE_DEFAULTS.web_dev_label),
+        web_dev_price: Number(r.web_dev_price ?? SIGNATURE_DEFAULTS.web_dev_price),
+        ai_integrator_label: String(r.ai_integrator_label ?? SIGNATURE_DEFAULTS.ai_integrator_label),
+        ai_integrator_price: Number(r.ai_integrator_price ?? SIGNATURE_DEFAULTS.ai_integrator_price),
+        podcast_label: String(r.podcast_label ?? SIGNATURE_DEFAULTS.podcast_label),
+        podcast_price: Number(r.podcast_price ?? SIGNATURE_DEFAULTS.podcast_price),
+        bundle_price: Number(r.bundle_price ?? SIGNATURE_DEFAULTS.bundle_price),
+        disclosure_text: String(r.disclosure_text ?? SIGNATURE_DEFAULTS.disclosure_text),
+        whats_included: Array.isArray(r.whats_included)
+          ? (r.whats_included as string[])
+          : SIGNATURE_DEFAULTS.whats_included,
+        cta_label: String(r.cta_label ?? SIGNATURE_DEFAULTS.cta_label),
+      });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const sigTotalValue =
+    sig.web_dev_price + sig.ai_integrator_price + sig.podcast_price;
+  const sigSavings = sigTotalValue - sig.bundle_price;
 
   useEffect(() => {
     const timers: ReturnType<typeof setTimeout>[] = [];
@@ -381,9 +453,9 @@ function Index() {
                     </div>
                     <ul className="mt-5 space-y-4">
                       {[
-                        { label: "Web Development — Business Website", price: "$2,500" },
-                        { label: "AI Integrator — API Integration", price: "$1,500" },
-                        { label: "AI Podcast — Business Authority (Setup + Month 1)", price: "$2,499" },
+                        { label: sig.web_dev_label, price: sig.web_dev_price },
+                        { label: sig.ai_integrator_label, price: sig.ai_integrator_price },
+                        { label: sig.podcast_label, price: sig.podcast_price },
                       ].map((item) => (
                         <li
                           key={item.label}
@@ -391,7 +463,7 @@ function Index() {
                         >
                           <span className="text-muted-foreground">{item.label}</span>
                           <span className="font-mono text-muted-foreground line-through shrink-0">
-                            {item.price}
+                            {fmtUsd(item.price)}
                           </span>
                         </li>
                       ))}
@@ -404,7 +476,7 @@ function Index() {
                         Total Value
                       </span>
                       <span className="font-mono text-base text-muted-foreground line-through">
-                        $6,499
+                        {fmtUsd(sigTotalValue)}
                       </span>
                     </div>
 
@@ -414,15 +486,16 @@ function Index() {
                       </div>
                       <div className="mt-2 flex flex-wrap items-baseline gap-x-4 gap-y-2">
                         <span className="font-display text-5xl font-bold sm:text-6xl text-gradient-vo">
-                          $4,990
+                          {fmtUsd(sig.bundle_price)}
                         </span>
-                        <span className="inline-flex items-center rounded-full bg-[#F97316] px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
-                          Save $1,509
-                        </span>
+                        {sigSavings > 0 && (
+                          <span className="inline-flex items-center rounded-full bg-[#F97316] px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
+                            Save {fmtUsd(sigSavings)}
+                          </span>
+                        )}
                       </div>
                       <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-                        After month 1, Podcast Management continues at $1,500/mo
-                        to keep your show running — cancel anytime.
+                        {sig.disclosure_text}
                       </p>
                     </div>
                   </div>
@@ -433,13 +506,7 @@ function Index() {
                       // WHAT'S INCLUDED
                     </div>
                     <ul className="mt-5 space-y-4">
-                      {[
-                        "A complete website or web app built for the business",
-                        "A custom AI agent integrated into the website, WhatsApp, or internal systems",
-                        "A fully launched podcast with Business Authority setup",
-                        "First month of podcast management included",
-                        "One point of contact for the entire build — no coordinating between vendors",
-                      ].map((item) => (
+                      {sig.whats_included.map((item) => (
                         <li key={item} className="flex items-start gap-3">
                           <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[oklch(0.62_0.19_255/15%)]">
                             <Check className="h-3 w-3 text-[color:var(--primary)]" aria-hidden />
@@ -456,7 +523,7 @@ function Index() {
                         to="/contact"
                         className="group inline-flex w-full items-center justify-center gap-2 rounded-full btn-gradient min-h-9 text-center px-4 py-2 text-base font-semibold text-white shadow-[0_18px_50px_-12px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_22px_60px_-12px_var(--vo-glow)] active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:scale-100 sm:w-auto sm:min-w-[320px]"
                       >
-                        Start Your Brand Build
+                        {sig.cta_label}
                         <ArrowRight
                           className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
                           aria-hidden

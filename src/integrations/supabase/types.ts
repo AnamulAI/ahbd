@@ -397,6 +397,42 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_plan_settings: {
+        Row: {
+          advance_percent: number
+          created_at: string
+          id: string
+          installment_count: number
+          installments_label: string
+          milestone_label: string
+          pay_in_full_discount_percent: number
+          pay_in_full_label: string
+          updated_at: string
+        }
+        Insert: {
+          advance_percent?: number
+          created_at?: string
+          id?: string
+          installment_count?: number
+          installments_label?: string
+          milestone_label?: string
+          pay_in_full_discount_percent?: number
+          pay_in_full_label?: string
+          updated_at?: string
+        }
+        Update: {
+          advance_percent?: number
+          created_at?: string
+          id?: string
+          installment_count?: number
+          installments_label?: string
+          milestone_label?: string
+          pay_in_full_discount_percent?: number
+          pay_in_full_label?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       sample_previews: {
         Row: {
           audience_category: string
@@ -463,6 +499,54 @@ export type Database = {
           topic?: string
           updated_at?: string
           video_url?: string | null
+        }
+        Relationships: []
+      }
+      signature_package_settings: {
+        Row: {
+          ai_integrator_label: string
+          ai_integrator_price: number
+          bundle_price: number
+          created_at: string
+          cta_label: string
+          disclosure_text: string
+          id: string
+          podcast_label: string
+          podcast_price: number
+          updated_at: string
+          web_dev_label: string
+          web_dev_price: number
+          whats_included: Json
+        }
+        Insert: {
+          ai_integrator_label?: string
+          ai_integrator_price?: number
+          bundle_price?: number
+          created_at?: string
+          cta_label?: string
+          disclosure_text?: string
+          id?: string
+          podcast_label?: string
+          podcast_price?: number
+          updated_at?: string
+          web_dev_label?: string
+          web_dev_price?: number
+          whats_included?: Json
+        }
+        Update: {
+          ai_integrator_label?: string
+          ai_integrator_price?: number
+          bundle_price?: number
+          created_at?: string
+          cta_label?: string
+          disclosure_text?: string
+          id?: string
+          podcast_label?: string
+          podcast_price?: number
+          updated_at?: string
+          web_dev_label?: string
+          web_dev_price?: number
+          whats_included?: Json
         }
         Relationships: []
       }

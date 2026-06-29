@@ -383,6 +383,39 @@ export function PackageBuilder() {
   const paymentRef = useRef<HTMLDivElement | null>(null);
   const contactRef = useRef<HTMLDivElement | null>(null);
 
+  // Admin-controlled payment plan settings (live from DB, with fallback defaults).
+  const [planSettings, setPlanSettings] = useState({
+    installment_count: 3,
+    pay_in_full_discount_percent: 25,
+    advance_percent: 10,
+    installments_label: "Installments",
+    pay_in_full_label: "Pay in Full",
+    milestone_label: "Milestone-Based",
+  });
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("payment_plan_settings" as never)
+        .select("*")
+        .limit(1)
+        .maybeSingle();
+      if (cancelled || !data) return;
+      const r = data as Record<string, unknown>;
+      setPlanSettings({
+        installment_count: Math.max(1, Number(r.installment_count ?? 3)),
+        pay_in_full_discount_percent: Number(r.pay_in_full_discount_percent ?? 25),
+        advance_percent: Number(r.advance_percent ?? 10),
+        installments_label: String(r.installments_label ?? "Installments"),
+        pay_in_full_label: String(r.pay_in_full_label ?? "Pay in Full"),
+        milestone_label: String(r.milestone_label ?? "Milestone-Based"),
+      });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const techApproach = data?.techApproaches.find((t) => t.id === techId);
   const useCase = data?.useCases.find((u) => u.id === useCaseId);
 
@@ -563,7 +596,8 @@ export function PackageBuilder() {
   }, [techApproach, useCase, currentPricing, tiersForUseCase, tierId, subOptions, data, aiEnabled, aiTypeId, aiSelects, aiWhereChecked, podEnabled, podTypeId, podSelects, podAddons]);
 
   const total = priceLines.reduce((s, l) => s + l.amount, 0);
-  const advance = Math.round(total * 0.1);
+  const advance = Math.round(total * (planSettings.advance_percent / 100));
+  const advancePctLabel = `${Math.round(planSettings.advance_percent)}%`;
 
   // Ref to the Live Quote card DOM for share-as-image capture.
   const quoteCardRef = useRef<HTMLDivElement>(null);
@@ -890,37 +924,39 @@ export function PackageBuilder() {
         {/* Payment Plan Cards */}
         {paymentOpen && (() => {
 
-          const installments = Math.round(total / 3);
-          const payInFull = Math.round(total * 0.75);
+          const installmentCount = Math.max(1, planSettings.installment_count);
+          const installments = Math.round(total / installmentCount);
+          const discountPct = planSettings.pay_in_full_discount_percent;
+          const payInFull = Math.round(total * (1 - discountPct / 100));
           const phases = ["Website", aiEnabled && "AI Agent", podEnabled && "Podcast"].filter(Boolean) as string[];
           const plans: { id: PaymentPlan; label: string; desc: string; highlight?: boolean; render: React.ReactNode }[] = [
             {
               id: "installments",
-              label: "Installments",
-              desc: "Split into 3 payments",
+              label: planSettings.installments_label,
+              desc: `Split into ${installmentCount} payments`,
               render: (
                 <div>
                   <div className="font-display text-3xl font-bold text-white">{fmt(installments)}</div>
-                  <div className="mt-1 font-mono text-xs text-muted-foreground">× 3 payments</div>
+                  <div className="mt-1 font-mono text-xs text-muted-foreground">× {installmentCount} payments</div>
                 </div>
               ),
             },
             {
               id: "pay_in_full",
-              label: "Pay in Full",
+              label: planSettings.pay_in_full_label,
               desc: "One upfront payment — biggest savings",
               highlight: true,
               render: (
                 <div>
                   <div className="font-mono text-sm text-muted-foreground line-through">{fmt(total)}</div>
                   <div className="font-display text-4xl font-bold text-gradient-vo">{fmt(payInFull)}</div>
-                  <div className="mt-1 font-mono text-xs text-muted-foreground">save 25%</div>
+                  <div className="mt-1 font-mono text-xs text-muted-foreground">save {Math.round(discountPct)}%</div>
                 </div>
               ),
             },
             {
               id: "milestone",
-              label: "Milestone-Based",
+              label: planSettings.milestone_label,
               desc: `Pay per phase as it completes — ${phases.join(" → ")}`,
               render: (
                 <div>
@@ -992,7 +1028,7 @@ export function PackageBuilder() {
               </div>
 
               <p className="mt-5 text-center text-xs text-muted-foreground">
-                All plans require a 10% advance (<span className="font-mono text-white">{fmt(advance)}</span>) to secure your spot.
+                All plans require a {advancePctLabel} advance (<span className="font-mono text-white">{fmt(advance)}</span>) to secure your spot.
               </p>
             </div>
           );
@@ -1016,8 +1052,9 @@ export function PackageBuilder() {
                 <div className="mt-4 rounded-lg border border-white/[0.08] bg-background/60 p-4 text-xs text-muted-foreground">
                   <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
                     <span>Total: <span className="font-mono text-white">{fmt(total)}</span></span>
-                    <span>Plan: <span className="text-white">{paymentPlan === "installments" ? "Installments (× 3)" : paymentPlan === "pay_in_full" ? "Pay in Full (25% off)" : "Milestone-Based"}</span></span>
-                    <span>10% advance: <span className="font-mono text-white">{fmt(advance)}</span></span>
+                    <span>Plan: <span className="text-white">{paymentPlan === "installments" ? `${planSettings.installments_label} (× ${Math.max(1, planSettings.installment_count)})` : paymentPlan === "pay_in_full" ? `${planSettings.pay_in_full_label} (${Math.round(planSettings.pay_in_full_discount_percent)}% off)` : planSettings.milestone_label}</span></span>
+                    <span>{advancePctLabel} advance: <span className="font-mono text-white">{fmt(advance)}</span></span>
+                    
                   </div>
                 </div>
 
@@ -1246,7 +1283,7 @@ export function PackageBuilder() {
                 <span className="font-display text-3xl font-bold text-gradient-vo">{fmt(total)}</span>
               </div>
               <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
-                <span>10% advance to secure the order</span>
+                <span>{advancePctLabel} advance to secure the order</span>
                 <span className="font-mono">{fmt(advance)}</span>
               </div>
 
