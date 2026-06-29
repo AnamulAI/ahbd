@@ -1115,7 +1115,7 @@ export function PackageBuilder() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="group relative inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 transition-transform hover:scale-[1.01] disabled:opacity-60 sm:text-base"
+                    className="group relative inline-flex w-full min-h-9 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-4 py-2 text-center text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 transition-transform hover:scale-[1.01] disabled:opacity-60"
                   >
                     {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
                     {submitting ? "Submitting…" : "Confirm My Build"}
