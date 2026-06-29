@@ -95,6 +95,28 @@ type PromoCard = {
   display_order: number;
   is_active: boolean;
 };
+type SignaturePackage = {
+  id: string;
+  web_dev_label: string;
+  web_dev_price: number;
+  ai_integrator_label: string;
+  ai_integrator_price: number;
+  podcast_label: string;
+  podcast_price: number;
+  bundle_price: number;
+  disclosure_text: string;
+  whats_included: string[];
+  cta_label: string;
+};
+type PaymentPlanSettings = {
+  id: string;
+  installment_count: number;
+  pay_in_full_discount_percent: number;
+  advance_percent: number;
+  installments_label: string;
+  pay_in_full_label: string;
+  milestone_label: string;
+};
 
 const OPTION_GROUP_LABELS: Record<string, string> = {
   design: "Design",
