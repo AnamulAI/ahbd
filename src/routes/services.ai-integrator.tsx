@@ -1018,6 +1018,14 @@ function PricingCalculatorSection() {
   }, [service, scope, scopeConfig.label, selectedAddons, support, oneTimeTotal, recurringTotal]);
 
   const waLink = `https://wa.me/8801777768353?text=${encodeURIComponent(waMessage)}`;
+  const quoteCardRef = useRef<HTMLDivElement>(null);
+  const shareWaMessage = useMemo(() => {
+    const parts = [`Hi! Here's my custom AI Integrator quote — one-time ${fmt(oneTimeTotal)}`];
+    if (recurringTotal > 0) parts.push(`, recurring ${fmt(recurringTotal)}/mo`);
+    parts.push(". See attached image for the full breakdown.");
+    return parts.join("");
+  }, [oneTimeTotal, recurringTotal]);
+  void waLink;
 
   return (
     <section className="py-20 sm:py-28">
