@@ -532,7 +532,7 @@ function StickySidebar({ post }: { post: BlogPost }) {
           </p>
           <Link
             to={post.sidebarCta.href}
-            className="mt-4 inline-flex h-10 w-full items-center justify-center gap-2 rounded-full btn-gradient px-5 text-sm font-semibold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:scale-100"
+            className="btn-primary-dark mt-4 w-full"
           >
             {post.sidebarCta.ctaLabel}
             <ArrowRight className="h-4 w-4" aria-hidden />
