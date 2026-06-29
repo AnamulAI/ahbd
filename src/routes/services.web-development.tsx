@@ -1613,17 +1613,17 @@ function PricingCalculatorSection() {
                   This is an estimate. Final pricing is confirmed after a quick scope discussion.
                 </p>
 
-                <a
-                  href={waLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-gradient mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold text-black shadow-[0_10px_30px_-12px_var(--vo-glow)] transition-all hover:scale-[1.02] hover:brightness-110"
-                >
-                  Get This Quote on WhatsApp
-                  <ArrowRight className="h-4 w-4" />
-                </a>
+                <div data-share-exclude className="mt-5">
+                  <ShareQuoteButton
+                    targetRef={quoteCardRef}
+                    filename="anamdev-web-development-quote"
+                    waMessage={shareWaMessage}
+                    label="Share Quote on WhatsApp"
+                  />
+                </div>
                 <Link
                   to="/contact"
+                  data-share-exclude
                   className="mt-3 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full border border-[color:var(--primary)]/50 px-5 text-sm font-semibold text-white transition-all hover:bg-[color:var(--primary)]/10"
                 >
                   Send via Contact Form
