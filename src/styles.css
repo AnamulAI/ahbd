@@ -476,3 +476,15 @@ html {
   -ms-overflow-style: none;
   &::-webkit-scrollbar { display: none; }
 }
+
+/* When capturing a card as an image (html-to-image), background-clip:text
+   gradients render as solid bars. Force gradient text to a flat color
+   only while the .share-capturing class is present on the captured node. */
+.share-capturing .text-gradient-vo,
+.share-capturing.text-gradient-vo {
+  background: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  -webkit-text-fill-color: #ffffff !important;
+  color: #ffffff !important;
+}
