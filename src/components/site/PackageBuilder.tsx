@@ -1150,23 +1150,66 @@ export function PackageBuilder() {
               <Eyebrow>// LIVE QUOTE</Eyebrow>
               <h3 className="mt-2 text-lg font-semibold text-white">Your custom build</h3>
 
-              <ul className="mt-5 space-y-3 text-sm">
-                {priceLines.length === 0 ? (
-                  <li className="text-muted-foreground">
-                    Make selections to see your price build up live.
-                  </li>
-                ) : (
-                  priceLines.map((l) => (
-                    <li
-                      key={l.id}
-                      className="flex items-start justify-between gap-4 animate-fade-in"
-                    >
-                      <span className="text-muted-foreground">{l.label}</span>
-                      <span className="shrink-0 font-mono text-white">{fmt(l.amount)}</span>
-                    </li>
-                  ))
-                )}
-              </ul>
+              {priceLines.length === 0 ? (
+                <div className="mt-5 text-sm text-muted-foreground">
+                  Make selections to see your price build up live.
+                </div>
+              ) : (
+                <div className="mt-5 space-y-4 text-sm">
+                  {(() => {
+                    const ORDER = ["website", "ai_agent", "podcast"] as const;
+                    const CFG: Record<string, { label: string; color: string }> = {
+                      website: { label: "WEBSITE", color: "#3B82F6" },
+                      ai_agent: { label: "AI AGENT", color: "#8B5CF6" },
+                      podcast: { label: "PODCAST", color: "#F97316" },
+                    };
+                    function catOf(id: string) {
+                      if (id.startsWith("website-") || id.startsWith("opt-")) return "website";
+                      if (id === "ai-type" || id.startsWith("ai-")) return "ai_agent";
+                      if (id === "pod-type" || id.startsWith("pod-")) return "podcast";
+                      return "website";
+                    }
+                    return ORDER.map((cat) => {
+                      const catLines = priceLines.filter((l) => catOf(l.id) === cat);
+                      if (catLines.length === 0) return null;
+                      const cfg = CFG[cat];
+                      const [first, ...rest] = catLines;
+                      return (
+                        <div key={cat}>
+                          <div
+                            className="font-mono text-[10px] uppercase tracking-[0.18em]"
+                            style={{ color: cfg.color }}
+                          >
+                            {cfg.label}
+                          </div>
+                          <div className="mt-1.5 space-y-2">
+                            <div className="flex items-start justify-between gap-4 animate-fade-in">
+                              <span className="text-muted-foreground">{first.label}</span>
+                              <span className="shrink-0 font-mono text-white">{fmt(first.amount)}</span>
+                            </div>
+                            {rest.length > 0 && (
+                              <div
+                                className="space-y-2 border-l-2 pl-3"
+                                style={{ borderColor: `${cfg.color}40` }}
+                              >
+                                {rest.map((l) => (
+                                  <div
+                                    key={l.id}
+                                    className="flex items-start justify-between gap-4 animate-fade-in"
+                                  >
+                                    <span className="text-muted-foreground">{l.label}</span>
+                                    <span className="shrink-0 font-mono text-white">{fmt(l.amount)}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    });
+                  })()}
+                </div>
+              )}
 
               <div className="my-5 h-px w-full bg-white/10" />
 
