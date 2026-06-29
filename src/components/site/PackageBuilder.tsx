@@ -1240,7 +1240,16 @@ export function PackageBuilder() {
                 </p>
               </div>
 
-              <div className="mt-4 flex justify-center">
+              <div data-share-exclude className="mt-5">
+                <ShareQuoteButton
+                  targetRef={quoteCardRef}
+                  filename="anamdev-custom-build-quote"
+                  waMessage={quoteWaMessage}
+                  label="Share Quote as Image"
+                />
+              </div>
+
+              <div data-share-exclude className="mt-3 flex justify-center">
                 <a
                   href="https://wa.me/8801777768353?text=Hi!%20I%20have%20a%20quick%20question%20about%20my%20custom%20build%20on%20the%20DFY%20Package%20Builder."
                   target="_blank"
