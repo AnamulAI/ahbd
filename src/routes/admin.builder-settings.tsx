@@ -117,6 +117,15 @@ type PaymentPlanSettings = {
   pay_in_full_label: string;
   milestone_label: string;
 };
+type BuilderCopyRow = {
+  id: string;
+  key: string;
+  value: string;
+  label: string;
+  group_key: string;
+  display_order: number;
+};
+
 
 const OPTION_GROUP_LABELS: Record<string, string> = {
   design: "Design",
