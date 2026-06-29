@@ -100,12 +100,16 @@ export function RevealBorder({
 export function RevealBorderCircle() {
   const reactId = useId();
   const gradId = `reveal-border-circle-${reactId.replace(/[:]/g, "")}`;
+  // Real circumference for r=49.5 in a 100x100 viewBox. Using explicit values
+  // (no pathLength / no non-scaling-stroke) avoids browser quirks where the
+  // dash pattern renders as broken arcs instead of a continuous trace.
+  const R = 49.5;
+  const C = 2 * Math.PI * R;
   return (
     <svg
       aria-hidden
       viewBox="0 0 100 100"
-      preserveAspectRatio="none"
-      className="pointer-events-none absolute inset-0 h-full w-full overflow-visible opacity-0 transition-opacity duration-200 group-hover/reveal:opacity-100 group-focus-within/reveal:opacity-100 motion-reduce:transition-none"
+      className="pointer-events-none absolute inset-0 h-full w-full opacity-0 transition-opacity duration-200 group-hover/reveal:opacity-100 group-focus-within/reveal:opacity-100 motion-reduce:transition-none"
     >
       <defs>
         <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
@@ -116,16 +120,16 @@ export function RevealBorderCircle() {
       <circle
         cx="50"
         cy="50"
-        r="49.25"
+        r={R}
         fill="none"
         stroke={`url(#${gradId})`}
-        strokeWidth={1.5}
-        vectorEffect="non-scaling-stroke"
-        pathLength={1}
-        strokeDasharray={1}
-        strokeDashoffset={1}
+        strokeWidth={0.75}
+        strokeLinecap="round"
+        strokeDasharray={C}
+        strokeDashoffset={C}
         transform="rotate(-90 50 50)"
-        className="transition-[stroke-dashoffset] duration-[1200ms] ease-out group-hover/reveal:[stroke-dashoffset:0] group-focus-within/reveal:[stroke-dashoffset:0] motion-reduce:transition-none motion-reduce:group-hover/reveal:[stroke-dashoffset:0]"
+        style={{ transition: "stroke-dashoffset 1200ms ease-out" }}
+        className="group-hover/reveal:[stroke-dashoffset:0] group-focus-within/reveal:[stroke-dashoffset:0] motion-reduce:[transition:none] motion-reduce:group-hover/reveal:[stroke-dashoffset:0]"
       />
     </svg>
   );
