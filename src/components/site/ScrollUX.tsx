@@ -51,7 +51,7 @@ export function ScrollUX() {
         className="pointer-events-none fixed inset-x-0 top-0 z-[60] h-[3px]"
       >
         <div
-          className="h-full origin-left btn-gradient min-h-9 text-center scroll-progress-bar"
+          className="h-full origin-left btn-gradient scroll-progress-bar"
           style={{ transform: `scaleX(${progress / 100})` }}
         />
       </div>
