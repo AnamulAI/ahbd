@@ -1719,23 +1719,26 @@ function FaqSection() {
 
 function ClosingCtaSection() {
   return (
-    <section className="section-glow-cta">
-      <div className="mx-auto flex max-w-3xl flex-col items-center px-4 py-24 text-center sm:px-6 sm:py-32">
-        <Eyebrow>// LET'S BUILD TOGETHER</Eyebrow>
-        <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
-          Ready to Build a Faster,{" "}
-          <span className="text-gradient-vo">Better Website?</span>
-        </h2>
-        <p className="mt-5 max-w-2xl text-base text-muted-foreground sm:text-lg">
-          Tell me what you need, what type of website or web app you want to
-          build, and what stage you are in — we'll find the right setup.
-        </p>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <PrimaryCTA to="/contact">Discuss Your Project</PrimaryCTA>
-          {/* TODO: revert to "/services" once a proper services overview/index page is built (after AI Integrator and AI Podcast service pages are complete) */}
-          <SecondaryButton href="/services/web-development">View All Services</SecondaryButton>
-
-        </div>
+    <section className="py-20 sm:py-28">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6">
+        <CtaRevealCard>
+          <div className="flex flex-col items-center text-center">
+            <Eyebrow>// LET'S BUILD TOGETHER</Eyebrow>
+            <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
+              Ready to Build a Faster,{" "}
+              <span className="text-gradient-vo">Better Website?</span>
+            </h2>
+            <p className="mt-5 max-w-2xl text-base text-muted-foreground sm:text-lg">
+              Tell me what you need, what type of website or web app you want to
+              build, and what stage you are in — we'll find the right setup.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <PrimaryCTA to="/contact">Discuss Your Project</PrimaryCTA>
+              {/* TODO: revert to "/services" once a proper services overview/index page is built (after AI Integrator and AI Podcast service pages are complete) */}
+              <SecondaryButton href="/services/web-development">View All Services</SecondaryButton>
+            </div>
+          </div>
+        </CtaRevealCard>
       </div>
     </section>
   );
