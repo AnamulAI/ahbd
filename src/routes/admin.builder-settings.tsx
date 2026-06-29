@@ -174,6 +174,8 @@ function BuilderSettingsPage() {
   const [promoCards, setPromoCards] = useState<PromoCard[]>([]);
   const [signature, setSignature] = useState<SignaturePackage | null>(null);
   const [paymentPlan, setPaymentPlan] = useState<PaymentPlanSettings | null>(null);
+  const [copy, setCopy] = useState<BuilderCopyRow[]>([]);
+
 
   async function loadAll() {
     const [ta, uc, pr, ti, op, ai, pd, pc, sg, pp] = await Promise.all([
