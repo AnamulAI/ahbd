@@ -17,6 +17,43 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import anamAvatar from "@/assets/anam-avatar.png.asset.json";
+import { supabase } from "@/integrations/supabase/client";
+
+type SignaturePackage = {
+  web_dev_label: string;
+  web_dev_price: number;
+  ai_integrator_label: string;
+  ai_integrator_price: number;
+  podcast_label: string;
+  podcast_price: number;
+  bundle_price: number;
+  disclosure_text: string;
+  whats_included: string[];
+  cta_label: string;
+};
+
+const SIGNATURE_DEFAULTS: SignaturePackage = {
+  web_dev_label: "Web Development — Business Website",
+  web_dev_price: 2500,
+  ai_integrator_label: "AI Integrator — API Integration",
+  ai_integrator_price: 1500,
+  podcast_label: "AI Podcast — Business Authority (Setup + Month 1)",
+  podcast_price: 2499,
+  bundle_price: 4990,
+  disclosure_text:
+    "After month 1, Podcast Management continues at $1,500/mo to keep your show running — cancel anytime.",
+  whats_included: [
+    "A complete website or web app built for the business",
+    "A custom AI agent integrated into the website, WhatsApp, or internal systems",
+    "A fully launched podcast with Business Authority setup",
+    "First month of podcast management included",
+    "One point of contact for the entire build — no coordinating between vendors",
+  ],
+  cta_label: "Start Your Brand Build",
+};
+
+const fmtUsd = (n: number) =>
+  `$${Math.round(n).toLocaleString("en-US")}`;
 
 
 export const Route = createFileRoute("/")({
