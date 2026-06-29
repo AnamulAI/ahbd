@@ -338,6 +338,8 @@ function buildFaqs(copy: Record<string, string>): { q: string; a: React.ReactNod
 
 export function PackageBuilder() {
   const { data, error } = useBuilderData();
+  const c = (key: string, fallback: string) => data?.copy?.[key] ?? fallback;
+
 
   // Step 1
   const [startingPoint, setStartingPoint] = useState<string>("");
