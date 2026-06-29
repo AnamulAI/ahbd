@@ -1,3 +1,4 @@
+import * as React from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import {
   ArrowLeft,
@@ -302,39 +303,107 @@ function ResultsGrid({ results }: { results: Project["results"] }) {
 
 function Gallery({ images, alt }: { images: string[]; alt: string }) {
   const [lead, ...rest] = images;
+  const scrollerRef = React.useRef<HTMLDivElement | null>(null);
+  const [activeIdx, setActiveIdx] = React.useState(0);
+
+  const onScroll = () => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const slideWidth = el.clientWidth * 0.88;
+    setActiveIdx(Math.round(el.scrollLeft / slideWidth));
+  };
+
   return (
     <section className="py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="mx-auto max-w-3xl">
           <SectionHeading eyebrow="PROJECT GALLERY">A Closer Look</SectionHeading>
         </div>
-        {lead && (
-          <div className="mt-10 overflow-hidden rounded-2xl border border-white/8 bg-white/5">
-            <img
-              src={lead}
-              alt={`${alt} — image 1`}
-              loading="lazy"
-              className="aspect-[16/9] w-full object-cover transition-transform duration-300 hover:scale-[1.02] motion-reduce:transition-none motion-reduce:hover:scale-100"
-            />
-          </div>
-        )}
-        {rest.length > 0 && (
-          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {rest.map((src, i) => (
+
+        {/* Mobile: horizontal swipe carousel */}
+        <div className="mt-10 md:hidden">
+          <div
+            ref={scrollerRef}
+            onScroll={onScroll}
+            className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 no-scrollbar"
+          >
+            {images.map((src, i) => (
               <div
                 key={i}
-                className="overflow-hidden rounded-2xl border border-white/8 bg-white/5"
+                className="relative w-[88%] shrink-0 snap-center overflow-hidden rounded-2xl border border-white/8 bg-white/5"
               >
                 <img
                   src={src}
-                  alt={`${alt} — image ${i + 2}`}
+                  alt={`${alt} — image ${i + 1}`}
                   loading="lazy"
-                  className="aspect-[16/10] w-full object-cover transition-transform duration-300 hover:scale-[1.02] motion-reduce:transition-none motion-reduce:hover:scale-100"
+                  className="aspect-[16/10] w-full object-cover"
                 />
               </div>
             ))}
           </div>
-        )}
+          {images.length > 1 && (
+            <div
+              className="mt-4 flex items-center justify-center gap-2"
+              role="tablist"
+              aria-label="Gallery position"
+            >
+              {images.map((_, i) => {
+                const active = i === activeIdx;
+                return (
+                  <button
+                    key={i}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    aria-label={`Go to image ${i + 1}`}
+                    onClick={() => {
+                      const el = scrollerRef.current;
+                      if (!el) return;
+                      el.scrollTo({ left: el.clientWidth * 0.88 * i, behavior: "smooth" });
+                    }}
+                    className={[
+                      "h-2 rounded-full transition-all duration-200",
+                      active
+                        ? "w-6 bg-[color:var(--primary)]"
+                        : "w-2 bg-white/25 hover:bg-white/40",
+                    ].join(" ")}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Tablet/Desktop: lead image + grid */}
+        <div className="hidden md:block">
+          {lead && (
+            <div className="mt-10 overflow-hidden rounded-2xl border border-white/8 bg-white/5">
+              <img
+                src={lead}
+                alt={`${alt} — image 1`}
+                loading="lazy"
+                className="aspect-[16/9] w-full object-cover transition-transform duration-300 hover:scale-[1.02] motion-reduce:transition-none motion-reduce:hover:scale-100"
+              />
+            </div>
+          )}
+          {rest.length > 0 && (
+            <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {rest.map((src, i) => (
+                <div
+                  key={i}
+                  className="overflow-hidden rounded-2xl border border-white/8 bg-white/5"
+                >
+                  <img
+                    src={src}
+                    alt={`${alt} — image ${i + 2}`}
+                    loading="lazy"
+                    className="aspect-[16/10] w-full object-cover transition-transform duration-300 hover:scale-[1.02] motion-reduce:transition-none motion-reduce:hover:scale-100"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );
