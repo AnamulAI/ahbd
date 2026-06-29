@@ -246,6 +246,7 @@ function BuilderSettingsPage() {
           <AdminTab value="ai">AI Agent</AdminTab>
           <AdminTab value="podcast">Podcast</AdminTab>
           <AdminTab value="promo">Promo Cards</AdminTab>
+          <AdminTab value="package">Package &amp; Payment</AdminTab>
         </TabsList>
 
         <TabsContent value="website" className="mt-6 space-y-8">
