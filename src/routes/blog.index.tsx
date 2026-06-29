@@ -142,6 +142,7 @@ const CATEGORY_SECTIONS: CategorySectionConfig[] = [
     iconTint: "bg-[color:var(--primary)]/12",
     iconBorder: "border-[color:var(--primary)]/30",
     iconColor: "text-[color:var(--primary)]",
+    glowColor: "bg-[#3B82F6]/25",
   },
   {
     category: "AI Integrator",
