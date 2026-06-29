@@ -875,7 +875,7 @@ export function PackageBuilder() {
               setPaymentOpen(true);
               setTimeout(() => paymentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
             }}
-            className="group relative inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 transition-transform hover:scale-[1.02] sm:text-base"
+            className="group relative inline-flex min-h-9 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-4 py-2 text-center text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 transition-transform hover:scale-[1.02]"
           >
             See Payment Options
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
