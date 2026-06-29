@@ -167,16 +167,7 @@ function BuilderSettingsPage() {
   const [paymentPlan, setPaymentPlan] = useState<PaymentPlanSettings | null>(null);
 
   async function loadAll() {
-    const [
-      ta,
-      uc,
-      pr,
-      ti,
-      op,
-      ai,
-      pd,
-      pc,
-    ] = await Promise.all([
+    const [ta, uc, pr, ti, op, ai, pd, pc, sg, pp] = await Promise.all([
       supabase.from("builder_tech_approaches").select("*").order("display_order"),
       supabase.from("builder_use_cases").select("*").order("display_order"),
       supabase.from("builder_use_case_pricing").select("*"),
@@ -185,8 +176,10 @@ function BuilderSettingsPage() {
       supabase.from("builder_ai_types").select("*").order("display_order"),
       supabase.from("builder_podcast_types").select("*").order("display_order"),
       supabase.from("builder_promo_cards").select("*").order("display_order"),
+      supabase.from("signature_package_settings" as never).select("*").limit(1).maybeSingle(),
+      supabase.from("payment_plan_settings" as never).select("*").limit(1).maybeSingle(),
     ]);
-    for (const r of [ta, uc, pr, ti, op, ai, pd, pc]) {
+    for (const r of [ta, uc, pr, ti, op, ai, pd, pc, sg, pp]) {
       if (r.error) {
         toast.error(r.error.message);
         return;
@@ -210,8 +203,19 @@ function BuilderSettingsPage() {
         } as PromoCard;
       }),
     );
+    if (sg.data) {
+      const r = sg.data as Record<string, unknown>;
+      setSignature({
+        ...(r as object),
+        whats_included: Array.isArray(r.whats_included)
+          ? (r.whats_included as string[])
+          : [],
+      } as SignaturePackage);
+    }
+    if (pp.data) setPaymentPlan(pp.data as PaymentPlanSettings);
     setLoading(false);
   }
+
 
   useEffect(() => {
     if (gate.status === "ok") loadAll();
