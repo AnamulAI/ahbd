@@ -285,6 +285,15 @@ function BuilderSettingsPage() {
         <TabsContent value="promo" className="mt-6 space-y-8">
           <PromoTab promoCards={promoCards} setPromoCards={setPromoCards} />
         </TabsContent>
+
+        <TabsContent value="package" className="mt-6 space-y-8">
+          <PackagePaymentTab
+            signature={signature}
+            setSignature={setSignature}
+            paymentPlan={paymentPlan}
+            setPaymentPlan={setPaymentPlan}
+          />
+        </TabsContent>
       </Tabs>
     </AdminShell>
   );
