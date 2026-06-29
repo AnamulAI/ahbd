@@ -27,6 +27,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { CtaRevealCard } from "@/components/site/CtaRevealCard";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -440,25 +441,28 @@ function ProcessSection() {
 
 function ClosingCTA({ onSend }: { onSend: () => void }) {
   return (
-    <section className="section-glow-cta">
-
-      <div className="mx-auto max-w-3xl px-4 py-28 text-center sm:px-6 sm:py-36">
-        <Eyebrow>// ready when you are</Eyebrow>
-        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
-          No Long Forms. No <span className="text-gradient-vo">Complicated</span> Process.
-        </h2>
-        <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground">
-          Just send a message and let's figure out the best next step together.
-        </p>
-        <div className="mt-8">
-          <Button
-            onClick={onSend}
-            className="group h-14 rounded-full btn-gradient px-8 text-base font-semibold text-black shadow-[0_20px_60px_-15px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.04] hover:shadow-[0_28px_70px_-15px_var(--vo-glow)] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100"
-          >
-            Send a Message
-            <ArrowRight className="ml-1 h-5 w-5 transition group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
-          </Button>
-        </div>
+    <section className="py-20 sm:py-28">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6">
+        <CtaRevealCard>
+          <div className="flex flex-col items-center text-center">
+            <Eyebrow>// ready when you are</Eyebrow>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
+              No Long Forms. No <span className="text-gradient-vo">Complicated</span> Process.
+            </h2>
+            <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground">
+              Just send a message and let's figure out the best next step together.
+            </p>
+            <div className="mt-8">
+              <Button
+                onClick={onSend}
+                className="group h-14 rounded-full btn-gradient px-8 text-base font-semibold text-black shadow-[0_20px_60px_-15px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.04] hover:shadow-[0_28px_70px_-15px_var(--vo-glow)] hover:brightness-110 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100"
+              >
+                Send a Message
+                <ArrowRight className="ml-1 h-5 w-5 transition group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
+              </Button>
+            </div>
+          </div>
+        </CtaRevealCard>
       </div>
     </section>
   );

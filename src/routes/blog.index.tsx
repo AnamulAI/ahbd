@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { ArrowRight, Clock, Mail, Search, X } from "lucide-react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { CtaRevealCard } from "@/components/site/CtaRevealCard";
 import { BlogCard, CategoryBadge } from "@/components/site/BlogCard";
 import { formatPublishedDate, getSortedPosts } from "@/lib/blog-data";
 
@@ -57,46 +58,50 @@ function NewsletterSection() {
   }
 
   return (
-    <section className="relative section-glow-cta py-20 sm:py-24">
-      <div className="mx-auto max-w-2xl px-4 text-center sm:px-6">
-        <Eyebrow>// STAY UPDATED</Eyebrow>
-        <h2 className="mt-4 text-3xl font-bold leading-tight text-white sm:text-4xl">
-          Get <span className="text-gradient-vo">New Posts</span> in Your Inbox
-        </h2>
-        <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
-          Practical web dev, AI, and podcasting insights — no spam, unsubscribe
-          anytime.
-        </p>
-        <form
-          onSubmit={onSubmit}
-          className="mx-auto mt-8 flex w-full max-w-md flex-col gap-3 sm:flex-row"
-        >
-          <label htmlFor="newsletter-email" className="sr-only">
-            Email address
-          </label>
-          <div className="relative flex-1">
-            <Mail
-              className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-              aria-hidden
-            />
-            <input
-              id="newsletter-email"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              className="h-12 w-full rounded-full border border-white/10 bg-[#16181D] pl-11 pr-4 text-sm text-white placeholder:text-muted-foreground focus:border-[color:var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[color:var(--primary)]/30"
-            />
+    <section className="py-20 sm:py-24">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6">
+        <CtaRevealCard>
+          <div className="flex flex-col items-center text-center">
+            <Eyebrow>// STAY UPDATED</Eyebrow>
+            <h2 className="mt-4 text-3xl font-bold leading-tight text-white sm:text-4xl">
+              Get <span className="text-gradient-vo">New Posts</span> in Your Inbox
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
+              Practical web dev, AI, and podcasting insights — no spam, unsubscribe
+              anytime.
+            </p>
+            <form
+              onSubmit={onSubmit}
+              className="mx-auto mt-8 flex w-full max-w-md flex-col gap-3 sm:flex-row"
+            >
+              <label htmlFor="newsletter-email" className="sr-only">
+                Email address
+              </label>
+              <div className="relative flex-1">
+                <Mail
+                  className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                  aria-hidden
+                />
+                <input
+                  id="newsletter-email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="h-12 w-full rounded-full border border-white/10 bg-[#16181D] pl-11 pr-4 text-sm text-white placeholder:text-muted-foreground focus:border-[color:var(--primary)]/60 focus:outline-none focus:ring-2 focus:ring-[color:var(--primary)]/30"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={submitting}
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full btn-gradient px-6 text-sm font-semibold text-white shadow-[0_8px_30px_-8px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 motion-reduce:transition-none motion-reduce:hover:scale-100"
+              >
+                {submitting ? "Subscribing..." : "Subscribe"}
+              </button>
+            </form>
           </div>
-          <button
-            type="submit"
-            disabled={submitting}
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-full btn-gradient px-6 text-sm font-semibold text-white shadow-[0_8px_30px_-8px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 motion-reduce:transition-none motion-reduce:hover:scale-100"
-          >
-            {submitting ? "Subscribing..." : "Subscribe"}
-          </button>
-        </form>
+        </CtaRevealCard>
       </div>
     </section>
   );

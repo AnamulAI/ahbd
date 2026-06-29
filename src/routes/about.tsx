@@ -15,6 +15,7 @@ import {
 
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { CtaRevealCard } from "@/components/site/CtaRevealCard";
 import anamAvatar from "@/assets/anam-avatar.png.asset.json";
 
 
@@ -481,34 +482,38 @@ function ApproachSection() {
 
 function ClosingCTA() {
   return (
-    <section className="section-glow-cta">
-      <div className="mx-auto max-w-3xl px-4 py-24 text-center sm:px-6 sm:py-32">
-        <Eyebrow center>// let's build together</Eyebrow>
-        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
-          Ready to Build a{" "}
-          <span className="text-gradient-vo">More Credible Digital Presence?</span>
-        </h2>
-        <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground sm:text-lg">
-          Whether you need authority-building podcast content, a modern website,
-          or both — I help brands create digital assets that look sharper,
-          communicate better, and support long-term growth.
-        </p>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Link
-            to="/contact"
-            className="group inline-flex h-12 items-center gap-2 rounded-full btn-gradient px-6 text-sm font-semibold text-black shadow-[0_12px_40px_-12px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_20px_55px_-12px_var(--vo-glow)] hover:brightness-110 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100"
-          >
-            Discuss Your Project
-            <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
-          </Link>
-          <Link
-            to="/projects"
-            className="group inline-flex h-12 items-center gap-2 rounded-full border border-[color:var(--primary)]/50 px-6 text-sm font-semibold text-white transition-all duration-200 hover:border-[color:var(--primary)] hover:bg-[color:var(--primary)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)] motion-reduce:transition-none"
-          >
-            See My Work
-            <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
-          </Link>
-        </div>
+    <section className="py-20 sm:py-28">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6">
+        <CtaRevealCard>
+          <div className="flex flex-col items-center text-center">
+            <Eyebrow center>// let's build together</Eyebrow>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
+              Ready to Build a{" "}
+              <span className="text-gradient-vo">More Credible Digital Presence?</span>
+            </h2>
+            <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground sm:text-lg">
+              Whether you need authority-building podcast content, a modern website,
+              or both — I help brands create digital assets that look sharper,
+              communicate better, and support long-term growth.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <Link
+                to="/contact"
+                className="group inline-flex h-12 items-center gap-2 rounded-full btn-gradient px-6 text-sm font-semibold text-black shadow-[0_12px_40px_-12px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_20px_55px_-12px_var(--vo-glow)] hover:brightness-110 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100"
+              >
+                Discuss Your Project
+                <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
+              </Link>
+              <Link
+                to="/projects"
+                className="group inline-flex h-12 items-center gap-2 rounded-full border border-[color:var(--primary)]/50 px-6 text-sm font-semibold text-white transition-all duration-200 hover:border-[color:var(--primary)] hover:bg-[color:var(--primary)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)] motion-reduce:transition-none"
+              >
+                See My Work
+                <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
+              </Link>
+            </div>
+          </div>
+        </CtaRevealCard>
       </div>
     </section>
   );
