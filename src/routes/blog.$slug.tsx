@@ -643,23 +643,27 @@ function BlogPostPage() {
         )}
 
         {/* Closing CTA */}
-        <section className="relative section-glow-cta">
-          <div className="mx-auto max-w-3xl px-4 py-24 text-center sm:px-6 sm:py-32">
-            <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">
-              Have a <span className="text-gradient-vo">Project</span> in Mind?
-            </h2>
-            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Let's talk about what you're building — web, AI, or podcast
-              production.
-            </p>
-            <div className="mt-8">
-              <Link
-                to="/contact"
-                className="inline-flex h-12 items-center gap-2 rounded-full btn-gradient px-7 text-sm font-semibold text-white shadow-[0_10px_36px_-10px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:scale-100"
-              >
-                Discuss Your Project <ArrowRight className="h-4 w-4" aria-hidden />
-              </Link>
-            </div>
+        <section className="py-20 sm:py-28">
+          <div className="mx-auto max-w-4xl px-4 sm:px-6">
+            <CtaRevealCard>
+              <div className="flex flex-col items-center text-center">
+                <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">
+                  Have a <span className="text-gradient-vo">Project</span> in Mind?
+                </h2>
+                <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+                  Let's talk about what you're building — web, AI, or podcast
+                  production.
+                </p>
+                <div className="mt-8">
+                  <Link
+                    to="/contact"
+                    className="inline-flex h-12 items-center gap-2 rounded-full btn-gradient px-7 text-sm font-semibold text-white shadow-[0_10px_36px_-10px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:scale-100"
+                  >
+                    Discuss Your Project <ArrowRight className="h-4 w-4" aria-hidden />
+                  </Link>
+                </div>
+              </div>
+            </CtaRevealCard>
           </div>
         </section>
       </main>
