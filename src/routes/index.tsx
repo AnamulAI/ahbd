@@ -556,7 +556,8 @@ function Index() {
             <div className="mt-16 flex items-center gap-4" aria-hidden>
               <div className="h-px flex-1 bg-white/10" />
               <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                — or build your own —
+                {dividerText}
+
               </span>
               <div className="h-px flex-1 bg-white/10" />
             </div>
