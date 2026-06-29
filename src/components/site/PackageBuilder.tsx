@@ -99,7 +99,7 @@ function useBuilderData() {
     let cancelled = false;
     (async () => {
       try {
-        const [tech, uc, price, tiers, opts, aiT, podT, promo] = await Promise.all([
+        const [tech, uc, price, tiers, opts, aiT, podT, promo, copy] = await Promise.all([
           supabase.from("builder_tech_approaches").select("*").eq("is_active", true).order("display_order"),
           supabase.from("builder_use_cases").select("*").eq("is_active", true).order("display_order"),
           supabase.from("builder_use_case_pricing").select("*"),
@@ -108,11 +108,16 @@ function useBuilderData() {
           supabase.from("builder_ai_types").select("*").eq("is_active", true).order("display_order"),
           supabase.from("builder_podcast_types").select("*").eq("is_active", true).order("display_order"),
           supabase.from("builder_promo_cards").select("*").eq("is_active", true).order("display_order"),
+          supabase.from("builder_copy" as never).select("key, value"),
         ]);
-        const firstErr = [tech, uc, price, tiers, opts, aiT, podT, promo].find((r) => r.error);
+        const firstErr = [tech, uc, price, tiers, opts, aiT, podT, promo, copy].find((r) => r.error);
         if (firstErr?.error) throw firstErr.error;
         if (cancelled) return;
         const allOpts = (opts.data ?? []) as BuilderOption[];
+        const copyMap: Record<string, string> = {};
+        for (const row of (copy.data ?? []) as Array<{ key: string; value: string }>) {
+          copyMap[row.key] = row.value;
+        }
         setData({
           techApproaches: (tech.data ?? []) as TechApproach[],
           useCases: (uc.data ?? []) as UseCase[],
@@ -135,7 +140,9 @@ function useBuilderData() {
             feature_pills: Array.isArray(p.feature_pills) ? p.feature_pills : [],
             visibility_condition: p.visibility_condition,
           })) as any,
+          copy: copyMap,
         });
+
       } catch (e: any) {
         if (!cancelled) setError(e?.message ?? "Failed to load builder data");
       }
