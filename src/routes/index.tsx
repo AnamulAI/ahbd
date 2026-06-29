@@ -469,7 +469,7 @@ function Index() {
                     <div className="mt-8 lg:mt-auto lg:pt-8">
                       <Link
                         to="/contact"
-                        className="group inline-flex h-14 w-full items-center justify-center gap-2 rounded-full btn-gradient px-8 text-base font-semibold text-white shadow-[0_18px_50px_-12px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_22px_60px_-12px_var(--vo-glow)] active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:scale-100 sm:w-auto sm:min-w-[320px]"
+                        className="btn-primary-dark group w-full sm:w-auto"
                       >
                         Start Your Brand Build
                         <ArrowRight
