@@ -532,7 +532,7 @@ function StickySidebar({ post }: { post: BlogPost }) {
           </p>
           <Link
             to={post.sidebarCta.href}
-            className="mt-4 inline-flex h-10 w-full items-center justify-center gap-2 rounded-full btn-gradient px-5 text-sm font-semibold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:scale-100"
+            className="btn-primary-dark mt-4 w-full"
           >
             {post.sidebarCta.ctaLabel}
             <ArrowRight className="h-4 w-4" aria-hidden />
@@ -657,7 +657,7 @@ function BlogPostPage() {
                 <div className="mt-8">
                   <Link
                     to="/contact"
-                    className="inline-flex h-12 items-center gap-2 rounded-full btn-gradient px-7 text-sm font-semibold text-white shadow-[0_10px_36px_-10px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:scale-100"
+                    className="btn-primary-dark group"
                   >
                     Discuss Your Project <ArrowRight className="h-4 w-4" aria-hidden />
                   </Link>
