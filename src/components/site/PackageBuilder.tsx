@@ -934,18 +934,13 @@ export function PackageBuilder() {
                       }}
                       className={[
                         "relative text-left transition-transform",
-                        isFeatured ? "sm:scale-[1.04]" : "",
+                        isFeatured ? "group/reveal sm:scale-[1.04]" : "",
                       ].join(" ")}
                     >
-                      {isFeatured && (
-                        <>
-                          <div aria-hidden className="absolute -inset-px rounded-[1.25rem] bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/40 to-[#F97316] opacity-60 blur-2xl" />
-                          <div aria-hidden className="absolute -inset-px rounded-[1.25rem] bg-gradient-to-r from-[#3B82F6] to-[#F97316] opacity-80" />
-                        </>
-                      )}
+                      {isFeatured && <RevealBorder rounded="rounded-[1.25rem]" radius={20} />}
                       <div
                         className={[
-                          "relative h-full rounded-[1.15rem] bg-[oklch(0.15_0.02_260)] p-6",
+                          "relative h-full rounded-[1.25rem] bg-[oklch(0.15_0.02_260)] p-6",
                           !isFeatured && "border",
                           !isFeatured && (selected
                             ? "border-[color:var(--primary)]"
