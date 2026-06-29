@@ -1222,9 +1222,23 @@ export function PackageBuilder() {
                 <span className="font-mono">{fmt(advance)}</span>
               </div>
 
-              <p className="mt-5 text-[11px] leading-relaxed text-muted-foreground">
-                Payment options shown after your build is complete.
-              </p>
+              <div className="mt-5 rounded-md border-l-2 border-l-[#3B82F6] bg-[#3B82F6]/[0.06] px-3 py-2.5">
+                <p className="text-xs font-medium text-[#3B82F6]">
+                  Payment options shown after your build is complete.
+                </p>
+              </div>
+
+              <div className="mt-4 flex justify-center">
+                <a
+                  href="https://wa.me/8801777768353?text=Hi!%20I%20have%20a%20quick%20question%20about%20my%20custom%20build%20on%20the%20DFY%20Package%20Builder."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-input bg-background px-6 text-sm font-semibold text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                >
+                  <MessageCircle className="h-4 w-4 text-[#25D366]" aria-hidden />
+                  Get Instant Reply on WhatsApp →
+                </a>
+              </div>
             </div>
           </div>
 
