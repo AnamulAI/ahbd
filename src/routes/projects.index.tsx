@@ -72,23 +72,22 @@ function FeaturedSpotlight() {
   return (
     <section className="pt-4 sm:pt-8">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <Link
-          to="/projects/$slug"
-          params={{ slug: project.slug }}
-          aria-label={`Featured project: ${project.title}`}
-          className="group relative grid overflow-hidden rounded-3xl border border-[color:var(--primary)]/40 bg-[#16181D] shadow-[0_30px_80px_-30px_var(--vo-glow)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[color:var(--primary)]/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ring)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:grid-cols-2"
-        >
-          {/* permanent ambient glow */}
+        <div className="relative">
           <div
             aria-hidden
-            className="pointer-events-none absolute -inset-px rounded-3xl opacity-60"
-            style={{
-              background:
-                "radial-gradient(60% 80% at 0% 50%, color-mix(in oklab, var(--primary) 22%, transparent), transparent 70%), radial-gradient(60% 80% at 100% 50%, color-mix(in oklab, var(--orange) 16%, transparent), transparent 70%)",
-            }}
+            className="absolute -inset-px rounded-3xl bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/40 to-[#F97316] opacity-60 blur-2xl"
           />
-
-          {/* Image */}
+          <div
+            aria-hidden
+            className="absolute -inset-px rounded-3xl bg-gradient-to-r from-[#3B82F6] to-[#F97316] opacity-80"
+          />
+          <Link
+            to="/projects/$slug"
+            params={{ slug: project.slug }}
+            aria-label={`Featured project: ${project.title}`}
+            className="group relative grid overflow-hidden rounded-3xl bg-[#16181D] transition-all duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ring)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:grid-cols-2"
+          >
+            {/* Image */}
           <div className="relative aspect-[16/10] w-full overflow-hidden md:aspect-auto md:h-full">
             <img
               src={project.coverImage}
@@ -140,6 +139,7 @@ function FeaturedSpotlight() {
             </div>
           </div>
         </Link>
+        </div>
       </div>
     </section>
   );
