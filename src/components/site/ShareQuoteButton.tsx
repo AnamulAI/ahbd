@@ -60,7 +60,7 @@ export function ShareQuoteButton({
   };
 
   const base =
-    "inline-flex h-11 w-full items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition-all disabled:opacity-70";
+    "inline-flex w-full min-h-9 items-center justify-center gap-2 rounded-full px-4 py-2 text-center text-sm font-semibold transition-all disabled:opacity-70";
   const variantClass =
     variant === "primary"
       ? "btn-gradient text-black shadow-[0_10px_30px_-12px_var(--vo-glow)] hover:scale-[1.02] hover:brightness-110"

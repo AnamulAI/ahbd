@@ -875,7 +875,7 @@ export function PackageBuilder() {
               setPaymentOpen(true);
               setTimeout(() => paymentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
             }}
-            className="group relative inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 transition-transform hover:scale-[1.02] sm:text-base"
+            className="group relative inline-flex min-h-9 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-4 py-2 text-center text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 transition-transform hover:scale-[1.02]"
           >
             See Payment Options
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -1115,7 +1115,7 @@ export function PackageBuilder() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="group relative inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 transition-transform hover:scale-[1.01] disabled:opacity-60 sm:text-base"
+                    className="group relative inline-flex w-full min-h-9 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-4 py-2 text-center text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 transition-transform hover:scale-[1.01] disabled:opacity-60"
                   >
                     {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
                     {submitting ? "Submitting…" : "Confirm My Build"}
@@ -1160,7 +1160,13 @@ export function PackageBuilder() {
             <RevealBorder rounded="rounded-[1.25rem]" radius={20} />
             <div ref={quoteCardRef} className="relative rounded-[1.25rem] bg-[oklch(0.15_0.02_260)] p-6">
               <Eyebrow>// LIVE QUOTE</Eyebrow>
-              <h3 className="text-gradient-vo mt-2 mb-3 text-center text-xl font-semibold sm:text-2xl">Your custom build</h3>
+              <h3 className="text-gradient-vo mt-2 mb-2 text-center text-xl font-semibold sm:text-2xl">Your custom build</h3>
+
+              {ideaDescription.trim() && (
+                <p className="mb-4 border-l-2 border-white/15 pl-3 text-center text-xs italic leading-relaxed text-muted-foreground">
+                  &ldquo;{ideaDescription.trim()}&rdquo;
+                </p>
+              )}
 
               {priceLines.length === 0 ? (
                 <div className="mt-5 text-sm text-muted-foreground">
@@ -1240,6 +1246,12 @@ export function PackageBuilder() {
                 </p>
               </div>
 
+              {/* Friendly CTA line — appears inside the captured share image
+                  where the action buttons would normally sit. */}
+              <p className="mt-5 text-center text-sm italic text-white/80">
+                Hi AnamDev — I want to discuss this custom build!
+              </p>
+
               <div data-share-exclude className="mt-5">
                 <ShareQuoteButton
                   targetRef={quoteCardRef}
@@ -1254,10 +1266,10 @@ export function PackageBuilder() {
                   href="https://wa.me/8801777768353?text=Hi!%20I%20have%20a%20quick%20question%20about%20my%20custom%20build%20on%20the%20DFY%20Package%20Builder."
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[#25D366] bg-[#16181D] px-6 text-sm font-semibold text-[#25D366] transition-colors hover:shadow-[0_0_14px_rgba(37,211,102,0.35)] hover:border-[#34E57A] hover:text-[#34E57A]"
+                  className="group inline-flex items-center justify-center gap-2 rounded-full bg-[#16181D] px-4 py-2 text-sm font-semibold text-[#25D366] transition-colors hover:text-[#34E57A] hover:[text-shadow:0_0_12px_rgba(37,211,102,0.45)]"
                 >
-                  <MessageCircle className="h-4 w-4" aria-hidden />
-                  Get Instant Reply on WhatsApp →
+                  Get Instant Reply on WhatsApp
+                  <MessageCircle className="h-4 w-4 transition-colors group-hover:text-[#34E57A]" aria-hidden />
                 </a>
               </div>
             </div>
