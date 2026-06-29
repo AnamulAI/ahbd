@@ -72,3 +72,62 @@ export function RevealBorder({
     </>
   );
 }
+
+/**
+ * Circular adaptation of the Pricing Reveal Card pattern.
+ *
+ * 5th registered instance of the pattern, used on the Home page's About
+ * (condensed) circular profile photo. The other 4 instances are rectangular:
+ *   1. Home — $4,990 Signature Package card
+ *   2. DFY Builder — Live Quote sidebar
+ *   3. Blog — Featured Post card
+ *   4. Projects — Featured Project spotlight
+ *   5. Home — About (condensed) profile photo  ← circular variant (this one)
+ *
+ * Behavior matches the rectangular RevealBorder: invisible border at rest
+ * (ambient glow is provided separately by the parent for this circular case),
+ * and a blue→orange gradient stroke that draws around the full 360° perimeter
+ * on hover (~1.2s) via SVG stroke-dashoffset animation. Fades out on leave.
+ *
+ * Usage: place inside a `relative` circular wrapper marked `group/reveal`.
+ *
+ *   <div className="group/reveal relative aspect-square rounded-full">
+ *     {ambientGlow}
+ *     <RevealBorderCircle />
+ *     <img className="relative rounded-full ..." />
+ *   </div>
+ */
+export function RevealBorderCircle() {
+  const reactId = useId();
+  const gradId = `reveal-border-circle-${reactId.replace(/[:]/g, "")}`;
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+      className="pointer-events-none absolute inset-0 h-full w-full overflow-visible opacity-0 transition-opacity duration-200 group-hover/reveal:opacity-100 group-focus-within/reveal:opacity-100 motion-reduce:transition-none"
+    >
+      <defs>
+        <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#3B82F6" />
+          <stop offset="100%" stopColor="#F97316" />
+        </linearGradient>
+      </defs>
+      <circle
+        cx="50"
+        cy="50"
+        r="49.25"
+        fill="none"
+        stroke={`url(#${gradId})`}
+        strokeWidth={1.5}
+        vectorEffect="non-scaling-stroke"
+        pathLength={1}
+        strokeDasharray={1}
+        strokeDashoffset={1}
+        transform="rotate(-90 50 50)"
+        className="transition-[stroke-dashoffset] duration-[1200ms] ease-out group-hover/reveal:[stroke-dashoffset:0] group-focus-within/reveal:[stroke-dashoffset:0] motion-reduce:transition-none motion-reduce:group-hover/reveal:[stroke-dashoffset:0]"
+      />
+    </svg>
+  );
+}
+
