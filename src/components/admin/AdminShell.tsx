@@ -43,9 +43,8 @@ const NAV: NavGroup[] = [
     items: [
       {
         label: "Builder Settings",
-        to: "/admin/coming-soon/builder-settings",
+        to: "/admin/builder-settings",
         icon: Settings2,
-        comingSoon: true,
       },
     ],
   },
