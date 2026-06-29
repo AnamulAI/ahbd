@@ -197,6 +197,41 @@ function Index() {
   const [journeyBadge2, setJourneyBadge2] = useState(false);
   const [journeyLine2, setJourneyLine2] = useState(false);
   const [journeyBadge3, setJourneyBadge3] = useState(false);
+  const [sig, setSig] = useState<SignaturePackage>(SIGNATURE_DEFAULTS);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("signature_package_settings" as never)
+        .select("*")
+        .limit(1)
+        .maybeSingle();
+      if (cancelled || !data) return;
+      const r = data as Record<string, unknown>;
+      setSig({
+        web_dev_label: String(r.web_dev_label ?? SIGNATURE_DEFAULTS.web_dev_label),
+        web_dev_price: Number(r.web_dev_price ?? SIGNATURE_DEFAULTS.web_dev_price),
+        ai_integrator_label: String(r.ai_integrator_label ?? SIGNATURE_DEFAULTS.ai_integrator_label),
+        ai_integrator_price: Number(r.ai_integrator_price ?? SIGNATURE_DEFAULTS.ai_integrator_price),
+        podcast_label: String(r.podcast_label ?? SIGNATURE_DEFAULTS.podcast_label),
+        podcast_price: Number(r.podcast_price ?? SIGNATURE_DEFAULTS.podcast_price),
+        bundle_price: Number(r.bundle_price ?? SIGNATURE_DEFAULTS.bundle_price),
+        disclosure_text: String(r.disclosure_text ?? SIGNATURE_DEFAULTS.disclosure_text),
+        whats_included: Array.isArray(r.whats_included)
+          ? (r.whats_included as string[])
+          : SIGNATURE_DEFAULTS.whats_included,
+        cta_label: String(r.cta_label ?? SIGNATURE_DEFAULTS.cta_label),
+      });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const sigTotalValue =
+    sig.web_dev_price + sig.ai_integrator_price + sig.podcast_price;
+  const sigSavings = sigTotalValue - sig.bundle_price;
 
   useEffect(() => {
     const timers: ReturnType<typeof setTimeout>[] = [];
