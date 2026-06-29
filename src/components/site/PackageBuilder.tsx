@@ -644,8 +644,8 @@ export function PackageBuilder() {
       <div className="order-1 flex flex-col gap-6 lg:col-start-1 lg:row-start-1">
 
         {/* Step 1 */}
-        <StepCard step="STEP 1" title="Your starting point">
-          <FieldLabel>Where are you starting from?</FieldLabel>
+        <StepCard step="STEP 1" title={c("step1_title", "Your starting point")}>
+          <FieldLabel>{c("step1_dropdown_label", "Where are you starting from?")}</FieldLabel>
           <Select value={startingPoint} onValueChange={setStartingPoint}>
             <SelectTrigger className="bg-background">
               <SelectValue placeholder="Choose one…" />
@@ -658,22 +658,22 @@ export function PackageBuilder() {
           </Select>
 
           <div className="mt-4">
-            <FieldLabel>Tell me a bit more</FieldLabel>
+            <FieldLabel>{c("step1_textarea_label", "Tell me a bit more")}</FieldLabel>
             <Textarea
               value={ideaDescription}
               onChange={(e) => setIdeaDescription(e.target.value)}
-              placeholder="Tell me briefly about your idea or business..."
+              placeholder={c("step1_textarea_placeholder", "Tell me briefly about your idea or business...")}
               className="min-h-[96px] bg-background"
             />
           </div>
           <p className="mt-2 text-xs text-muted-foreground">
-            Saved with your lead — doesn't affect price.
+            {c("step1_helper_text", "Saved with your lead — doesn’t affect price.")}
           </p>
         </StepCard>
 
         {/* Step 2 */}
-        <StepCard step="STEP 2" title="Website (required)">
-          <FieldLabel>Tech approach</FieldLabel>
+        <StepCard step="STEP 2" title={c("step2_title", "Website (required)")}>
+          <FieldLabel>{c("step2_tech_approach_label", "Tech approach")}</FieldLabel>
           <div className="grid gap-3 sm:grid-cols-2">
             {data.techApproaches.map((t) => {
               const active = techId === t.id;
@@ -702,7 +702,7 @@ export function PackageBuilder() {
 
           {techId && (
             <div className="mt-6">
-              <FieldLabel>Use case</FieldLabel>
+              <FieldLabel>{c("step2_use_case_label", "Use case")}</FieldLabel>
               <Select value={useCaseId} onValueChange={setUseCaseId}>
                 <SelectTrigger className="bg-background">
                   <SelectValue placeholder="Choose use case…" />
@@ -765,10 +765,10 @@ export function PackageBuilder() {
         {/* Step 3 — AI Agent */}
         <StepCard
           step="STEP 3"
-          title="AI Agent (optional)"
+          title={c("step3_title", "AI Agent (optional)")}
           rightSlot={
             <label className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
-              <span>Add AI Agent</span>
+              <span>{c("step3_toggle_label", "Add AI Agent")}</span>
               <Switch checked={aiEnabled} onCheckedChange={setAiEnabled} />
             </label>
           }
@@ -831,10 +831,10 @@ export function PackageBuilder() {
         {/* Step 4 — Podcast */}
         <StepCard
           step="STEP 4"
-          title="Podcast (optional)"
+          title={c("step4_title", "Podcast (optional)")}
           rightSlot={
             <label className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
-              <span>Add a podcast</span>
+              <span>{c("step4_toggle_label", "Add a podcast")}</span>
               <Switch checked={podEnabled} onCheckedChange={setPodEnabled} />
             </label>
           }
@@ -904,7 +904,7 @@ export function PackageBuilder() {
             }}
             className="group relative inline-flex min-h-9 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-4 py-2 text-center text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 transition-transform hover:scale-[1.02]"
           >
-            See Payment Options
+            {c("see_payment_button_label", "See Payment Options")}
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </button>
         </div>
@@ -963,7 +963,7 @@ export function PackageBuilder() {
             <div ref={paymentRef} className="animate-fade-in">
               <div className="mb-5 text-center">
                 <Eyebrow>// CHOOSE A PAYMENT PLAN</Eyebrow>
-                <h3 className="mt-2 text-xl font-semibold text-white sm:text-2xl">How would you like to pay?</h3>
+                <h3 className="mt-2 text-xl font-semibold text-white sm:text-2xl">{c("payment_section_heading", "How would you like to pay?")}</h3>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-3 sm:items-stretch">
@@ -1030,13 +1030,13 @@ export function PackageBuilder() {
         {paymentOpen && paymentPlan && (
           <div ref={contactRef} className="animate-fade-in rounded-xl border border-white/[0.08] bg-[oklch(0.15_0.02_260)] p-5 sm:p-7">
             <Eyebrow>// FINAL STEP</Eyebrow>
-            <h3 className="mt-2 text-lg font-semibold text-white sm:text-xl">Your contact details</h3>
+            <h3 className="mt-2 text-lg font-semibold text-white sm:text-xl">{c("contact_form_heading", "Your contact details")}</h3>
 
             {submitted ? (
               <div className="mt-6 flex items-start gap-3 rounded-lg border border-[color:var(--primary)]/30 bg-[color:var(--primary)]/5 p-5">
                 <CheckCircle2 className="h-5 w-5 shrink-0 text-[color:var(--primary)]" />
                 <p className="text-sm leading-relaxed text-white">
-                  Thanks! I've received your build details and will reach out on WhatsApp within 24 hours to confirm everything.
+                  {c("confirmation_message", "Thanks! I’ve received your build details and will reach out on WhatsApp within 24 hours to confirm everything.")}
                 </p>
               </div>
             ) : (
@@ -1130,15 +1130,15 @@ export function PackageBuilder() {
                 >
                   <div className="grid gap-4 sm:grid-cols-3">
                     <div>
-                      <FieldLabel>Name</FieldLabel>
+                      <FieldLabel>{c("contact_name_label", "Name")}</FieldLabel>
                       <Input value={leadName} onChange={(e) => setLeadName(e.target.value)} placeholder="Your name" className="bg-background" required />
                     </div>
                     <div>
-                      <FieldLabel>Email</FieldLabel>
+                      <FieldLabel>{c("contact_email_label", "Email")}</FieldLabel>
                       <Input type="email" value={leadEmail} onChange={(e) => setLeadEmail(e.target.value)} placeholder="you@example.com" className="bg-background" required />
                     </div>
                     <div>
-                      <FieldLabel>WhatsApp</FieldLabel>
+                      <FieldLabel>{c("contact_whatsapp_label", "WhatsApp")}</FieldLabel>
                       <Input value={leadWhatsapp} onChange={(e) => setLeadWhatsapp(e.target.value)} placeholder="+1 555 123 4567" className="bg-background" required />
                     </div>
                   </div>
@@ -1153,7 +1153,7 @@ export function PackageBuilder() {
                     className="group relative inline-flex w-full min-h-9 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-4 py-2 text-center text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 transition-transform hover:scale-[1.01] disabled:opacity-60"
                   >
                     {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                    {submitting ? "Submitting…" : "Confirm My Build"}
+                    {submitting ? "Submitting…" : c("confirm_build_button_label", "Confirm My Build")}
                     {!submitting && <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />}
                   </button>
                 </form>
@@ -1169,10 +1169,10 @@ export function PackageBuilder() {
         <div className="rounded-xl border border-white/[0.08] bg-[oklch(0.15_0.02_260)] p-5 sm:p-7">
           <Eyebrow>// BUILDER FAQ</Eyebrow>
           <h3 className="mt-2 text-lg font-semibold text-white sm:text-xl">
-            Quick questions about this builder
+            {c("builder_faq_heading", "Quick questions about this builder")}
           </h3>
           <Accordion type="single" collapsible className="mt-5 space-y-3">
-            {BUILDER_FAQS.map((f, i) => (
+            {buildFaqs(data.copy).map((f, i) => (
               <AccordionItem
                 key={i}
                 value={`item-${i}`}
@@ -1198,8 +1198,8 @@ export function PackageBuilder() {
           <div key={`quote-${cardBump}`} className="group/reveal relative quote-card-bump">
             <RevealBorder rounded="rounded-[1.25rem]" radius={20} />
             <div ref={quoteCardRef} className="relative rounded-[1.25rem] bg-[oklch(0.15_0.02_260)] p-6">
-              <Eyebrow>// LIVE QUOTE</Eyebrow>
-              <h3 className="text-gradient-vo mt-2 mb-2 text-center text-xl font-semibold sm:text-2xl">Your custom build</h3>
+              <Eyebrow>{c("live_quote_eyebrow", "// LIVE QUOTE")}</Eyebrow>
+              <h3 className="text-gradient-vo mt-2 mb-2 text-center text-xl font-semibold sm:text-2xl">{c("live_quote_heading", "Your custom build")}</h3>
 
               {ideaDescription.trim() && (
                 <p className="mb-4 border-l-2 border-white/15 pl-3 text-center text-xs italic leading-relaxed text-muted-foreground">
@@ -1209,7 +1209,7 @@ export function PackageBuilder() {
 
               {priceLines.length === 0 ? (
                 <div className="mt-5 text-sm text-muted-foreground">
-                  Make selections to see your price build up live.
+                  {c("live_quote_empty_state", "Make selections to see your price build up live.")}
                 </div>
               ) : (
                 <div className="mt-5 space-y-4 text-sm">
@@ -1275,13 +1275,13 @@ export function PackageBuilder() {
                 <span className="font-display text-3xl font-bold text-gradient-vo">{fmt(total)}</span>
               </div>
               <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
-                <span>{advancePctLabel} advance to secure the order</span>
+                <span>{c("live_quote_advance_label", `${advancePctLabel} advance to secure the order`)}</span>
                 <span className="font-mono">{fmt(advance)}</span>
               </div>
 
               <div className="mt-5 rounded-md border-l-2 border-l-[#3B82F6] bg-[#3B82F6]/[0.06] px-3 py-2.5">
                 <p className="text-xs font-medium text-[#3B82F6]">
-                  Payment options shown after your build is complete.
+                  {c("live_quote_payment_note", "Payment options shown after your build is complete.")}
                 </p>
               </div>
 
@@ -1307,7 +1307,7 @@ export function PackageBuilder() {
                   rel="noopener noreferrer"
                   className="group inline-flex items-center justify-center gap-2 rounded-full border border-[#25D366]/60 bg-[#16181D] px-4 py-2 text-sm font-semibold text-[#25D366] transition-all hover:border-[#34E57A] hover:text-[#34E57A] hover:shadow-[0_0_14px_rgba(37,211,102,0.35)] hover:[text-shadow:0_0_12px_rgba(37,211,102,0.45)]"
                 >
-                  Get Instant Reply on WhatsApp
+                  {c("whatsapp_button_label", "Get Instant Reply on WhatsApp")}
                   <MessageCircle className="h-4 w-4 transition-colors group-hover:text-[#34E57A]" aria-hidden />
                 </a>
               </div>
