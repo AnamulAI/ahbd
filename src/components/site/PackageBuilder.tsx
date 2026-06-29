@@ -924,37 +924,39 @@ export function PackageBuilder() {
         {/* Payment Plan Cards */}
         {paymentOpen && (() => {
 
-          const installments = Math.round(total / 3);
-          const payInFull = Math.round(total * 0.75);
+          const installmentCount = Math.max(1, planSettings.installment_count);
+          const installments = Math.round(total / installmentCount);
+          const discountPct = planSettings.pay_in_full_discount_percent;
+          const payInFull = Math.round(total * (1 - discountPct / 100));
           const phases = ["Website", aiEnabled && "AI Agent", podEnabled && "Podcast"].filter(Boolean) as string[];
           const plans: { id: PaymentPlan; label: string; desc: string; highlight?: boolean; render: React.ReactNode }[] = [
             {
               id: "installments",
-              label: "Installments",
-              desc: "Split into 3 payments",
+              label: planSettings.installments_label,
+              desc: `Split into ${installmentCount} payments`,
               render: (
                 <div>
                   <div className="font-display text-3xl font-bold text-white">{fmt(installments)}</div>
-                  <div className="mt-1 font-mono text-xs text-muted-foreground">× 3 payments</div>
+                  <div className="mt-1 font-mono text-xs text-muted-foreground">× {installmentCount} payments</div>
                 </div>
               ),
             },
             {
               id: "pay_in_full",
-              label: "Pay in Full",
+              label: planSettings.pay_in_full_label,
               desc: "One upfront payment — biggest savings",
               highlight: true,
               render: (
                 <div>
                   <div className="font-mono text-sm text-muted-foreground line-through">{fmt(total)}</div>
                   <div className="font-display text-4xl font-bold text-gradient-vo">{fmt(payInFull)}</div>
-                  <div className="mt-1 font-mono text-xs text-muted-foreground">save 25%</div>
+                  <div className="mt-1 font-mono text-xs text-muted-foreground">save {Math.round(discountPct)}%</div>
                 </div>
               ),
             },
             {
               id: "milestone",
-              label: "Milestone-Based",
+              label: planSettings.milestone_label,
               desc: `Pay per phase as it completes — ${phases.join(" → ")}`,
               render: (
                 <div>
