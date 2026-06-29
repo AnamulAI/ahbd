@@ -1904,36 +1904,40 @@ function FaqSection() {
 
 function ClosingCtaSection() {
   return (
-    <section className="section-glow-cta">
-      <div className="mx-auto flex max-w-3xl flex-col items-center px-4 py-24 text-center sm:px-6 sm:py-32">
-        <Eyebrow>// LET'S GET YOUR SHOW LIVE</Eyebrow>
-        <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
-          Your Content Is Already a{" "}
-          <span className="text-gradient-vo">Podcast.</span>
-        </h2>
-        <p className="mt-5 max-w-2xl text-base text-muted-foreground sm:text-lg">
-          Stop letting valuable content sit unused. Send me your first piece,
-          and let's get your show live.
-        </p>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <PrimaryCTA to="/contact">Start Your Podcast</PrimaryCTA>
-        </div>
-        <p className="mt-6 inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-muted-foreground sm:text-sm">
-          <span className="inline-flex items-center gap-1.5">
-            <Check className="h-3.5 w-3.5 text-[color:var(--primary)]" />
-            No recording equipment needed
-          </span>
-          <span className="text-white/20">·</span>
-          <Link to="/contact" className="inline-flex items-center gap-1.5 underline-offset-2 hover:text-white hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)] rounded">
-            <Check className="h-3.5 w-3.5 text-[color:var(--primary)]" />
-            Free Sample Episode — just send your topic
-          </Link>
-          <span className="text-white/20">·</span>
-          <span className="inline-flex items-center gap-1.5">
-            <Check className="h-3.5 w-3.5 text-[color:var(--primary)]" />
-            300+ AI voices ready
-          </span>
-        </p>
+    <section className="py-20 sm:py-28">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6">
+        <CtaRevealCard>
+          <div className="flex flex-col items-center text-center">
+            <Eyebrow>// LET'S GET YOUR SHOW LIVE</Eyebrow>
+            <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
+              Your Content Is Already a{" "}
+              <span className="text-gradient-vo">Podcast.</span>
+            </h2>
+            <p className="mt-5 max-w-2xl text-base text-muted-foreground sm:text-lg">
+              Stop letting valuable content sit unused. Send me your first piece,
+              and let's get your show live.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <PrimaryCTA to="/contact">Start Your Podcast</PrimaryCTA>
+            </div>
+            <p className="mt-6 inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-muted-foreground sm:text-sm">
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-[color:var(--primary)]" />
+                No recording equipment needed
+              </span>
+              <span className="text-white/20">·</span>
+              <Link to="/contact" className="inline-flex items-center gap-1.5 underline-offset-2 hover:text-white hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--primary)] rounded">
+                <Check className="h-3.5 w-3.5 text-[color:var(--primary)]" />
+                Free Sample Episode — just send your topic
+              </Link>
+              <span className="text-white/20">·</span>
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-[color:var(--primary)]" />
+                300+ AI voices ready
+              </span>
+            </p>
+          </div>
+        </CtaRevealCard>
       </div>
     </section>
   );
