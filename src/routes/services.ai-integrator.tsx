@@ -1189,7 +1189,7 @@ function PricingCalculatorSection() {
 
           {/* RIGHT — STICKY ESTIMATE */}
           <aside className="lg:sticky lg:top-24 lg:self-start">
-            <div className="relative rounded-2xl border border-[color:var(--primary)]/60 bg-[#16181D] p-6 shadow-[0_0_0_1px_rgba(59,130,246,0.15),0_30px_90px_-30px_rgba(249,115,22,0.35),0_30px_90px_-40px_rgba(59,130,246,0.45)]">
+            <div ref={quoteCardRef} className="relative rounded-2xl border border-[color:var(--primary)]/60 bg-[#16181D] p-6 shadow-[0_0_0_1px_rgba(59,130,246,0.15),0_30px_90px_-30px_rgba(249,115,22,0.35),0_30px_90px_-40px_rgba(59,130,246,0.45)]">
               <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-[color:var(--primary)]/10 via-transparent to-[color:var(--orange)]/10" />
               <div className="relative">
                 <div className="flex items-center gap-2">
