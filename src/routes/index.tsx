@@ -90,6 +90,8 @@ function PhaseCard({
   description,
   href,
   isVisible = true,
+  showTopConnector = false,
+  connectorVisible = false,
 }: {
   number: number;
   icon: React.ComponentType<{ className?: string }>;
@@ -97,9 +99,19 @@ function PhaseCard({
   description: string;
   href: string;
   isVisible?: boolean;
+  showTopConnector?: boolean;
+  connectorVisible?: boolean;
 }) {
   return (
     <div className={`relative flex flex-col items-center text-center gap-5 transition-all duration-[750ms] ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90'} motion-reduce:opacity-100 motion-reduce:scale-100`}>
+      {/* Mobile-only vertical connector — sits in the gap BETWEEN this card
+          and the previous card so it never overlaps the icon container. */}
+      {showTopConnector && (
+        <span
+          aria-hidden
+          className={`md:hidden absolute -top-10 left-1/2 h-10 w-px -translate-x-1/2 origin-top bg-gradient-to-b from-[#3B82F6] to-[#F97316] transition-transform duration-[950ms] ${connectorVisible ? 'scale-y-100' : 'scale-y-0'} motion-reduce:scale-y-100`}
+        />
+      )}
       {/* Numbered badge */}
       <div className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full btn-gradient font-display text-lg font-bold text-white shadow-[0_8px_24px_-8px_var(--vo-glow)] ring-4 ring-background">
         {number}
@@ -139,6 +151,7 @@ function PhaseCard({
     </div>
   );
 }
+
 
 
 function Index() {
@@ -273,11 +286,9 @@ function Index() {
                 className={`hidden md:block absolute top-6 h-px bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] origin-left transition-transform duration-[950ms] ${journeyLine2 ? 'scale-x-100' : 'scale-x-0'} motion-reduce:scale-x-100`}
                 style={{ left: '50%', right: 'calc((100% - 4rem) / 6)' }}
               />
-              {/* Mobile constrained vertical line */}
-              <div
-                aria-hidden
-                className="md:hidden absolute left-1/2 top-[8%] bottom-[8%] w-px -translate-x-1/2 bg-gradient-to-b from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316]"
-              />
+              {/* Mobile vertical connectors are rendered INSIDE each PhaseCard
+                  (in the grid gap above the badge) so they never overlap the
+                  icon container. See PhaseCard's `showTopConnector` prop. */}
 
               <div className="grid gap-10 md:grid-cols-3 md:gap-8">
                 <PhaseCard
@@ -295,6 +306,8 @@ function Index() {
                   description="A custom AI assistant connected directly into the website, WhatsApp, or internal systems — automating what used to take a full team."
                   href="/services/ai-integrator"
                   isVisible={journeyBadge2}
+                  showTopConnector
+                  connectorVisible={journeyLine1}
                 />
                 <PhaseCard
                   number={3}
@@ -303,8 +316,11 @@ function Index() {
                   description="A consistent show that builds trust and visibility in the niche — while most competitors are still silent."
                   href="/services/ai-podcast"
                   isVisible={journeyBadge3}
+                  showTopConnector
+                  connectorVisible={journeyLine2}
                 />
               </div>
+
             </div>
 
             <p className="mx-auto mt-14 max-w-2xl text-center font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">

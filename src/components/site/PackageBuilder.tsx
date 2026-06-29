@@ -613,9 +613,10 @@ export function PackageBuilder() {
   const podAddonOpts = (podGroups["podcast_addon"] ?? []).filter((o) => o.input_type === "checkbox");
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_360px] lg:gap-8">
-      {/* Steps column */}
-      <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[1fr_360px] lg:gap-8 lg:items-start">
+      {/* A: Steps 1-4 + Continue button */}
+      <div className="order-1 flex flex-col gap-6 lg:col-start-1 lg:row-start-1">
+
         {/* Step 1 */}
         <StepCard step="STEP 1" title="Your starting point">
           <FieldLabel>Where are you starting from?</FieldLabel>
@@ -881,9 +882,14 @@ export function PackageBuilder() {
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </button>
         </div>
+      </div>
 
+      {/* B: Payment cards + Lead form (mobile order-4 puts these AFTER FAQ;
+          desktop keeps them above FAQ in the left column) */}
+      <div className="order-4 flex flex-col gap-6 lg:order-none lg:col-start-1 lg:row-start-2">
         {/* Payment Plan Cards */}
         {paymentOpen && (() => {
+
           const installments = Math.round(total / 3);
           const payInFull = Math.round(total * 0.75);
           const phases = ["Website", aiEnabled && "AI Agent", podEnabled && "Podcast"].filter(Boolean) as string[];
@@ -1126,8 +1132,11 @@ export function PackageBuilder() {
             )}
           </div>
         )}
+      </div>
 
-
+      {/* C: Builder FAQ (mobile order-3 → after Live Quote; desktop keeps it
+          below the payment block in the left column) */}
+      <div className="order-3 lg:order-none lg:col-start-1 lg:row-start-3">
         <div className="rounded-xl border border-white/[0.08] bg-[oklch(0.15_0.02_260)] p-5 sm:p-7">
           <Eyebrow>// BUILDER FAQ</Eyebrow>
           <h3 className="mt-2 text-lg font-semibold text-white sm:text-xl">
@@ -1152,8 +1161,9 @@ export function PackageBuilder() {
         </div>
       </div>
 
-      {/* Right column: ENTIRE stacked column is sticky as one unit */}
-      <aside className="lg:sticky lg:top-24 lg:self-start">
+      {/* Right column on desktop — mobile order-2 puts Live Quote right after Step 4 */}
+      <aside className="order-2 lg:order-none lg:col-start-2 lg:row-start-1 lg:row-span-3 lg:sticky lg:top-24 lg:self-start">
+
         <div className="flex flex-col gap-6">
           {/* Live Quote — Pricing Reveal Card pattern (permanent featured glow) */}
           <div key={`quote-${cardBump}`} className="group/reveal relative quote-card-bump">
