@@ -163,6 +163,8 @@ function BuilderSettingsPage() {
   const [aiTypes, setAiTypes] = useState<AiType[]>([]);
   const [podcastTypes, setPodcastTypes] = useState<PodcastType[]>([]);
   const [promoCards, setPromoCards] = useState<PromoCard[]>([]);
+  const [signature, setSignature] = useState<SignaturePackage | null>(null);
+  const [paymentPlan, setPaymentPlan] = useState<PaymentPlanSettings | null>(null);
 
   async function loadAll() {
     const [
