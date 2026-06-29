@@ -565,6 +565,17 @@ export function PackageBuilder() {
   const total = priceLines.reduce((s, l) => s + l.amount, 0);
   const advance = Math.round(total * 0.1);
 
+  // Ref to the Live Quote card DOM for share-as-image capture.
+  const quoteCardRef = useRef<HTMLDivElement>(null);
+
+  // Short WhatsApp prompt that accompanies the shared image.
+  const quoteWaMessage = useMemo(() => {
+    if (priceLines.length === 0) {
+      return "Hi! Here's my custom build from the DFY Package Builder — see attached image.";
+    }
+    return `Hi! Here's my custom build from the DFY Package Builder — total ${fmt(total)}. See attached image for the full breakdown.`;
+  }, [priceLines.length, total]);
+
   // Bump the entire Live Quote card whenever ANY selection changes.
   const selectionSig = useMemo(() => {
     return JSON.stringify({
