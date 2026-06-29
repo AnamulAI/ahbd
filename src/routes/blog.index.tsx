@@ -5,6 +5,7 @@ import { ArrowRight, Bot, Clock, Code2, Mail, Mic2, Search, X } from "lucide-rea
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { CtaRevealCard } from "@/components/site/CtaRevealCard";
+import { RevealBorder } from "@/components/site/RevealBorder";
 import { BlogCard, CategoryBadge } from "@/components/site/BlogCard";
 import {
   formatPublishedDate,
