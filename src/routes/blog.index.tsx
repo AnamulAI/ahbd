@@ -125,6 +125,7 @@ type CategorySectionConfig = {
   iconTint: string;
   iconBorder: string;
   iconColor: string;
+  glowColor: string;
 };
 
 const CATEGORY_SECTIONS: CategorySectionConfig[] = [
@@ -141,6 +142,7 @@ const CATEGORY_SECTIONS: CategorySectionConfig[] = [
     iconTint: "bg-[color:var(--primary)]/12",
     iconBorder: "border-[color:var(--primary)]/30",
     iconColor: "text-[color:var(--primary)]",
+    glowColor: "bg-[#3B82F6]/25",
   },
   {
     category: "AI Integrator",
@@ -155,6 +157,7 @@ const CATEGORY_SECTIONS: CategorySectionConfig[] = [
     iconTint: "bg-[#8B5CF6]/12",
     iconBorder: "border-[#8B5CF6]/30",
     iconColor: "text-[#A78BFA]",
+    glowColor: "bg-[#8B5CF6]/25",
   },
   {
     category: "AI Podcast",
@@ -169,6 +172,7 @@ const CATEGORY_SECTIONS: CategorySectionConfig[] = [
     iconTint: "bg-[color:var(--orange)]/12",
     iconBorder: "border-[color:var(--orange)]/30",
     iconColor: "text-[color:var(--orange)]",
+    glowColor: "bg-[#F97316]/25",
   },
 ];
 
@@ -185,16 +189,25 @@ function CategorySection({
   return (
     <div>
       <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
-        <span
-          className={[
-            "inline-flex h-14 w-14 items-center justify-center rounded-2xl border",
-            section.iconTint,
-            section.iconBorder,
-          ].join(" ")}
-          aria-hidden
-        >
-          <Icon className={`h-7 w-7 ${section.iconColor}`} aria-hidden />
-        </span>
+        <div className="relative inline-flex">
+          <div
+            className={[
+              "absolute -inset-4 rounded-full blur-2xl",
+              section.glowColor,
+            ].join(" ")}
+            aria-hidden
+          />
+          <span
+            className={[
+              "relative inline-flex h-14 w-14 items-center justify-center rounded-2xl border",
+              section.iconTint,
+              section.iconBorder,
+            ].join(" ")}
+            aria-hidden
+          >
+            <Icon className={`h-7 w-7 ${section.iconColor}`} aria-hidden />
+          </span>
+        </div>
         <div className="mt-5 font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
           {section.eyebrow}
         </div>
@@ -371,7 +384,7 @@ function BlogIndexPage() {
               <div className="mt-20 space-y-24 sm:mt-24 sm:space-y-28">
                 {CATEGORY_SECTIONS.map((section) => {
                   const categoryPosts = posts.filter(
-                    (p) => p.category === section.category,
+                    (p) => p.category === section.category && p.slug !== featured?.slug,
                   );
                   if (categoryPosts.length === 0) return null;
                   return (
