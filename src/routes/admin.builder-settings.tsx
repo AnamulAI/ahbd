@@ -178,7 +178,7 @@ function BuilderSettingsPage() {
 
 
   async function loadAll() {
-    const [ta, uc, pr, ti, op, ai, pd, pc, sg, pp] = await Promise.all([
+    const [ta, uc, pr, ti, op, ai, pd, pc, sg, pp, cp] = await Promise.all([
       supabase.from("builder_tech_approaches").select("*").order("display_order"),
       supabase.from("builder_use_cases").select("*").order("display_order"),
       supabase.from("builder_use_case_pricing").select("*"),
@@ -189,8 +189,9 @@ function BuilderSettingsPage() {
       supabase.from("builder_promo_cards").select("*").order("display_order"),
       supabase.from("signature_package_settings" as never).select("*").limit(1).maybeSingle(),
       supabase.from("payment_plan_settings" as never).select("*").limit(1).maybeSingle(),
+      supabase.from("builder_copy" as never).select("*").order("display_order"),
     ]);
-    for (const r of [ta, uc, pr, ti, op, ai, pd, pc, sg, pp]) {
+    for (const r of [ta, uc, pr, ti, op, ai, pd, pc, sg, pp, cp]) {
       if (r.error) {
         toast.error(r.error.message);
         return;
@@ -224,8 +225,10 @@ function BuilderSettingsPage() {
       } as SignaturePackage);
     }
     if (pp.data) setPaymentPlan(pp.data as PaymentPlanSettings);
+    setCopy(((cp.data ?? []) as unknown[]) as BuilderCopyRow[]);
     setLoading(false);
   }
+
 
 
   useEffect(() => {
