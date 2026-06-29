@@ -360,6 +360,7 @@ function BlogIndexPage() {
                   </div>
                 </div>
               </Link>
+              </div>
             )}
 
             {hasQuery ? (
