@@ -4,6 +4,7 @@ import { ArrowRight, Bot, Code2, LayoutGrid, Mic2 } from "lucide-react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { CtaRevealCard } from "@/components/site/CtaRevealCard";
+import { RevealBorder } from "@/components/site/RevealBorder";
 import { ProjectCard, ProjectCategoryBadge } from "@/components/site/ProjectCard";
 import {
   FEATURED_PROJECT_SLUG,
