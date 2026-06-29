@@ -1365,12 +1365,17 @@ function PackagePaymentTab({
   setSignature,
   paymentPlan,
   setPaymentPlan,
+  copy,
+  setCopy,
 }: {
   signature: SignaturePackage | null;
   setSignature: React.Dispatch<React.SetStateAction<SignaturePackage | null>>;
   paymentPlan: PaymentPlanSettings | null;
   setPaymentPlan: React.Dispatch<React.SetStateAction<PaymentPlanSettings | null>>;
+  copy: BuilderCopyRow[];
+  setCopy: React.Dispatch<React.SetStateAction<BuilderCopyRow[]>>;
 }) {
+
   if (!signature || !paymentPlan) {
     return (
       <div className="text-sm text-white/55">
