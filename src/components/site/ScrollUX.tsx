@@ -48,7 +48,7 @@ export function ScrollUX() {
       {/* Progress bar */}
       <div
         aria-hidden="true"
-        className="pointer-events-none fixed inset-x-0 top-0 z-[60] h-[2px]"
+        className="pointer-events-none fixed inset-x-0 top-0 z-[60] h-[3px]"
       >
         <div
           className="h-full origin-left btn-gradient min-h-9 text-center scroll-progress-bar"
