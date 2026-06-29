@@ -1262,6 +1262,13 @@ function PricingCalculatorSection() {
   }, [project, platform, projectPrice, scope, selectedAddons, support, total, hostingId]);
 
   const waLink = `https://wa.me/8801777768353?text=${encodeURIComponent(waMessage)}`;
+  const quoteCardRef = useRef<HTMLDivElement>(null);
+  const shareWaMessage = useMemo(
+    () =>
+      `Hi! Here's my custom Web Development quote — total ${fmt(total)}. See attached image for the full breakdown.`,
+    [total],
+  );
+  void waLink;
 
   return (
     <section className="py-20 sm:py-28">
