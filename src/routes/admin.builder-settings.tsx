@@ -1341,3 +1341,275 @@ function Labeled({ label, children }: { label: string; children: ReactNode }) {
     </div>
   );
 }
+
+// ---------- PACKAGE & PAYMENT TAB ----------
+function PackagePaymentTab({
+  signature,
+  setSignature,
+  paymentPlan,
+  setPaymentPlan,
+}: {
+  signature: SignaturePackage | null;
+  setSignature: React.Dispatch<React.SetStateAction<SignaturePackage | null>>;
+  paymentPlan: PaymentPlanSettings | null;
+  setPaymentPlan: React.Dispatch<React.SetStateAction<PaymentPlanSettings | null>>;
+}) {
+  if (!signature || !paymentPlan) {
+    return (
+      <div className="text-sm text-white/55">
+        Settings rows not found. Please run the latest migration.
+      </div>
+    );
+  }
+
+  // ---- Signature package helpers ----
+  const totalValue =
+    Number(signature.web_dev_price ?? 0) +
+    Number(signature.ai_integrator_price ?? 0) +
+    Number(signature.podcast_price ?? 0);
+  const savings = totalValue - Number(signature.bundle_price ?? 0);
+
+  async function updateSig(patchObj: Partial<SignaturePackage>) {
+    const next = { ...(signature as SignaturePackage), ...patchObj };
+    setSignature(next);
+    await patch<SignaturePackage>(
+      "signature_package_settings",
+      signature!.id,
+      patchObj,
+      () => setSignature(signature),
+    );
+  }
+
+  async function updatePlan(patchObj: Partial<PaymentPlanSettings>) {
+    const next = { ...(paymentPlan as PaymentPlanSettings), ...patchObj };
+    setPaymentPlan(next);
+    await patch<PaymentPlanSettings>(
+      "payment_plan_settings",
+      paymentPlan!.id,
+      patchObj,
+      () => setPaymentPlan(paymentPlan),
+    );
+  }
+
+  const items = signature.whats_included ?? [];
+
+  function setItems(next: string[]) {
+    updateSig({ whats_included: next });
+  }
+
+  return (
+    <>
+      <Section
+        title="Signature Package ($4,990 offer)"
+        description="Controls the Home page's Pricing Reveal Card. Total value is derived from the three line items; savings is derived from total minus bundle price."
+      >
+        <div className="space-y-6">
+          {/* Value Stack */}
+          <div>
+            <div className="mb-2 font-mono text-[10px] uppercase tracking-wider text-white/45">
+              Value Stack
+            </div>
+            <div className="space-y-2">
+              {(
+                [
+                  { lk: "web_dev_label", pk: "web_dev_price" },
+                  { lk: "ai_integrator_label", pk: "ai_integrator_price" },
+                  { lk: "podcast_label", pk: "podcast_price" },
+                ] as const
+              ).map((row) => (
+                <div
+                  key={row.lk}
+                  className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_140px]"
+                >
+                  <TextField
+                    value={signature[row.lk] as string}
+                    onSave={(v) => updateSig({ [row.lk]: v } as Partial<SignaturePackage>)}
+                  />
+                  <TextField
+                    type="number"
+                    value={signature[row.pk] as number}
+                    onSave={(v) =>
+                      updateSig({ [row.pk]: Number(v) || 0 } as Partial<SignaturePackage>)
+                    }
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Totals */}
+          <div className="rounded-lg border border-white/[0.08] bg-[#16181D] p-4 space-y-2">
+            <div className="flex items-center justify-between text-sm">
+              <span className="font-mono text-[10px] uppercase tracking-wider text-white/45">
+                Total Value (auto)
+              </span>
+              <span className="font-mono text-white">${totalValue.toLocaleString()}</span>
+            </div>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_140px] items-center">
+              <span className="font-mono text-[10px] uppercase tracking-wider text-white/45">
+                Bundle Price
+              </span>
+              <TextField
+                type="number"
+                value={signature.bundle_price}
+                onSave={(v) => updateSig({ bundle_price: Number(v) || 0 })}
+              />
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="font-mono text-[10px] uppercase tracking-wider text-white/45">
+                Savings (auto)
+              </span>
+              <span
+                className={`font-mono ${
+                  savings >= 0 ? "text-[#F97316]" : "text-red-400"
+                }`}
+              >
+                ${savings.toLocaleString()}
+              </span>
+            </div>
+          </div>
+
+          {/* Disclosure */}
+          <Labeled label="Disclosure Text">
+            <textarea
+              defaultValue={signature.disclosure_text}
+              onBlur={(e) => {
+                if (e.target.value !== signature.disclosure_text)
+                  updateSig({ disclosure_text: e.target.value });
+              }}
+              rows={3}
+              className="w-full rounded-md border border-white/[0.1] bg-[#16181D] px-2 py-1.5 text-sm text-white focus:border-[#3B82F6]/60 focus:outline-none"
+            />
+          </Labeled>
+
+          {/* What's Included */}
+          <div>
+            <div className="mb-2 flex items-center justify-between">
+              <div className="font-mono text-[10px] uppercase tracking-wider text-white/45">
+                What's Included (checklist)
+              </div>
+              <AddButton
+                label="Add item"
+                onClick={() => setItems([...items, "New item"])}
+              />
+            </div>
+            <div className="space-y-2">
+              {items.map((item, idx) => (
+                <div key={idx} className="flex items-center gap-2">
+                  <span className="font-mono text-[10px] text-white/35 w-5">
+                    {idx + 1}.
+                  </span>
+                  <TextField
+                    value={item}
+                    onSave={(v) => {
+                      const next = [...items];
+                      next[idx] = v;
+                      setItems(next);
+                    }}
+                    className="flex-1"
+                  />
+                  <button
+                    type="button"
+                    disabled={idx === 0}
+                    onClick={() => {
+                      const next = [...items];
+                      [next[idx - 1], next[idx]] = [next[idx], next[idx - 1]];
+                      setItems(next);
+                    }}
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-md text-white/45 hover:bg-white/[0.06] hover:text-white disabled:opacity-30"
+                    aria-label="Move up"
+                  >
+                    <ArrowUp className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    disabled={idx === items.length - 1}
+                    onClick={() => {
+                      const next = [...items];
+                      [next[idx + 1], next[idx]] = [next[idx], next[idx + 1]];
+                      setItems(next);
+                    }}
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-md text-white/45 hover:bg-white/[0.06] hover:text-white disabled:opacity-30"
+                    aria-label="Move down"
+                  >
+                    <ArrowDown className="h-3.5 w-3.5" />
+                  </button>
+                  <DeleteBtn
+                    label="Remove checklist item?"
+                    onConfirm={() => setItems(items.filter((_, i) => i !== idx))}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA */}
+          <Labeled label="CTA Button Label">
+            <TextField
+              value={signature.cta_label}
+              onSave={(v) => updateSig({ cta_label: v })}
+              className="w-full max-w-sm"
+            />
+          </Labeled>
+        </div>
+      </Section>
+
+      <Section
+        title="Payment Plan Settings"
+        description="Controls the 3 payment plan cards shown in the builder after a visitor completes their build."
+      >
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <Labeled label="Installment Count">
+            <TextField
+              type="number"
+              value={paymentPlan.installment_count}
+              onSave={(v) =>
+                updatePlan({ installment_count: Math.max(1, parseInt(v, 10) || 1) })
+              }
+              className="w-full"
+            />
+          </Labeled>
+          <Labeled label="Pay-in-Full Discount %">
+            <TextField
+              type="number"
+              value={paymentPlan.pay_in_full_discount_percent}
+              onSave={(v) =>
+                updatePlan({ pay_in_full_discount_percent: Number(v) || 0 })
+              }
+              className="w-full"
+            />
+          </Labeled>
+          <Labeled label="Advance % (all plans)">
+            <TextField
+              type="number"
+              value={paymentPlan.advance_percent}
+              onSave={(v) => updatePlan({ advance_percent: Number(v) || 0 })}
+              className="w-full"
+            />
+          </Labeled>
+          <Labeled label="Installments Label">
+            <TextField
+              value={paymentPlan.installments_label}
+              onSave={(v) => updatePlan({ installments_label: v })}
+              className="w-full"
+            />
+          </Labeled>
+          <Labeled label="Pay in Full Label">
+            <TextField
+              value={paymentPlan.pay_in_full_label}
+              onSave={(v) => updatePlan({ pay_in_full_label: v })}
+              className="w-full"
+            />
+          </Labeled>
+          <Labeled label="Milestone Label">
+            <TextField
+              value={paymentPlan.milestone_label}
+              onSave={(v) => updatePlan({ milestone_label: v })}
+              className="w-full"
+            />
+          </Labeled>
+        </div>
+      </Section>
+    </>
+  );
+}
