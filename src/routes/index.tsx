@@ -286,11 +286,9 @@ function Index() {
                 className={`hidden md:block absolute top-6 h-px bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] origin-left transition-transform duration-[950ms] ${journeyLine2 ? 'scale-x-100' : 'scale-x-0'} motion-reduce:scale-x-100`}
                 style={{ left: '50%', right: 'calc((100% - 4rem) / 6)' }}
               />
-              {/* Mobile constrained vertical line */}
-              <div
-                aria-hidden
-                className="md:hidden absolute left-1/2 top-[8%] bottom-[8%] w-px -translate-x-1/2 bg-gradient-to-b from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316]"
-              />
+              {/* Mobile vertical connectors are rendered INSIDE each PhaseCard
+                  (in the grid gap above the badge) so they never overlap the
+                  icon container. See PhaseCard's `showTopConnector` prop. */}
 
               <div className="grid gap-10 md:grid-cols-3 md:gap-8">
                 <PhaseCard
@@ -308,6 +306,8 @@ function Index() {
                   description="A custom AI assistant connected directly into the website, WhatsApp, or internal systems — automating what used to take a full team."
                   href="/services/ai-integrator"
                   isVisible={journeyBadge2}
+                  showTopConnector
+                  connectorVisible={journeyLine1}
                 />
                 <PhaseCard
                   number={3}
@@ -316,8 +316,11 @@ function Index() {
                   description="A consistent show that builds trust and visibility in the niche — while most competitors are still silent."
                   href="/services/ai-podcast"
                   isVisible={journeyBadge3}
+                  showTopConnector
+                  connectorVisible={journeyLine2}
                 />
               </div>
+
             </div>
 
             <p className="mx-auto mt-14 max-w-2xl text-center font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
