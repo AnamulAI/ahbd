@@ -1271,7 +1271,7 @@ export function PackageBuilder() {
               <div className="my-5 h-px w-full bg-white/10" />
 
               <div className="flex items-baseline justify-between">
-                <span className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">Total</span>
+                <span className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">{c("live_quote_total_label", "TOTAL")}</span>
                 <span className="font-display text-3xl font-bold text-gradient-vo">{fmt(total)}</span>
               </div>
               <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
@@ -1302,7 +1302,7 @@ export function PackageBuilder() {
 
               <div data-share-exclude className="mt-3 flex justify-center">
                 <a
-                  href="https://wa.me/8801777768353?text=Hi!%20I%20have%20a%20quick%20question%20about%20my%20custom%20build%20on%20the%20DFY%20Package%20Builder."
+                  href={`https://wa.me/8801777768353?text=${encodeURIComponent(c("whatsapp_prefilled_message", "Hi! I have a quick question about my custom build on the DFY Package Builder."))}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group inline-flex items-center justify-center gap-2 rounded-full border border-[#25D366]/60 bg-[#16181D] px-4 py-2 text-sm font-semibold text-[#25D366] transition-all hover:border-[#34E57A] hover:text-[#34E57A] hover:shadow-[0_0_14px_rgba(37,211,102,0.35)] hover:[text-shadow:0_0_12px_rgba(37,211,102,0.45)]"
@@ -1315,8 +1315,9 @@ export function PackageBuilder() {
           </div>
 
           {visiblePromoCards.length > 0 &&
-            visiblePromoCards.map((c) => <PromoCard key={c.id} card={c} />)}
+            visiblePromoCards.map((pc) => <PromoCard key={pc.id} card={pc} />)}
         </div>
+
       </aside>
     </div>
   );
