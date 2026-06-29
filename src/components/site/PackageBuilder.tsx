@@ -613,9 +613,10 @@ export function PackageBuilder() {
   const podAddonOpts = (podGroups["podcast_addon"] ?? []).filter((o) => o.input_type === "checkbox");
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_360px] lg:gap-8">
-      {/* Steps column */}
-      <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[1fr_360px] lg:gap-8 lg:items-start">
+      {/* A: Steps 1-4 + Continue button */}
+      <div className="order-1 flex flex-col gap-6 lg:col-start-1 lg:row-start-1">
+
         {/* Step 1 */}
         <StepCard step="STEP 1" title="Your starting point">
           <FieldLabel>Where are you starting from?</FieldLabel>
