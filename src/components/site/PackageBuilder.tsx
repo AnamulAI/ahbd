@@ -86,7 +86,9 @@ type BuilderData = {
   aiOptions: BuilderOption[];
   podcastOptions: BuilderOption[];
   promoCards: PromoCardData[];
+  copy: Record<string, string>;
 };
+
 
 // ---------- Hook ----------
 function useBuilderData() {
@@ -97,7 +99,7 @@ function useBuilderData() {
     let cancelled = false;
     (async () => {
       try {
-        const [tech, uc, price, tiers, opts, aiT, podT, promo] = await Promise.all([
+        const [tech, uc, price, tiers, opts, aiT, podT, promo, copy] = await Promise.all([
           supabase.from("builder_tech_approaches").select("*").eq("is_active", true).order("display_order"),
           supabase.from("builder_use_cases").select("*").eq("is_active", true).order("display_order"),
           supabase.from("builder_use_case_pricing").select("*"),
@@ -106,11 +108,16 @@ function useBuilderData() {
           supabase.from("builder_ai_types").select("*").eq("is_active", true).order("display_order"),
           supabase.from("builder_podcast_types").select("*").eq("is_active", true).order("display_order"),
           supabase.from("builder_promo_cards").select("*").eq("is_active", true).order("display_order"),
+          supabase.from("builder_copy" as never).select("key, value"),
         ]);
-        const firstErr = [tech, uc, price, tiers, opts, aiT, podT, promo].find((r) => r.error);
+        const firstErr = [tech, uc, price, tiers, opts, aiT, podT, promo, copy].find((r) => r.error);
         if (firstErr?.error) throw firstErr.error;
         if (cancelled) return;
         const allOpts = (opts.data ?? []) as BuilderOption[];
+        const copyMap: Record<string, string> = {};
+        for (const row of (copy.data ?? []) as Array<{ key: string; value: string }>) {
+          copyMap[row.key] = row.value;
+        }
         setData({
           techApproaches: (tech.data ?? []) as TechApproach[],
           useCases: (uc.data ?? []) as UseCase[],
@@ -133,7 +140,9 @@ function useBuilderData() {
             feature_pills: Array.isArray(p.feature_pills) ? p.feature_pills : [],
             visibility_condition: p.visibility_condition,
           })) as any,
+          copy: copyMap,
         });
+
       } catch (e: any) {
         if (!cancelled) setError(e?.message ?? "Failed to load builder data");
       }
@@ -316,38 +325,21 @@ function CheckboxGroup({
 // ---------- Main component ----------
 export type PriceLine = { id: string; label: string; amount: number };
 
-const BUILDER_FAQS: { q: string; a: React.ReactNode }[] = [
-  {
-    q: "What if I already have a domain or hosting?",
-    a: "Just select 'I have my own hosting' in Step 2 — no extra charge. If you don't have one yet, I can set it up for a small fee, or you can grab a discount through my Hostinger link.",
-  },
-  {
-    q: "Do I have to add AI Agent or Podcast?",
-    a: "No — only the website is required. AI Agent and Podcast are optional add-ons you can include now or discuss separately later.",
-  },
-  {
-    q: "How does the 10% advance work?",
-    a: "A 10% advance secures your spot in the project queue once you confirm your build. The remaining balance follows whichever payment plan you choose.",
-  },
-  {
-    q: "Can I change my selections after submitting?",
-    a: "Yes — this is just a starting quote. We'll review everything together over a quick call or WhatsApp before anything is finalized.",
-  },
-  {
-    q: "Where can I read the full terms?",
-    a: (
-      <span>
-        See our{" "}
-        <a href="/terms" className="text-[color:var(--primary)] underline-offset-4 hover:underline">
-          full Terms of Service →
-        </a>
-      </span>
-    ),
-  },
-];
+function buildFaqs(copy: Record<string, string>): { q: string; a: React.ReactNode }[] {
+  const faqs: { q: string; a: React.ReactNode }[] = [];
+  for (let i = 1; i <= 5; i++) {
+    const q = copy[`faq_${i}_question`];
+    const a = copy[`faq_${i}_answer`];
+    if (q && a) faqs.push({ q, a });
+  }
+  return faqs;
+}
+
 
 export function PackageBuilder() {
   const { data, error } = useBuilderData();
+  const c = (key: string, fallback: string) => data?.copy?.[key] ?? fallback;
+
 
   // Step 1
   const [startingPoint, setStartingPoint] = useState<string>("");
@@ -652,8 +644,8 @@ export function PackageBuilder() {
       <div className="order-1 flex flex-col gap-6 lg:col-start-1 lg:row-start-1">
 
         {/* Step 1 */}
-        <StepCard step="STEP 1" title="Your starting point">
-          <FieldLabel>Where are you starting from?</FieldLabel>
+        <StepCard step="STEP 1" title={c("step1_title", "Your starting point")}>
+          <FieldLabel>{c("step1_dropdown_label", "Where are you starting from?")}</FieldLabel>
           <Select value={startingPoint} onValueChange={setStartingPoint}>
             <SelectTrigger className="bg-background">
               <SelectValue placeholder="Choose one…" />
@@ -666,22 +658,22 @@ export function PackageBuilder() {
           </Select>
 
           <div className="mt-4">
-            <FieldLabel>Tell me a bit more</FieldLabel>
+            <FieldLabel>{c("step1_textarea_label", "Tell me a bit more")}</FieldLabel>
             <Textarea
               value={ideaDescription}
               onChange={(e) => setIdeaDescription(e.target.value)}
-              placeholder="Tell me briefly about your idea or business..."
+              placeholder={c("step1_textarea_placeholder", "Tell me briefly about your idea or business...")}
               className="min-h-[96px] bg-background"
             />
           </div>
           <p className="mt-2 text-xs text-muted-foreground">
-            Saved with your lead — doesn't affect price.
+            {c("step1_helper_text", "Saved with your lead — doesn’t affect price.")}
           </p>
         </StepCard>
 
         {/* Step 2 */}
-        <StepCard step="STEP 2" title="Website (required)">
-          <FieldLabel>Tech approach</FieldLabel>
+        <StepCard step="STEP 2" title={c("step2_title", "Website (required)")}>
+          <FieldLabel>{c("step2_tech_approach_label", "Tech approach")}</FieldLabel>
           <div className="grid gap-3 sm:grid-cols-2">
             {data.techApproaches.map((t) => {
               const active = techId === t.id;
@@ -710,7 +702,7 @@ export function PackageBuilder() {
 
           {techId && (
             <div className="mt-6">
-              <FieldLabel>Use case</FieldLabel>
+              <FieldLabel>{c("step2_use_case_label", "Use case")}</FieldLabel>
               <Select value={useCaseId} onValueChange={setUseCaseId}>
                 <SelectTrigger className="bg-background">
                   <SelectValue placeholder="Choose use case…" />
@@ -773,10 +765,10 @@ export function PackageBuilder() {
         {/* Step 3 — AI Agent */}
         <StepCard
           step="STEP 3"
-          title="AI Agent (optional)"
+          title={c("step3_title", "AI Agent (optional)")}
           rightSlot={
             <label className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
-              <span>Add AI Agent</span>
+              <span>{c("step3_toggle_label", "Add AI Agent")}</span>
               <Switch checked={aiEnabled} onCheckedChange={setAiEnabled} />
             </label>
           }
@@ -839,10 +831,10 @@ export function PackageBuilder() {
         {/* Step 4 — Podcast */}
         <StepCard
           step="STEP 4"
-          title="Podcast (optional)"
+          title={c("step4_title", "Podcast (optional)")}
           rightSlot={
             <label className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
-              <span>Add a podcast</span>
+              <span>{c("step4_toggle_label", "Add a podcast")}</span>
               <Switch checked={podEnabled} onCheckedChange={setPodEnabled} />
             </label>
           }
@@ -912,7 +904,7 @@ export function PackageBuilder() {
             }}
             className="group relative inline-flex min-h-9 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-4 py-2 text-center text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 transition-transform hover:scale-[1.02]"
           >
-            See Payment Options
+            {c("see_payment_button_label", "See Payment Options")}
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </button>
         </div>
@@ -971,7 +963,7 @@ export function PackageBuilder() {
             <div ref={paymentRef} className="animate-fade-in">
               <div className="mb-5 text-center">
                 <Eyebrow>// CHOOSE A PAYMENT PLAN</Eyebrow>
-                <h3 className="mt-2 text-xl font-semibold text-white sm:text-2xl">How would you like to pay?</h3>
+                <h3 className="mt-2 text-xl font-semibold text-white sm:text-2xl">{c("payment_section_heading", "How would you like to pay?")}</h3>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-3 sm:items-stretch">
@@ -1038,13 +1030,13 @@ export function PackageBuilder() {
         {paymentOpen && paymentPlan && (
           <div ref={contactRef} className="animate-fade-in rounded-xl border border-white/[0.08] bg-[oklch(0.15_0.02_260)] p-5 sm:p-7">
             <Eyebrow>// FINAL STEP</Eyebrow>
-            <h3 className="mt-2 text-lg font-semibold text-white sm:text-xl">Your contact details</h3>
+            <h3 className="mt-2 text-lg font-semibold text-white sm:text-xl">{c("contact_form_heading", "Your contact details")}</h3>
 
             {submitted ? (
               <div className="mt-6 flex items-start gap-3 rounded-lg border border-[color:var(--primary)]/30 bg-[color:var(--primary)]/5 p-5">
                 <CheckCircle2 className="h-5 w-5 shrink-0 text-[color:var(--primary)]" />
                 <p className="text-sm leading-relaxed text-white">
-                  Thanks! I've received your build details and will reach out on WhatsApp within 24 hours to confirm everything.
+                  {c("confirmation_message", "Thanks! I’ve received your build details and will reach out on WhatsApp within 24 hours to confirm everything.")}
                 </p>
               </div>
             ) : (
@@ -1138,15 +1130,15 @@ export function PackageBuilder() {
                 >
                   <div className="grid gap-4 sm:grid-cols-3">
                     <div>
-                      <FieldLabel>Name</FieldLabel>
+                      <FieldLabel>{c("contact_name_label", "Name")}</FieldLabel>
                       <Input value={leadName} onChange={(e) => setLeadName(e.target.value)} placeholder="Your name" className="bg-background" required />
                     </div>
                     <div>
-                      <FieldLabel>Email</FieldLabel>
+                      <FieldLabel>{c("contact_email_label", "Email")}</FieldLabel>
                       <Input type="email" value={leadEmail} onChange={(e) => setLeadEmail(e.target.value)} placeholder="you@example.com" className="bg-background" required />
                     </div>
                     <div>
-                      <FieldLabel>WhatsApp</FieldLabel>
+                      <FieldLabel>{c("contact_whatsapp_label", "WhatsApp")}</FieldLabel>
                       <Input value={leadWhatsapp} onChange={(e) => setLeadWhatsapp(e.target.value)} placeholder="+1 555 123 4567" className="bg-background" required />
                     </div>
                   </div>
@@ -1161,7 +1153,7 @@ export function PackageBuilder() {
                     className="group relative inline-flex w-full min-h-9 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-4 py-2 text-center text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 transition-transform hover:scale-[1.01] disabled:opacity-60"
                   >
                     {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                    {submitting ? "Submitting…" : "Confirm My Build"}
+                    {submitting ? "Submitting…" : c("confirm_build_button_label", "Confirm My Build")}
                     {!submitting && <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />}
                   </button>
                 </form>
@@ -1177,10 +1169,10 @@ export function PackageBuilder() {
         <div className="rounded-xl border border-white/[0.08] bg-[oklch(0.15_0.02_260)] p-5 sm:p-7">
           <Eyebrow>// BUILDER FAQ</Eyebrow>
           <h3 className="mt-2 text-lg font-semibold text-white sm:text-xl">
-            Quick questions about this builder
+            {c("builder_faq_heading", "Quick questions about this builder")}
           </h3>
           <Accordion type="single" collapsible className="mt-5 space-y-3">
-            {BUILDER_FAQS.map((f, i) => (
+            {buildFaqs(data.copy).map((f, i) => (
               <AccordionItem
                 key={i}
                 value={`item-${i}`}
@@ -1206,8 +1198,8 @@ export function PackageBuilder() {
           <div key={`quote-${cardBump}`} className="group/reveal relative quote-card-bump">
             <RevealBorder rounded="rounded-[1.25rem]" radius={20} />
             <div ref={quoteCardRef} className="relative rounded-[1.25rem] bg-[oklch(0.15_0.02_260)] p-6">
-              <Eyebrow>// LIVE QUOTE</Eyebrow>
-              <h3 className="text-gradient-vo mt-2 mb-2 text-center text-xl font-semibold sm:text-2xl">Your custom build</h3>
+              <Eyebrow>{c("live_quote_eyebrow", "// LIVE QUOTE")}</Eyebrow>
+              <h3 className="text-gradient-vo mt-2 mb-2 text-center text-xl font-semibold sm:text-2xl">{c("live_quote_heading", "Your custom build")}</h3>
 
               {ideaDescription.trim() && (
                 <p className="mb-4 border-l-2 border-white/15 pl-3 text-center text-xs italic leading-relaxed text-muted-foreground">
@@ -1217,7 +1209,7 @@ export function PackageBuilder() {
 
               {priceLines.length === 0 ? (
                 <div className="mt-5 text-sm text-muted-foreground">
-                  Make selections to see your price build up live.
+                  {c("live_quote_empty_state", "Make selections to see your price build up live.")}
                 </div>
               ) : (
                 <div className="mt-5 space-y-4 text-sm">
@@ -1279,17 +1271,17 @@ export function PackageBuilder() {
               <div className="my-5 h-px w-full bg-white/10" />
 
               <div className="flex items-baseline justify-between">
-                <span className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">Total</span>
+                <span className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">{c("live_quote_total_label", "TOTAL")}</span>
                 <span className="font-display text-3xl font-bold text-gradient-vo">{fmt(total)}</span>
               </div>
               <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
-                <span>{advancePctLabel} advance to secure the order</span>
+                <span>{c("live_quote_advance_label", `${advancePctLabel} advance to secure the order`)}</span>
                 <span className="font-mono">{fmt(advance)}</span>
               </div>
 
               <div className="mt-5 rounded-md border-l-2 border-l-[#3B82F6] bg-[#3B82F6]/[0.06] px-3 py-2.5">
                 <p className="text-xs font-medium text-[#3B82F6]">
-                  Payment options shown after your build is complete.
+                  {c("live_quote_payment_note", "Payment options shown after your build is complete.")}
                 </p>
               </div>
 
@@ -1310,12 +1302,12 @@ export function PackageBuilder() {
 
               <div data-share-exclude className="mt-3 flex justify-center">
                 <a
-                  href="https://wa.me/8801777768353?text=Hi!%20I%20have%20a%20quick%20question%20about%20my%20custom%20build%20on%20the%20DFY%20Package%20Builder."
+                  href={`https://wa.me/8801777768353?text=${encodeURIComponent(c("whatsapp_prefilled_message", "Hi! I have a quick question about my custom build on the DFY Package Builder."))}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group inline-flex items-center justify-center gap-2 rounded-full border border-[#25D366]/60 bg-[#16181D] px-4 py-2 text-sm font-semibold text-[#25D366] transition-all hover:border-[#34E57A] hover:text-[#34E57A] hover:shadow-[0_0_14px_rgba(37,211,102,0.35)] hover:[text-shadow:0_0_12px_rgba(37,211,102,0.45)]"
                 >
-                  Get Instant Reply on WhatsApp
+                  {c("whatsapp_button_label", "Get Instant Reply on WhatsApp")}
                   <MessageCircle className="h-4 w-4 transition-colors group-hover:text-[#34E57A]" aria-hidden />
                 </a>
               </div>
@@ -1323,8 +1315,9 @@ export function PackageBuilder() {
           </div>
 
           {visiblePromoCards.length > 0 &&
-            visiblePromoCards.map((c) => <PromoCard key={c.id} card={c} />)}
+            visiblePromoCards.map((pc) => <PromoCard key={pc.id} card={pc} />)}
         </div>
+
       </aside>
     </div>
   );

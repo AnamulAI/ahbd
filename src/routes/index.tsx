@@ -198,6 +198,23 @@ function Index() {
   const [journeyLine2, setJourneyLine2] = useState(false);
   const [journeyBadge3, setJourneyBadge3] = useState(false);
   const [sig, setSig] = useState<SignaturePackage>(SIGNATURE_DEFAULTS);
+  const [dividerText, setDividerText] = useState<string>("— or build your own —");
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("builder_copy" as never)
+        .select("value")
+        .eq("key", "divider_text")
+        .maybeSingle();
+      if (cancelled || !data) return;
+      const v = (data as { value?: string }).value;
+      if (v) setDividerText(v);
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
 
   useEffect(() => {
     let cancelled = false;
@@ -539,7 +556,8 @@ function Index() {
             <div className="mt-16 flex items-center gap-4" aria-hidden>
               <div className="h-px flex-1 bg-white/10" />
               <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                — or build your own —
+                {dividerText}
+
               </span>
               <div className="h-px flex-1 bg-white/10" />
             </div>

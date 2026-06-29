@@ -117,6 +117,15 @@ type PaymentPlanSettings = {
   pay_in_full_label: string;
   milestone_label: string;
 };
+type BuilderCopyRow = {
+  id: string;
+  key: string;
+  value: string;
+  label: string;
+  group_key: string;
+  display_order: number;
+};
+
 
 const OPTION_GROUP_LABELS: Record<string, string> = {
   design: "Design",
@@ -165,9 +174,11 @@ function BuilderSettingsPage() {
   const [promoCards, setPromoCards] = useState<PromoCard[]>([]);
   const [signature, setSignature] = useState<SignaturePackage | null>(null);
   const [paymentPlan, setPaymentPlan] = useState<PaymentPlanSettings | null>(null);
+  const [copy, setCopy] = useState<BuilderCopyRow[]>([]);
+
 
   async function loadAll() {
-    const [ta, uc, pr, ti, op, ai, pd, pc, sg, pp] = await Promise.all([
+    const [ta, uc, pr, ti, op, ai, pd, pc, sg, pp, cp] = await Promise.all([
       supabase.from("builder_tech_approaches").select("*").order("display_order"),
       supabase.from("builder_use_cases").select("*").order("display_order"),
       supabase.from("builder_use_case_pricing").select("*"),
@@ -178,8 +189,9 @@ function BuilderSettingsPage() {
       supabase.from("builder_promo_cards").select("*").order("display_order"),
       supabase.from("signature_package_settings" as never).select("*").limit(1).maybeSingle(),
       supabase.from("payment_plan_settings" as never).select("*").limit(1).maybeSingle(),
+      supabase.from("builder_copy" as never).select("*").order("display_order"),
     ]);
-    for (const r of [ta, uc, pr, ti, op, ai, pd, pc, sg, pp]) {
+    for (const r of [ta, uc, pr, ti, op, ai, pd, pc, sg, pp, cp]) {
       if (r.error) {
         toast.error(r.error.message);
         return;
@@ -213,8 +225,10 @@ function BuilderSettingsPage() {
       } as SignaturePackage);
     }
     if (pp.data) setPaymentPlan(pp.data as PaymentPlanSettings);
+    setCopy(((cp.data ?? []) as unknown[]) as BuilderCopyRow[]);
     setLoading(false);
   }
+
 
 
   useEffect(() => {
@@ -292,7 +306,10 @@ function BuilderSettingsPage() {
             setSignature={setSignature}
             paymentPlan={paymentPlan}
             setPaymentPlan={setPaymentPlan}
+            copy={copy}
+            setCopy={setCopy}
           />
+
         </TabsContent>
       </Tabs>
     </AdminShell>
@@ -1348,12 +1365,17 @@ function PackagePaymentTab({
   setSignature,
   paymentPlan,
   setPaymentPlan,
+  copy,
+  setCopy,
 }: {
   signature: SignaturePackage | null;
   setSignature: React.Dispatch<React.SetStateAction<SignaturePackage | null>>;
   paymentPlan: PaymentPlanSettings | null;
   setPaymentPlan: React.Dispatch<React.SetStateAction<PaymentPlanSettings | null>>;
+  copy: BuilderCopyRow[];
+  setCopy: React.Dispatch<React.SetStateAction<BuilderCopyRow[]>>;
 }) {
+
   if (!signature || !paymentPlan) {
     return (
       <div className="text-sm text-white/55">
@@ -1610,6 +1632,148 @@ function PackagePaymentTab({
           </Labeled>
         </div>
       </Section>
+
+      <BuilderCopySection copy={copy} setCopy={setCopy} />
     </>
+
   );
 }
+
+// ---------- Builder Copy & Labels ----------
+const COPY_GROUP_ORDER: { key: string; label: string }[] = [
+  { key: "general", label: "General" },
+  { key: "step1", label: "Step 1 — Starting Point" },
+  { key: "step2", label: "Step 2 — Website" },
+  { key: "step3", label: "Step 3 — AI Agent" },
+  { key: "step4", label: "Step 4 — Podcast" },
+  { key: "live_quote", label: "Live Quote" },
+  { key: "payment_cards", label: "Payment Cards" },
+  { key: "contact_form", label: "Contact Form" },
+  { key: "faq", label: "FAQ" },
+];
+
+function BuilderCopySection({
+  copy,
+  setCopy,
+}: {
+  copy: BuilderCopyRow[];
+  setCopy: React.Dispatch<React.SetStateAction<BuilderCopyRow[]>>;
+}) {
+  const [openGroups, setOpenGroups] = useState<Set<string>>(new Set(["general"]));
+
+  const grouped = useMemo(() => {
+    const m: Record<string, BuilderCopyRow[]> = {};
+    for (const row of copy) {
+      (m[row.group_key] ??= []).push(row);
+    }
+    for (const k of Object.keys(m)) {
+      m[k].sort((a, b) => a.display_order - b.display_order);
+    }
+    return m;
+  }, [copy]);
+
+  async function updateRow(id: string, value: string) {
+    const prev = copy.find((r) => r.id === id)?.value;
+    setCopy((curr) => curr.map((r) => (r.id === id ? { ...r, value } : r)));
+    const { error } = await supabase
+      .from("builder_copy" as never)
+      .update({ value } as never)
+      .eq("id", id);
+    if (error) {
+      toast.error(error.message);
+      setCopy((curr) =>
+        curr.map((r) => (r.id === id ? { ...r, value: prev ?? r.value } : r)),
+      );
+    } else {
+      toast.success("Saved");
+    }
+  }
+
+  function toggle(g: string) {
+    setOpenGroups((curr) => {
+      const next = new Set(curr);
+      if (next.has(g)) next.delete(g); else next.add(g);
+      return next;
+    });
+  }
+
+  return (
+    <Section
+      title="Builder Copy & Labels"
+      description="Edit every static text string shown in the custom builder. Changes appear on the live site after the next page load."
+    >
+      <div className="space-y-3">
+        {COPY_GROUP_ORDER.map((grp) => {
+          const rows = grouped[grp.key] ?? [];
+          if (rows.length === 0) return null;
+          const open = openGroups.has(grp.key);
+          return (
+            <div
+              key={grp.key}
+              className="rounded-lg border border-white/[0.08] bg-[#16181D]"
+            >
+              <button
+                type="button"
+                onClick={() => toggle(grp.key)}
+                className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
+              >
+                <span className="font-display text-sm font-semibold text-white">
+                  {grp.label}
+                </span>
+                <span className="flex items-center gap-2 text-xs text-white/45">
+                  <span className="font-mono">{rows.length}</span>
+                  {open ? (
+                    <ChevronUp className="h-4 w-4" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4" />
+                  )}
+                </span>
+              </button>
+              {open && (
+                <div className="space-y-4 border-t border-white/[0.06] px-4 py-4">
+                  {rows.map((row) => {
+                    const isLong =
+                      row.key.endsWith("_answer") ||
+                      row.key === "confirmation_message" ||
+                      row.key === "whatsapp_prefilled_message" ||
+                      row.key === "live_quote_payment_note" ||
+                      row.key === "step1_textarea_placeholder";
+                    return (
+                      <div key={row.id} className="space-y-1.5">
+                        <div className="flex items-baseline justify-between gap-3">
+                          <label className="text-xs font-medium text-white/75">
+                            {row.label || row.key}
+                          </label>
+                          <span className="font-mono text-[10px] text-white/35">
+                            {row.key}
+                          </span>
+                        </div>
+                        {isLong ? (
+                          <textarea
+                            defaultValue={row.value}
+                            onBlur={(e) => {
+                              if (e.target.value !== row.value) updateRow(row.id, e.target.value);
+                            }}
+                            rows={3}
+                            className="w-full rounded-md border border-white/[0.1] bg-[#0F1320] px-2 py-1.5 text-sm text-white focus:border-[#3B82F6]/60 focus:outline-none"
+                          />
+                        ) : (
+                          <TextField
+                            value={row.value}
+                            onSave={(v) => updateRow(row.id, v)}
+                            className="w-full"
+                          />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </Section>
+  );
+}
+
