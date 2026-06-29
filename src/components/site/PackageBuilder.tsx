@@ -1144,16 +1144,9 @@ export function PackageBuilder() {
       <aside className="lg:sticky lg:top-24 lg:self-start">
         <div className="flex flex-col gap-6">
           {/* Live Quote — Pricing Reveal Card pattern (permanent featured glow) */}
-          <div key={`quote-${cardBump}`} className="relative quote-card-bump">
-            <div
-              aria-hidden
-              className="absolute -inset-px rounded-[1.25rem] bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/40 to-[#F97316] opacity-60 blur-2xl"
-            />
-            <div
-              aria-hidden
-              className="absolute -inset-px rounded-[1.25rem] bg-gradient-to-r from-[#3B82F6] to-[#F97316] opacity-80"
-            />
-            <div className="relative rounded-[1.15rem] bg-[oklch(0.15_0.02_260)] p-6">
+          <div key={`quote-${cardBump}`} className="group/reveal relative quote-card-bump">
+            <RevealBorder rounded="rounded-[1.25rem]" radius={20} />
+            <div className="relative rounded-[1.25rem] bg-[oklch(0.15_0.02_260)] p-6">
               <Eyebrow>// LIVE QUOTE</Eyebrow>
               <h3 className="mt-2 text-lg font-semibold text-white">Your custom build</h3>
 
