@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   ArrowRight,
@@ -55,6 +55,7 @@ import {
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { CtaRevealCard } from "@/components/site/CtaRevealCard";
+import { ShareQuoteButton } from "@/components/site/ShareQuoteButton";
 
 import {
   Accordion,
@@ -1017,6 +1018,14 @@ function PricingCalculatorSection() {
   }, [service, scope, scopeConfig.label, selectedAddons, support, oneTimeTotal, recurringTotal]);
 
   const waLink = `https://wa.me/8801777768353?text=${encodeURIComponent(waMessage)}`;
+  const quoteCardRef = useRef<HTMLDivElement>(null);
+  const shareWaMessage = useMemo(() => {
+    const parts = [`Hi! Here's my custom AI Integrator quote — one-time ${fmt(oneTimeTotal)}`];
+    if (recurringTotal > 0) parts.push(`, recurring ${fmt(recurringTotal)}/mo`);
+    parts.push(". See attached image for the full breakdown.");
+    return parts.join("");
+  }, [oneTimeTotal, recurringTotal]);
+  void waLink;
 
   return (
     <section className="py-20 sm:py-28">
@@ -1180,7 +1189,7 @@ function PricingCalculatorSection() {
 
           {/* RIGHT — STICKY ESTIMATE */}
           <aside className="lg:sticky lg:top-24 lg:self-start">
-            <div className="relative rounded-2xl border border-[color:var(--primary)]/60 bg-[#16181D] p-6 shadow-[0_0_0_1px_rgba(59,130,246,0.15),0_30px_90px_-30px_rgba(249,115,22,0.35),0_30px_90px_-40px_rgba(59,130,246,0.45)]">
+            <div ref={quoteCardRef} className="relative rounded-2xl border border-[color:var(--primary)]/60 bg-[#16181D] p-6 shadow-[0_0_0_1px_rgba(59,130,246,0.15),0_30px_90px_-30px_rgba(249,115,22,0.35),0_30px_90px_-40px_rgba(59,130,246,0.45)]">
               <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-[color:var(--primary)]/10 via-transparent to-[color:var(--orange)]/10" />
               <div className="relative">
                 <div className="flex items-center gap-2">
@@ -1258,17 +1267,17 @@ function PricingCalculatorSection() {
                   This is an estimate. Final pricing is confirmed after a quick scope discussion.
                 </p>
 
-                <a
-                  href={waLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-gradient mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold text-black shadow-[0_10px_30px_-12px_var(--vo-glow)] transition-all hover:scale-[1.02] hover:brightness-110"
-                >
-                  Get This Quote on WhatsApp
-                  <ArrowRight className="h-4 w-4" />
-                </a>
+                <div data-share-exclude className="mt-5">
+                  <ShareQuoteButton
+                    targetRef={quoteCardRef}
+                    filename="anamdev-ai-integrator-quote"
+                    waMessage={shareWaMessage}
+                    label="Share Quote on WhatsApp"
+                  />
+                </div>
                 <Link
                   to="/contact"
+                  data-share-exclude
                   className="mt-3 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full border border-[color:var(--primary)]/50 px-5 text-sm font-semibold text-white transition-all hover:bg-[color:var(--primary)]/10"
                 >
                   Send via Contact Form

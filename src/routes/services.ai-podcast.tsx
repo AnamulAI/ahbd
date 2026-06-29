@@ -42,6 +42,7 @@ import {
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { CtaRevealCard } from "@/components/site/CtaRevealCard";
+import { ShareQuoteButton } from "@/components/site/ShareQuoteButton";
 
 import {
   Accordion,
@@ -1441,9 +1442,17 @@ function EstimateSidebar({
   waMessage: string;
 }) {
   const waLink = `https://wa.me/8801777768353?text=${encodeURIComponent(waMessage)}`;
+  void waLink;
+  const quoteCardRef = useRef<HTMLDivElement>(null);
+  const shareWaMessage = (() => {
+    const parts = [`Hi! Here's my custom AI Podcast plan — ${fmt(monthlyTotal)}/mo`];
+    if (oneTimeTotal > 0) parts.push(` + ${fmt(oneTimeTotal)} ${oneTimeLabel ?? "one-time setup"}`);
+    parts.push(". See attached image for the full breakdown.");
+    return parts.join("");
+  })();
   return (
     <aside className="lg:sticky lg:top-24 lg:self-start">
-      <div className="relative rounded-2xl border border-[color:var(--primary)]/60 bg-[#16181D] p-6 shadow-[0_0_0_1px_rgba(59,130,246,0.15),0_30px_90px_-30px_rgba(249,115,22,0.35),0_30px_90px_-40px_rgba(59,130,246,0.45)]">
+      <div ref={quoteCardRef} className="relative rounded-2xl border border-[color:var(--primary)]/60 bg-[#16181D] p-6 shadow-[0_0_0_1px_rgba(59,130,246,0.15),0_30px_90px_-30px_rgba(249,115,22,0.35),0_30px_90px_-40px_rgba(59,130,246,0.45)]">
         <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-[color:var(--primary)]/10 via-transparent to-[color:var(--orange)]/10" />
         <div className="relative">
           <div className="flex items-center gap-2">
@@ -1469,6 +1478,7 @@ function EstimateSidebar({
           <IncludedDialog title={includedTitle} features={includedFeatures}>
             <button
               type="button"
+              data-share-exclude
               className="mt-3 inline-flex items-center gap-1 text-[11px] font-semibold text-[color:var(--primary)] hover:text-[color:var(--orange)] transition-colors cursor-pointer"
             >
               See what's included <ArrowRight className="h-3 w-3" />
@@ -1501,17 +1511,17 @@ function EstimateSidebar({
             This is an estimate. Final pricing is confirmed after a quick scope discussion.
           </p>
 
-          <a
-            href={waLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-gradient mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold text-white shadow-[0_10px_30px_-12px_var(--vo-glow)] transition-all hover:scale-[1.02] hover:brightness-110"
-          >
-            Get This Quote on WhatsApp
-            <ArrowRight className="h-4 w-4" />
-          </a>
+          <div data-share-exclude className="mt-5">
+            <ShareQuoteButton
+              targetRef={quoteCardRef}
+              filename="anamdev-ai-podcast-quote"
+              waMessage={shareWaMessage}
+              label="Share Quote on WhatsApp"
+            />
+          </div>
           <Link
             to="/contact"
+            data-share-exclude
             className="mt-3 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full border border-[color:var(--primary)]/50 px-5 text-sm font-semibold text-white transition-all hover:bg-[color:var(--primary)]/10"
           >
             Send via Contact Form

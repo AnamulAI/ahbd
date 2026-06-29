@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { ArrowRight, CheckCircle2, Loader2, MessageCircle, Star } from "lucide-react";
 import { RevealBorder } from "@/components/site/RevealBorder";
+import { ShareQuoteButton } from "@/components/site/ShareQuoteButton";
 import { PromoCard, type PromoCardData } from "./PromoCard";
 import { OptionIconBadge } from "./OptionIconBadge";
 
@@ -563,6 +564,17 @@ export function PackageBuilder() {
 
   const total = priceLines.reduce((s, l) => s + l.amount, 0);
   const advance = Math.round(total * 0.1);
+
+  // Ref to the Live Quote card DOM for share-as-image capture.
+  const quoteCardRef = useRef<HTMLDivElement>(null);
+
+  // Short WhatsApp prompt that accompanies the shared image.
+  const quoteWaMessage = useMemo(() => {
+    if (priceLines.length === 0) {
+      return "Hi! Here's my custom build from the DFY Package Builder — see attached image.";
+    }
+    return `Hi! Here's my custom build from the DFY Package Builder — total ${fmt(total)}. See attached image for the full breakdown.`;
+  }, [priceLines.length, total]);
 
   // Bump the entire Live Quote card whenever ANY selection changes.
   const selectionSig = useMemo(() => {
@@ -1146,7 +1158,7 @@ export function PackageBuilder() {
           {/* Live Quote — Pricing Reveal Card pattern (permanent featured glow) */}
           <div key={`quote-${cardBump}`} className="group/reveal relative quote-card-bump">
             <RevealBorder rounded="rounded-[1.25rem]" radius={20} />
-            <div className="relative rounded-[1.25rem] bg-[oklch(0.15_0.02_260)] p-6">
+            <div ref={quoteCardRef} className="relative rounded-[1.25rem] bg-[oklch(0.15_0.02_260)] p-6">
               <Eyebrow>// LIVE QUOTE</Eyebrow>
               <h3 className="text-gradient-vo mt-2 mb-3 text-center text-xl font-semibold sm:text-2xl">Your custom build</h3>
 
@@ -1228,7 +1240,16 @@ export function PackageBuilder() {
                 </p>
               </div>
 
-              <div className="mt-4 flex justify-center">
+              <div data-share-exclude className="mt-5">
+                <ShareQuoteButton
+                  targetRef={quoteCardRef}
+                  filename="anamdev-custom-build-quote"
+                  waMessage={quoteWaMessage}
+                  label="Share Quote as Image"
+                />
+              </div>
+
+              <div data-share-exclude className="mt-3 flex justify-center">
                 <a
                   href="https://wa.me/8801777768353?text=Hi!%20I%20have%20a%20quick%20question%20about%20my%20custom%20build%20on%20the%20DFY%20Package%20Builder."
                   target="_blank"
