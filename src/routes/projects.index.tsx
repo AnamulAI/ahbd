@@ -194,10 +194,11 @@ function ProjectsIndexPage() {
         {/* Filter tabs */}
         <section className="pt-10 sm:pt-14">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="mx-auto -mx-4 overflow-x-auto px-4 no-scrollbar sm:mx-auto sm:overflow-visible sm:px-0 sm:w-fit">
             <div
               role="tablist"
               aria-label="Filter projects by category"
-              className="mx-auto flex flex-wrap items-center justify-center gap-1.5 rounded-full border border-white/8 bg-[#16181D] p-1.5 sm:w-fit"
+              className="mx-auto inline-flex w-max items-center gap-1.5 rounded-full border border-white/8 bg-[#16181D] p-1.5 sm:flex sm:w-fit sm:flex-wrap sm:justify-center"
             >
               {PROJECT_FILTERS.map((f) => {
                 const active = filter === f;
@@ -210,7 +211,7 @@ function ProjectsIndexPage() {
                     aria-selected={active}
                     onClick={() => setFilter(f)}
                     className={[
-                      "inline-flex h-9 items-center gap-1.5 rounded-full px-3.5 text-sm transition-all duration-200 motion-reduce:transition-none",
+                      "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-sm transition-all duration-200 motion-reduce:transition-none whitespace-nowrap",
                       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ring)]",
                       active
                         ? "border border-[color:var(--primary)]/60 bg-[color:var(--primary)]/15 font-semibold text-white shadow-[0_0_20px_-6px_var(--primary)]"
@@ -236,6 +237,7 @@ function ProjectsIndexPage() {
                 );
               })}
             </div>
+          </div>
           </div>
         </section>
 
