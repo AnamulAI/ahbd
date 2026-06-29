@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { ArrowRight, CheckCircle2, Loader2, MessageCircle, Star } from "lucide-react";
 import { RevealBorder } from "@/components/site/RevealBorder";
+import { ShareQuoteButton } from "@/components/site/ShareQuoteButton";
 import { PromoCard, type PromoCardData } from "./PromoCard";
 import { OptionIconBadge } from "./OptionIconBadge";
 
