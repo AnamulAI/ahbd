@@ -278,7 +278,7 @@ function ProjectsIndexPage() {
                 <div className="mt-8">
                   <Link
                     to="/contact"
-                    className="group inline-flex h-12 items-center gap-2 rounded-full btn-gradient px-7 text-sm font-semibold text-white shadow-[0_10px_36px_-10px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_18px_50px_-12px_var(--vo-glow)] active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:scale-100"
+                    className="btn-primary-dark group"
                   >
                     Discuss Your Project{" "}
                     <ArrowRight
