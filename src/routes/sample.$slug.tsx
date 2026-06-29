@@ -62,7 +62,7 @@ function NotFoundView() {
         <p className="text-sm text-muted-foreground">
           The custom preview you're looking for may have been removed.
         </p>
-        <Link to="/" className="btn-primary-dark">
+        <Link to="/" className="inline-flex items-center gap-2 btn-gradient px-5 py-2.5 rounded-md text-sm font-medium">
           Visit AnamDev <ArrowRight className="size-4" />
         </Link>
       </div>
@@ -405,7 +405,7 @@ function SamplePage() {
               <div className="mt-8">
                 <a
                   href={data.cta_link}
-                  className="btn-primary-dark"
+                  className="btn-gradient inline-flex items-center gap-2 rounded-full px-8 py-4 text-base font-semibold"
                 >
                   {data.cta_text} <ArrowRight className="size-4" />
                 </a>

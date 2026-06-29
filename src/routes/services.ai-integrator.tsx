@@ -145,7 +145,7 @@ function PrimaryCTA({
   return (
     <Link
       to={to}
-      className="btn-primary-dark group"
+      className="group inline-flex h-12 items-center gap-2 rounded-full btn-gradient px-6 text-sm font-semibold text-black shadow-[0_12px_40px_-12px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_20px_55px_-12px_var(--vo-glow)] hover:brightness-110 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--orange)] motion-reduce:transition-none motion-reduce:hover:scale-100"
     >
       {children}
       <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
@@ -465,7 +465,7 @@ function BuildDialog({ build, children }: { build: Build; children: React.ReactN
             <p className="text-sm text-muted-foreground">Ready to put AI to real work?</p>
             <Link
               to="/contact"
-              className="btn-primary-dark"
+              className="btn-gradient inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold text-white transition-transform duration-200 hover:scale-[1.03]"
             >
               Discuss Your Project <ArrowRight className="h-4 w-4" />
             </Link>
@@ -1262,7 +1262,7 @@ function PricingCalculatorSection() {
                   href={waLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-primary-dark mt-5 w-full"
+                  className="btn-gradient mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold text-black shadow-[0_10px_30px_-12px_var(--vo-glow)] transition-all hover:scale-[1.02] hover:brightness-110"
                 >
                   Get This Quote on WhatsApp
                   <ArrowRight className="h-4 w-4" />

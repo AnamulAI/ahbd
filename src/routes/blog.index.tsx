@@ -101,7 +101,7 @@ function NewsletterSection() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="btn-primary-dark"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full btn-gradient px-6 text-sm font-semibold text-white shadow-[0_8px_30px_-8px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 motion-reduce:transition-none motion-reduce:hover:scale-100"
               >
                 {submitting ? "Subscribing..." : "Subscribe"}
               </button>
