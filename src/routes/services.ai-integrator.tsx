@@ -55,6 +55,7 @@ import {
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { CtaRevealCard } from "@/components/site/CtaRevealCard";
+import { ShareQuoteButton } from "@/components/site/ShareQuoteButton";
 
 import {
   Accordion,
