@@ -1158,7 +1158,7 @@ export function PackageBuilder() {
           {/* Live Quote — Pricing Reveal Card pattern (permanent featured glow) */}
           <div key={`quote-${cardBump}`} className="group/reveal relative quote-card-bump">
             <RevealBorder rounded="rounded-[1.25rem]" radius={20} />
-            <div className="relative rounded-[1.25rem] bg-[oklch(0.15_0.02_260)] p-6">
+            <div ref={quoteCardRef} className="relative rounded-[1.25rem] bg-[oklch(0.15_0.02_260)] p-6">
               <Eyebrow>// LIVE QUOTE</Eyebrow>
               <h3 className="text-gradient-vo mt-2 mb-3 text-center text-xl font-semibold sm:text-2xl">Your custom build</h3>
 
