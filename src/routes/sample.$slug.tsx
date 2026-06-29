@@ -10,6 +10,7 @@ import {
 import { Linkedin as SiLinkedin } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { CtaRevealCard } from "@/components/site/CtaRevealCard";
 
 const getSampleBySlug = createServerFn({ method: "GET" })
   .inputValidator((d: { slug: string }) => d)
