@@ -882,9 +882,14 @@ export function PackageBuilder() {
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </button>
         </div>
+      </div>
 
+      {/* B: Payment cards + Lead form (mobile order-4 puts these AFTER FAQ;
+          desktop keeps them above FAQ in the left column) */}
+      <div className="order-4 flex flex-col gap-6 lg:order-none lg:col-start-1 lg:row-start-2">
         {/* Payment Plan Cards */}
         {paymentOpen && (() => {
+
           const installments = Math.round(total / 3);
           const payInFull = Math.round(total * 0.75);
           const phases = ["Website", aiEnabled && "AI Agent", podEnabled && "Podcast"].filter(Boolean) as string[];
