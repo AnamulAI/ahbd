@@ -4,7 +4,7 @@ import { ArrowRight, MessageCircle, Globe, Bot, TrendingUp, Mic, Check, Target, 
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { CtaRevealCard } from "@/components/site/CtaRevealCard";
-import { RevealBorder } from "@/components/site/RevealBorder";
+import { RevealBorder, RevealBorderCircle } from "@/components/site/RevealBorder";
 import { PackageBuilder } from "@/components/site/PackageBuilder";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { BlogCard } from "@/components/site/BlogCard";
@@ -529,8 +529,8 @@ function Index() {
           <div className="mx-auto max-w-5xl px-4 sm:px-6">
             <div className="grid items-center gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:gap-14">
               <div className="order-1 mx-auto w-full max-w-sm md:order-none">
-                <div className="relative mx-auto aspect-square w-full max-w-[320px]">
-                  {/* Soft ambient blue + orange glow — two solid blurred circles */}
+                <div className="group/reveal relative mx-auto aspect-square w-full max-w-[320px] rounded-full">
+                  {/* Soft ambient blue + orange glow — two solid blurred circles (default state) */}
                   <div
                     aria-hidden
                     className="absolute -inset-6 rounded-full bg-[#3B82F6] blur-[56px] opacity-50"
@@ -541,6 +541,8 @@ function Index() {
                     className="absolute -inset-6 rounded-full bg-[#F97316] blur-[56px] opacity-45"
                     style={{ transform: "translate(12%, 12%)" }}
                   />
+                  {/* Hover-draw-in circular gradient border — 5th instance of Pricing Reveal Card pattern */}
+                  <RevealBorderCircle />
                   <img
                     src={anamAvatar.url}
                     alt="Mohammad Anamul Hoque"
@@ -548,6 +550,7 @@ function Index() {
                     loading="lazy"
                   />
                 </div>
+
               </div>
               <div className="order-2 md:order-none">
                 <Eyebrow>// THE PERSON BEHIND THIS</Eyebrow>
