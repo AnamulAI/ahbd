@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, MessageCircle, Globe, Bot, TrendingUp, Mic, Check, Target, ShieldCheck, Zap, Users, Mic2 } from "lucide-react";
+import { ArrowRight, MessageCircle, Globe, Bot, TrendingUp, Mic, Check, Target, ShieldCheck, Zap, Users } from "lucide-react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { CtaRevealCard } from "@/components/site/CtaRevealCard";
@@ -140,37 +140,6 @@ function PhaseCard({
   );
 }
 
-function ServiceCard({
-  icon: Icon,
-  title,
-  description,
-  href,
-}: {
-  icon: React.ComponentType<{ className?: string }>;
-  title: string;
-  description: string;
-  href: string;
-}) {
-  return (
-    <div className="card-elevated card-elevated-hover flex flex-col items-center text-center p-6">
-      <span className="grid h-12 w-12 place-items-center rounded-xl bg-[color:var(--primary)]/15">
-        <Icon className="h-6 w-6 text-[color:var(--primary)]" />
-      </span>
-      <h3 className="mt-4 text-base font-semibold text-white">{title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p>
-      <Link
-        to={href}
-        className="group mt-4 inline-flex items-center justify-center gap-1.5 text-sm font-semibold text-[color:var(--primary)] transition-colors hover:text-[#F97316]"
-      >
-        Learn more
-        <ArrowRight
-          className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
-          aria-hidden
-        />
-      </Link>
-    </div>
-  );
-}
 
 function Index() {
   const [journeyBadge1, setJourneyBadge1] = useState(false);
@@ -538,41 +507,6 @@ function Index() {
           </div>
         </section>
 
-        {/* Individual Services */}
-        <section className="relative bg-background py-20 sm:py-28">
-          <div className="mx-auto max-w-5xl px-4 sm:px-6">
-            <div className="text-center">
-              <Eyebrow>// OR START WITH ONE PIECE</Eyebrow>
-              <h2 className="mt-4 text-2xl font-bold leading-[1.1] text-white sm:text-3xl">
-                Prefer to Start with Just One Service?
-              </h2>
-              <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-                Each phase is also available on its own.
-              </p>
-            </div>
-
-            <div className="mt-10 grid gap-4 sm:grid-cols-3">
-              <ServiceCard
-                icon={Globe}
-                title="Web Development"
-                description="Websites and web apps built to convert."
-                href="/services/web-development"
-              />
-              <ServiceCard
-                icon={Bot}
-                title="AI Integrator"
-                description="Custom AI agents for your website, WhatsApp, or systems."
-                href="/services/ai-integrator"
-              />
-              <ServiceCard
-                icon={Mic2}
-                title="AI Podcast"
-                description="A consistent show that builds niche authority."
-                href="/services/ai-podcast"
-              />
-            </div>
-          </div>
-        </section>
 
         {/* Section 7 — About (condensed) */}
         <section className="relative bg-background py-20 sm:py-28">
