@@ -26,6 +26,7 @@ import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AdminSampleBuilderRouteImport } from './routes/admin.sample-builder'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
+import { Route as AdminBuilderSettingsRouteImport } from './routes/admin.builder-settings'
 import { Route as AdminComingSoonKeyRouteImport } from './routes/admin.coming-soon.$key'
 
 const ContactRoute = ContactRouteImport.update({
@@ -113,6 +114,11 @@ const AdminLeadsRoute = AdminLeadsRouteImport.update({
   path: '/admin/leads',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminBuilderSettingsRoute = AdminBuilderSettingsRouteImport.update({
+  id: '/admin/builder-settings',
+  path: '/admin/builder-settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminComingSoonKeyRoute = AdminComingSoonKeyRouteImport.update({
   id: '/admin/coming-soon/$key',
   path: '/admin/coming-soon/$key',
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/admin/builder-settings': typeof AdminBuilderSettingsRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/sample-builder': typeof AdminSampleBuilderRoute
@@ -143,6 +150,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/admin/builder-settings': typeof AdminBuilderSettingsRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/sample-builder': typeof AdminSampleBuilderRoute
@@ -164,6 +172,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/admin/builder-settings': typeof AdminBuilderSettingsRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/sample-builder': typeof AdminSampleBuilderRoute
@@ -186,6 +195,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/admin/builder-settings'
     | '/admin/leads'
     | '/admin/login'
     | '/admin/sample-builder'
@@ -206,6 +216,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/admin/builder-settings'
     | '/admin/leads'
     | '/admin/login'
     | '/admin/sample-builder'
@@ -226,6 +237,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/admin/builder-settings'
     | '/admin/leads'
     | '/admin/login'
     | '/admin/sample-builder'
@@ -247,6 +259,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
+  AdminBuilderSettingsRoute: typeof AdminBuilderSettingsRoute
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminSampleBuilderRoute: typeof AdminSampleBuilderRoute
@@ -385,6 +398,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLeadsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/builder-settings': {
+      id: '/admin/builder-settings'
+      path: '/admin/builder-settings'
+      fullPath: '/admin/builder-settings'
+      preLoaderRoute: typeof AdminBuilderSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/coming-soon/$key': {
       id: '/admin/coming-soon/$key'
       path: '/admin/coming-soon/$key'
@@ -399,6 +419,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
+  AdminBuilderSettingsRoute: AdminBuilderSettingsRoute,
   AdminLeadsRoute: AdminLeadsRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminSampleBuilderRoute: AdminSampleBuilderRoute,
