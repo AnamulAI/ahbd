@@ -1266,7 +1266,7 @@ export function PackageBuilder() {
                   href="https://wa.me/8801777768353?text=Hi!%20I%20have%20a%20quick%20question%20about%20my%20custom%20build%20on%20the%20DFY%20Package%20Builder."
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center justify-center gap-2 rounded-full bg-[#16181D] px-4 py-2 text-sm font-semibold text-[#25D366] transition-colors hover:text-[#34E57A] hover:[text-shadow:0_0_12px_rgba(37,211,102,0.45)]"
+                  className="group inline-flex items-center justify-center gap-2 rounded-full border border-[#25D366]/60 bg-[#16181D] px-4 py-2 text-sm font-semibold text-[#25D366] transition-all hover:border-[#34E57A] hover:text-[#34E57A] hover:shadow-[0_0_14px_rgba(37,211,102,0.35)] hover:[text-shadow:0_0_12px_rgba(37,211,102,0.45)]"
                 >
                   Get Instant Reply on WhatsApp
                   <MessageCircle className="h-4 w-4 transition-colors group-hover:text-[#34E57A]" aria-hidden />

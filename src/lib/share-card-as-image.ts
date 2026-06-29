@@ -35,13 +35,20 @@ async function renderCardToPngDataUrl({
   backgroundColor = CARD_BG,
   padding = 32,
 }: Pick<ShareCardOptions, "node" | "backgroundColor" | "padding">) {
-  // Capture card itself at 2x for crispness.
-  const innerDataUrl = await toPng(node, {
-    cacheBust: true,
-    pixelRatio: 2,
-    backgroundColor,
-    filter: shareFilter,
-  });
+  // Toggle a capture-only class so CSS can neutralize background-clip:text
+  // gradients (they render as solid bars in html-to-image otherwise).
+  node.classList.add("share-capturing");
+  let innerDataUrl: string;
+  try {
+    innerDataUrl = await toPng(node, {
+      cacheBust: true,
+      pixelRatio: 2,
+      backgroundColor,
+      filter: shareFilter,
+    });
+  } finally {
+    node.classList.remove("share-capturing");
+  }
 
   // Compose onto a padded canvas with the dark background so the
   // image doesn't look tight-cropped on WhatsApp.
