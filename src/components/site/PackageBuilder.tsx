@@ -1283,7 +1283,7 @@ export function PackageBuilder() {
                 <span className="font-display text-3xl font-bold text-gradient-vo">{fmt(total)}</span>
               </div>
               <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
-                <span>10% advance to secure the order</span>
+                <span>{advancePctLabel} advance to secure the order</span>
                 <span className="font-mono">{fmt(advance)}</span>
               </div>
 
