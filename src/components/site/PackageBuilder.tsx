@@ -1054,7 +1054,7 @@ export function PackageBuilder() {
                     <span>Total: <span className="font-mono text-white">{fmt(total)}</span></span>
                     <span>Plan: <span className="text-white">{paymentPlan === "installments" ? `${planSettings.installments_label} (× ${Math.max(1, planSettings.installment_count)})` : paymentPlan === "pay_in_full" ? `${planSettings.pay_in_full_label} (${Math.round(planSettings.pay_in_full_discount_percent)}% off)` : planSettings.milestone_label}</span></span>
                     <span>{advancePctLabel} advance: <span className="font-mono text-white">{fmt(advance)}</span></span>
-                    <span>10% advance: <span className="font-mono text-white">{fmt(advance)}</span></span>
+                    
                   </div>
                 </div>
 
