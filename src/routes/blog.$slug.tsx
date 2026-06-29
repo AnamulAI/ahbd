@@ -586,6 +586,7 @@ function BlogPostPage() {
               </span>
             </div>
           </div>
+          </div>
         </section>
 
         {/* Two-column body */}
