@@ -306,7 +306,10 @@ function BuilderSettingsPage() {
             setSignature={setSignature}
             paymentPlan={paymentPlan}
             setPaymentPlan={setPaymentPlan}
+            copy={copy}
+            setCopy={setCopy}
           />
+
         </TabsContent>
       </Tabs>
     </AdminShell>
