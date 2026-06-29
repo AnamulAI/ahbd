@@ -4,6 +4,7 @@ import { ArrowRight, MessageCircle, Globe, Bot, TrendingUp, Mic, Check, Target, 
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { CtaRevealCard } from "@/components/site/CtaRevealCard";
+import { RevealBorder } from "@/components/site/RevealBorder";
 import { PackageBuilder } from "@/components/site/PackageBuilder";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { BlogCard } from "@/components/site/BlogCard";
