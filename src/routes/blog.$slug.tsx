@@ -556,7 +556,7 @@ function BlogPostPage() {
       <main>
         {/* Hero */}
         <section className="pt-12 sm:pt-16">
-          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 text-center">
             <Link
               to="/blog"
               className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-[color:var(--primary)]"
@@ -566,10 +566,10 @@ function BlogPostPage() {
             <div className="mt-6">
               <CategoryBadge category={post.category} />
             </div>
-            <h1 className="mt-4 max-w-4xl text-3xl font-bold leading-[1.15] text-white sm:text-4xl md:text-5xl">
+            <h1 className="mt-4 mx-auto max-w-4xl text-3xl font-bold leading-[1.15] text-white sm:text-4xl md:text-5xl">
               {post.title}
             </h1>
-            <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
               <span className="inline-flex items-center gap-2">
                 <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-[color:var(--primary)] to-[color:var(--orange)] font-mono text-[10px] font-bold text-white">
                   MA
