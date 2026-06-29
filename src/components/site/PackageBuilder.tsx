@@ -383,6 +383,39 @@ export function PackageBuilder() {
   const paymentRef = useRef<HTMLDivElement | null>(null);
   const contactRef = useRef<HTMLDivElement | null>(null);
 
+  // Admin-controlled payment plan settings (live from DB, with fallback defaults).
+  const [planSettings, setPlanSettings] = useState({
+    installment_count: 3,
+    pay_in_full_discount_percent: 25,
+    advance_percent: 10,
+    installments_label: "Installments",
+    pay_in_full_label: "Pay in Full",
+    milestone_label: "Milestone-Based",
+  });
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("payment_plan_settings" as never)
+        .select("*")
+        .limit(1)
+        .maybeSingle();
+      if (cancelled || !data) return;
+      const r = data as Record<string, unknown>;
+      setPlanSettings({
+        installment_count: Math.max(1, Number(r.installment_count ?? 3)),
+        pay_in_full_discount_percent: Number(r.pay_in_full_discount_percent ?? 25),
+        advance_percent: Number(r.advance_percent ?? 10),
+        installments_label: String(r.installments_label ?? "Installments"),
+        pay_in_full_label: String(r.pay_in_full_label ?? "Pay in Full"),
+        milestone_label: String(r.milestone_label ?? "Milestone-Based"),
+      });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const techApproach = data?.techApproaches.find((t) => t.id === techId);
   const useCase = data?.useCases.find((u) => u.id === useCaseId);
 
