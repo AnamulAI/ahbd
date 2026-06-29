@@ -314,19 +314,12 @@ function BlogIndexPage() {
         <section className="pb-20 sm:pb-28">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             {featured && (
-              <div className="relative">
-                <div
-                  aria-hidden
-                  className="absolute -inset-px rounded-3xl bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/40 to-[#F97316] opacity-60 blur-2xl"
-                />
-                <div
-                  aria-hidden
-                  className="absolute -inset-px rounded-3xl bg-gradient-to-r from-[#3B82F6] to-[#F97316] opacity-80"
-                />
+              <div className="group/reveal relative">
+                <RevealBorder rounded="rounded-3xl" radius={24} />
                 <Link
                   to="/blog/$slug"
                   params={{ slug: featured.slug }}
-                  className="group relative grid overflow-hidden rounded-3xl bg-[#16181D] transition-all duration-200 hover:bg-[#1C1F26] md:grid-cols-2 motion-reduce:transition-none"
+                  className="group relative grid overflow-hidden rounded-3xl bg-[#16181D] md:grid-cols-2"
                 >
                   <div className="relative aspect-[16/10] overflow-hidden bg-white/5 md:aspect-auto md:h-full">
                   <img
