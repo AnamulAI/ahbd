@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowRight, CheckCircle2, Loader2, Star } from "lucide-react";
+import { ArrowRight, CheckCircle2, Loader2, MessageCircle, Star } from "lucide-react";
 import { RevealBorder } from "@/components/site/RevealBorder";
 import { PromoCard, type PromoCardData } from "./PromoCard";
 import { OptionIconBadge } from "./OptionIconBadge";
