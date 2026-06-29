@@ -314,12 +314,21 @@ function BlogIndexPage() {
         <section className="pb-20 sm:pb-28">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             {featured && (
-              <Link
-                to="/blog/$slug"
-                params={{ slug: featured.slug }}
-                className="group grid overflow-hidden rounded-3xl border border-white/8 bg-[#16181D] transition-all duration-200 hover:border-[color:var(--primary)]/40 hover:bg-[#1C1F26] hover:shadow-[0_24px_70px_-30px_var(--vo-glow)] md:grid-cols-2 motion-reduce:transition-none"
-              >
-                <div className="relative aspect-[16/10] overflow-hidden bg-white/5 md:aspect-auto md:h-full">
+              <div className="relative">
+                <div
+                  aria-hidden
+                  className="absolute -inset-px rounded-3xl bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/40 to-[#F97316] opacity-60 blur-2xl"
+                />
+                <div
+                  aria-hidden
+                  className="absolute -inset-px rounded-3xl bg-gradient-to-r from-[#3B82F6] to-[#F97316] opacity-80"
+                />
+                <Link
+                  to="/blog/$slug"
+                  params={{ slug: featured.slug }}
+                  className="group relative grid overflow-hidden rounded-3xl bg-[#16181D] transition-all duration-200 hover:bg-[#1C1F26] md:grid-cols-2 motion-reduce:transition-none"
+                >
+                  <div className="relative aspect-[16/10] overflow-hidden bg-white/5 md:aspect-auto md:h-full">
                   <img
                     src={featured.coverImage}
                     alt={featured.title}
