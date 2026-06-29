@@ -7,7 +7,7 @@ import { useId } from "react";
  *   - Default (rest): the soft blue→orange ambient glow remains visible behind
  *     the card. The card's BORDER is fully invisible/transparent — no outline.
  *   - Hover: a blue→orange gradient border draws in around the perimeter
- *     (~650ms, top-left → clockwise) via SVG stroke-dashoffset animation.
+ *     (~1.2s, top-left → clockwise) via SVG stroke-dashoffset animation.
  *   - Hover-out: border fades back to invisible (no reverse trace).
  *   - reduced-motion: border is visible immediately on hover, no animation.
  *
@@ -66,7 +66,7 @@ export function RevealBorder({
           pathLength={1}
           strokeDasharray={1}
           strokeDashoffset={1}
-          className="transition-[stroke-dashoffset] duration-[650ms] ease-out group-hover/reveal:[stroke-dashoffset:0] group-focus-within/reveal:[stroke-dashoffset:0] motion-reduce:transition-none motion-reduce:group-hover/reveal:[stroke-dashoffset:0]"
+          className="transition-[stroke-dashoffset] duration-[1200ms] ease-out group-hover/reveal:[stroke-dashoffset:0] group-focus-within/reveal:[stroke-dashoffset:0] motion-reduce:transition-none motion-reduce:group-hover/reveal:[stroke-dashoffset:0]"
         />
       </svg>
     </>
