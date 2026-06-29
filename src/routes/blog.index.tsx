@@ -1,12 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, type FormEvent, useMemo } from "react";
+import { useState, type FormEvent, useMemo, type ComponentType } from "react";
 import { toast } from "sonner";
-import { ArrowRight, Clock, Mail, Search, X } from "lucide-react";
+import { ArrowRight, Bot, Clock, Code2, Mail, Mic2, Search, X } from "lucide-react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { CtaRevealCard } from "@/components/site/CtaRevealCard";
 import { BlogCard, CategoryBadge } from "@/components/site/BlogCard";
-import { formatPublishedDate, getSortedPosts } from "@/lib/blog-data";
+import {
+  formatPublishedDate,
+  getSortedPosts,
+  type BlogCategory,
+  type BlogPost,
+} from "@/lib/blog-data";
 
 export const Route = createFileRoute("/blog/")({
   head: () => ({
