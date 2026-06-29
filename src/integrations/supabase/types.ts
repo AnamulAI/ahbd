@@ -71,6 +71,39 @@ export type Database = {
         }
         Relationships: []
       }
+      builder_copy: {
+        Row: {
+          created_at: string
+          display_order: number
+          group_key: string
+          id: string
+          key: string
+          label: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          group_key?: string
+          id?: string
+          key: string
+          label?: string
+          updated_at?: string
+          value?: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          group_key?: string
+          id?: string
+          key?: string
+          label?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
       builder_leads: {
         Row: {
           chosen_payment_plan: string | null

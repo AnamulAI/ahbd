@@ -86,7 +86,9 @@ type BuilderData = {
   aiOptions: BuilderOption[];
   podcastOptions: BuilderOption[];
   promoCards: PromoCardData[];
+  copy: Record<string, string>;
 };
+
 
 // ---------- Hook ----------
 function useBuilderData() {
