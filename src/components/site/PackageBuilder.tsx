@@ -1028,7 +1028,7 @@ export function PackageBuilder() {
               </div>
 
               <p className="mt-5 text-center text-xs text-muted-foreground">
-                All plans require a 10% advance (<span className="font-mono text-white">{fmt(advance)}</span>) to secure your spot.
+                All plans require a {advancePctLabel} advance (<span className="font-mono text-white">{fmt(advance)}</span>) to secure your spot.
               </p>
             </div>
           );
