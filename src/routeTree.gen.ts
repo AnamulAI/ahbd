@@ -30,6 +30,7 @@ import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminBuilderSettingsRouteImport } from './routes/admin.builder-settings'
 import { Route as AdminBlogRouteImport } from './routes/admin.blog'
 import { Route as AdminProjectsNewRouteImport } from './routes/admin.projects.new'
+import { Route as AdminProjectsIdRouteImport } from './routes/admin.projects.$id'
 import { Route as AdminComingSoonKeyRouteImport } from './routes/admin.coming-soon.$key'
 import { Route as AdminBlogNewRouteImport } from './routes/admin.blog.new'
 import { Route as AdminBlogIdRouteImport } from './routes/admin.blog.$id'
@@ -139,6 +140,11 @@ const AdminProjectsNewRoute = AdminProjectsNewRouteImport.update({
   path: '/new',
   getParentRoute: () => AdminProjectsRoute,
 } as any)
+const AdminProjectsIdRoute = AdminProjectsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminProjectsRoute,
+} as any)
 const AdminComingSoonKeyRoute = AdminComingSoonKeyRouteImport.update({
   id: '/admin/coming-soon/$key',
   path: '/admin/coming-soon/$key',
@@ -179,6 +185,7 @@ export interface FileRoutesByFullPath {
   '/admin/blog/$id': typeof AdminBlogIdRoute
   '/admin/blog/new': typeof AdminBlogNewRoute
   '/admin/coming-soon/$key': typeof AdminComingSoonKeyRoute
+  '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/admin/projects/new': typeof AdminProjectsNewRoute
 }
 export interface FileRoutesByTo {
@@ -205,6 +212,7 @@ export interface FileRoutesByTo {
   '/admin/blog/$id': typeof AdminBlogIdRoute
   '/admin/blog/new': typeof AdminBlogNewRoute
   '/admin/coming-soon/$key': typeof AdminComingSoonKeyRoute
+  '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/admin/projects/new': typeof AdminProjectsNewRoute
 }
 export interface FileRoutesById {
@@ -232,6 +240,7 @@ export interface FileRoutesById {
   '/admin/blog/$id': typeof AdminBlogIdRoute
   '/admin/blog/new': typeof AdminBlogNewRoute
   '/admin/coming-soon/$key': typeof AdminComingSoonKeyRoute
+  '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/admin/projects/new': typeof AdminProjectsNewRoute
 }
 export interface FileRouteTypes {
@@ -260,6 +269,7 @@ export interface FileRouteTypes {
     | '/admin/blog/$id'
     | '/admin/blog/new'
     | '/admin/coming-soon/$key'
+    | '/admin/projects/$id'
     | '/admin/projects/new'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -286,6 +296,7 @@ export interface FileRouteTypes {
     | '/admin/blog/$id'
     | '/admin/blog/new'
     | '/admin/coming-soon/$key'
+    | '/admin/projects/$id'
     | '/admin/projects/new'
   id:
     | '__root__'
@@ -312,6 +323,7 @@ export interface FileRouteTypes {
     | '/admin/blog/$id'
     | '/admin/blog/new'
     | '/admin/coming-soon/$key'
+    | '/admin/projects/$id'
     | '/admin/projects/new'
   fileRoutesById: FileRoutesById
 }
@@ -488,6 +500,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProjectsNewRouteImport
       parentRoute: typeof AdminProjectsRoute
     }
+    '/admin/projects/$id': {
+      id: '/admin/projects/$id'
+      path: '/$id'
+      fullPath: '/admin/projects/$id'
+      preLoaderRoute: typeof AdminProjectsIdRouteImport
+      parentRoute: typeof AdminProjectsRoute
+    }
     '/admin/coming-soon/$key': {
       id: '/admin/coming-soon/$key'
       path: '/admin/coming-soon/$key'
@@ -527,10 +546,12 @@ const AdminBlogRouteWithChildren = AdminBlogRoute._addFileChildren(
 )
 
 interface AdminProjectsRouteChildren {
+  AdminProjectsIdRoute: typeof AdminProjectsIdRoute
   AdminProjectsNewRoute: typeof AdminProjectsNewRoute
 }
 
 const AdminProjectsRouteChildren: AdminProjectsRouteChildren = {
+  AdminProjectsIdRoute: AdminProjectsIdRoute,
   AdminProjectsNewRoute: AdminProjectsNewRoute,
 }
 
