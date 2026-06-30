@@ -609,11 +609,18 @@ function BlogPostPage({ post }: { post: BlogPost }) {
                 />
               </div>
 
-              <QuickAnswer text={post.quickAnswer} />
+              {post.quickAnswer && <QuickAnswer text={post.quickAnswer} />}
 
-              <RenderBlocks blocks={post.body} />
+              {post.bodyHtml ? (
+                <div
+                  className="prose prose-invert mt-8 max-w-none prose-headings:font-bold prose-headings:text-white prose-h2:mt-14 prose-h2:text-2xl sm:prose-h2:text-3xl prose-h3:mt-10 prose-h3:text-xl sm:prose-h3:text-2xl prose-p:mt-6 prose-p:text-[17px] prose-p:leading-[1.8] prose-p:text-muted-foreground prose-a:text-[color:var(--primary)] prose-strong:text-white prose-li:text-muted-foreground prose-img:rounded-xl"
+                  dangerouslySetInnerHTML={{ __html: post.bodyHtml }}
+                />
+              ) : (
+                <RenderBlocks blocks={post.body} />
+              )}
 
-              <FaqSection items={post.faq} />
+              {post.faq.length > 0 && <FaqSection items={post.faq} />}
 
               <InlineShareBar title={post.title} image={post.coverImage} />
 
