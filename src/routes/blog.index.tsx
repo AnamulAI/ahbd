@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, type FormEvent, useMemo, type ComponentType } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import { ArrowRight, Bot, Clock, Code2, Mail, Mic2, Search, X } from "lucide-react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -48,19 +49,29 @@ function NewsletterSection() {
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  function onSubmit(e: FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault();
-    const value = email.trim();
+    const value = email.trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
       toast.error("Please enter a valid email address.");
       return;
     }
     setSubmitting(true);
-    setTimeout(() => {
-      toast.success("Thanks for subscribing!");
-      setEmail("");
-      setSubmitting(false);
-    }, 250);
+    const { error } = await supabase
+      .from("newsletter_subscribers")
+      .insert({ email: value, status: "active", unsubscribed_at: null });
+    setSubmitting(false);
+    if (error) {
+      if (error.code === "23505") {
+        toast.success("You're already subscribed — thanks!");
+        setEmail("");
+        return;
+      }
+      toast.error(error.message || "Could not subscribe. Please try again.");
+      return;
+    }
+    toast.success("Thanks for subscribing!");
+    setEmail("");
   }
 
   return (
