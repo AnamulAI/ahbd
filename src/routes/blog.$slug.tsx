@@ -29,30 +29,13 @@ import {
 import { useAllBlogPosts, useBlogPostBySlug } from "@/lib/blog-loader";
 
 export const Route = createFileRoute("/blog/$slug")({
-  loader: ({ params }) => {
-    const post = getPostBySlug(params.slug);
-    if (!post) throw notFound();
-    return { post };
-  },
-  head: ({ loaderData }) => {
-    const post = loaderData?.post;
-    if (!post) {
-      return { meta: [{ title: "Post Not Found — AnamDev Blog" }] };
-    }
-    return {
-      meta: [
-        { title: `${post.title} — AnamDev Blog` },
-        { name: "description", content: post.excerpt },
-        { property: "og:title", content: post.title },
-        { property: "og:description", content: post.excerpt },
-        { property: "og:type", content: "article" },
-        { property: "og:image", content: post.coverImage },
-        { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:image", content: post.coverImage },
-      ],
-    };
-  },
-  notFoundComponent: NotFoundPost,
+  ssr: false,
+  head: () => ({
+    meta: [
+      { title: "Blog Post — AnamDev" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   errorComponent: ({ error }) => (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
@@ -69,7 +52,7 @@ export const Route = createFileRoute("/blog/$slug")({
       <SiteFooter />
     </div>
   ),
-  component: BlogPostPage,
+  component: BlogPostRoute,
 });
 
 function NotFoundPost() {
