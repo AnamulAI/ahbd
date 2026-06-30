@@ -708,7 +708,7 @@ function WebsiteTab({
             return (
               <div key={uc.id} className="rounded-md border border-white/[0.06] border-l-2 border-l-[#F97316]/50 bg-[#0B0F1A] p-3">
                 <div className="mb-2 flex items-center justify-between">
-                  <div className="font-mono text-[10px] uppercase tracking-wider text-white/55">
+                  <div className="font-mono text-[10px] uppercase tracking-wider text-[#3B82F6]">
                     {uc.label}
                   </div>
                   <AddButton onClick={() => addTier(uc.id)} label="Add Tier" />
@@ -826,7 +826,7 @@ function UseCaseCard({
       </div>
       {open && (
         <div className="border-t border-white/[0.06] p-3">
-          <div className="mb-2 font-mono text-[10px] uppercase tracking-wider text-white/45">
+          <div className="mb-2 font-mono text-[10px] uppercase tracking-wider text-[#3B82F6]/80">
             Base Price per Tech Approach
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -934,7 +934,7 @@ function OptionGroupsEditor({
         return (
           <div key={g} className="rounded-md border border-white/[0.06] border-l-2 border-l-[#F97316]/50 bg-[#0B0F1A] p-3">
             <div className="mb-2 flex items-center justify-between">
-              <div className="font-mono text-[10px] uppercase tracking-wider text-white/55">
+              <div className="font-mono text-[10px] uppercase tracking-wider text-[#3B82F6]">
                 {OPTION_GROUP_LABELS[g] ?? g}
               </div>
               <AddButton onClick={() => addOption(g)} label="Add Option" />
@@ -1295,7 +1295,7 @@ function PromoCardEditor({
 
       <div>
         <div className="mb-1.5 flex items-center justify-between">
-          <span className="font-mono text-[10px] uppercase tracking-wider text-white/55">
+          <span className="font-mono text-[10px] uppercase tracking-wider text-[#3B82F6]">
             Feature Pills
           </span>
           <button
@@ -1351,7 +1351,7 @@ function PromoCardEditor({
 function Labeled({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div>
-      <label className="mb-1 block font-mono text-[10px] uppercase tracking-wider text-white/45">
+      <label className="mb-1 block font-mono text-[10px] uppercase tracking-wider text-[#3B82F6]/80">
         {label}
       </label>
       {children}
@@ -1428,7 +1428,7 @@ function PackagePaymentTab({
         <div className="space-y-6">
           {/* Value Stack */}
           <div>
-            <div className="mb-2 font-mono text-[10px] uppercase tracking-wider text-white/45">
+            <div className="mb-2 font-mono text-[10px] uppercase tracking-wider text-[#3B82F6]/80">
               Value Stack
             </div>
             <div className="space-y-2">
@@ -1462,13 +1462,13 @@ function PackagePaymentTab({
           {/* Totals */}
           <div className="rounded-lg border border-white/[0.08] border-l-2 border-l-[#F97316]/50 bg-[#0B0F1A] p-4 space-y-2">
             <div className="flex items-center justify-between text-sm">
-              <span className="font-mono text-[10px] uppercase tracking-wider text-white/45">
+              <span className="font-mono text-[10px] uppercase tracking-wider text-[#3B82F6]/80">
                 Total Value (auto)
               </span>
               <span className="font-mono text-white">${totalValue.toLocaleString()}</span>
             </div>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_140px] items-center">
-              <span className="font-mono text-[10px] uppercase tracking-wider text-white/45">
+              <span className="font-mono text-[10px] uppercase tracking-wider text-[#3B82F6]/80">
                 Bundle Price
               </span>
               <TextField
@@ -1478,7 +1478,7 @@ function PackagePaymentTab({
               />
             </div>
             <div className="flex items-center justify-between text-sm">
-              <span className="font-mono text-[10px] uppercase tracking-wider text-white/45">
+              <span className="font-mono text-[10px] uppercase tracking-wider text-[#3B82F6]/80">
                 Savings (auto)
               </span>
               <span
@@ -1507,7 +1507,7 @@ function PackagePaymentTab({
           {/* What's Included */}
           <div>
             <div className="mb-2 flex items-center justify-between">
-              <div className="font-mono text-[10px] uppercase tracking-wider text-white/45">
+              <div className="font-mono text-[10px] uppercase tracking-wider text-[#3B82F6]/80">
                 What's Included (checklist)
               </div>
               <AddButton
