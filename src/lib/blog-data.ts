@@ -46,6 +46,8 @@ export type BlogPost = {
   coverImage: string;
   quickAnswer: string;
   body: ContentBlock[];
+  /** Raw HTML body (used for posts authored in the admin rich-text editor). */
+  bodyHtml?: string;
   faq: FaqItem[];
   sidebarCta: SidebarCta;
 };
