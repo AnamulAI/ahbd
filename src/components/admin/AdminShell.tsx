@@ -51,14 +51,9 @@ const NAV: NavGroup[] = [
   {
     label: "Content",
     items: [
-      { label: "Blog Posts", to: "/admin/coming-soon/blog", icon: FileText, comingSoon: true },
-      {
-        label: "Projects",
-        to: "/admin/coming-soon/projects",
-        icon: FolderKanban,
-        comingSoon: true,
-      },
-      { label: "Newsletter", to: "/admin/coming-soon/newsletter", icon: Mail, comingSoon: true },
+      { label: "Blog Posts", to: "/admin/blog", icon: FileText },
+      { label: "Projects", to: "/admin/projects", icon: FolderKanban },
+      { label: "Newsletter", to: "/admin/newsletter", icon: Mail },
     ],
   },
   {
@@ -129,7 +124,6 @@ export function AdminShell({
 
   const SidebarInner = (
     <div className="flex h-full flex-col bg-[#0A0E1A] text-white">
-      {/* Logo */}
       <div className="px-5 pt-6 pb-5 border-b border-white/[0.06]">
         <Link to="/admin" className="font-display text-xl font-bold tracking-tight">
           {"{"}
@@ -142,7 +136,6 @@ export function AdminShell({
         </div>
       </div>
 
-      {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-3 py-5">
         {NAV.map((group) => (
           <div key={group.label} className="mb-5">
@@ -197,7 +190,6 @@ export function AdminShell({
         ))}
       </nav>
 
-      {/* Footer */}
       <div className="border-t border-white/[0.06] px-3 py-4 space-y-2">
         <div className="flex items-center gap-3 px-2 pb-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#3B82F6] to-[#F97316] text-sm font-bold text-white">
@@ -233,7 +225,6 @@ export function AdminShell({
 
   return (
     <div className="min-h-screen bg-[#0A0E1A] text-white">
-      {/* Mobile header */}
       <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3 lg:hidden">
         <Link to="/admin" className="font-display text-lg font-bold">
           {"{"}<span className="text-white">Anam</span><span className="text-[#3B82F6]">Dev</span>{"}"}
@@ -249,11 +240,9 @@ export function AdminShell({
       </div>
 
       <div className="lg:flex">
-        {/* Sidebar desktop */}
         <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 lg:border-r lg:border-white/[0.06]">
           {SidebarInner}
         </aside>
-        {/* Sidebar mobile drawer */}
         {mobileOpen && (
           <div className="lg:hidden fixed inset-0 z-40">
             <div
@@ -266,7 +255,6 @@ export function AdminShell({
           </div>
         )}
 
-        {/* Main */}
         <main className="flex-1 lg:pl-64">
           <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-10 lg:py-10">
             {children}
@@ -277,10 +265,6 @@ export function AdminShell({
   );
 }
 
-/**
- * Client-side auth gate. Redirects to /admin/login if no session,
- * and to "/" with a toast if signed in but not admin.
- */
 export function useAdminGate() {
   const navigate = useNavigate();
   const [state, setState] = useState<{
