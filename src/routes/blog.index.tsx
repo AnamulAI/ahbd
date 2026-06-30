@@ -259,7 +259,7 @@ function CategorySection({
 }
 
 function BlogIndexPage() {
-  const posts = getSortedPosts();
+  const { posts } = useAllBlogPosts();
   const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => {
