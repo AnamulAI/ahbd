@@ -30,6 +30,7 @@ import { Route as AdminBuilderSettingsRouteImport } from './routes/admin.builder
 import { Route as AdminBlogRouteImport } from './routes/admin.blog'
 import { Route as AdminComingSoonKeyRouteImport } from './routes/admin.coming-soon.$key'
 import { Route as AdminBlogNewRouteImport } from './routes/admin.blog.new'
+import { Route as AdminBlogIdRouteImport } from './routes/admin.blog.$id'
 
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
@@ -136,6 +137,11 @@ const AdminBlogNewRoute = AdminBlogNewRouteImport.update({
   path: '/new',
   getParentRoute: () => AdminBlogRoute,
 } as any)
+const AdminBlogIdRoute = AdminBlogIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminBlogRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -157,6 +163,7 @@ export interface FileRoutesByFullPath {
   '/blog/': typeof BlogIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/services/': typeof ServicesIndexRoute
+  '/admin/blog/$id': typeof AdminBlogIdRoute
   '/admin/blog/new': typeof AdminBlogNewRoute
   '/admin/coming-soon/$key': typeof AdminComingSoonKeyRoute
 }
@@ -180,6 +187,7 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogIndexRoute
   '/projects': typeof ProjectsIndexRoute
   '/services': typeof ServicesIndexRoute
+  '/admin/blog/$id': typeof AdminBlogIdRoute
   '/admin/blog/new': typeof AdminBlogNewRoute
   '/admin/coming-soon/$key': typeof AdminComingSoonKeyRoute
 }
@@ -204,6 +212,7 @@ export interface FileRoutesById {
   '/blog/': typeof BlogIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/services/': typeof ServicesIndexRoute
+  '/admin/blog/$id': typeof AdminBlogIdRoute
   '/admin/blog/new': typeof AdminBlogNewRoute
   '/admin/coming-soon/$key': typeof AdminComingSoonKeyRoute
 }
@@ -229,6 +238,7 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/projects/'
     | '/services/'
+    | '/admin/blog/$id'
     | '/admin/blog/new'
     | '/admin/coming-soon/$key'
   fileRoutesByTo: FileRoutesByTo
@@ -252,6 +262,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/projects'
     | '/services'
+    | '/admin/blog/$id'
     | '/admin/blog/new'
     | '/admin/coming-soon/$key'
   id:
@@ -275,6 +286,7 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/projects/'
     | '/services/'
+    | '/admin/blog/$id'
     | '/admin/blog/new'
     | '/admin/coming-soon/$key'
   fileRoutesById: FileRoutesById
@@ -451,14 +463,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBlogNewRouteImport
       parentRoute: typeof AdminBlogRoute
     }
+    '/admin/blog/$id': {
+      id: '/admin/blog/$id'
+      path: '/$id'
+      fullPath: '/admin/blog/$id'
+      preLoaderRoute: typeof AdminBlogIdRouteImport
+      parentRoute: typeof AdminBlogRoute
+    }
   }
 }
 
 interface AdminBlogRouteChildren {
+  AdminBlogIdRoute: typeof AdminBlogIdRoute
   AdminBlogNewRoute: typeof AdminBlogNewRoute
 }
 
 const AdminBlogRouteChildren: AdminBlogRouteChildren = {
+  AdminBlogIdRoute: AdminBlogIdRoute,
   AdminBlogNewRoute: AdminBlogNewRoute,
 }
 
