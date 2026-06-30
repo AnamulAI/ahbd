@@ -25,6 +25,7 @@ import { Route as InternalBuilderDataTestRouteImport } from './routes/internal.b
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AdminSampleBuilderRouteImport } from './routes/admin.sample-builder'
 import { Route as AdminProjectsRouteImport } from './routes/admin.projects'
+import { Route as AdminNewsletterRouteImport } from './routes/admin.newsletter'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminBuilderSettingsRouteImport } from './routes/admin.builder-settings'
@@ -115,6 +116,11 @@ const AdminProjectsRoute = AdminProjectsRouteImport.update({
   path: '/admin/projects',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminNewsletterRoute = AdminNewsletterRouteImport.update({
+  id: '/admin/newsletter',
+  path: '/admin/newsletter',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
@@ -169,6 +175,7 @@ export interface FileRoutesByFullPath {
   '/admin/builder-settings': typeof AdminBuilderSettingsRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
   '/admin/sample-builder': typeof AdminSampleBuilderRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -196,6 +203,7 @@ export interface FileRoutesByTo {
   '/admin/builder-settings': typeof AdminBuilderSettingsRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
   '/admin/sample-builder': typeof AdminSampleBuilderRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -224,6 +232,7 @@ export interface FileRoutesById {
   '/admin/builder-settings': typeof AdminBuilderSettingsRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/projects': typeof AdminProjectsRouteWithChildren
   '/admin/sample-builder': typeof AdminSampleBuilderRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -253,6 +262,7 @@ export interface FileRouteTypes {
     | '/admin/builder-settings'
     | '/admin/leads'
     | '/admin/login'
+    | '/admin/newsletter'
     | '/admin/projects'
     | '/admin/sample-builder'
     | '/blog/$slug'
@@ -280,6 +290,7 @@ export interface FileRouteTypes {
     | '/admin/builder-settings'
     | '/admin/leads'
     | '/admin/login'
+    | '/admin/newsletter'
     | '/admin/projects'
     | '/admin/sample-builder'
     | '/blog/$slug'
@@ -307,6 +318,7 @@ export interface FileRouteTypes {
     | '/admin/builder-settings'
     | '/admin/leads'
     | '/admin/login'
+    | '/admin/newsletter'
     | '/admin/projects'
     | '/admin/sample-builder'
     | '/blog/$slug'
@@ -335,6 +347,7 @@ export interface RootRouteChildren {
   AdminBuilderSettingsRoute: typeof AdminBuilderSettingsRoute
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  AdminNewsletterRoute: typeof AdminNewsletterRoute
   AdminProjectsRoute: typeof AdminProjectsRouteWithChildren
   AdminSampleBuilderRoute: typeof AdminSampleBuilderRoute
   BlogSlugRoute: typeof BlogSlugRoute
@@ -465,6 +478,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProjectsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/newsletter': {
+      id: '/admin/newsletter'
+      path: '/admin/newsletter'
+      fullPath: '/admin/newsletter'
+      preLoaderRoute: typeof AdminNewsletterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/login': {
       id: '/admin/login'
       path: '/admin/login'
@@ -567,6 +587,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminBuilderSettingsRoute: AdminBuilderSettingsRoute,
   AdminLeadsRoute: AdminLeadsRoute,
   AdminLoginRoute: AdminLoginRoute,
+  AdminNewsletterRoute: AdminNewsletterRoute,
   AdminProjectsRoute: AdminProjectsRouteWithChildren,
   AdminSampleBuilderRoute: AdminSampleBuilderRoute,
   BlogSlugRoute: BlogSlugRoute,

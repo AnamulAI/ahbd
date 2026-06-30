@@ -52,7 +52,7 @@ export function RichTextEditor({ value, onChange, placeholder }: Props) {
   useEffect(() => {
     if (!editor) return;
     if (value && editor.getHTML() !== value) {
-      editor.commands.setContent(value, { emitUpdate: false });
+      editor.commands.setContent(value);
     }
   }, [value, editor]);
 
