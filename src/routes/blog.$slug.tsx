@@ -1,8 +1,9 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowLeft,
   ArrowRight,
   Clock,
+  Loader2,
   Sparkles,
 } from "lucide-react";
 import { SiFacebook, SiX } from "react-icons/si";
@@ -22,37 +23,19 @@ import {
 } from "@/components/ui/accordion";
 import {
   formatPublishedDate,
-  getPostBySlug,
-  getSortedPosts,
   type BlogPost,
   type ContentBlock,
 } from "@/lib/blog-data";
+import { useAllBlogPosts, useBlogPostBySlug } from "@/lib/blog-loader";
 
 export const Route = createFileRoute("/blog/$slug")({
-  loader: ({ params }) => {
-    const post = getPostBySlug(params.slug);
-    if (!post) throw notFound();
-    return { post };
-  },
-  head: ({ loaderData }) => {
-    const post = loaderData?.post;
-    if (!post) {
-      return { meta: [{ title: "Post Not Found — AnamDev Blog" }] };
-    }
-    return {
-      meta: [
-        { title: `${post.title} — AnamDev Blog` },
-        { name: "description", content: post.excerpt },
-        { property: "og:title", content: post.title },
-        { property: "og:description", content: post.excerpt },
-        { property: "og:type", content: "article" },
-        { property: "og:image", content: post.coverImage },
-        { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:image", content: post.coverImage },
-      ],
-    };
-  },
-  notFoundComponent: NotFoundPost,
+  ssr: false,
+  head: () => ({
+    meta: [
+      { title: "Blog Post — AnamDev" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   errorComponent: ({ error }) => (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
@@ -69,32 +52,9 @@ export const Route = createFileRoute("/blog/$slug")({
       <SiteFooter />
     </div>
   ),
-  component: BlogPostPage,
+  component: BlogPostRoute,
 });
 
-function NotFoundPost() {
-  return (
-    <div className="min-h-screen bg-background text-foreground">
-      <SiteHeader />
-      <main className="mx-auto max-w-3xl px-6 py-32 text-center">
-        <p className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--orange)]">
-          // 404
-        </p>
-        <h1 className="mt-4 text-4xl font-bold text-white">Post not found</h1>
-        <p className="mt-4 text-muted-foreground">
-          That article doesn't exist or has been moved.
-        </p>
-        <Link
-          to="/blog"
-          className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/10 px-5 py-2.5 text-sm text-white hover:bg-white/[0.04]"
-        >
-          <ArrowLeft className="h-4 w-4" /> Back to Blog
-        </Link>
-      </main>
-      <SiteFooter />
-    </div>
-  );
-}
 
 /** Inline parser: **bold**, *italic*, [label](url). */
 function renderInline(text: string, keyPrefix: string): ReactNode[] {
@@ -543,11 +503,58 @@ function StickySidebar({ post }: { post: BlogPost }) {
   );
 }
 
-function BlogPostPage() {
-  const { post } = Route.useLoaderData();
-  const related = getSortedPosts()
-    .filter((p) => p.slug !== post.slug)
-    .slice(0, 3);
+function BlogPostRoute() {
+  const { slug } = Route.useParams();
+  const { post, loading } = useBlogPostBySlug(slug);
+
+  useEffect(() => {
+    if (post && typeof document !== "undefined") {
+      document.title = `${post.title} — AnamDev Blog`;
+    }
+  }, [post]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <SiteHeader />
+        <main className="mx-auto flex max-w-3xl items-center justify-center px-6 py-32">
+          <Loader2 className="h-6 w-6 animate-spin text-white/60" />
+        </main>
+        <SiteFooter />
+      </div>
+    );
+  }
+  if (!post) return <NotFoundPost />;
+  return <BlogPostPage post={post} />;
+}
+
+function NotFoundPost() {
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <SiteHeader />
+      <main className="mx-auto max-w-3xl px-6 py-32 text-center">
+        <p className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--orange)]">
+          // 404
+        </p>
+        <h1 className="mt-4 text-4xl font-bold text-white">Post not found</h1>
+        <p className="mt-4 text-muted-foreground">
+          That article doesn't exist or has been moved.
+        </p>
+        <Link
+          to="/blog"
+          className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/10 px-5 py-2.5 text-sm text-white hover:bg-white/[0.04]"
+        >
+          <ArrowLeft className="h-4 w-4" /> Back to Blog
+        </Link>
+      </main>
+      <SiteFooter />
+    </div>
+  );
+}
+
+function BlogPostPage({ post }: { post: BlogPost }) {
+  const { posts: allPosts } = useAllBlogPosts();
+  const related = allPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -602,11 +609,18 @@ function BlogPostPage() {
                 />
               </div>
 
-              <QuickAnswer text={post.quickAnswer} />
+              {post.quickAnswer && <QuickAnswer text={post.quickAnswer} />}
 
-              <RenderBlocks blocks={post.body} />
+              {post.bodyHtml ? (
+                <div
+                  className="prose prose-invert mt-8 max-w-none prose-headings:font-bold prose-headings:text-white prose-h2:mt-14 prose-h2:text-2xl sm:prose-h2:text-3xl prose-h3:mt-10 prose-h3:text-xl sm:prose-h3:text-2xl prose-p:mt-6 prose-p:text-[17px] prose-p:leading-[1.8] prose-p:text-muted-foreground prose-a:text-[color:var(--primary)] prose-strong:text-white prose-li:text-muted-foreground prose-img:rounded-xl"
+                  dangerouslySetInnerHTML={{ __html: post.bodyHtml }}
+                />
+              ) : (
+                <RenderBlocks blocks={post.body} />
+              )}
 
-              <FaqSection items={post.faq} />
+              {post.faq.length > 0 && <FaqSection items={post.faq} />}
 
               <InlineShareBar title={post.title} image={post.coverImage} />
 

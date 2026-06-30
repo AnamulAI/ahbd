@@ -10,10 +10,10 @@ import { RevealBorder } from "@/components/site/RevealBorder";
 import { BlogCard, CategoryBadge } from "@/components/site/BlogCard";
 import {
   formatPublishedDate,
-  getSortedPosts,
   type BlogCategory,
   type BlogPost,
 } from "@/lib/blog-data";
+import { useAllBlogPosts } from "@/lib/blog-loader";
 
 export const Route = createFileRoute("/blog/")({
   head: () => ({
@@ -259,7 +259,7 @@ function CategorySection({
 }
 
 function BlogIndexPage() {
-  const posts = getSortedPosts();
+  const { posts } = useAllBlogPosts();
   const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => {
