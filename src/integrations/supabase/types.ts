@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      blog_posts: {
+        Row: {
+          body_html: string | null
+          category: string
+          cover_image_url: string | null
+          created_at: string
+          excerpt: string | null
+          id: string
+          is_featured: boolean
+          published_at: string | null
+          read_time_minutes: number | null
+          seo_description: string | null
+          seo_title: string | null
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body_html?: string | null
+          category: string
+          cover_image_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          is_featured?: boolean
+          published_at?: string | null
+          read_time_minutes?: number | null
+          seo_description?: string | null
+          seo_title?: string | null
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body_html?: string | null
+          category?: string
+          cover_image_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          is_featured?: boolean
+          published_at?: string | null
+          read_time_minutes?: number | null
+          seo_description?: string | null
+          seo_title?: string | null
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       builder_ai_types: {
         Row: {
           base_price: number
@@ -430,6 +484,30 @@ export type Database = {
         }
         Relationships: []
       }
+      newsletter_subscribers: {
+        Row: {
+          email: string
+          id: string
+          status: string
+          subscribed_at: string
+          unsubscribed_at: string | null
+        }
+        Insert: {
+          email: string
+          id?: string
+          status?: string
+          subscribed_at?: string
+          unsubscribed_at?: string | null
+        }
+        Update: {
+          email?: string
+          id?: string
+          status?: string
+          subscribed_at?: string
+          unsubscribed_at?: string | null
+        }
+        Relationships: []
+      }
       payment_plan_settings: {
         Row: {
           advance_percent: number
@@ -462,6 +540,60 @@ export type Database = {
           milestone_label?: string
           pay_in_full_discount_percent?: number
           pay_in_full_label?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          cover_image_url: string | null
+          created_at: string
+          description: string | null
+          gallery_image_urls: string[]
+          github_url: string | null
+          id: string
+          is_featured: boolean
+          live_url: string | null
+          main_category: string
+          slug: string
+          sort_order: number
+          sub_category_label: string | null
+          tech_stack: string[]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          gallery_image_urls?: string[]
+          github_url?: string | null
+          id?: string
+          is_featured?: boolean
+          live_url?: string | null
+          main_category: string
+          slug: string
+          sort_order?: number
+          sub_category_label?: string | null
+          tech_stack?: string[]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          gallery_image_urls?: string[]
+          github_url?: string | null
+          id?: string
+          is_featured?: boolean
+          live_url?: string | null
+          main_category?: string
+          slug?: string
+          sort_order?: number
+          sub_category_label?: string | null
+          tech_stack?: string[]
+          title?: string
           updated_at?: string
         }
         Relationships: []
