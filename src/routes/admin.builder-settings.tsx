@@ -340,10 +340,10 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <section className="rounded-xl border border-white/[0.08] bg-[#0F1320] p-5">
-      <div className="mb-4 flex items-start justify-between gap-3">
-        <div>
-          <h2 className="font-display text-lg font-semibold text-white">
+    <section className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#11162A] shadow-[inset_3px_0_0_0_#3B82F6]">
+      <div className="flex items-start justify-between gap-3 border-b border-white/[0.06] bg-gradient-to-r from-[#3B82F6]/12 via-[#3B82F6]/[0.03] to-transparent px-5 py-3.5">
+        <div className="min-w-0">
+          <h2 className="font-display text-base font-semibold text-white tracking-tight">
             {title}
           </h2>
           {description && (
@@ -352,7 +352,7 @@ function Section({
         </div>
         {action}
       </div>
-      {children}
+      <div className="p-5">{children}</div>
     </section>
   );
 }
