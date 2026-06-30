@@ -650,7 +650,7 @@ function WebsiteTab({
           {techApproaches.map((t) => (
             <div
               key={t.id}
-              className="flex flex-wrap items-center gap-2 rounded-md border border-white/[0.06] bg-[#16181D] p-3"
+              className="flex flex-wrap items-center gap-2 rounded-md border border-white/[0.06] border-l-2 border-l-[#F97316]/50 bg-[#0B0F1A] p-3"
             >
               <TextField
                 value={t.label}
@@ -706,7 +706,7 @@ function WebsiteTab({
               .filter((t) => t.use_case_id === uc.id)
               .sort((a, b) => a.display_order - b.display_order);
             return (
-              <div key={uc.id} className="rounded-md border border-white/[0.06] bg-[#16181D] p-3">
+              <div key={uc.id} className="rounded-md border border-white/[0.06] border-l-2 border-l-[#F97316]/50 bg-[#0B0F1A] p-3">
                 <div className="mb-2 flex items-center justify-between">
                   <div className="font-mono text-[10px] uppercase tracking-wider text-white/55">
                     {uc.label}
@@ -932,7 +932,7 @@ function OptionGroupsEditor({
           .filter((o) => o.category_key === categoryKey && o.option_group === g)
           .sort((a, b) => a.display_order - b.display_order);
         return (
-          <div key={g} className="rounded-md border border-white/[0.06] bg-[#16181D] p-3">
+          <div key={g} className="rounded-md border border-white/[0.06] border-l-2 border-l-[#F97316]/50 bg-[#0B0F1A] p-3">
             <div className="mb-2 flex items-center justify-between">
               <div className="font-mono text-[10px] uppercase tracking-wider text-white/55">
                 {OPTION_GROUP_LABELS[g] ?? g}
@@ -1105,7 +1105,7 @@ function TypeList({
       {items.map((t) => (
         <div
           key={t.id}
-          className="flex flex-wrap items-center gap-2 rounded-md border border-white/[0.06] bg-[#16181D] p-3"
+          className="flex flex-wrap items-center gap-2 rounded-md border border-white/[0.06] border-l-2 border-l-[#F97316]/50 bg-[#0B0F1A] p-3"
         >
           <TextField
             value={t.label}
@@ -1205,7 +1205,7 @@ function PromoCardEditor({
   }
 
   return (
-    <div className="rounded-md border border-white/[0.08] bg-[#16181D] p-4 space-y-3">
+    <div className="rounded-md border border-white/[0.08] border-l-2 border-l-[#F97316]/50 bg-[#0B0F1A] p-4 space-y-3">
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2">
           <span
@@ -1460,7 +1460,7 @@ function PackagePaymentTab({
           </div>
 
           {/* Totals */}
-          <div className="rounded-lg border border-white/[0.08] bg-[#16181D] p-4 space-y-2">
+          <div className="rounded-lg border border-white/[0.08] border-l-2 border-l-[#F97316]/50 bg-[#0B0F1A] p-4 space-y-2">
             <div className="flex items-center justify-between text-sm">
               <span className="font-mono text-[10px] uppercase tracking-wider text-white/45">
                 Total Value (auto)
@@ -1710,7 +1710,7 @@ function BuilderCopySection({
           return (
             <div
               key={grp.key}
-              className="rounded-lg border border-white/[0.08] bg-[#16181D]"
+              className="rounded-lg border border-white/[0.08] border-l-2 border-l-[#F97316]/50 bg-[#0B0F1A]"
             >
               <button
                 type="button"
