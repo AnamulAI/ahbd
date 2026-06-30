@@ -48,19 +48,29 @@ function NewsletterSection() {
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  function onSubmit(e: FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault();
-    const value = email.trim();
+    const value = email.trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
       toast.error("Please enter a valid email address.");
       return;
     }
     setSubmitting(true);
-    setTimeout(() => {
-      toast.success("Thanks for subscribing!");
-      setEmail("");
-      setSubmitting(false);
-    }, 250);
+    const { error } = await supabase
+      .from("newsletter_subscribers")
+      .insert({ email: value, status: "active", unsubscribed_at: null });
+    setSubmitting(false);
+    if (error) {
+      if (error.code === "23505") {
+        toast.success("You're already subscribed — thanks!");
+        setEmail("");
+        return;
+      }
+      toast.error(error.message || "Could not subscribe. Please try again.");
+      return;
+    }
+    toast.success("Thanks for subscribing!");
+    setEmail("");
   }
 
   return (
