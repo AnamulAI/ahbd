@@ -1,8 +1,9 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowLeft,
   ArrowRight,
   Clock,
+  Loader2,
   Sparkles,
 } from "lucide-react";
 import { SiFacebook, SiX } from "react-icons/si";
@@ -22,11 +23,10 @@ import {
 } from "@/components/ui/accordion";
 import {
   formatPublishedDate,
-  getPostBySlug,
-  getSortedPosts,
   type BlogPost,
   type ContentBlock,
 } from "@/lib/blog-data";
+import { useAllBlogPosts, useBlogPostBySlug } from "@/lib/blog-loader";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {
