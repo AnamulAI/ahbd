@@ -86,6 +86,14 @@ function processHtmlWithHeadings(html: string): {
     used.add(id);
     el.setAttribute("id", id);
     (el as HTMLElement).classList.add("scroll-mt-28");
+    // Numbered badge for H2 headings like "1. Title"
+    if (el.tagName === "H2") {
+      const m = text.match(/^(\d+)\.\s+(.+)$/);
+      if (m) {
+        const badge = `<span class="mr-3 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#3B82F6] to-[#F97316] font-mono text-sm font-bold text-white align-middle">${m[1]}</span>`;
+        el.innerHTML = `${badge}<span class="align-middle">${m[2]}</span>`;
+      }
+    }
     headings.push({ id, text, level: el.tagName === "H3" ? 3 : 2 });
   });
 
@@ -97,6 +105,7 @@ function processHtmlWithHeadings(html: string): {
     buffer = "";
   };
 
+  let sawHeading = false;
   let i = 0;
   while (i < children.length) {
     const el = children[i];
@@ -105,7 +114,6 @@ function processHtmlWithHeadings(html: string): {
 
     if ((tag === "H2" || tag === "H3") && FAQ_RE.test(text)) {
       flush();
-      // Consume siblings until next H2 (or H3 of same/higher level if this is H3? keep simple: stop at next H2)
       const stopAt = tag === "H2" ? ["H2"] : ["H2", "H3"];
       let j = i + 1;
       const inner: HTMLElement[] = [];
@@ -116,10 +124,10 @@ function processHtmlWithHeadings(html: string): {
       const items = extractFaqItems(inner);
       if (items.length > 0) {
         segments.push({ kind: "faq", id: el.id, title: text, items });
+        sawHeading = true;
         i = j;
         continue;
       }
-      // fallthrough: no items, render as normal
     } else if (
       (tag === "H2" || tag === "H3") &&
       CHECKLIST_RE.test(text) &&
@@ -133,7 +141,29 @@ function processHtmlWithHeadings(html: string): {
       ).filter(Boolean);
       if (items.length > 0) {
         segments.push({ kind: "checklist", id: el.id, title: text, items });
+        sawHeading = true;
         i += 2;
+        continue;
+      }
+    }
+
+    if (tag === "H2" || tag === "H3") sawHeading = true;
+
+    // Blockquote transforms
+    if (tag === "BLOCKQUOTE") {
+      const strong = el.querySelector("strong, b");
+      const strongText = (strong?.textContent ?? "").trim();
+      if (/^rule\b/i.test(strongText)) {
+        flush();
+        segments.push({ kind: "rule", html: el.innerHTML });
+        i++;
+        continue;
+      }
+      // First blockquote before any heading → Quick Answer
+      if (!sawHeading && !segments.some((s) => s.kind === "quickanswer")) {
+        flush();
+        segments.push({ kind: "quickanswer", text: (el.textContent ?? "").trim() });
+        i++;
         continue;
       }
     }
@@ -144,6 +174,7 @@ function processHtmlWithHeadings(html: string): {
   flush();
   return { headings, segments };
 }
+
 
 function extractFaqItems(nodes: HTMLElement[]): { q: string; a: string }[] {
   const items: { q: string; a: string }[] = [];
