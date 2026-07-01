@@ -1,6 +1,15 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Loader2, ArrowLeft, Save, Plus, X, Upload, GripVertical } from "lucide-react";
+import {
+  Loader2,
+  ArrowLeft,
+  Save,
+  Plus,
+  X,
+  Upload,
+  GripVertical,
+  Trash2,
+} from "lucide-react";
 import {
   DndContext,
   PointerSensor,
@@ -14,6 +23,7 @@ import {
   arrayMove,
   useSortable,
   rectSortingStrategy,
+  verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,6 +37,9 @@ import {
   uploadContentImage,
 } from "@/lib/admin-content-helpers";
 import { fetchSubCategoriesFor } from "@/components/admin/ProjectsListPage";
+
+type ProcessStep = { title: string; description: string };
+type ResultStat = { value: string; label: string };
 
 type Project = {
   id?: string;
@@ -42,7 +55,22 @@ type Project = {
   github_url: string | null;
   is_featured: boolean;
   sort_order: number;
+  challenge: string;
+  solution: string;
+  process_steps: ProcessStep[];
+  result_stats: ResultStat[];
+  testimonial_quote: string;
+  testimonial_name: string;
+  testimonial_title: string;
 };
+
+const DEFAULT_PROCESS_STEPS: ProcessStep[] = [
+  { title: "Discovery", description: "Understood the target audience, required features, and gathered the necessary content and requirements." },
+  { title: "Design Direction", description: "Defined the visual direction and UX approach to match the brand and project goals." },
+  { title: "Development", description: "Built the solution using the chosen tech stack." },
+  { title: "Content & Integration", description: "Organized and integrated all content, data, and third-party connections." },
+  { title: "Deployment & Delivery", description: "Tested, deployed, and delivered the finished project to the client." },
+];
 
 const EMPTY: Project = {
   title: "",
@@ -57,7 +85,33 @@ const EMPTY: Project = {
   github_url: "",
   is_featured: false,
   sort_order: 0,
+  challenge: "",
+  solution: "",
+  process_steps: DEFAULT_PROCESS_STEPS,
+  result_stats: [],
+  testimonial_quote: "",
+  testimonial_name: "",
+  testimonial_title: "",
 };
+
+function coerceProcessSteps(v: unknown): ProcessStep[] {
+  if (!Array.isArray(v)) return [];
+  return v
+    .filter((s): s is Record<string, unknown> => !!s && typeof s === "object")
+    .map((s) => ({
+      title: typeof s.title === "string" ? s.title : "",
+      description: typeof s.description === "string" ? s.description : "",
+    }));
+}
+function coerceResultStats(v: unknown): ResultStat[] {
+  if (!Array.isArray(v)) return [];
+  return v
+    .filter((s): s is Record<string, unknown> => !!s && typeof s === "object")
+    .map((s) => ({
+      value: typeof s.value === "string" ? s.value : "",
+      label: typeof s.label === "string" ? s.label : "",
+    }));
+}
 
 export function ProjectEditorPage({
   id,
@@ -90,7 +144,17 @@ export function ProjectEditorPage({
         .maybeSingle();
       if (error) toast.error(error.message);
       if (data) {
-        setProject(data as Project);
+        setProject({
+          ...EMPTY,
+          ...(data as Record<string, unknown>),
+          challenge: (data as { challenge?: string | null }).challenge ?? "",
+          solution: (data as { solution?: string | null }).solution ?? "",
+          process_steps: coerceProcessSteps((data as { process_steps?: unknown }).process_steps),
+          result_stats: coerceResultStats((data as { result_stats?: unknown }).result_stats),
+          testimonial_quote: (data as { testimonial_quote?: string | null }).testimonial_quote ?? "",
+          testimonial_name: (data as { testimonial_name?: string | null }).testimonial_name ?? "",
+          testimonial_title: (data as { testimonial_title?: string | null }).testimonial_title ?? "",
+        } as Project);
         setSlugDirty(true);
       }
       setLoading(false);
@@ -115,6 +179,7 @@ export function ProjectEditorPage({
     if (!project.title.trim()) return toast.error("Title is required");
     if (!project.slug.trim()) return toast.error("Slug is required");
     setSaving(true);
+    const isWeb = project.main_category === "web_development";
     const payload = {
       title: project.title.trim(),
       slug: project.slug.trim(),
@@ -128,6 +193,14 @@ export function ProjectEditorPage({
       github_url: project.github_url || null,
       is_featured: project.is_featured,
       sort_order: project.sort_order,
+      // Web-dev-only structured fields. For other categories, clear/reset.
+      challenge: isWeb ? (project.challenge || null) : null,
+      solution: isWeb ? (project.solution || null) : null,
+      process_steps: isWeb ? project.process_steps : [],
+      result_stats: isWeb ? project.result_stats : [],
+      testimonial_quote: isWeb ? (project.testimonial_quote || null) : null,
+      testimonial_name: isWeb ? (project.testimonial_name || null) : null,
+      testimonial_title: isWeb ? (project.testimonial_title || null) : null,
     };
     let error;
     if (id) {
@@ -161,6 +234,7 @@ export function ProjectEditorPage({
   const inputCls =
     "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none";
   const labelCls = "block text-xs font-mono uppercase tracking-wider text-white/60 mb-1.5";
+  const isWeb = project.main_category === "web_development";
 
   return (
     <AdminShell email={gate.email}>
@@ -195,106 +269,181 @@ export function ProjectEditorPage({
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr,340px]">
-        <div className="space-y-5 rounded-xl border border-white/[0.08] bg-[#11162A] p-6">
-          <div>
-            <label className={labelCls}>Title</label>
-            <input
-              value={project.title}
-              onChange={(e) => update("title", e.target.value)}
-              className={`${inputCls} text-base`}
-            />
-          </div>
-          <div>
-            <label className={labelCls}>Slug</label>
-            <input
-              value={project.slug}
-              onChange={(e) => {
-                setSlugDirty(true);
-                update("slug", slugify(e.target.value));
-              }}
-              className={inputCls}
-            />
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-5">
+          <div className="space-y-5 rounded-xl border border-white/[0.08] bg-[#11162A] p-6">
             <div>
-              <label className={labelCls}>Main category</label>
-              <select
-                value={project.main_category}
+              <label className={labelCls}>Title</label>
+              <input
+                value={project.title}
+                onChange={(e) => update("title", e.target.value)}
+                className={`${inputCls} text-base`}
+              />
+            </div>
+            <div>
+              <label className={labelCls}>Slug</label>
+              <input
+                value={project.slug}
                 onChange={(e) => {
-                  update("main_category", e.target.value);
-                  update("sub_category_label", null);
+                  setSlugDirty(true);
+                  update("slug", slugify(e.target.value));
                 }}
                 className={inputCls}
-              >
-                {CATEGORY_OPTIONS.map((c) => (
-                  <option key={c.key} value={c.key}>{c.label}</option>
-                ))}
-              </select>
+              />
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className={labelCls}>Main category</label>
+                <select
+                  value={project.main_category}
+                  onChange={(e) => {
+                    update("main_category", e.target.value);
+                    update("sub_category_label", null);
+                  }}
+                  className={inputCls}
+                >
+                  {CATEGORY_OPTIONS.map((c) => (
+                    <option key={c.key} value={c.key}>{c.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className={labelCls}>Sub-category</label>
+                <select
+                  value={project.sub_category_label ?? ""}
+                  onChange={(e) => update("sub_category_label", e.target.value || null)}
+                  className={inputCls}
+                >
+                  <option value="">— Uncategorized —</option>
+                  {subOptions.map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                  {project.sub_category_label &&
+                    !subOptions.includes(project.sub_category_label) && (
+                      <option value={project.sub_category_label}>
+                        {project.sub_category_label} (removed)
+                      </option>
+                    )}
+                </select>
+                <p className="mt-1 text-[11px] text-white/40">
+                  Synced from Builder Settings. Removed sub-categories show as Uncategorized.
+                </p>
+              </div>
             </div>
             <div>
-              <label className={labelCls}>Sub-category</label>
-              <select
-                value={project.sub_category_label ?? ""}
-                onChange={(e) => update("sub_category_label", e.target.value || null)}
-                className={inputCls}
-              >
-                <option value="">— Uncategorized —</option>
-                {subOptions.map((s) => (
-                  <option key={s} value={s}>{s}</option>
-                ))}
-                {project.sub_category_label &&
-                  !subOptions.includes(project.sub_category_label) && (
-                    <option value={project.sub_category_label}>
-                      {project.sub_category_label} (removed)
-                    </option>
-                  )}
-              </select>
-              <p className="mt-1 text-[11px] text-white/40">
-                Synced from Builder Settings. Removed sub-categories show as Uncategorized.
-              </p>
-            </div>
-          </div>
-          <div>
-            <label className={labelCls}>Description</label>
-            <textarea
-              value={project.description}
-              onChange={(e) => update("description", e.target.value)}
-              rows={5}
-              className={`${inputCls} resize-y`}
-            />
-          </div>
-          <div>
-            <label className={labelCls}>Tech stack</label>
-            <TagInput
-              value={project.tech_stack}
-              onChange={(v) => update("tech_stack", v)}
-              placeholder="Add a tech tag (e.g. React)…"
-            />
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <label className={labelCls}>Live URL</label>
-              <input
-                value={project.live_url ?? ""}
-                onChange={(e) => update("live_url", e.target.value)}
-                placeholder="https://"
-                className={inputCls}
+              <label className={labelCls}>Description</label>
+              <textarea
+                value={project.description}
+                onChange={(e) => update("description", e.target.value)}
+                rows={5}
+                className={`${inputCls} resize-y`}
               />
             </div>
             <div>
-              <label className={labelCls}>GitHub URL</label>
-              <input
-                value={project.github_url ?? ""}
-                onChange={(e) => update("github_url", e.target.value)}
-                placeholder="https://github.com/…"
-                className={inputCls}
+              <label className={labelCls}>Tech stack</label>
+              <TagInput
+                value={project.tech_stack}
+                onChange={(v) => update("tech_stack", v)}
+                placeholder="Add a tech tag (e.g. React)…"
               />
             </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className={labelCls}>Live URL</label>
+                <input
+                  value={project.live_url ?? ""}
+                  onChange={(e) => update("live_url", e.target.value)}
+                  placeholder="https://"
+                  className={inputCls}
+                />
+              </div>
+              <div>
+                <label className={labelCls}>GitHub URL</label>
+                <input
+                  value={project.github_url ?? ""}
+                  onChange={(e) => update("github_url", e.target.value)}
+                  placeholder="https://github.com/…"
+                  className={inputCls}
+                />
+              </div>
+            </div>
+            <GalleryEditor
+              value={project.gallery_image_urls}
+              onChange={(v) => update("gallery_image_urls", v)}
+            />
           </div>
-          <GalleryEditor
-            value={project.gallery_image_urls}
-            onChange={(v) => update("gallery_image_urls", v)}
-          />
+
+          {isWeb && (
+            <>
+              <CaseStudyCard title="Case Study — Narrative">
+                <div>
+                  <label className={labelCls}>The Challenge</label>
+                  <textarea
+                    value={project.challenge}
+                    onChange={(e) => update("challenge", e.target.value)}
+                    rows={5}
+                    placeholder="Describe the core problem the client was facing before this project..."
+                    className={`${inputCls} resize-y`}
+                  />
+                </div>
+                <div>
+                  <label className={labelCls}>The Solution</label>
+                  <textarea
+                    value={project.solution}
+                    onChange={(e) => update("solution", e.target.value)}
+                    rows={5}
+                    placeholder="Describe what was built and how it solved the problem..."
+                    className={`${inputCls} resize-y`}
+                  />
+                </div>
+              </CaseStudyCard>
+
+              <CaseStudyCard title="Process Steps">
+                <ProcessStepsEditor
+                  value={project.process_steps}
+                  onChange={(v) => update("process_steps", v)}
+                />
+              </CaseStudyCard>
+
+              <CaseStudyCard title="Result Stats">
+                <ResultStatsEditor
+                  value={project.result_stats}
+                  onChange={(v) => update("result_stats", v)}
+                />
+              </CaseStudyCard>
+
+              <CaseStudyCard title="Client Testimonial">
+                <div>
+                  <label className={labelCls}>Testimonial Quote</label>
+                  <textarea
+                    value={project.testimonial_quote}
+                    onChange={(e) => update("testimonial_quote", e.target.value)}
+                    rows={4}
+                    placeholder="What the client said..."
+                    className={`${inputCls} resize-y`}
+                  />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className={labelCls}>Client Name</label>
+                    <input
+                      value={project.testimonial_name}
+                      onChange={(e) => update("testimonial_name", e.target.value)}
+                      className={inputCls}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Client Title / Role</label>
+                    <input
+                      value={project.testimonial_title}
+                      onChange={(e) => update("testimonial_title", e.target.value)}
+                      placeholder="Founder, Local Storefront Co."
+                      className={inputCls}
+                    />
+                  </div>
+                </div>
+              </CaseStudyCard>
+            </>
+          )}
         </div>
 
         <aside className="space-y-5 rounded-xl border border-white/[0.08] bg-[#11162A] p-5 h-fit">
@@ -318,6 +467,204 @@ export function ProjectEditorPage({
         </aside>
       </div>
     </AdminShell>
+  );
+}
+
+function CaseStudyCard({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-5 rounded-xl border border-white/[0.08] bg-[#11162A] p-6">
+      <div className="flex items-center gap-2 border-l-2 border-[#3B82F6] pl-3">
+        <h2 className="text-sm font-mono uppercase tracking-wider text-[#3B82F6]">
+          {title}
+        </h2>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function ProcessStepsEditor({
+  value,
+  onChange,
+}: {
+  value: ProcessStep[];
+  onChange: (v: ProcessStep[]) => void;
+}) {
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }));
+  const ids = value.map((_, i) => `step-${i}`);
+
+  function handleDragEnd(e: DragEndEvent) {
+    const { active, over } = e;
+    if (!over || active.id === over.id) return;
+    const oldIdx = ids.indexOf(String(active.id));
+    const newIdx = ids.indexOf(String(over.id));
+    if (oldIdx < 0 || newIdx < 0) return;
+    onChange(arrayMove(value, oldIdx, newIdx));
+  }
+
+  return (
+    <div className="space-y-3">
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={ids} strategy={verticalListSortingStrategy}>
+          <div className="space-y-3">
+            {value.map((step, i) => (
+              <SortableStepRow
+                key={ids[i]}
+                id={ids[i]}
+                index={i}
+                step={step}
+                onChange={(next) => {
+                  const copy = value.slice();
+                  copy[i] = next;
+                  onChange(copy);
+                }}
+                onRemove={() => onChange(value.filter((_, j) => j !== i))}
+              />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
+      <button
+        type="button"
+        onClick={() =>
+          onChange([...value, { title: "", description: "" }])
+        }
+        className="inline-flex items-center gap-2 rounded-md border border-white/[0.1] bg-white/[0.04] px-3 py-2 text-sm text-white/80 hover:bg-white/[0.08]"
+      >
+        <Plus className="h-4 w-4" /> Add Step
+      </button>
+    </div>
+  );
+}
+
+function SortableStepRow({
+  id,
+  index,
+  step,
+  onChange,
+  onRemove,
+}: {
+  id: string;
+  index: number;
+  step: ProcessStep;
+  onChange: (s: ProcessStep) => void;
+  onRemove: () => void;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.6 : 1,
+  };
+  const inputCls =
+    "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none";
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex gap-2 rounded-md border border-white/[0.08] bg-[#0B0F1A] p-3"
+    >
+      <div className="flex flex-col items-center gap-2 pt-1">
+        <button
+          type="button"
+          {...attributes}
+          {...listeners}
+          className="cursor-grab text-white/30 hover:text-white/60 active:cursor-grabbing"
+          aria-label="Drag to reorder"
+        >
+          <GripVertical className="h-4 w-4" />
+        </button>
+        <span className="font-mono text-[10px] text-white/40">{index + 1}</span>
+      </div>
+      <div className="flex-1 space-y-2">
+        <input
+          value={step.title}
+          onChange={(e) => onChange({ ...step, title: e.target.value })}
+          placeholder="Step title (e.g. Discovery)"
+          className={inputCls}
+        />
+        <textarea
+          value={step.description}
+          onChange={(e) => onChange({ ...step, description: e.target.value })}
+          rows={2}
+          placeholder="Step description..."
+          className={`${inputCls} resize-y`}
+        />
+      </div>
+      <button
+        type="button"
+        onClick={onRemove}
+        aria-label="Remove step"
+        className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-red-400/80 hover:bg-red-500/10 hover:text-red-300"
+      >
+        <Trash2 className="h-4 w-4" />
+      </button>
+    </div>
+  );
+}
+
+function ResultStatsEditor({
+  value,
+  onChange,
+}: {
+  value: ResultStat[];
+  onChange: (v: ResultStat[]) => void;
+}) {
+  const inputCls =
+    "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none";
+  return (
+    <div className="space-y-3">
+      {value.map((stat, i) => (
+        <div
+          key={i}
+          className="flex gap-2 rounded-md border border-white/[0.08] bg-[#0B0F1A] p-3"
+        >
+          <div className="grid flex-1 gap-2 sm:grid-cols-[160px,1fr]">
+            <input
+              value={stat.value}
+              onChange={(e) => {
+                const copy = value.slice();
+                copy[i] = { ...stat, value: e.target.value };
+                onChange(copy);
+              }}
+              placeholder="Value (e.g. 58%)"
+              className={inputCls}
+            />
+            <input
+              value={stat.label}
+              onChange={(e) => {
+                const copy = value.slice();
+                copy[i] = { ...stat, label: e.target.value };
+                onChange(copy);
+              }}
+              placeholder="Label (e.g. of total sales now online...)"
+              className={inputCls}
+            />
+          </div>
+          <button
+            type="button"
+            onClick={() => onChange(value.filter((_, j) => j !== i))}
+            aria-label="Remove stat"
+            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-red-400/80 hover:bg-red-500/10 hover:text-red-300"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        </div>
+      ))}
+      <button
+        type="button"
+        onClick={() => onChange([...value, { value: "", label: "" }])}
+        className="inline-flex items-center gap-2 rounded-md border border-white/[0.1] bg-white/[0.04] px-3 py-2 text-sm text-white/80 hover:bg-white/[0.08]"
+      >
+        <Plus className="h-4 w-4" /> Add Stat
+      </button>
+    </div>
   );
 }
 
