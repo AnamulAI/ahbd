@@ -4,11 +4,13 @@ import {
   ArrowRight,
   Clock,
   Loader2,
+  Mail,
   Sparkles,
 } from "lucide-react";
 import { SiFacebook, SiX } from "react-icons/si";
 import { FaLinkedin } from "react-icons/fa";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { toast } from "sonner";
 import anamAvatar from "@/assets/anam-avatar.png.asset.json";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -27,6 +29,42 @@ import {
   type ContentBlock,
 } from "@/lib/blog-data";
 import { useAllBlogPosts, useBlogPostBySlug } from "@/lib/blog-loader";
+import { supabase } from "@/integrations/supabase/client";
+
+type TocHeading = { id: string; text: string; level: 2 | 3 };
+
+function slugifyHeading(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .slice(0, 80) || "section";
+}
+
+/** Parse rendered HTML, add IDs to h2/h3, return processed html + heading list. */
+function processHtmlWithHeadings(html: string): {
+  html: string;
+  headings: TocHeading[];
+} {
+  if (typeof window === "undefined" || !html) return { html, headings: [] };
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const headings: TocHeading[] = [];
+  const used = new Set<string>();
+  doc.querySelectorAll("h2, h3").forEach((el) => {
+    const text = (el.textContent ?? "").trim();
+    if (!text) return;
+    let id = el.getAttribute("id") || slugifyHeading(text);
+    let n = 2;
+    while (used.has(id)) id = `${slugifyHeading(text)}-${n++}`;
+    used.add(id);
+    el.setAttribute("id", id);
+    (el as HTMLElement).classList.add("scroll-mt-28");
+    headings.push({ id, text, level: el.tagName === "H3" ? 3 : 2 });
+  });
+  return { html: doc.body.innerHTML, headings };
+}
 
 export const Route = createFileRoute("/blog/$slug")({
   ssr: false,
