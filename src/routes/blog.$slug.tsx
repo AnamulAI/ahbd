@@ -223,7 +223,7 @@ function extractFaqItems(nodes: HTMLElement[]): { q: string; a: string }[] {
 }
 
 const PROSE_CLASSES = [
-  "prose prose-invert max-w-none",
+  "prose prose-invert max-w-none blog-prose",
   // Headings
   "prose-headings:font-bold prose-headings:text-white prose-headings:scroll-mt-28",
   "prose-h2:mt-14 prose-h2:mb-4 prose-h2:text-2xl sm:prose-h2:text-3xl prose-h2:leading-tight",
@@ -234,10 +234,6 @@ const PROSE_CLASSES = [
   "prose-a:text-[#3B82F6] prose-a:no-underline hover:prose-a:underline",
   // Strong / em
   "prose-strong:text-white prose-em:text-white/90",
-  // Blockquotes
-  "prose-blockquote:border-l-[4px] prose-blockquote:border-[#3B82F6] prose-blockquote:bg-[rgba(59,130,246,0.05)]",
-  "prose-blockquote:rounded-r-md prose-blockquote:py-2 prose-blockquote:pl-5 prose-blockquote:pr-4",
-  "prose-blockquote:not-italic prose-blockquote:text-white/85 prose-blockquote:font-normal",
   // Lists
   "prose-ul:my-6 prose-ol:my-6 prose-li:my-2 prose-li:text-muted-foreground",
   "marker:text-[#3B82F6]",
@@ -246,11 +242,90 @@ const PROSE_CLASSES = [
   "prose-pre:bg-[#0B0F1A] prose-pre:border prose-pre:border-white/10 prose-pre:rounded-xl",
   // Images
   "prose-img:rounded-xl prose-img:shadow-lg prose-img:w-full",
-  // Tables
-  "prose-table:w-full prose-thead:bg-white/[0.04] prose-th:text-white prose-th:font-semibold prose-th:border-b prose-th:border-[#1E293B] prose-td:border-b prose-td:border-[#1E293B] prose-td:text-muted-foreground",
   // HR
   "prose-hr:border-white/10",
 ].join(" ");
+
+/** Scoped styles for tables + blockquotes rendered inside `.blog-prose`.
+ *  Tailwind arbitrary `content` values with escaped quotes are painful,
+ *  so we emit a small style block once. */
+const PROSE_STYLE = `
+.blog-prose table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.08);
+  margin: 2.25rem 0;
+  font-size: 0.95rem;
+}
+.blog-prose thead tr {
+  background: linear-gradient(180deg, rgba(59,130,246,0.18), rgba(59,130,246,0.08));
+}
+.blog-prose thead th {
+  color: #fff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.72rem;
+  text-align: left;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid rgba(59,130,246,0.35);
+}
+.blog-prose tbody td {
+  padding: 0.85rem 1rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.75);
+  vertical-align: top;
+}
+.blog-prose tbody tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+.blog-prose tbody tr:hover td { background: rgba(59,130,246,0.05); }
+
+.blog-prose blockquote {
+  position: relative;
+  margin: 2.25rem 0;
+  padding: 1.75rem 1.5rem 1.25rem 2.25rem;
+  background: #0F172A;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  color: rgba(255,255,255,0.9);
+  font-style: normal;
+  quotes: none;
+}
+.blog-prose blockquote::before {
+  content: "\\201C";
+  position: absolute;
+  top: -0.35rem;
+  left: 1.1rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 4.5rem;
+  line-height: 1;
+  background: linear-gradient(180deg, #3B82F6, #F97316);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+  pointer-events: none;
+}
+.blog-prose blockquote::after {
+  content: "";
+  position: absolute;
+  top: 0.75rem;
+  bottom: 0.75rem;
+  left: 0;
+  width: 3px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #3B82F6, #F97316);
+}
+.blog-prose blockquote > :first-child { margin-top: 0; }
+.blog-prose blockquote > :last-child { margin-bottom: 0; }
+.blog-prose blockquote p {
+  color: rgba(255,255,255,0.92);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+`;
 
 function HtmlChunk({ html }: { html: string }) {
   return (
