@@ -1116,6 +1116,7 @@ function BlogPostPage({ post }: { post: BlogPost }) {
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
       <FloatingShareBar title={post.title} image={post.coverImage} />
+      <style dangerouslySetInnerHTML={{ __html: PROSE_STYLE }} />
       <main>
         {/* Hero */}
         <section className="pt-12 sm:pt-16">
