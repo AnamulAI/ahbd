@@ -932,7 +932,7 @@ function SidebarCard({ card }: { card: SidebarCardRow }) {
       : "inline-flex items-center justify-center gap-1.5 rounded-full btn-gradient min-h-9 px-4 py-2 text-xs font-semibold text-white transition-all duration-200 hover:scale-[1.02] disabled:opacity-60";
 
   return (
-    <div className="rounded-2xl border border-white/8 bg-[#121A2E] p-5">
+    <div className="rounded-2xl border border-white/8 bg-[#121A2E] p-5 text-center">
       {card.eyebrow_text && (
         <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[color:var(--orange)]">
           {card.eyebrow_text}
@@ -961,15 +961,15 @@ function SidebarCard({ card }: { card: SidebarCardRow }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={card.input_placeholder || "you@email.com"}
-              className="w-full rounded-md border border-white/10 bg-[#0B0F1A] py-2 pl-8 pr-3 text-xs text-white placeholder:text-muted-foreground focus:border-[color:var(--primary)] focus:outline-none"
+              className="w-full rounded-md border border-white/10 bg-[#0B0F1A] py-2 pl-8 pr-3 text-center text-xs text-white placeholder:text-muted-foreground focus:border-[color:var(--primary)] focus:outline-none"
             />
           </div>
-          <button type="submit" disabled={submitting} className={btnCls}>
+          <button type="submit" disabled={submitting} className={`w-full ${btnCls}`}>
             {submitting ? "Subscribing…" : card.cta_label || "Subscribe"}
           </button>
         </form>
       ) : card.cta_label && card.cta_url ? (
-        <a href={card.cta_url} className={`mt-4 ${btnCls}`}>
+        <a href={card.cta_url} target="_blank" rel="noopener noreferrer" className={`mt-4 w-full ${btnCls}`}>
           {card.cta_label}
         </a>
       ) : null}
