@@ -597,6 +597,7 @@ export type Database = {
       }
       projects: {
         Row: {
+          challenge: string | null
           cover_image_url: string | null
           created_at: string
           description: string | null
@@ -606,14 +607,21 @@ export type Database = {
           is_featured: boolean
           live_url: string | null
           main_category: string
+          process_steps: Json
+          result_stats: Json
           slug: string
+          solution: string | null
           sort_order: number
           sub_category_label: string | null
           tech_stack: string[]
+          testimonial_name: string | null
+          testimonial_quote: string | null
+          testimonial_title: string | null
           title: string
           updated_at: string
         }
         Insert: {
+          challenge?: string | null
           cover_image_url?: string | null
           created_at?: string
           description?: string | null
@@ -623,14 +631,21 @@ export type Database = {
           is_featured?: boolean
           live_url?: string | null
           main_category: string
+          process_steps?: Json
+          result_stats?: Json
           slug: string
+          solution?: string | null
           sort_order?: number
           sub_category_label?: string | null
           tech_stack?: string[]
+          testimonial_name?: string | null
+          testimonial_quote?: string | null
+          testimonial_title?: string | null
           title: string
           updated_at?: string
         }
         Update: {
+          challenge?: string | null
           cover_image_url?: string | null
           created_at?: string
           description?: string | null
@@ -640,10 +655,16 @@ export type Database = {
           is_featured?: boolean
           live_url?: string | null
           main_category?: string
+          process_steps?: Json
+          result_stats?: Json
           slug?: string
+          solution?: string | null
           sort_order?: number
           sub_category_label?: string | null
           tech_stack?: string[]
+          testimonial_name?: string | null
+          testimonial_quote?: string | null
+          testimonial_title?: string | null
           title?: string
           updated_at?: string
         }
