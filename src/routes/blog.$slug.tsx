@@ -176,6 +176,146 @@ function extractFaqItems(nodes: HTMLElement[]): { q: string; a: string }[] {
   return items;
 }
 
+const PROSE_CLASSES = [
+  "prose prose-invert max-w-none",
+  // Headings
+  "prose-headings:font-bold prose-headings:text-white prose-headings:scroll-mt-28",
+  "prose-h2:mt-14 prose-h2:mb-4 prose-h2:text-2xl sm:prose-h2:text-3xl prose-h2:leading-tight",
+  "prose-h3:mt-10 prose-h3:mb-3 prose-h3:text-xl sm:prose-h3:text-2xl prose-h3:text-white/90",
+  // Paragraphs
+  "prose-p:mt-6 prose-p:text-[17px] prose-p:leading-[1.8] prose-p:text-muted-foreground",
+  // Links
+  "prose-a:text-[#3B82F6] prose-a:no-underline hover:prose-a:underline",
+  // Strong / em
+  "prose-strong:text-white prose-em:text-white/90",
+  // Blockquotes
+  "prose-blockquote:border-l-[4px] prose-blockquote:border-[#3B82F6] prose-blockquote:bg-[rgba(59,130,246,0.05)]",
+  "prose-blockquote:rounded-r-md prose-blockquote:py-2 prose-blockquote:pl-5 prose-blockquote:pr-4",
+  "prose-blockquote:not-italic prose-blockquote:text-white/85 prose-blockquote:font-normal",
+  // Lists
+  "prose-ul:my-6 prose-ol:my-6 prose-li:my-2 prose-li:text-muted-foreground",
+  "marker:text-[#3B82F6]",
+  // Code
+  "prose-code:rounded prose-code:bg-[#0B1220] prose-code:px-1.5 prose-code:py-0.5 prose-code:text-[#93C5FD] prose-code:font-mono prose-code:text-[0.9em] prose-code:before:content-none prose-code:after:content-none",
+  "prose-pre:bg-[#0B0F1A] prose-pre:border prose-pre:border-white/10 prose-pre:rounded-xl",
+  // Images
+  "prose-img:rounded-xl prose-img:shadow-lg prose-img:w-full",
+  // Tables
+  "prose-table:w-full prose-thead:bg-white/[0.04] prose-th:text-white prose-th:font-semibold prose-th:border-b prose-th:border-[#1E293B] prose-td:border-b prose-td:border-[#1E293B] prose-td:text-muted-foreground",
+  // HR
+  "prose-hr:border-white/10",
+].join(" ");
+
+function HtmlChunk({ html }: { html: string }) {
+  return (
+    <div
+      className={PROSE_CLASSES}
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  );
+}
+
+function ChecklistSection({
+  id,
+  title,
+  items,
+}: {
+  id: string;
+  title: string;
+  items: string[];
+}) {
+  const label = /checklist/i.test(title)
+    ? "DECISION CHECKLIST"
+    : /decision/i.test(title)
+      ? "DECISION CHECKLIST"
+      : "QUESTIONS TO ASK";
+  return (
+    <section
+      id={id}
+      className="my-10 scroll-mt-28 rounded-xl border border-[#1E293B] bg-[#121A2E] p-6 sm:p-7"
+    >
+      <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[color:var(--primary)]">
+        // {label}
+      </p>
+      <h3 className="mt-3 text-xl font-bold text-white sm:text-2xl">
+        {title}
+      </h3>
+      <ul className="mt-6 space-y-3">
+        {items.map((it, i) => (
+          <li key={i} className="flex items-start gap-3">
+            <CheckSquare
+              className="mt-0.5 h-5 w-5 shrink-0 text-[#3B82F6]/80"
+              aria-hidden
+            />
+            <span className="text-[15px] leading-relaxed text-white/85 sm:text-base">
+              {it}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function AutoFaqSection({
+  id,
+  items,
+}: {
+  id: string;
+  items: { q: string; a: string }[];
+}) {
+  return (
+    <section id={id} className="mt-16 scroll-mt-28">
+      <p className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
+        // Frequently Asked Questions
+      </p>
+      <h2 className="mt-3 text-2xl font-bold text-white sm:text-3xl">
+        Common <span className="text-gradient-vo">Questions</span>
+      </h2>
+      <Accordion type="single" collapsible className="mt-8 space-y-3">
+        {items.map((f, i) => (
+          <AccordionItem
+            key={i}
+            value={`item-${i}`}
+            className="card-elevated border-b-0 px-5"
+          >
+            <AccordionTrigger className="py-5 text-left text-base font-semibold text-white hover:no-underline">
+              {f.q}
+            </AccordionTrigger>
+            <AccordionContent asChild>
+              <div
+                className="text-sm leading-relaxed text-muted-foreground sm:text-base [&_p]:mt-2 [&_a]:text-[#3B82F6] [&_ul]:mt-2 [&_ul]:list-disc [&_ul]:pl-5 [&_strong]:text-white"
+                dangerouslySetInnerHTML={{ __html: f.a || "" }}
+              />
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </section>
+  );
+}
+
+function ArticleSegments({ segments }: { segments: HtmlSegment[] }) {
+  return (
+    <>
+      {segments.map((seg, idx) => {
+        if (seg.kind === "html") return <HtmlChunk key={idx} html={seg.html} />;
+        if (seg.kind === "checklist")
+          return (
+            <ChecklistSection
+              key={idx}
+              id={seg.id}
+              title={seg.title}
+              items={seg.items}
+            />
+          );
+        return <AutoFaqSection key={idx} id={seg.id} items={seg.items} />;
+      })}
+    </>
+  );
+}
+
+
 export const Route = createFileRoute("/blog/$slug")({
   ssr: false,
   head: () => ({
