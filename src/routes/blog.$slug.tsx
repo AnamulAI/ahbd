@@ -999,7 +999,7 @@ function StickySidebar({
 
   return (
     <aside
-      className="no-scrollbar hidden lg:block lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto"
+      className="hidden lg:block lg:sticky lg:top-24 lg:self-start"
     >
       <div className="space-y-6">
 
