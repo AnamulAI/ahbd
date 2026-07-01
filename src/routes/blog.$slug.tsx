@@ -270,15 +270,11 @@ function ChecklistSection({
   title: string;
   items: string[];
 }) {
-  const label = /checklist/i.test(title)
-    ? "DECISION CHECKLIST"
-    : /decision/i.test(title)
-      ? "DECISION CHECKLIST"
-      : "QUESTIONS TO ASK";
+  const label = title.trim().toUpperCase();
   return (
     <section
       id={id}
-      className="my-10 scroll-mt-28 rounded-xl border border-[#1E293B] bg-[#121A2E] p-6 sm:p-7"
+      className="my-10 scroll-mt-28 rounded-2xl border border-[#1E293B] bg-[#0F172A] p-6 sm:p-7"
     >
       <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[color:var(--primary)]">
         // {label}
@@ -286,19 +282,31 @@ function ChecklistSection({
       <h3 className="mt-3 text-xl font-bold text-white sm:text-2xl">
         {title}
       </h3>
-      <ul className="mt-6 space-y-3">
-        {items.map((it, i) => (
-          <li key={i} className="flex items-start gap-3">
-            <CheckSquare
-              className="mt-0.5 h-5 w-5 shrink-0 text-[#3B82F6]/80"
-              aria-hidden
-            />
-            <span className="text-[15px] leading-relaxed text-white/85 sm:text-base">
-              {it}
-            </span>
-          </li>
-        ))}
-      </ul>
+      <ol className="mt-6 space-y-4">
+        {items.map((raw, i) => {
+          // Split on em-dash, en-dash, hyphen with spaces, or colon → main + sub
+          const m = raw.match(/^(.+?)\s*(?:[—–]|\s-\s|:)\s+(.+)$/);
+          const main = m ? m[1].trim() : raw.trim();
+          const sub = m ? m[2].trim() : "";
+          return (
+            <li key={i} className="flex items-start gap-4">
+              <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#3B82F6] to-[#F97316] font-mono text-sm font-bold text-white shadow-[0_6px_18px_-8px_rgba(59,130,246,0.6)]">
+                {i + 1}
+              </span>
+              <div className="min-w-0 pt-0.5">
+                <p className="text-[15px] font-semibold leading-snug text-white sm:text-base">
+                  {main}
+                </p>
+                {sub && (
+                  <p className="mt-1 text-sm leading-relaxed text-white/60 sm:text-[15px]">
+                    {sub}
+                  </p>
+                )}
+              </div>
+            </li>
+          );
+        })}
+      </ol>
     </section>
   );
 }
