@@ -638,6 +638,20 @@ function BlogPostPage({ post }: { post: BlogPost }) {
   const { posts: allPosts } = useAllBlogPosts();
   const related = allPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
 
+  const { html: processedHtml, headings: htmlHeadings } = useMemo(
+    () => processHtmlWithHeadings(post.bodyHtml ?? ""),
+    [post.bodyHtml],
+  );
+  const blockHeadings = useMemo<TocHeading[]>(
+    () =>
+      post.body
+        .filter((b): b is Extract<ContentBlock, { type: "h2" }> => b.type === "h2")
+        .map((h) => ({ id: h.id, text: h.text, level: 2 })),
+    [post],
+  );
+  const headings = post.bodyHtml ? htmlHeadings : blockHeadings;
+
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
