@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AdminShell, useAdminGate } from "@/components/admin/AdminShell";
 import { ImageUploader } from "@/components/admin/ImageUploader";
-import { RichTextEditor } from "@/components/admin/RichTextEditor";
+import { MarkdownEditor } from "@/components/admin/MarkdownEditor";
 import {
   CATEGORY_OPTIONS,
   estimateReadMinutes,
