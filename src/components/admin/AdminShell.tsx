@@ -138,7 +138,7 @@ export function AdminShell({
         </div>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-3 py-5">
+      <nav className="flex-1 overflow-y-auto no-scrollbar px-3 py-5">
         {NAV.map((group) => (
           <div key={group.label} className="mb-5">
             <div className="px-3 mb-2 font-mono text-[10px] uppercase tracking-[0.2em] text-white/35">

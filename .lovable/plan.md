@@ -1,21 +1,22 @@
-## Fix: Blog Sidebar — Remove Fixed Height, Expand Naturally
+## Two small fixes
 
-**Root cause:** The outer `<aside>` in `src/routes/blog.$slug.tsx` (line 1002) still constrains the sidebar with `lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto`. This caps the sidebar height to the viewport and turns it into an internal scroll container — the exact pattern the older post layout (screenshot 2) does NOT use.
+### 1) Blog TOC — only show H2 headings
+File: `src/routes/blog.$slug.tsx`
 
-**Change (one line):**
+- In `parseHtmlIntoSegments` (line ~79), change the selector from `"h2, h3"` to `"h2"` so only H2s get IDs and are collected. Also drop the `level === "H3" ? 3 : 2` branch — always push `level: 2`.
+- In `useMemo` around line ~1111, keep the block filter as-is (already filters `type === "h2"`), so markdown-block-based posts also stay H2-only.
+- In the `StickySidebar` render (line ~1023), remove the `h.level === 3 ? "pl-6 pr-3 text-[13px]" : "px-3"` conditional and just use `"px-3"` (no more nested indent styling).
+- Scroll-spy (`useScrollSpy`) is unchanged — it already tracks whatever IDs it receives, which will now be H2-only.
 
-`src/routes/blog.$slug.tsx` line 1002 — strip all height/overflow constraints from the aside; keep only sticky positioning so the column pins to the top and any overflow simply extends down the page naturally as content scrolls past (matching screenshot 2 behavior).
+No changes to sticky behavior, card styling, or any other visual treatment.
 
-From:
+### 2) Admin sidebar — hide the internal scrollbar
+File: `src/components/admin/AdminShell.tsx`
+
+The `<nav>` inside `SidebarInner` uses `overflow-y-auto`, which renders the visible scrollbar shown in the screenshot. Add the existing `no-scrollbar` utility (already defined in `src/styles.css`) so scrolling still works but the scrollbar is hidden:
+
 ```tsx
-<aside className="no-scrollbar hidden lg:block lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto">
+<nav className="flex-1 overflow-y-auto no-scrollbar px-3 py-5">
 ```
 
-To:
-```tsx
-<aside className="hidden lg:block lg:sticky lg:top-24 lg:self-start">
-```
-
-Removed: `no-scrollbar`, `lg:max-h-[calc(100vh-2rem)]`, `lg:overflow-y-auto`.
-
-**Result:** TOC + Recommended cards render at their full natural height. On tall sidebars, the whole column simply scrolls with the page once its bottom passes the viewport — same behavior as screenshot 2. No internal scrollbar, no clipping.
+No other admin layout changes.
