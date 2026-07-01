@@ -748,7 +748,7 @@ function BlogPostPage({ post }: { post: BlogPost }) {
   const { posts: allPosts } = useAllBlogPosts();
   const related = allPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
 
-  const { html: processedHtml, headings: htmlHeadings } = useMemo(
+  const { segments, headings: htmlHeadings } = useMemo(
     () => processHtmlWithHeadings(post.bodyHtml ?? ""),
     [post.bodyHtml],
   );
