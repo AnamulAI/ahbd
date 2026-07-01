@@ -68,6 +68,57 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_sidebar_cards: {
+        Row: {
+          body_text: string
+          created_at: string
+          cta_label: string
+          cta_style: string
+          cta_url: string
+          display_order: number
+          eyebrow_text: string
+          heading: string
+          id: string
+          input_placeholder: string
+          input_type: string
+          is_active: boolean
+          show_on_categories: Json
+          updated_at: string
+        }
+        Insert: {
+          body_text?: string
+          created_at?: string
+          cta_label?: string
+          cta_style?: string
+          cta_url?: string
+          display_order?: number
+          eyebrow_text?: string
+          heading?: string
+          id?: string
+          input_placeholder?: string
+          input_type?: string
+          is_active?: boolean
+          show_on_categories?: Json
+          updated_at?: string
+        }
+        Update: {
+          body_text?: string
+          created_at?: string
+          cta_label?: string
+          cta_style?: string
+          cta_url?: string
+          display_order?: number
+          eyebrow_text?: string
+          heading?: string
+          id?: string
+          input_placeholder?: string
+          input_type?: string
+          is_active?: boolean
+          show_on_categories?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       builder_ai_types: {
         Row: {
           base_price: number
