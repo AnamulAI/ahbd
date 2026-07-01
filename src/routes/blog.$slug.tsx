@@ -282,7 +282,7 @@ function AutoFaqSection({
             <AccordionTrigger className="py-5 text-left text-base font-semibold text-white hover:no-underline">
               {f.q}
             </AccordionTrigger>
-            <AccordionContent asChild>
+            <AccordionContent>
               <div
                 className="text-sm leading-relaxed text-muted-foreground sm:text-base [&_p]:mt-2 [&_a]:text-[#3B82F6] [&_ul]:mt-2 [&_ul]:list-disc [&_ul]:pl-5 [&_strong]:text-white"
                 dangerouslySetInnerHTML={{ __html: f.a || "" }}
