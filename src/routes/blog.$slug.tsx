@@ -3,7 +3,6 @@ import {
   ArrowLeft,
   ArrowRight,
   Clock,
-  Clock,
   Loader2,
   Mail,
   Sparkles,
