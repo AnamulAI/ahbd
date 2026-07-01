@@ -4,11 +4,13 @@ import {
   ArrowRight,
   Clock,
   Loader2,
+  Mail,
   Sparkles,
 } from "lucide-react";
 import { SiFacebook, SiX } from "react-icons/si";
 import { FaLinkedin } from "react-icons/fa";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { toast } from "sonner";
 import anamAvatar from "@/assets/anam-avatar.png.asset.json";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -27,6 +29,42 @@ import {
   type ContentBlock,
 } from "@/lib/blog-data";
 import { useAllBlogPosts, useBlogPostBySlug } from "@/lib/blog-loader";
+import { supabase } from "@/integrations/supabase/client";
+
+type TocHeading = { id: string; text: string; level: 2 | 3 };
+
+function slugifyHeading(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .slice(0, 80) || "section";
+}
+
+/** Parse rendered HTML, add IDs to h2/h3, return processed html + heading list. */
+function processHtmlWithHeadings(html: string): {
+  html: string;
+  headings: TocHeading[];
+} {
+  if (typeof window === "undefined" || !html) return { html, headings: [] };
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const headings: TocHeading[] = [];
+  const used = new Set<string>();
+  doc.querySelectorAll("h2, h3").forEach((el) => {
+    const text = (el.textContent ?? "").trim();
+    if (!text) return;
+    let id = el.getAttribute("id") || slugifyHeading(text);
+    let n = 2;
+    while (used.has(id)) id = `${slugifyHeading(text)}-${n++}`;
+    used.add(id);
+    el.setAttribute("id", id);
+    (el as HTMLElement).classList.add("scroll-mt-28");
+    headings.push({ id, text, level: el.tagName === "H3" ? 3 : 2 });
+  });
+  return { html: doc.body.innerHTML, headings };
+}
 
 export const Route = createFileRoute("/blog/$slug")({
   ssr: false,
@@ -427,14 +465,74 @@ function useScrollSpy(ids: string[]) {
   return active;
 }
 
-function StickySidebar({ post }: { post: BlogPost }) {
-  const headings = useMemo(
-    () =>
-      post.body
-        .filter((b): b is Extract<ContentBlock, { type: "h2" }> => b.type === "h2")
-        .map((h) => ({ id: h.id, text: h.text })),
-    [post],
+function NewsletterMini() {
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  async function onSubmit(e: FormEvent) {
+    e.preventDefault();
+    const value = email.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+    setSubmitting(true);
+    const { error } = await supabase
+      .from("newsletter_subscribers")
+      .insert({ email: value, status: "active", unsubscribed_at: null });
+    setSubmitting(false);
+    if (error) {
+      if (error.code === "23505") {
+        toast.success("You're already subscribed — thanks!");
+        setEmail("");
+        return;
+      }
+      toast.error(error.message || "Could not subscribe. Please try again.");
+      return;
+    }
+    toast.success("Thanks for subscribing!");
+    setEmail("");
+  }
+
+  return (
+    <div className="rounded-2xl border border-white/8 bg-[#121A2E] p-5">
+      <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[color:var(--orange)]">
+        // Newsletter
+      </p>
+      <h3 className="mt-3 text-base font-bold leading-snug text-white">
+        Want This Newsletter Automatically?
+      </h3>
+      <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+        Get articles like this sent to your inbox — no spam, unsubscribe anytime.
+      </p>
+      <form onSubmit={onSubmit} className="mt-4 flex flex-col gap-2">
+        <div className="relative">
+          <Mail
+            className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"
+            aria-hidden
+          />
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@email.com"
+            className="w-full rounded-md border border-white/10 bg-[#0B0F1A] py-2 pl-8 pr-3 text-xs text-white placeholder:text-muted-foreground focus:border-[color:var(--primary)] focus:outline-none"
+          />
+        </div>
+        <button
+          type="submit"
+          disabled={submitting}
+          className="inline-flex items-center justify-center gap-1.5 rounded-full btn-gradient min-h-9 px-4 py-2 text-xs font-semibold text-white transition-all duration-200 hover:scale-[1.02] disabled:opacity-60"
+        >
+          {submitting ? "Subscribing…" : "Subscribe"}
+        </button>
+      </form>
+    </div>
   );
+}
+
+function StickySidebar({ headings }: { headings: TocHeading[] }) {
   const active = useScrollSpy(headings.map((h) => h.id));
 
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>, id: string) {
@@ -447,10 +545,10 @@ function StickySidebar({ post }: { post: BlogPost }) {
   }
 
   return (
-    <aside className="lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
+    <aside className="hidden lg:block lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
       <div className="space-y-6">
         {headings.length > 0 && (
-          <div className="rounded-2xl border border-white/8 bg-[#16181D] p-5">
+          <div className="rounded-2xl border border-white/8 bg-[#121A2E] p-5">
             <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[color:var(--primary)]">
               // In This Article
             </p>
@@ -464,7 +562,8 @@ function StickySidebar({ post }: { post: BlogPost }) {
                         href={`#${h.id}`}
                         onClick={(e) => handleClick(e, h.id)}
                         className={[
-                          "block rounded-md border-l-2 px-3 py-1.5 text-sm leading-snug transition-colors",
+                          "block rounded-md border-l-2 py-1.5 text-sm leading-snug transition-colors",
+                          h.level === 3 ? "pl-6 pr-3 text-[13px]" : "px-3",
                           isActive
                             ? "border-[color:var(--primary)] bg-[color:var(--primary)]/[0.08] text-white"
                             : "border-transparent text-muted-foreground hover:border-white/15 hover:text-white",
@@ -480,24 +579,7 @@ function StickySidebar({ post }: { post: BlogPost }) {
           </div>
         )}
 
-        <div className="rounded-2xl border border-[color:var(--primary)]/30 bg-[#16181D] p-5 shadow-[0_18px_60px_-30px_var(--vo-glow)]">
-          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[color:var(--orange)]">
-            // Ready to Start?
-          </p>
-          <h3 className="mt-3 text-lg font-bold leading-snug text-white">
-            {post.sidebarCta.headline}
-          </h3>
-          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-            {post.sidebarCta.subtext}
-          </p>
-          <Link
-            to={post.sidebarCta.href}
-            className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full btn-gradient min-h-9 text-center px-4 py-2 text-sm font-semibold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:scale-100"
-          >
-            {post.sidebarCta.ctaLabel}
-            <ArrowRight className="h-4 w-4" aria-hidden />
-          </Link>
-        </div>
+        <NewsletterMini />
       </div>
     </aside>
   );
@@ -555,6 +637,20 @@ function NotFoundPost() {
 function BlogPostPage({ post }: { post: BlogPost }) {
   const { posts: allPosts } = useAllBlogPosts();
   const related = allPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
+
+  const { html: processedHtml, headings: htmlHeadings } = useMemo(
+    () => processHtmlWithHeadings(post.bodyHtml ?? ""),
+    [post.bodyHtml],
+  );
+  const blockHeadings = useMemo<TocHeading[]>(
+    () =>
+      post.body
+        .filter((b): b is Extract<ContentBlock, { type: "h2" }> => b.type === "h2")
+        .map((h) => ({ id: h.id, text: h.text, level: 2 })),
+    [post],
+  );
+  const headings = post.bodyHtml ? htmlHeadings : blockHeadings;
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -614,7 +710,7 @@ function BlogPostPage({ post }: { post: BlogPost }) {
               {post.bodyHtml ? (
                 <div
                   className="prose prose-invert mt-8 max-w-none prose-headings:font-bold prose-headings:text-white prose-h2:mt-14 prose-h2:text-2xl sm:prose-h2:text-3xl prose-h3:mt-10 prose-h3:text-xl sm:prose-h3:text-2xl prose-p:mt-6 prose-p:text-[17px] prose-p:leading-[1.8] prose-p:text-muted-foreground prose-a:text-[color:var(--primary)] prose-strong:text-white prose-li:text-muted-foreground prose-img:rounded-xl"
-                  dangerouslySetInnerHTML={{ __html: post.bodyHtml }}
+                  dangerouslySetInnerHTML={{ __html: processedHtml }}
                 />
               ) : (
                 <RenderBlocks blocks={post.body} />
@@ -628,7 +724,7 @@ function BlogPostPage({ post }: { post: BlogPost }) {
             </article>
 
             {/* RIGHT: sticky sidebar */}
-            <StickySidebar post={post} />
+            <StickySidebar headings={headings} />
           </div>
         </section>
 
