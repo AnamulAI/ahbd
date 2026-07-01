@@ -28,6 +28,7 @@ import { Route as AdminNewsletterRouteImport } from './routes/admin.newsletter'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminBuilderSettingsRouteImport } from './routes/admin.builder-settings'
+import { Route as AdminBlogSidebarCardsRouteImport } from './routes/admin.blog-sidebar-cards'
 import { Route as AdminProjectsIndexRouteImport } from './routes/admin.projects.index'
 import { Route as AdminBlogIndexRouteImport } from './routes/admin.blog.index'
 import { Route as AdminProjectsNewRouteImport } from './routes/admin.projects.new'
@@ -131,6 +132,11 @@ const AdminBuilderSettingsRoute = AdminBuilderSettingsRouteImport.update({
   path: '/admin/builder-settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminBlogSidebarCardsRoute = AdminBlogSidebarCardsRouteImport.update({
+  id: '/admin/blog-sidebar-cards',
+  path: '/admin/blog-sidebar-cards',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminProjectsIndexRoute = AdminProjectsIndexRouteImport.update({
   id: '/admin/projects/',
   path: '/admin/projects/',
@@ -171,6 +177,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/admin/blog-sidebar-cards': typeof AdminBlogSidebarCardsRoute
   '/admin/builder-settings': typeof AdminBuilderSettingsRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/login': typeof AdminLoginRoute
@@ -199,6 +206,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/admin/blog-sidebar-cards': typeof AdminBlogSidebarCardsRoute
   '/admin/builder-settings': typeof AdminBuilderSettingsRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/login': typeof AdminLoginRoute
@@ -228,6 +236,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/admin/blog-sidebar-cards': typeof AdminBlogSidebarCardsRoute
   '/admin/builder-settings': typeof AdminBuilderSettingsRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/login': typeof AdminLoginRoute
@@ -258,6 +267,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/admin/blog-sidebar-cards'
     | '/admin/builder-settings'
     | '/admin/leads'
     | '/admin/login'
@@ -286,6 +296,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/admin/blog-sidebar-cards'
     | '/admin/builder-settings'
     | '/admin/leads'
     | '/admin/login'
@@ -314,6 +325,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/admin/blog-sidebar-cards'
     | '/admin/builder-settings'
     | '/admin/leads'
     | '/admin/login'
@@ -343,6 +355,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
+  AdminBlogSidebarCardsRoute: typeof AdminBlogSidebarCardsRoute
   AdminBuilderSettingsRoute: typeof AdminBuilderSettingsRoute
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminLoginRoute: typeof AdminLoginRoute
@@ -503,6 +516,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBuilderSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/blog-sidebar-cards': {
+      id: '/admin/blog-sidebar-cards'
+      path: '/admin/blog-sidebar-cards'
+      fullPath: '/admin/blog-sidebar-cards'
+      preLoaderRoute: typeof AdminBlogSidebarCardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/projects/': {
       id: '/admin/projects/'
       path: '/admin/projects'
@@ -559,6 +579,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
+  AdminBlogSidebarCardsRoute: AdminBlogSidebarCardsRoute,
   AdminBuilderSettingsRoute: AdminBuilderSettingsRoute,
   AdminLeadsRoute: AdminLeadsRoute,
   AdminLoginRoute: AdminLoginRoute,
@@ -586,13 +607,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

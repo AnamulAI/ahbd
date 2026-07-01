@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowLeft,
   ArrowRight,
-  CheckSquare,
   Clock,
   Loader2,
   Mail,
@@ -65,7 +64,7 @@ type HtmlSegment =
 
 
 const FAQ_RE = /(frequently\s*asked|faq|common\s*questions)/i;
-const CHECKLIST_RE = /(decision|checklist|question)/i;
+const CHECKLIST_RE = /checklist/i;
 
 /** Parse rendered HTML, add IDs to h2/h3, extract headings, and split into segments
  *  where headings matching FAQ/Checklist patterns become special renderable blocks. */
@@ -223,7 +222,7 @@ function extractFaqItems(nodes: HTMLElement[]): { q: string; a: string }[] {
 }
 
 const PROSE_CLASSES = [
-  "prose prose-invert max-w-none",
+  "prose prose-invert max-w-none blog-prose",
   // Headings
   "prose-headings:font-bold prose-headings:text-white prose-headings:scroll-mt-28",
   "prose-h2:mt-14 prose-h2:mb-4 prose-h2:text-2xl sm:prose-h2:text-3xl prose-h2:leading-tight",
@@ -234,10 +233,6 @@ const PROSE_CLASSES = [
   "prose-a:text-[#3B82F6] prose-a:no-underline hover:prose-a:underline",
   // Strong / em
   "prose-strong:text-white prose-em:text-white/90",
-  // Blockquotes
-  "prose-blockquote:border-l-[4px] prose-blockquote:border-[#3B82F6] prose-blockquote:bg-[rgba(59,130,246,0.05)]",
-  "prose-blockquote:rounded-r-md prose-blockquote:py-2 prose-blockquote:pl-5 prose-blockquote:pr-4",
-  "prose-blockquote:not-italic prose-blockquote:text-white/85 prose-blockquote:font-normal",
   // Lists
   "prose-ul:my-6 prose-ol:my-6 prose-li:my-2 prose-li:text-muted-foreground",
   "marker:text-[#3B82F6]",
@@ -246,11 +241,90 @@ const PROSE_CLASSES = [
   "prose-pre:bg-[#0B0F1A] prose-pre:border prose-pre:border-white/10 prose-pre:rounded-xl",
   // Images
   "prose-img:rounded-xl prose-img:shadow-lg prose-img:w-full",
-  // Tables
-  "prose-table:w-full prose-thead:bg-white/[0.04] prose-th:text-white prose-th:font-semibold prose-th:border-b prose-th:border-[#1E293B] prose-td:border-b prose-td:border-[#1E293B] prose-td:text-muted-foreground",
   // HR
   "prose-hr:border-white/10",
 ].join(" ");
+
+/** Scoped styles for tables + blockquotes rendered inside `.blog-prose`.
+ *  Tailwind arbitrary `content` values with escaped quotes are painful,
+ *  so we emit a small style block once. */
+const PROSE_STYLE = `
+.blog-prose table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.08);
+  margin: 2.25rem 0;
+  font-size: 0.95rem;
+}
+.blog-prose thead tr {
+  background: linear-gradient(180deg, rgba(59,130,246,0.18), rgba(59,130,246,0.08));
+}
+.blog-prose thead th {
+  color: #fff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.72rem;
+  text-align: left;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid rgba(59,130,246,0.35);
+}
+.blog-prose tbody td {
+  padding: 0.85rem 1rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.75);
+  vertical-align: top;
+}
+.blog-prose tbody tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+.blog-prose tbody tr:hover td { background: rgba(59,130,246,0.05); }
+
+.blog-prose blockquote {
+  position: relative;
+  margin: 2.25rem 0;
+  padding: 1.75rem 1.5rem 1.25rem 2.25rem;
+  background: #0F172A;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  color: rgba(255,255,255,0.9);
+  font-style: normal;
+  quotes: none;
+}
+.blog-prose blockquote::before {
+  content: "\\201C";
+  position: absolute;
+  top: -0.35rem;
+  left: 1.1rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 4.5rem;
+  line-height: 1;
+  background: linear-gradient(180deg, #3B82F6, #F97316);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+  pointer-events: none;
+}
+.blog-prose blockquote::after {
+  content: "";
+  position: absolute;
+  top: 0.75rem;
+  bottom: 0.75rem;
+  left: 0;
+  width: 3px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #3B82F6, #F97316);
+}
+.blog-prose blockquote > :first-child { margin-top: 0; }
+.blog-prose blockquote > :last-child { margin-bottom: 0; }
+.blog-prose blockquote p {
+  color: rgba(255,255,255,0.92);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+`;
 
 function HtmlChunk({ html }: { html: string }) {
   return (
@@ -270,15 +344,11 @@ function ChecklistSection({
   title: string;
   items: string[];
 }) {
-  const label = /checklist/i.test(title)
-    ? "DECISION CHECKLIST"
-    : /decision/i.test(title)
-      ? "DECISION CHECKLIST"
-      : "QUESTIONS TO ASK";
+  const label = title.trim().toUpperCase();
   return (
     <section
       id={id}
-      className="my-10 scroll-mt-28 rounded-xl border border-[#1E293B] bg-[#121A2E] p-6 sm:p-7"
+      className="my-10 scroll-mt-28 rounded-2xl border border-[#1E293B] bg-[#0F172A] p-6 sm:p-7"
     >
       <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[color:var(--primary)]">
         // {label}
@@ -286,19 +356,31 @@ function ChecklistSection({
       <h3 className="mt-3 text-xl font-bold text-white sm:text-2xl">
         {title}
       </h3>
-      <ul className="mt-6 space-y-3">
-        {items.map((it, i) => (
-          <li key={i} className="flex items-start gap-3">
-            <CheckSquare
-              className="mt-0.5 h-5 w-5 shrink-0 text-[#3B82F6]/80"
-              aria-hidden
-            />
-            <span className="text-[15px] leading-relaxed text-white/85 sm:text-base">
-              {it}
-            </span>
-          </li>
-        ))}
-      </ul>
+      <ol className="mt-6 space-y-4">
+        {items.map((raw, i) => {
+          // Split on em-dash, en-dash, hyphen with spaces, or colon → main + sub
+          const m = raw.match(/^(.+?)\s*(?:[—–]|\s-\s|:)\s+(.+)$/);
+          const main = m ? m[1].trim() : raw.trim();
+          const sub = m ? m[2].trim() : "";
+          return (
+            <li key={i} className="flex items-start gap-4">
+              <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#3B82F6] to-[#F97316] font-mono text-sm font-bold text-white shadow-[0_6px_18px_-8px_rgba(59,130,246,0.6)]">
+                {i + 1}
+              </span>
+              <div className="min-w-0 pt-0.5">
+                <p className="text-[15px] font-semibold leading-snug text-white sm:text-base">
+                  {main}
+                </p>
+                {sub && (
+                  <p className="mt-1 text-sm leading-relaxed text-white/60 sm:text-[15px]">
+                    {sub}
+                  </p>
+                )}
+              </div>
+            </li>
+          );
+        })}
+      </ol>
     </section>
   );
 }
@@ -747,44 +829,80 @@ function useScrollSpy(ids: string[]) {
   const [active, setActive] = useState<string | null>(ids[0] ?? null);
   useEffect(() => {
     if (typeof window === "undefined" || ids.length === 0) return;
-    const elements = ids
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => !!el);
-    if (elements.length === 0) return;
-
-    const visible = new Map<string, number>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            visible.set(e.target.id, e.intersectionRatio);
-          } else {
-            visible.delete(e.target.id);
-          }
-        }
-        if (visible.size > 0) {
-          // Pick the first heading currently visible in DOM order
-          for (const id of ids) {
-            if (visible.has(id)) {
-              setActive(id);
-              break;
-            }
-          }
-        }
-      },
-      { rootMargin: "-96px 0px -65% 0px", threshold: [0, 0.5, 1] },
-    );
-    elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+    const OFFSET = 120; // px from top of viewport
+    function compute() {
+      let current: string | null = null;
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const top = el.getBoundingClientRect().top;
+        if (top - OFFSET <= 0) current = id;
+        else break;
+      }
+      if (!current) current = ids[0] ?? null;
+      setActive((prev) => (prev === current ? prev : current));
+    }
+    compute();
+    window.addEventListener("scroll", compute, { passive: true });
+    window.addEventListener("resize", compute);
+    return () => {
+      window.removeEventListener("scroll", compute);
+      window.removeEventListener("resize", compute);
+    };
   }, [ids.join("|")]);
   return active;
 }
 
-function NewsletterMini() {
+type SidebarCardRow = {
+  id: string;
+  eyebrow_text: string;
+  heading: string;
+  body_text: string;
+  cta_label: string;
+  cta_url: string;
+  cta_style: string;
+  input_type: string;
+  input_placeholder: string;
+  display_order: number;
+  show_on_categories: string[] | null;
+};
+
+const CATEGORY_TO_SLUG: Record<string, string> = {
+  "Web Development": "web_development",
+  "AI Integrator": "ai_integrator",
+  "AI Podcast": "ai_podcast",
+};
+
+function useSidebarCards(categoryLabel: string): SidebarCardRow[] {
+  const [cards, setCards] = useState<SidebarCardRow[]>([]);
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const { data } = await supabase
+        .from("blog_sidebar_cards")
+        .select("*")
+        .eq("is_active", true)
+        .order("display_order", { ascending: true });
+      if (!active || !data) return;
+      const slug = CATEGORY_TO_SLUG[categoryLabel] ?? "";
+      const filtered = (data as any[]).filter((c) => {
+        const arr = Array.isArray(c.show_on_categories) ? c.show_on_categories : [];
+        return arr.length === 0 || arr.includes(slug);
+      });
+      setCards(filtered as SidebarCardRow[]);
+    })();
+    return () => {
+      active = false;
+    };
+  }, [categoryLabel]);
+  return cards;
+}
+
+function SidebarCard({ card }: { card: SidebarCardRow }) {
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  async function onSubmit(e: FormEvent) {
+  async function onEmailSubmit(e: FormEvent) {
     e.preventDefault();
     const value = email.trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
@@ -809,46 +927,66 @@ function NewsletterMini() {
     setEmail("");
   }
 
+  const btnCls =
+    card.cta_style === "secondary"
+      ? "inline-flex items-center justify-center gap-1.5 rounded-full border border-white/15 bg-white/[0.04] min-h-9 px-4 py-2 text-xs font-semibold text-white transition-all duration-200 hover:bg-white/[0.08] disabled:opacity-60"
+      : "inline-flex items-center justify-center gap-1.5 rounded-full btn-gradient min-h-9 px-4 py-2 text-xs font-semibold text-white transition-all duration-200 hover:scale-[1.02] disabled:opacity-60";
+
   return (
     <div className="rounded-2xl border border-white/8 bg-[#121A2E] p-5">
-      <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[color:var(--orange)]">
-        // Newsletter
-      </p>
-      <h3 className="mt-3 text-base font-bold leading-snug text-white">
-        Want This Newsletter Automatically?
-      </h3>
-      <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-        Get articles like this sent to your inbox — no spam, unsubscribe anytime.
-      </p>
-      <form onSubmit={onSubmit} className="mt-4 flex flex-col gap-2">
-        <div className="relative">
-          <Mail
-            className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"
-            aria-hidden
-          />
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@email.com"
-            className="w-full rounded-md border border-white/10 bg-[#0B0F1A] py-2 pl-8 pr-3 text-xs text-white placeholder:text-muted-foreground focus:border-[color:var(--primary)] focus:outline-none"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={submitting}
-          className="inline-flex items-center justify-center gap-1.5 rounded-full btn-gradient min-h-9 px-4 py-2 text-xs font-semibold text-white transition-all duration-200 hover:scale-[1.02] disabled:opacity-60"
-        >
-          {submitting ? "Subscribing…" : "Subscribe"}
-        </button>
-      </form>
+      {card.eyebrow_text && (
+        <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[color:var(--orange)]">
+          {card.eyebrow_text}
+        </p>
+      )}
+      {card.heading && (
+        <h3 className="mt-3 text-base font-bold leading-snug text-white">
+          {card.heading}
+        </h3>
+      )}
+      {card.body_text && (
+        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+          {card.body_text}
+        </p>
+      )}
+      {card.input_type === "email" ? (
+        <form onSubmit={onEmailSubmit} className="mt-4 flex flex-col gap-2">
+          <div className="relative">
+            <Mail
+              className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"
+              aria-hidden
+            />
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={card.input_placeholder || "you@email.com"}
+              className="w-full rounded-md border border-white/10 bg-[#0B0F1A] py-2 pl-8 pr-3 text-xs text-white placeholder:text-muted-foreground focus:border-[color:var(--primary)] focus:outline-none"
+            />
+          </div>
+          <button type="submit" disabled={submitting} className={btnCls}>
+            {submitting ? "Subscribing…" : card.cta_label || "Subscribe"}
+          </button>
+        </form>
+      ) : card.cta_label && card.cta_url ? (
+        <a href={card.cta_url} className={`mt-4 ${btnCls}`}>
+          {card.cta_label}
+        </a>
+      ) : null}
     </div>
   );
 }
 
-function StickySidebar({ headings }: { headings: TocHeading[] }) {
+function StickySidebar({
+  headings,
+  category,
+}: {
+  headings: TocHeading[];
+  category: string;
+}) {
   const active = useScrollSpy(headings.map((h) => h.id));
+  const cards = useSidebarCards(category);
 
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>, id: string) {
     e.preventDefault();
@@ -861,7 +999,7 @@ function StickySidebar({ headings }: { headings: TocHeading[] }) {
 
   return (
     <aside className="hidden lg:block lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
-      <div className="space-y-6">
+      <div className="space-y-6 pr-1">
         {headings.length > 0 && (
           <div className="rounded-2xl border border-white/8 bg-[#121A2E] p-5">
             <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[color:var(--primary)]">
@@ -877,10 +1015,10 @@ function StickySidebar({ headings }: { headings: TocHeading[] }) {
                         href={`#${h.id}`}
                         onClick={(e) => handleClick(e, h.id)}
                         className={[
-                          "block rounded-md border-l-2 py-1.5 text-sm leading-snug transition-colors",
+                          "block border-l-2 py-1.5 text-sm leading-snug transition-colors",
                           h.level === 3 ? "pl-6 pr-3 text-[13px]" : "px-3",
                           isActive
-                            ? "border-[color:var(--primary)] bg-[color:var(--primary)]/[0.08] text-white"
+                            ? "border-[#3B82F6] bg-[#3B82F6]/[0.10] text-[#3B82F6] font-medium"
                             : "border-transparent text-muted-foreground hover:border-white/15 hover:text-white",
                         ].join(" ")}
                       >
@@ -894,11 +1032,15 @@ function StickySidebar({ headings }: { headings: TocHeading[] }) {
           </div>
         )}
 
-        <NewsletterMini />
+        {cards.map((c) => (
+          <SidebarCard key={c.id} card={c} />
+        ))}
       </div>
     </aside>
   );
 }
+
+
 
 function BlogPostRoute() {
   const { slug } = Route.useParams();
@@ -974,6 +1116,7 @@ function BlogPostPage({ post }: { post: BlogPost }) {
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
       <FloatingShareBar title={post.title} image={post.coverImage} />
+      <style dangerouslySetInnerHTML={{ __html: PROSE_STYLE }} />
       <main>
         {/* Hero */}
         <section className="pt-12 sm:pt-16">
@@ -1041,7 +1184,7 @@ function BlogPostPage({ post }: { post: BlogPost }) {
             </article>
 
             {/* RIGHT: sticky sidebar */}
-            <StickySidebar headings={headings} />
+            <StickySidebar headings={headings} category={post.category} />
           </div>
         </section>
 
