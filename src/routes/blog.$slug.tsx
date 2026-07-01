@@ -951,10 +951,12 @@ function NotFoundPost() {
 
 function BlogPostPage({ post }: { post: BlogPost }) {
   const { posts: allPosts } = useAllBlogPosts();
-  const related = allPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const sameCat = allPosts.filter((p) => p.slug !== post.slug && p.category === post.category);
+  const otherCat = allPosts.filter((p) => p.slug !== post.slug && p.category !== post.category);
+  const related = [...sameCat, ...otherCat].slice(0, 3);
 
   const { segments, headings: htmlHeadings } = useMemo(
-    () => processHtmlWithHeadings(post.bodyHtml ?? ""),
+    () => processHtmlWithHeadings(toHtml(post.bodyHtml ?? "")),
     [post.bodyHtml],
   );
   const blockHeadings = useMemo<TocHeading[]>(
@@ -965,6 +967,7 @@ function BlogPostPage({ post }: { post: BlogPost }) {
     [post],
   );
   const headings = post.bodyHtml ? htmlHeadings : blockHeadings;
+
 
 
   return (
