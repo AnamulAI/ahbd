@@ -76,7 +76,7 @@ function processHtmlWithHeadings(html: string): {
   const doc = new DOMParser().parseFromString(html, "text/html");
   const headings: TocHeading[] = [];
   const used = new Set<string>();
-  doc.querySelectorAll("h2, h3").forEach((el) => {
+  doc.querySelectorAll("h2").forEach((el) => {
     const text = (el.textContent ?? "").trim();
     if (!text) return;
     let id = el.getAttribute("id") || slugifyHeading(text);
@@ -86,15 +86,14 @@ function processHtmlWithHeadings(html: string): {
     el.setAttribute("id", id);
     (el as HTMLElement).classList.add("scroll-mt-28");
     // Numbered badge for H2 headings like "1. Title"
-    if (el.tagName === "H2") {
-      const m = text.match(/^(\d+)\.\s+(.+)$/);
-      if (m) {
-        const badge = `<span class="mr-3 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#3B82F6] to-[#F97316] font-mono text-sm font-bold text-white align-middle">${m[1]}</span>`;
-        el.innerHTML = `${badge}<span class="align-middle">${m[2]}</span>`;
-      }
+    const m = text.match(/^(\d+)\.\s+(.+)$/);
+    if (m) {
+      const badge = `<span class="mr-3 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#3B82F6] to-[#F97316] font-mono text-sm font-bold text-white align-middle">${m[1]}</span>`;
+      el.innerHTML = `${badge}<span class="align-middle">${m[2]}</span>`;
     }
-    headings.push({ id, text, level: el.tagName === "H3" ? 3 : 2 });
+    headings.push({ id, text, level: 2 });
   });
+
 
   const children = Array.from(doc.body.children) as HTMLElement[];
   const segments: HtmlSegment[] = [];
