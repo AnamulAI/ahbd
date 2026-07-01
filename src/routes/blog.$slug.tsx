@@ -1018,12 +1018,12 @@ function StickySidebar({
                         href={`#${h.id}`}
                         onClick={(e) => handleClick(e, h.id)}
                         className={[
-                          "block border-l-2 py-1.5 text-sm leading-snug transition-colors",
-                          h.level === 3 ? "pl-6 pr-3 text-[13px]" : "px-3",
+                          "block border-l-2 px-3 py-1.5 text-sm leading-snug transition-colors",
                           isActive
                             ? "border-[#3B82F6] bg-[#3B82F6]/[0.10] text-[#3B82F6] font-medium"
                             : "border-transparent text-muted-foreground hover:border-white/15 hover:text-white",
                         ].join(" ")}
+
                       >
                         {h.text}
                       </a>
