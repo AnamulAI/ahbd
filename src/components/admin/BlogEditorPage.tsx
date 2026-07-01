@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AdminShell, useAdminGate } from "@/components/admin/AdminShell";
 import { ImageUploader } from "@/components/admin/ImageUploader";
-import { RichTextEditor } from "@/components/admin/RichTextEditor";
+import { MarkdownEditor } from "@/components/admin/MarkdownEditor";
 import {
   CATEGORY_OPTIONS,
   estimateReadMinutes,
@@ -178,13 +178,14 @@ export function BlogEditorPage({ id }: { id?: string }) {
           </div>
           <div>
             <label className={labelCls}>Body</label>
-            <RichTextEditor
+            <MarkdownEditor
               value={post.body_html}
-              onChange={(html) => update("body_html", html)}
+              onChange={(md) => update("body_html", md)}
             />
             <p className="mt-2 text-[11px] text-white/40">
-              Tip: pasting from ChatGPT, Claude, Notion, or Google Docs preserves headings, bold, and lists.
+              Write in Markdown. Open the formatting guide above for supported patterns (headings, Quick Answer, FAQ, tables, callouts).
             </p>
+
           </div>
         </div>
 

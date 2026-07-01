@@ -7,11 +7,13 @@ import {
   Loader2,
   Mail,
   Sparkles,
+  ShieldAlert,
 } from "lucide-react";
 import { SiFacebook, SiX } from "react-icons/si";
 import { FaLinkedin } from "react-icons/fa";
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { toast } from "sonner";
+import { marked } from "marked";
 import anamAvatar from "@/assets/anam-avatar.png.asset.json";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -44,10 +46,23 @@ function slugifyHeading(text: string): string {
     .slice(0, 80) || "section";
 }
 
+/** Convert markdown → HTML. Content saved before markdown support starts with a
+ *  `<` (legacy TipTap HTML) and is passed through unchanged. */
+function toHtml(source: string): string {
+  const trimmed = (source ?? "").trim();
+  if (!trimmed) return "";
+  if (trimmed.startsWith("<")) return trimmed;
+  marked.setOptions({ gfm: true, breaks: false });
+  return marked.parse(trimmed, { async: false }) as string;
+}
+
 type HtmlSegment =
   | { kind: "html"; html: string }
   | { kind: "checklist"; id: string; title: string; items: string[] }
-  | { kind: "faq"; id: string; title: string; items: { q: string; a: string }[] };
+  | { kind: "faq"; id: string; title: string; items: { q: string; a: string }[] }
+  | { kind: "quickanswer"; text: string }
+  | { kind: "rule"; html: string };
+
 
 const FAQ_RE = /(frequently\s*asked|faq|common\s*questions)/i;
 const CHECKLIST_RE = /(decision|checklist|question)/i;
@@ -71,6 +86,14 @@ function processHtmlWithHeadings(html: string): {
     used.add(id);
     el.setAttribute("id", id);
     (el as HTMLElement).classList.add("scroll-mt-28");
+    // Numbered badge for H2 headings like "1. Title"
+    if (el.tagName === "H2") {
+      const m = text.match(/^(\d+)\.\s+(.+)$/);
+      if (m) {
+        const badge = `<span class="mr-3 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#3B82F6] to-[#F97316] font-mono text-sm font-bold text-white align-middle">${m[1]}</span>`;
+        el.innerHTML = `${badge}<span class="align-middle">${m[2]}</span>`;
+      }
+    }
     headings.push({ id, text, level: el.tagName === "H3" ? 3 : 2 });
   });
 
@@ -82,6 +105,7 @@ function processHtmlWithHeadings(html: string): {
     buffer = "";
   };
 
+  let sawHeading = false;
   let i = 0;
   while (i < children.length) {
     const el = children[i];
@@ -90,7 +114,6 @@ function processHtmlWithHeadings(html: string): {
 
     if ((tag === "H2" || tag === "H3") && FAQ_RE.test(text)) {
       flush();
-      // Consume siblings until next H2 (or H3 of same/higher level if this is H3? keep simple: stop at next H2)
       const stopAt = tag === "H2" ? ["H2"] : ["H2", "H3"];
       let j = i + 1;
       const inner: HTMLElement[] = [];
@@ -101,10 +124,10 @@ function processHtmlWithHeadings(html: string): {
       const items = extractFaqItems(inner);
       if (items.length > 0) {
         segments.push({ kind: "faq", id: el.id, title: text, items });
+        sawHeading = true;
         i = j;
         continue;
       }
-      // fallthrough: no items, render as normal
     } else if (
       (tag === "H2" || tag === "H3") &&
       CHECKLIST_RE.test(text) &&
@@ -118,7 +141,29 @@ function processHtmlWithHeadings(html: string): {
       ).filter(Boolean);
       if (items.length > 0) {
         segments.push({ kind: "checklist", id: el.id, title: text, items });
+        sawHeading = true;
         i += 2;
+        continue;
+      }
+    }
+
+    if (tag === "H2" || tag === "H3") sawHeading = true;
+
+    // Blockquote transforms
+    if (tag === "BLOCKQUOTE") {
+      const strong = el.querySelector("strong, b");
+      const strongText = (strong?.textContent ?? "").trim();
+      if (/^rule\b/i.test(strongText)) {
+        flush();
+        segments.push({ kind: "rule", html: el.innerHTML });
+        i++;
+        continue;
+      }
+      // First blockquote before any heading → Quick Answer
+      if (!sawHeading && !segments.some((s) => s.kind === "quickanswer")) {
+        flush();
+        segments.push({ kind: "quickanswer", text: (el.textContent ?? "").trim() });
+        i++;
         continue;
       }
     }
@@ -129,6 +174,7 @@ function processHtmlWithHeadings(html: string): {
   flush();
   return { headings, segments };
 }
+
 
 function extractFaqItems(nodes: HTMLElement[]): { q: string; a: string }[] {
   const items: { q: string; a: string }[] = [];
@@ -295,6 +341,20 @@ function AutoFaqSection({
   );
 }
 
+function RuleCallout({ html }: { html: string }) {
+  return (
+    <aside className="my-8 rounded-xl border border-white/8 border-l-[3px] border-l-[#F97316] bg-[#F97316]/[0.06] p-5 sm:p-6">
+      <div className="flex items-start gap-3">
+        <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-[#F97316]" aria-hidden />
+        <div
+          className="text-[15px] leading-relaxed text-white/90 [&_strong]:text-white [&_strong]:font-semibold [&_p]:m-0 [&_p+p]:mt-2"
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+      </div>
+    </aside>
+  );
+}
+
 function ArticleSegments({ segments }: { segments: HtmlSegment[] }) {
   return (
     <>
@@ -309,11 +369,16 @@ function ArticleSegments({ segments }: { segments: HtmlSegment[] }) {
               items={seg.items}
             />
           );
-        return <AutoFaqSection key={idx} id={seg.id} items={seg.items} />;
+        if (seg.kind === "faq")
+          return <AutoFaqSection key={idx} id={seg.id} items={seg.items} />;
+        if (seg.kind === "quickanswer")
+          return <QuickAnswer key={idx} text={seg.text} />;
+        return <RuleCallout key={idx} html={seg.html} />;
       })}
     </>
   );
 }
+
 
 
 export const Route = createFileRoute("/blog/$slug")({
@@ -886,10 +951,12 @@ function NotFoundPost() {
 
 function BlogPostPage({ post }: { post: BlogPost }) {
   const { posts: allPosts } = useAllBlogPosts();
-  const related = allPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const sameCat = allPosts.filter((p) => p.slug !== post.slug && p.category === post.category);
+  const otherCat = allPosts.filter((p) => p.slug !== post.slug && p.category !== post.category);
+  const related = [...sameCat, ...otherCat].slice(0, 3);
 
   const { segments, headings: htmlHeadings } = useMemo(
-    () => processHtmlWithHeadings(post.bodyHtml ?? ""),
+    () => processHtmlWithHeadings(toHtml(post.bodyHtml ?? "")),
     [post.bodyHtml],
   );
   const blockHeadings = useMemo<TocHeading[]>(
@@ -900,6 +967,7 @@ function BlogPostPage({ post }: { post: BlogPost }) {
     [post],
   );
   const headings = post.bodyHtml ? htmlHeadings : blockHeadings;
+
 
 
   return (
