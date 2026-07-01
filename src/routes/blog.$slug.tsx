@@ -1184,7 +1184,7 @@ function BlogPostPage({ post }: { post: BlogPost }) {
             </article>
 
             {/* RIGHT: sticky sidebar */}
-            <StickySidebar headings={headings} />
+            <StickySidebar headings={headings} category={post.category} />
           </div>
         </section>
 
