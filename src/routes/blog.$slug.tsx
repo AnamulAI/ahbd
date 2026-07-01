@@ -341,6 +341,20 @@ function AutoFaqSection({
   );
 }
 
+function RuleCallout({ html }: { html: string }) {
+  return (
+    <aside className="my-8 rounded-xl border border-white/8 border-l-[3px] border-l-[#F97316] bg-[#F97316]/[0.06] p-5 sm:p-6">
+      <div className="flex items-start gap-3">
+        <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-[#F97316]" aria-hidden />
+        <div
+          className="text-[15px] leading-relaxed text-white/90 [&_strong]:text-white [&_strong]:font-semibold [&_p]:m-0 [&_p+p]:mt-2"
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+      </div>
+    </aside>
+  );
+}
+
 function ArticleSegments({ segments }: { segments: HtmlSegment[] }) {
   return (
     <>
@@ -355,11 +369,16 @@ function ArticleSegments({ segments }: { segments: HtmlSegment[] }) {
               items={seg.items}
             />
           );
-        return <AutoFaqSection key={idx} id={seg.id} items={seg.items} />;
+        if (seg.kind === "faq")
+          return <AutoFaqSection key={idx} id={seg.id} items={seg.items} />;
+        if (seg.kind === "quickanswer")
+          return <QuickAnswer key={idx} text={seg.text} />;
+        return <RuleCallout key={idx} html={seg.html} />;
       })}
     </>
   );
 }
+
 
 
 export const Route = createFileRoute("/blog/$slug")({
