@@ -7,6 +7,7 @@ import {
   FileText,
   FolderKanban,
   Mail,
+  PanelRight,
   Layout,
   Eye,
   Search,
