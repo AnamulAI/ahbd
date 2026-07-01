@@ -999,10 +999,10 @@ function StickySidebar({
 
   return (
     <aside
-      className="hide-scrollbar hidden lg:block lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto"
-      style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      className="no-scrollbar hidden lg:block lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto"
     >
       <div className="space-y-6">
+
 
         {headings.length > 0 && (
           <div className="rounded-2xl border border-white/8 bg-[#121A2E] p-5">
