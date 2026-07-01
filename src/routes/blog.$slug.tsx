@@ -830,44 +830,80 @@ function useScrollSpy(ids: string[]) {
   const [active, setActive] = useState<string | null>(ids[0] ?? null);
   useEffect(() => {
     if (typeof window === "undefined" || ids.length === 0) return;
-    const elements = ids
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => !!el);
-    if (elements.length === 0) return;
-
-    const visible = new Map<string, number>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            visible.set(e.target.id, e.intersectionRatio);
-          } else {
-            visible.delete(e.target.id);
-          }
-        }
-        if (visible.size > 0) {
-          // Pick the first heading currently visible in DOM order
-          for (const id of ids) {
-            if (visible.has(id)) {
-              setActive(id);
-              break;
-            }
-          }
-        }
-      },
-      { rootMargin: "-96px 0px -65% 0px", threshold: [0, 0.5, 1] },
-    );
-    elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+    const OFFSET = 120; // px from top of viewport
+    function compute() {
+      let current: string | null = null;
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const top = el.getBoundingClientRect().top;
+        if (top - OFFSET <= 0) current = id;
+        else break;
+      }
+      if (!current) current = ids[0] ?? null;
+      setActive((prev) => (prev === current ? prev : current));
+    }
+    compute();
+    window.addEventListener("scroll", compute, { passive: true });
+    window.addEventListener("resize", compute);
+    return () => {
+      window.removeEventListener("scroll", compute);
+      window.removeEventListener("resize", compute);
+    };
   }, [ids.join("|")]);
   return active;
 }
 
-function NewsletterMini() {
+type SidebarCardRow = {
+  id: string;
+  eyebrow_text: string;
+  heading: string;
+  body_text: string;
+  cta_label: string;
+  cta_url: string;
+  cta_style: string;
+  input_type: string;
+  input_placeholder: string;
+  display_order: number;
+  show_on_categories: string[] | null;
+};
+
+const CATEGORY_TO_SLUG: Record<string, string> = {
+  "Web Development": "web_development",
+  "AI Integrator": "ai_integrator",
+  "AI Podcast": "ai_podcast",
+};
+
+function useSidebarCards(categoryLabel: string): SidebarCardRow[] {
+  const [cards, setCards] = useState<SidebarCardRow[]>([]);
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const { data } = await supabase
+        .from("blog_sidebar_cards")
+        .select("*")
+        .eq("is_active", true)
+        .order("display_order", { ascending: true });
+      if (!active || !data) return;
+      const slug = CATEGORY_TO_SLUG[categoryLabel] ?? "";
+      const filtered = (data as any[]).filter((c) => {
+        const arr = Array.isArray(c.show_on_categories) ? c.show_on_categories : [];
+        return arr.length === 0 || arr.includes(slug);
+      });
+      setCards(filtered as SidebarCardRow[]);
+    })();
+    return () => {
+      active = false;
+    };
+  }, [categoryLabel]);
+  return cards;
+}
+
+function SidebarCard({ card }: { card: SidebarCardRow }) {
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  async function onSubmit(e: FormEvent) {
+  async function onEmailSubmit(e: FormEvent) {
     e.preventDefault();
     const value = email.trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
@@ -892,46 +928,66 @@ function NewsletterMini() {
     setEmail("");
   }
 
+  const btnCls =
+    card.cta_style === "secondary"
+      ? "inline-flex items-center justify-center gap-1.5 rounded-full border border-white/15 bg-white/[0.04] min-h-9 px-4 py-2 text-xs font-semibold text-white transition-all duration-200 hover:bg-white/[0.08] disabled:opacity-60"
+      : "inline-flex items-center justify-center gap-1.5 rounded-full btn-gradient min-h-9 px-4 py-2 text-xs font-semibold text-white transition-all duration-200 hover:scale-[1.02] disabled:opacity-60";
+
   return (
     <div className="rounded-2xl border border-white/8 bg-[#121A2E] p-5">
-      <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[color:var(--orange)]">
-        // Newsletter
-      </p>
-      <h3 className="mt-3 text-base font-bold leading-snug text-white">
-        Want This Newsletter Automatically?
-      </h3>
-      <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-        Get articles like this sent to your inbox — no spam, unsubscribe anytime.
-      </p>
-      <form onSubmit={onSubmit} className="mt-4 flex flex-col gap-2">
-        <div className="relative">
-          <Mail
-            className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"
-            aria-hidden
-          />
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@email.com"
-            className="w-full rounded-md border border-white/10 bg-[#0B0F1A] py-2 pl-8 pr-3 text-xs text-white placeholder:text-muted-foreground focus:border-[color:var(--primary)] focus:outline-none"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={submitting}
-          className="inline-flex items-center justify-center gap-1.5 rounded-full btn-gradient min-h-9 px-4 py-2 text-xs font-semibold text-white transition-all duration-200 hover:scale-[1.02] disabled:opacity-60"
-        >
-          {submitting ? "Subscribing…" : "Subscribe"}
-        </button>
-      </form>
+      {card.eyebrow_text && (
+        <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[color:var(--orange)]">
+          {card.eyebrow_text}
+        </p>
+      )}
+      {card.heading && (
+        <h3 className="mt-3 text-base font-bold leading-snug text-white">
+          {card.heading}
+        </h3>
+      )}
+      {card.body_text && (
+        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+          {card.body_text}
+        </p>
+      )}
+      {card.input_type === "email" ? (
+        <form onSubmit={onEmailSubmit} className="mt-4 flex flex-col gap-2">
+          <div className="relative">
+            <Mail
+              className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"
+              aria-hidden
+            />
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={card.input_placeholder || "you@email.com"}
+              className="w-full rounded-md border border-white/10 bg-[#0B0F1A] py-2 pl-8 pr-3 text-xs text-white placeholder:text-muted-foreground focus:border-[color:var(--primary)] focus:outline-none"
+            />
+          </div>
+          <button type="submit" disabled={submitting} className={btnCls}>
+            {submitting ? "Subscribing…" : card.cta_label || "Subscribe"}
+          </button>
+        </form>
+      ) : card.cta_label && card.cta_url ? (
+        <a href={card.cta_url} className={`mt-4 ${btnCls}`}>
+          {card.cta_label}
+        </a>
+      ) : null}
     </div>
   );
 }
 
-function StickySidebar({ headings }: { headings: TocHeading[] }) {
+function StickySidebar({
+  headings,
+  category,
+}: {
+  headings: TocHeading[];
+  category: string;
+}) {
   const active = useScrollSpy(headings.map((h) => h.id));
+  const cards = useSidebarCards(category);
 
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>, id: string) {
     e.preventDefault();
@@ -944,7 +1000,7 @@ function StickySidebar({ headings }: { headings: TocHeading[] }) {
 
   return (
     <aside className="hidden lg:block lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
-      <div className="space-y-6">
+      <div className="space-y-6 pr-1">
         {headings.length > 0 && (
           <div className="rounded-2xl border border-white/8 bg-[#121A2E] p-5">
             <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[color:var(--primary)]">
@@ -960,10 +1016,10 @@ function StickySidebar({ headings }: { headings: TocHeading[] }) {
                         href={`#${h.id}`}
                         onClick={(e) => handleClick(e, h.id)}
                         className={[
-                          "block rounded-md border-l-2 py-1.5 text-sm leading-snug transition-colors",
+                          "block border-l-2 py-1.5 text-sm leading-snug transition-colors",
                           h.level === 3 ? "pl-6 pr-3 text-[13px]" : "px-3",
                           isActive
-                            ? "border-[color:var(--primary)] bg-[color:var(--primary)]/[0.08] text-white"
+                            ? "border-[#3B82F6] bg-[#3B82F6]/[0.10] text-[#3B82F6] font-medium"
                             : "border-transparent text-muted-foreground hover:border-white/15 hover:text-white",
                         ].join(" ")}
                       >
@@ -977,11 +1033,15 @@ function StickySidebar({ headings }: { headings: TocHeading[] }) {
           </div>
         )}
 
-        <NewsletterMini />
+        {cards.map((c) => (
+          <SidebarCard key={c.id} card={c} />
+        ))}
       </div>
     </aside>
   );
 }
+
+
 
 function BlogPostRoute() {
   const { slug } = Route.useParams();
