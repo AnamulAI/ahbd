@@ -65,7 +65,7 @@ type HtmlSegment =
 
 
 const FAQ_RE = /(frequently\s*asked|faq|common\s*questions)/i;
-const CHECKLIST_RE = /(decision|checklist|question)/i;
+const CHECKLIST_RE = /checklist/i;
 
 /** Parse rendered HTML, add IDs to h2/h3, extract headings, and split into segments
  *  where headings matching FAQ/Checklist patterns become special renderable blocks. */
