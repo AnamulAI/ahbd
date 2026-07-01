@@ -7,11 +7,13 @@ import {
   Loader2,
   Mail,
   Sparkles,
+  ShieldAlert,
 } from "lucide-react";
 import { SiFacebook, SiX } from "react-icons/si";
 import { FaLinkedin } from "react-icons/fa";
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { toast } from "sonner";
+import { marked } from "marked";
 import anamAvatar from "@/assets/anam-avatar.png.asset.json";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -44,10 +46,23 @@ function slugifyHeading(text: string): string {
     .slice(0, 80) || "section";
 }
 
+/** Convert markdown → HTML. Content saved before markdown support starts with a
+ *  `<` (legacy TipTap HTML) and is passed through unchanged. */
+function toHtml(source: string): string {
+  const trimmed = (source ?? "").trim();
+  if (!trimmed) return "";
+  if (trimmed.startsWith("<")) return trimmed;
+  marked.setOptions({ gfm: true, breaks: false });
+  return marked.parse(trimmed, { async: false }) as string;
+}
+
 type HtmlSegment =
   | { kind: "html"; html: string }
   | { kind: "checklist"; id: string; title: string; items: string[] }
-  | { kind: "faq"; id: string; title: string; items: { q: string; a: string }[] };
+  | { kind: "faq"; id: string; title: string; items: { q: string; a: string }[] }
+  | { kind: "quickanswer"; text: string }
+  | { kind: "rule"; html: string };
+
 
 const FAQ_RE = /(frequently\s*asked|faq|common\s*questions)/i;
 const CHECKLIST_RE = /(decision|checklist|question)/i;
