@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowLeft,
   ArrowRight,
+  CheckSquare,
   Clock,
   Loader2,
   Mail,
@@ -43,12 +44,21 @@ function slugifyHeading(text: string): string {
     .slice(0, 80) || "section";
 }
 
-/** Parse rendered HTML, add IDs to h2/h3, return processed html + heading list. */
+type HtmlSegment =
+  | { kind: "html"; html: string }
+  | { kind: "checklist"; id: string; title: string; items: string[] }
+  | { kind: "faq"; id: string; title: string; items: { q: string; a: string }[] };
+
+const FAQ_RE = /(frequently\s*asked|faq|common\s*questions)/i;
+const CHECKLIST_RE = /(decision|checklist|question)/i;
+
+/** Parse rendered HTML, add IDs to h2/h3, extract headings, and split into segments
+ *  where headings matching FAQ/Checklist patterns become special renderable blocks. */
 function processHtmlWithHeadings(html: string): {
-  html: string;
   headings: TocHeading[];
+  segments: HtmlSegment[];
 } {
-  if (typeof window === "undefined" || !html) return { html, headings: [] };
+  if (typeof window === "undefined" || !html) return { headings: [], segments: html ? [{ kind: "html", html }] : [] };
   const doc = new DOMParser().parseFromString(html, "text/html");
   const headings: TocHeading[] = [];
   const used = new Set<string>();
@@ -63,8 +73,248 @@ function processHtmlWithHeadings(html: string): {
     (el as HTMLElement).classList.add("scroll-mt-28");
     headings.push({ id, text, level: el.tagName === "H3" ? 3 : 2 });
   });
-  return { html: doc.body.innerHTML, headings };
+
+  const children = Array.from(doc.body.children) as HTMLElement[];
+  const segments: HtmlSegment[] = [];
+  let buffer = "";
+  const flush = () => {
+    if (buffer.trim()) segments.push({ kind: "html", html: buffer });
+    buffer = "";
+  };
+
+  let i = 0;
+  while (i < children.length) {
+    const el = children[i];
+    const tag = el.tagName;
+    const text = (el.textContent ?? "").trim();
+
+    if ((tag === "H2" || tag === "H3") && FAQ_RE.test(text)) {
+      flush();
+      // Consume siblings until next H2 (or H3 of same/higher level if this is H3? keep simple: stop at next H2)
+      const stopAt = tag === "H2" ? ["H2"] : ["H2", "H3"];
+      let j = i + 1;
+      const inner: HTMLElement[] = [];
+      while (j < children.length && !stopAt.includes(children[j].tagName)) {
+        inner.push(children[j]);
+        j++;
+      }
+      const items = extractFaqItems(inner);
+      if (items.length > 0) {
+        segments.push({ kind: "faq", id: el.id, title: text, items });
+        i = j;
+        continue;
+      }
+      // fallthrough: no items, render as normal
+    } else if (
+      (tag === "H2" || tag === "H3") &&
+      CHECKLIST_RE.test(text) &&
+      children[i + 1] &&
+      (children[i + 1].tagName === "UL" || children[i + 1].tagName === "OL")
+    ) {
+      flush();
+      const list = children[i + 1];
+      const items = Array.from(list.querySelectorAll(":scope > li")).map(
+        (li) => (li.textContent ?? "").trim(),
+      ).filter(Boolean);
+      if (items.length > 0) {
+        segments.push({ kind: "checklist", id: el.id, title: text, items });
+        i += 2;
+        continue;
+      }
+    }
+
+    buffer += el.outerHTML;
+    i++;
+  }
+  flush();
+  return { headings, segments };
 }
+
+function extractFaqItems(nodes: HTMLElement[]): { q: string; a: string }[] {
+  const items: { q: string; a: string }[] = [];
+  // Pattern A: H3 questions with following siblings as answer.
+  const hasH3 = nodes.some((n) => n.tagName === "H3");
+  if (hasH3) {
+    let current: { q: string; parts: string[] } | null = null;
+    const push = () => {
+      if (current && current.q) items.push({ q: current.q, a: current.parts.join("") });
+      current = null;
+    };
+    for (const n of nodes) {
+      if (n.tagName === "H3") {
+        push();
+        current = { q: (n.textContent ?? "").trim(), parts: [] };
+      } else if (current) {
+        current.parts.push(n.outerHTML);
+      }
+    }
+    push();
+    return items;
+  }
+  // Pattern B: single UL/OL where each li has "Question — Answer" or first sentence = q
+  const list = nodes.find((n) => n.tagName === "UL" || n.tagName === "OL");
+  if (list) {
+    Array.from(list.querySelectorAll(":scope > li")).forEach((li) => {
+      const strong = li.querySelector("strong, b");
+      if (strong) {
+        const q = (strong.textContent ?? "").trim();
+        const clone = li.cloneNode(true) as HTMLElement;
+        clone.querySelector("strong, b")?.remove();
+        const a = clone.innerHTML.replace(/^[\s:—-]+/, "").trim();
+        if (q) items.push({ q, a });
+      } else {
+        const raw = (li.textContent ?? "").trim();
+        const split = raw.split(/[?？](.+)/);
+        if (split.length >= 2 && split[0]) {
+          items.push({ q: split[0] + "?", a: split[1].trim() });
+        } else if (raw) {
+          items.push({ q: raw, a: "" });
+        }
+      }
+    });
+  }
+  return items;
+}
+
+const PROSE_CLASSES = [
+  "prose prose-invert max-w-none",
+  // Headings
+  "prose-headings:font-bold prose-headings:text-white prose-headings:scroll-mt-28",
+  "prose-h2:mt-14 prose-h2:mb-4 prose-h2:text-2xl sm:prose-h2:text-3xl prose-h2:leading-tight",
+  "prose-h3:mt-10 prose-h3:mb-3 prose-h3:text-xl sm:prose-h3:text-2xl prose-h3:text-white/90",
+  // Paragraphs
+  "prose-p:mt-6 prose-p:text-[17px] prose-p:leading-[1.8] prose-p:text-muted-foreground",
+  // Links
+  "prose-a:text-[#3B82F6] prose-a:no-underline hover:prose-a:underline",
+  // Strong / em
+  "prose-strong:text-white prose-em:text-white/90",
+  // Blockquotes
+  "prose-blockquote:border-l-[4px] prose-blockquote:border-[#3B82F6] prose-blockquote:bg-[rgba(59,130,246,0.05)]",
+  "prose-blockquote:rounded-r-md prose-blockquote:py-2 prose-blockquote:pl-5 prose-blockquote:pr-4",
+  "prose-blockquote:not-italic prose-blockquote:text-white/85 prose-blockquote:font-normal",
+  // Lists
+  "prose-ul:my-6 prose-ol:my-6 prose-li:my-2 prose-li:text-muted-foreground",
+  "marker:text-[#3B82F6]",
+  // Code
+  "prose-code:rounded prose-code:bg-[#0B1220] prose-code:px-1.5 prose-code:py-0.5 prose-code:text-[#93C5FD] prose-code:font-mono prose-code:text-[0.9em] prose-code:before:content-none prose-code:after:content-none",
+  "prose-pre:bg-[#0B0F1A] prose-pre:border prose-pre:border-white/10 prose-pre:rounded-xl",
+  // Images
+  "prose-img:rounded-xl prose-img:shadow-lg prose-img:w-full",
+  // Tables
+  "prose-table:w-full prose-thead:bg-white/[0.04] prose-th:text-white prose-th:font-semibold prose-th:border-b prose-th:border-[#1E293B] prose-td:border-b prose-td:border-[#1E293B] prose-td:text-muted-foreground",
+  // HR
+  "prose-hr:border-white/10",
+].join(" ");
+
+function HtmlChunk({ html }: { html: string }) {
+  return (
+    <div
+      className={PROSE_CLASSES}
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  );
+}
+
+function ChecklistSection({
+  id,
+  title,
+  items,
+}: {
+  id: string;
+  title: string;
+  items: string[];
+}) {
+  const label = /checklist/i.test(title)
+    ? "DECISION CHECKLIST"
+    : /decision/i.test(title)
+      ? "DECISION CHECKLIST"
+      : "QUESTIONS TO ASK";
+  return (
+    <section
+      id={id}
+      className="my-10 scroll-mt-28 rounded-xl border border-[#1E293B] bg-[#121A2E] p-6 sm:p-7"
+    >
+      <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[color:var(--primary)]">
+        // {label}
+      </p>
+      <h3 className="mt-3 text-xl font-bold text-white sm:text-2xl">
+        {title}
+      </h3>
+      <ul className="mt-6 space-y-3">
+        {items.map((it, i) => (
+          <li key={i} className="flex items-start gap-3">
+            <CheckSquare
+              className="mt-0.5 h-5 w-5 shrink-0 text-[#3B82F6]/80"
+              aria-hidden
+            />
+            <span className="text-[15px] leading-relaxed text-white/85 sm:text-base">
+              {it}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function AutoFaqSection({
+  id,
+  items,
+}: {
+  id: string;
+  items: { q: string; a: string }[];
+}) {
+  return (
+    <section id={id} className="mt-16 scroll-mt-28">
+      <p className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
+        // Frequently Asked Questions
+      </p>
+      <h2 className="mt-3 text-2xl font-bold text-white sm:text-3xl">
+        Common <span className="text-gradient-vo">Questions</span>
+      </h2>
+      <Accordion type="single" collapsible className="mt-8 space-y-3">
+        {items.map((f, i) => (
+          <AccordionItem
+            key={i}
+            value={`item-${i}`}
+            className="card-elevated border-b-0 px-5"
+          >
+            <AccordionTrigger className="py-5 text-left text-base font-semibold text-white hover:no-underline">
+              {f.q}
+            </AccordionTrigger>
+            <AccordionContent>
+              <div
+                className="text-sm leading-relaxed text-muted-foreground sm:text-base [&_p]:mt-2 [&_a]:text-[#3B82F6] [&_ul]:mt-2 [&_ul]:list-disc [&_ul]:pl-5 [&_strong]:text-white"
+                dangerouslySetInnerHTML={{ __html: f.a || "" }}
+              />
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </section>
+  );
+}
+
+function ArticleSegments({ segments }: { segments: HtmlSegment[] }) {
+  return (
+    <>
+      {segments.map((seg, idx) => {
+        if (seg.kind === "html") return <HtmlChunk key={idx} html={seg.html} />;
+        if (seg.kind === "checklist")
+          return (
+            <ChecklistSection
+              key={idx}
+              id={seg.id}
+              title={seg.title}
+              items={seg.items}
+            />
+          );
+        return <AutoFaqSection key={idx} id={seg.id} items={seg.items} />;
+      })}
+    </>
+  );
+}
+
 
 export const Route = createFileRoute("/blog/$slug")({
   ssr: false,
@@ -638,7 +888,7 @@ function BlogPostPage({ post }: { post: BlogPost }) {
   const { posts: allPosts } = useAllBlogPosts();
   const related = allPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
 
-  const { html: processedHtml, headings: htmlHeadings } = useMemo(
+  const { segments, headings: htmlHeadings } = useMemo(
     () => processHtmlWithHeadings(post.bodyHtml ?? ""),
     [post.bodyHtml],
   );
@@ -708,10 +958,9 @@ function BlogPostPage({ post }: { post: BlogPost }) {
               {post.quickAnswer && <QuickAnswer text={post.quickAnswer} />}
 
               {post.bodyHtml ? (
-                <div
-                  className="prose prose-invert mt-8 max-w-none prose-headings:font-bold prose-headings:text-white prose-h2:mt-14 prose-h2:text-2xl sm:prose-h2:text-3xl prose-h3:mt-10 prose-h3:text-xl sm:prose-h3:text-2xl prose-p:mt-6 prose-p:text-[17px] prose-p:leading-[1.8] prose-p:text-muted-foreground prose-a:text-[color:var(--primary)] prose-strong:text-white prose-li:text-muted-foreground prose-img:rounded-xl"
-                  dangerouslySetInnerHTML={{ __html: processedHtml }}
-                />
+                <div className="mt-8">
+                  <ArticleSegments segments={segments} />
+                </div>
               ) : (
                 <RenderBlocks blocks={post.body} />
               )}
