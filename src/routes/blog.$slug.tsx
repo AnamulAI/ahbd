@@ -44,12 +44,21 @@ function slugifyHeading(text: string): string {
     .slice(0, 80) || "section";
 }
 
-/** Parse rendered HTML, add IDs to h2/h3, return processed html + heading list. */
+type HtmlSegment =
+  | { kind: "html"; html: string }
+  | { kind: "checklist"; id: string; title: string; items: string[] }
+  | { kind: "faq"; id: string; title: string; items: { q: string; a: string }[] };
+
+const FAQ_RE = /(frequently\s*asked|faq|common\s*questions)/i;
+const CHECKLIST_RE = /(decision|checklist|question)/i;
+
+/** Parse rendered HTML, add IDs to h2/h3, extract headings, and split into segments
+ *  where headings matching FAQ/Checklist patterns become special renderable blocks. */
 function processHtmlWithHeadings(html: string): {
-  html: string;
   headings: TocHeading[];
+  segments: HtmlSegment[];
 } {
-  if (typeof window === "undefined" || !html) return { html, headings: [] };
+  if (typeof window === "undefined" || !html) return { headings: [], segments: html ? [{ kind: "html", html }] : [] };
   const doc = new DOMParser().parseFromString(html, "text/html");
   const headings: TocHeading[] = [];
   const used = new Set<string>();
@@ -64,7 +73,107 @@ function processHtmlWithHeadings(html: string): {
     (el as HTMLElement).classList.add("scroll-mt-28");
     headings.push({ id, text, level: el.tagName === "H3" ? 3 : 2 });
   });
-  return { html: doc.body.innerHTML, headings };
+
+  const children = Array.from(doc.body.children) as HTMLElement[];
+  const segments: HtmlSegment[] = [];
+  let buffer = "";
+  const flush = () => {
+    if (buffer.trim()) segments.push({ kind: "html", html: buffer });
+    buffer = "";
+  };
+
+  let i = 0;
+  while (i < children.length) {
+    const el = children[i];
+    const tag = el.tagName;
+    const text = (el.textContent ?? "").trim();
+
+    if ((tag === "H2" || tag === "H3") && FAQ_RE.test(text)) {
+      flush();
+      // Consume siblings until next H2 (or H3 of same/higher level if this is H3? keep simple: stop at next H2)
+      const stopAt = tag === "H2" ? ["H2"] : ["H2", "H3"];
+      let j = i + 1;
+      const inner: HTMLElement[] = [];
+      while (j < children.length && !stopAt.includes(children[j].tagName)) {
+        inner.push(children[j]);
+        j++;
+      }
+      const items = extractFaqItems(inner);
+      if (items.length > 0) {
+        segments.push({ kind: "faq", id: el.id, title: text, items });
+        i = j;
+        continue;
+      }
+      // fallthrough: no items, render as normal
+    } else if (
+      (tag === "H2" || tag === "H3") &&
+      CHECKLIST_RE.test(text) &&
+      children[i + 1] &&
+      (children[i + 1].tagName === "UL" || children[i + 1].tagName === "OL")
+    ) {
+      flush();
+      const list = children[i + 1];
+      const items = Array.from(list.querySelectorAll(":scope > li")).map(
+        (li) => (li.textContent ?? "").trim(),
+      ).filter(Boolean);
+      if (items.length > 0) {
+        segments.push({ kind: "checklist", id: el.id, title: text, items });
+        i += 2;
+        continue;
+      }
+    }
+
+    buffer += el.outerHTML;
+    i++;
+  }
+  flush();
+  return { headings, segments };
+}
+
+function extractFaqItems(nodes: HTMLElement[]): { q: string; a: string }[] {
+  const items: { q: string; a: string }[] = [];
+  // Pattern A: H3 questions with following siblings as answer.
+  const hasH3 = nodes.some((n) => n.tagName === "H3");
+  if (hasH3) {
+    let current: { q: string; parts: string[] } | null = null;
+    const push = () => {
+      if (current && current.q) items.push({ q: current.q, a: current.parts.join("") });
+      current = null;
+    };
+    for (const n of nodes) {
+      if (n.tagName === "H3") {
+        push();
+        current = { q: (n.textContent ?? "").trim(), parts: [] };
+      } else if (current) {
+        current.parts.push(n.outerHTML);
+      }
+    }
+    push();
+    return items;
+  }
+  // Pattern B: single UL/OL where each li has "Question — Answer" or first sentence = q
+  const list = nodes.find((n) => n.tagName === "UL" || n.tagName === "OL");
+  if (list) {
+    Array.from(list.querySelectorAll(":scope > li")).forEach((li) => {
+      const strong = li.querySelector("strong, b");
+      if (strong) {
+        const q = (strong.textContent ?? "").trim();
+        const clone = li.cloneNode(true) as HTMLElement;
+        clone.querySelector("strong, b")?.remove();
+        const a = clone.innerHTML.replace(/^[\s:—-]+/, "").trim();
+        if (q) items.push({ q, a });
+      } else {
+        const raw = (li.textContent ?? "").trim();
+        const split = raw.split(/[?？](.+)/);
+        if (split.length >= 2 && split[0]) {
+          items.push({ q: split[0] + "?", a: split[1].trim() });
+        } else if (raw) {
+          items.push({ q: raw, a: "" });
+        }
+      }
+    });
+  }
+  return items;
 }
 
 export const Route = createFileRoute("/blog/$slug")({
