@@ -78,6 +78,12 @@ type Project = {
   tiktok_clip_caption: string;
   linkedin_clip_url: string | null;
   linkedin_clip_caption: string;
+  // AI Integrator-specific
+  problem: string;
+  integration_map: string[];
+  trigger_text: string;
+  action_text: string;
+  output_text: string;
 };
 
 const DEFAULT_PROCESS_STEPS: ProcessStep[] = [
