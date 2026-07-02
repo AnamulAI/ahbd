@@ -24,6 +24,11 @@ import {
   Star,
   ExternalLink,
   Mic,
+  ArrowDown,
+  Cog,
+  PackageCheck,
+  XCircle,
+  CheckCircle,
   type LucideIcon,
 } from "lucide-react";
 
@@ -130,6 +135,12 @@ type DbProject = {
   tiktok_clip_caption: string | null;
   linkedin_clip_url: string | null;
   linkedin_clip_caption: string | null;
+  // AI Integrator
+  problem: string | null;
+  integration_map: unknown;
+  trigger_text: string | null;
+  action_text: string | null;
+  output_text: string | null;
 };
 
 
@@ -241,7 +252,15 @@ function ProjectDetailRoute() {
         />
       );
     }
-    // ai_integrator + anything else: Coming Soon
+    if (dbProject.main_category === "ai_integrator") {
+      return (
+        <IntegratorDetail
+          db={dbProject}
+          related={relatedDb.filter((p) => p.main_category === "ai_integrator")}
+        />
+      );
+    }
+    // Any unknown category: Coming Soon
     return <ComingSoonDetail title={dbProject.title} />;
   }
 
@@ -928,6 +947,559 @@ function ClosingCTA() {
 
 
 // ---------- AI Podcast detail (DB-driven) ----------
+function coerceMap(v: unknown): string[] {
+  if (!Array.isArray(v)) return [];
+  return v.filter((x): x is string => typeof x === "string" && x.trim().length > 0);
+}
+
+function IntegratorDetail({
+  db,
+  related,
+}: {
+  db: DbProject;
+  related: DbProject[];
+}) {
+  const stats = coerceStats(db.result_stats);
+  const gallery = db.gallery_image_urls ?? [];
+  const [lead, ...rest] = gallery;
+  const [lightbox, setLightbox] = React.useState<number | null>(null);
+  const openLightbox = (i: number) => setLightbox(i);
+  const closeLightbox = () => setLightbox(null);
+  const prevImg = () =>
+    setLightbox((i) => (i == null ? i : (i - 1 + gallery.length) % gallery.length));
+  const nextImg = () =>
+    setLightbox((i) => (i == null ? i : (i + 1) % gallery.length));
+  const nodes = coerceMap(db.integration_map);
+  const readMin = estimateReadMinutes(
+    db.problem,
+    db.trigger_text,
+    db.action_text,
+    db.output_text,
+    db.testimonial_quote,
+  );
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <SiteHeader />
+      <main>
+        {/* Back nav + Hero (mirrors WebDev hero) */}
+        <section className="relative section-glow-hero pt-8 sm:pt-12">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <Link
+              to="/projects"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-[color:var(--primary)]"
+            >
+              <ArrowLeft className="h-4 w-4" aria-hidden /> Back to Projects
+            </Link>
+
+            <div className="mt-8 text-center">
+              <ClientLogoBadge
+                logoUrl={db.client_logo_url}
+                clientName={db.testimonial_name}
+              />
+              {db.sub_category_label && (
+                <Eyebrow>// {db.sub_category_label}</Eyebrow>
+              )}
+              <h1 className="mt-4 mx-auto max-w-4xl text-balance text-3xl font-bold leading-[1.15] text-white sm:text-4xl md:text-5xl">
+                {db.title}
+              </h1>
+
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm">
+                <span
+                  aria-hidden
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[color:var(--primary)] to-[color:var(--orange)] font-display text-xs font-bold text-white"
+                >
+                  MH
+                </span>
+                <span className="font-medium text-white/90">
+                  Mohammad Anamul Hoque
+                </span>
+                <span aria-hidden className="text-white/25">·</span>
+                <span className="text-muted-foreground">{fmtDate(db.created_at)}</span>
+                <span aria-hidden className="text-white/25">·</span>
+                <span className="inline-flex items-center gap-1 text-muted-foreground">
+                  <Clock className="h-3.5 w-3.5" aria-hidden /> {readMin} min read
+                </span>
+              </div>
+
+              {db.tech_stack.length > 0 && (
+                <div className="mt-5 flex justify-center">
+                  <TechChips stack={db.tech_stack.slice(0, 6)} />
+                </div>
+              )}
+            </div>
+
+            {db.cover_image_url && (
+              <div className="mt-10 overflow-hidden rounded-2xl border border-white/8 bg-white/5">
+                <img
+                  src={db.cover_image_url}
+                  alt={db.title}
+                  className="aspect-[16/9] w-full object-cover"
+                />
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* The Problem — reuse Challenge card style */}
+        {db.problem && (
+          <section className="py-16 sm:py-20">
+            <div className="mx-auto max-w-3xl px-4 sm:px-6">
+              <Eyebrow>// THE PROBLEM</Eyebrow>
+              <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
+                The {gradientWord("Problem", "blue")}
+              </h2>
+              <div className="mt-6 relative overflow-hidden rounded-2xl border border-white/8 bg-[#121A2E] p-6 sm:p-8">
+                <span
+                  aria-hidden
+                  className="absolute left-0 top-0 h-full w-[3px] bg-[color:var(--primary)]"
+                />
+                <div className="space-y-5">
+                  {toParagraphs(db.problem).map((p, i) => (
+                    <p
+                      key={i}
+                      className="text-base leading-[1.8] text-muted-foreground sm:text-[17px]"
+                    >
+                      {p}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Integration Map */}
+        {nodes.length > 0 && (
+          <section className="py-16 sm:py-20 bg-white/[0.02]">
+            <div className="mx-auto max-w-6xl px-4 sm:px-6">
+              <div className="mx-auto max-w-3xl">
+                <Eyebrow>// HOW IT CONNECTS</Eyebrow>
+                <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
+                  The {gradientWord("Integration Map", "orange")}
+                </h2>
+              </div>
+
+              {/* Desktop: horizontal flow */}
+              <div className="mt-10 hidden md:block">
+                <div className="flex items-center gap-3 overflow-x-auto pb-2">
+                  {nodes.map((n, i) => (
+                    <React.Fragment key={`${n}-${i}`}>
+                      <IntegrationNode name={n} />
+                      {i < nodes.length - 1 && (
+                        <ArrowRight
+                          className="h-5 w-5 shrink-0 text-[color:var(--primary)]/70"
+                          aria-hidden
+                        />
+                      )}
+                    </React.Fragment>
+                  ))}
+                </div>
+              </div>
+
+              {/* Mobile: vertical stack */}
+              <div className="mt-10 flex flex-col items-center gap-3 md:hidden">
+                {nodes.map((n, i) => (
+                  <React.Fragment key={`m-${n}-${i}`}>
+                    <IntegrationNode name={n} />
+                    {i < nodes.length - 1 && (
+                      <ArrowDown
+                        className="h-5 w-5 text-[color:var(--primary)]/70"
+                        aria-hidden
+                      />
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Trigger / Action / Output */}
+        {(db.trigger_text || db.action_text || db.output_text) && (
+          <section className="py-16 sm:py-20">
+            <div className="mx-auto max-w-5xl px-4 sm:px-6">
+              <div className="mx-auto max-w-3xl">
+                <Eyebrow>// THE AUTOMATION</Eyebrow>
+                <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
+                  Trigger, Action, {gradientWord("Output", "orange")}
+                </h2>
+              </div>
+              <div className="mt-10 grid gap-4 md:grid-cols-3">
+                <TaoCard
+                  label="Trigger"
+                  Icon={Zap}
+                  text={db.trigger_text ?? ""}
+                  accent="blue"
+                />
+                <TaoCard
+                  label="Action"
+                  Icon={Cog}
+                  text={db.action_text ?? ""}
+                  accent="orange"
+                />
+                <TaoCard
+                  label="Output"
+                  Icon={PackageCheck}
+                  text={db.output_text ?? ""}
+                  accent="teal"
+                />
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Tools & Tech */}
+        {db.tech_stack.length > 0 && (
+          <section className="py-16 sm:py-20 bg-white/[0.02]">
+            <div className="mx-auto max-w-4xl px-4 sm:px-6 text-center">
+              <Eyebrow>// BUILT WITH</Eyebrow>
+              <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
+                Tools &amp; {gradientWord("Tech", "blue")}
+              </h2>
+              <div className="mt-8 flex justify-center">
+                <TechChips stack={db.tech_stack} />
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Before vs After */}
+        {(db.problem || db.output_text) && (
+          <section className="py-16 sm:py-20">
+            <div className="mx-auto max-w-5xl px-4 sm:px-6">
+              <div className="mx-auto max-w-3xl">
+                <Eyebrow>// THE IMPACT</Eyebrow>
+                <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
+                  Before vs. {gradientWord("After", "orange")}
+                </h2>
+              </div>
+              <div className="mt-10 grid gap-4 md:grid-cols-2">
+                <BeforeAfterCard
+                  kind="before"
+                  text={db.problem ?? "Manual, repetitive process."}
+                />
+                <BeforeAfterCard
+                  kind="after"
+                  text={db.output_text ?? "Automated, hands-off workflow."}
+                  stats={stats}
+                />
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ROI Snapshot — reuse Results treatment */}
+        {stats.length > 0 && (
+          <section className="py-16 sm:py-20 bg-white/[0.02]">
+            <div className="mx-auto max-w-5xl px-4 sm:px-6">
+              <div className="mx-auto max-w-3xl">
+                <Eyebrow>// ROI SNAPSHOT</Eyebrow>
+                <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
+                  The {gradientWord("ROI", "orange")}
+                </h2>
+              </div>
+              <div className="mt-10 grid gap-4 sm:grid-cols-3">
+                {stats.map((r, i) => {
+                  const Icon = pickResultIcon(r.value, r.label);
+                  const isBlue = i % 2 === 0;
+                  return (
+                    <div
+                      key={i}
+                      className="rounded-2xl border border-[#1E293B] bg-[#121A2E] p-7 text-center transition-all duration-200 hover:-translate-y-1 hover:border-[color:var(--primary)]/40 hover:shadow-[0_10px_30px_-12px_var(--vo-glow)] sm:p-8"
+                    >
+                      <div className="mx-auto inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[color:var(--primary)]/20 bg-[color:var(--primary)]/10">
+                        <Icon
+                          className="h-5 w-5 text-[color:var(--primary)]"
+                          aria-hidden
+                        />
+                      </div>
+                      <div
+                        className={[
+                          "mt-5 font-display text-3xl font-bold leading-tight sm:text-4xl",
+                          isBlue ? "text-[color:var(--primary)]" : "text-white",
+                        ].join(" ")}
+                      >
+                        {r.value}
+                      </div>
+                      <span
+                        aria-hidden
+                        className="mx-auto mt-3 block h-[2px] w-10 rounded-full bg-gradient-to-r from-[color:var(--primary)] to-[color:var(--orange)]"
+                      />
+                      <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                        {r.label}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Live Demo */}
+        {db.live_url && (
+          <section className="py-16 sm:py-20">
+            <div className="mx-auto max-w-3xl px-4 sm:px-6 text-center">
+              <Eyebrow>// SEE IT LIVE</Eyebrow>
+              <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
+                Try It {gradientWord("Yourself", "blue")}
+              </h2>
+              <div className="mt-8 rounded-2xl border border-[#1E293B] bg-[#121A2E] p-8 sm:p-10">
+                <p className="text-base text-muted-foreground sm:text-lg">
+                  This automation is live — see it in action.
+                </p>
+                <a
+                  href={db.live_url}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="mt-6 inline-flex items-center gap-2 rounded-full btn-gradient h-11 px-5 text-sm font-semibold text-white shadow-[0_10px_36px_-10px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] active:scale-[0.98]"
+                >
+                  Try the Live Demo <ExternalLink className="h-4 w-4" aria-hidden />
+                </a>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Gallery */}
+        {gallery.length > 0 && (
+          <section className="py-16 sm:py-20 bg-white/[0.02]">
+            <div className="mx-auto max-w-6xl px-4 sm:px-6">
+              <div className="mx-auto max-w-3xl">
+                <Eyebrow>// PROJECT GALLERY</Eyebrow>
+                <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
+                  A Closer Look
+                </h2>
+              </div>
+              {lead && (
+                <button
+                  type="button"
+                  onClick={() => openLightbox(0)}
+                  className="mt-8 block w-full overflow-hidden rounded-2xl border border-white/8 bg-white/5"
+                >
+                  <img
+                    src={lead}
+                    alt={`${db.title} — image 1`}
+                    loading="lazy"
+                    className="aspect-[16/9] w-full object-cover transition-transform duration-300 hover:scale-[1.02]"
+                  />
+                </button>
+              )}
+              {rest.length > 0 && (
+                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+                  {rest.map((src, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => openLightbox(i + 1)}
+                      className="overflow-hidden rounded-2xl border border-white/8 bg-white/5"
+                    >
+                      <img
+                        src={src}
+                        alt={`${db.title} — image ${i + 2}`}
+                        loading="lazy"
+                        className="aspect-[16/10] w-full object-cover transition-transform duration-300 hover:scale-[1.02]"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            {lightbox != null && (
+              <Lightbox
+                images={gallery}
+                index={lightbox}
+                onClose={closeLightbox}
+                onPrev={prevImg}
+                onNext={nextImg}
+                alt={db.title}
+              />
+            )}
+          </section>
+        )}
+
+        {/* Testimonial */}
+        {db.testimonial_quote && (
+          <section className="py-16 sm:py-20">
+            <div className="mx-auto max-w-3xl px-4 sm:px-6">
+              <blockquote className="relative overflow-hidden rounded-2xl border border-[#1E293B] bg-[#121A2E] p-8 pl-10 sm:p-10 sm:pl-14">
+                <span
+                  aria-hidden
+                  className="absolute left-0 top-0 h-full w-[4px] bg-[color:var(--primary)]"
+                />
+                <Quote
+                  aria-hidden
+                  className="pointer-events-none absolute right-6 top-6 h-20 w-20 text-[color:var(--primary)]/10 sm:h-24 sm:w-24"
+                />
+                <p className="relative font-display text-xl italic leading-snug text-white sm:text-2xl">
+                  "{db.testimonial_quote}"
+                </p>
+                {(db.testimonial_name || db.testimonial_title) && (
+                  <footer className="relative mt-6 flex items-center gap-3 text-sm">
+                    {db.testimonial_name && (
+                      <span
+                        aria-hidden
+                        className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[color:var(--primary)] to-[color:var(--orange)] font-display text-[13px] font-bold text-white"
+                      >
+                        {initialsOf(db.testimonial_name)}
+                      </span>
+                    )}
+                    <span>
+                      {db.testimonial_name && (
+                        <span className="font-semibold text-white">
+                          {db.testimonial_name}
+                        </span>
+                      )}
+                      {db.testimonial_title && (
+                        <span className="text-muted-foreground">
+                          {db.testimonial_name ? " — " : ""}
+                          {db.testimonial_title}
+                        </span>
+                      )}
+                    </span>
+                  </footer>
+                )}
+              </blockquote>
+            </div>
+          </section>
+        )}
+
+        {/* Related */}
+        {related.length > 0 && (
+          <section className="pb-16 pt-4 sm:pb-20">
+            <div className="mx-auto max-w-6xl px-4 sm:px-6">
+              <div className="mb-6 flex items-center justify-between">
+                <h2 className="text-xl font-bold text-white sm:text-2xl">
+                  Related Projects
+                </h2>
+                <Link
+                  to="/projects"
+                  className="inline-flex items-center gap-1 text-sm text-[color:var(--primary)]"
+                >
+                  All projects <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+                </Link>
+              </div>
+              <div className="grid gap-6 max-md:place-items-center sm:grid-cols-2 lg:grid-cols-3">
+                {related.map((p) => (
+                  <div key={p.id} className="w-full max-w-sm sm:max-w-none">
+                    <ProjectCard project={dbToProjectCard(p)} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        <IntegratorClosingCTA />
+      </main>
+      <SiteFooter />
+    </div>
+  );
+}
+
+function IntegrationNode({ name }: { name: string }) {
+  return (
+    <span className="inline-flex shrink-0 items-center rounded-full border border-[color:var(--primary)]/30 bg-[#121A2E] px-4 py-2 text-sm font-semibold text-white shadow-[0_4px_20px_-8px_var(--vo-glow)]">
+      {name}
+    </span>
+  );
+}
+
+function TaoCard({
+  label,
+  Icon,
+  text,
+  accent,
+}: {
+  label: string;
+  Icon: LucideIcon;
+  text: string;
+  accent: "blue" | "orange" | "teal";
+}) {
+  const accentClasses =
+    accent === "blue"
+      ? "border-[color:var(--primary)]/40"
+      : accent === "orange"
+        ? "border-[color:var(--orange)]/40"
+        : "border-emerald-400/40";
+  const iconWrap =
+    accent === "blue"
+      ? "border-[color:var(--primary)]/30 bg-[color:var(--primary)]/10 text-[color:var(--primary)]"
+      : accent === "orange"
+        ? "border-[color:var(--orange)]/30 bg-[color:var(--orange)]/10 text-[color:var(--orange)]"
+        : "border-emerald-400/30 bg-emerald-400/10 text-emerald-300";
+  return (
+    <div
+      className={`relative overflow-hidden rounded-2xl border ${accentClasses} bg-[#121A2E] p-6 sm:p-7 transition-all duration-200 hover:-translate-y-1`}
+    >
+      <div
+        className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border ${iconWrap}`}
+      >
+        <Icon className="h-5 w-5" aria-hidden />
+      </div>
+      <div className="mt-4 font-display text-lg font-bold text-white">{label}</div>
+      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{text}</p>
+    </div>
+  );
+}
+
+function BeforeAfterCard({
+  kind,
+  text,
+  stats,
+}: {
+  kind: "before" | "after";
+  text: string;
+  stats?: ProjectResult[];
+}) {
+  const isBefore = kind === "before";
+  const border = isBefore ? "border-red-400/30" : "border-emerald-400/30";
+  const tone = isBefore ? "text-red-300" : "text-emerald-300";
+  const label = isBefore ? "Before" : "After";
+  const Icon = isBefore ? XCircle : CheckCircle;
+  return (
+    <div className={`relative overflow-hidden rounded-2xl border ${border} bg-[#121A2E] p-6 sm:p-8`}>
+      <div className="flex items-center gap-2">
+        <Icon className={`h-5 w-5 ${tone}`} aria-hidden />
+        <span className={`font-mono text-xs uppercase tracking-[0.18em] ${tone}`}>
+          {label}
+        </span>
+      </div>
+      <p className="mt-4 text-base leading-[1.75] text-muted-foreground sm:text-[17px]">
+        {text}
+      </p>
+      {!isBefore && stats && stats.length > 0 && (
+        <div className="mt-5 flex flex-wrap gap-2">
+          {stats.slice(0, 3).map((s, i) => (
+            <span
+              key={i}
+              className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/[0.06] px-3 py-1 text-xs font-semibold text-emerald-200"
+            >
+              <span className="font-display text-sm">{s.value}</span>
+              <span className="text-emerald-200/70">{s.label}</span>
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function IntegratorClosingCTA() {
+  return (
+    <PremiumCta
+      badgeIcon={Zap}
+      badgeText="AUTOMATION READY"
+      headingLine1="Still Doing This"
+      headingLine2="By Hand?"
+      subtext="Let's map out what should be automated in your business."
+      buttonLabel="Discuss Your Automation"
+      buttonHref="/contact"
+    />
+  );
+}
+
 function PodcastDetail({
   db,
   related,

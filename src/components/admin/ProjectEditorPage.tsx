@@ -78,6 +78,12 @@ type Project = {
   tiktok_clip_caption: string;
   linkedin_clip_url: string | null;
   linkedin_clip_caption: string;
+  // AI Integrator-specific
+  problem: string;
+  integration_map: string[];
+  trigger_text: string;
+  action_text: string;
+  output_text: string;
 };
 
 const DEFAULT_PROCESS_STEPS: ProcessStep[] = [
@@ -121,6 +127,11 @@ const EMPTY: Project = {
   tiktok_clip_caption: "",
   linkedin_clip_url: null,
   linkedin_clip_caption: "",
+  problem: "",
+  integration_map: [],
+  trigger_text: "",
+  action_text: "",
+  output_text: "",
 };
 
 
@@ -200,6 +211,13 @@ export function ProjectEditorPage({
           linkedin_clip_url: n("linkedin_clip_url"),
           linkedin_clip_caption: s("linkedin_clip_caption"),
           client_logo_url: n("client_logo_url"),
+          problem: s("problem"),
+          integration_map: Array.isArray(d.integration_map)
+            ? (d.integration_map as unknown[]).filter((x): x is string => typeof x === "string")
+            : [],
+          trigger_text: s("trigger_text"),
+          action_text: s("action_text"),
+          output_text: s("output_text"),
         } as Project);
         setSlugDirty(true);
       }
@@ -227,6 +245,7 @@ export function ProjectEditorPage({
     if (!project.slug.trim()) return toast.error("Slug is required");
     setSaving(true);
     const isPodcast = project.main_category === "ai_podcast";
+    const isIntegrator = project.main_category === "ai_integrator";
     const payload = {
       title: project.title.trim(),
       slug: project.slug.trim(),
@@ -262,6 +281,12 @@ export function ProjectEditorPage({
       tiktok_clip_caption: isPodcast ? (project.tiktok_clip_caption || null) : null,
       linkedin_clip_url: isPodcast ? project.linkedin_clip_url : null,
       linkedin_clip_caption: isPodcast ? (project.linkedin_clip_caption || null) : null,
+      // AI Integrator fields (only saved when integrator category; cleared otherwise).
+      problem: isIntegrator ? (project.problem || null) : null,
+      integration_map: isIntegrator ? project.integration_map : [],
+      trigger_text: isIntegrator ? (project.trigger_text || null) : null,
+      action_text: isIntegrator ? (project.action_text || null) : null,
+      output_text: isIntegrator ? (project.output_text || null) : null,
     };
     let error;
     if (id) {
@@ -297,6 +322,13 @@ export function ProjectEditorPage({
     "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none";
   const labelCls = "block text-xs font-mono uppercase tracking-wider text-white/60 mb-1.5";
   const isPodcast = project.main_category === "ai_podcast";
+  const isIntegrator = project.main_category === "ai_integrator";
+  const techLabel = isPodcast ? "Tools used" : isIntegrator ? "Tools & Tech" : "Tech stack";
+  const techPh = isPodcast
+    ? "Add a tool (e.g. ElevenLabs)…"
+    : isIntegrator
+      ? "Add a tool (e.g. Make.com)…"
+      : "Add a tech tag (e.g. React)…";
 
   return (
     <AdminShell email={gate.email}>
@@ -408,17 +440,17 @@ export function ProjectEditorPage({
               />
             </div>
             <div>
-              <label className={labelCls}>{isPodcast ? "Tools used" : "Tech stack"}</label>
+              <label className={labelCls}>{techLabel}</label>
               <TagInput
                 value={project.tech_stack}
                 onChange={(v) => update("tech_stack", v)}
-                placeholder={isPodcast ? "Add a tool (e.g. ElevenLabs)…" : "Add a tech tag (e.g. React)…"}
+                placeholder={techPh}
               />
             </div>
             {!isPodcast && (
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className={labelCls}>Live URL</label>
+                  <label className={labelCls}>{isIntegrator ? "Live Demo URL" : "Live URL"}</label>
                   <input
                     value={project.live_url ?? ""}
                     onChange={(e) => update("live_url", e.target.value)}
@@ -426,15 +458,17 @@ export function ProjectEditorPage({
                     className={inputCls}
                   />
                 </div>
-                <div>
-                  <label className={labelCls}>GitHub URL</label>
-                  <input
-                    value={project.github_url ?? ""}
-                    onChange={(e) => update("github_url", e.target.value)}
-                    placeholder="https://github.com/…"
-                    className={inputCls}
-                  />
-                </div>
+                {!isIntegrator && (
+                  <div>
+                    <label className={labelCls}>GitHub URL</label>
+                    <input
+                      value={project.github_url ?? ""}
+                      onChange={(e) => update("github_url", e.target.value)}
+                      placeholder="https://github.com/…"
+                      className={inputCls}
+                    />
+                  </div>
+                )}
               </div>
             )}
             <GalleryEditor
@@ -533,42 +567,104 @@ export function ProjectEditorPage({
 
           <>
 
-              <CaseStudyCard title="Case Study — Narrative">
-                <div>
-                  <label className={labelCls}>The Challenge</label>
-                  <textarea
-                    value={project.challenge}
-                    onChange={(e) => update("challenge", e.target.value)}
-                    rows={5}
-                    placeholder="Describe the core problem the client was facing before this project..."
-                    className={`${inputCls} resize-y`}
-                  />
-                </div>
-                <div>
-                  <label className={labelCls}>The Solution</label>
-                  <textarea
-                    value={project.solution}
-                    onChange={(e) => update("solution", e.target.value)}
-                    rows={5}
-                    placeholder="Describe what was built and how it solved the problem..."
-                    className={`${inputCls} resize-y`}
-                  />
-                </div>
-              </CaseStudyCard>
+              {isIntegrator ? (
+                <>
+                  <CaseStudyCard title="The Problem">
+                    <div>
+                      <label className={labelCls}>The Problem</label>
+                      <textarea
+                        value={project.problem}
+                        onChange={(e) => update("problem", e.target.value)}
+                        rows={5}
+                        placeholder="Describe the client's manual or broken process before this automation..."
+                        className={`${inputCls} resize-y`}
+                      />
+                    </div>
+                  </CaseStudyCard>
 
-              <CaseStudyCard title="Process Steps">
-                <ProcessStepsEditor
-                  value={project.process_steps}
-                  onChange={(v) => update("process_steps", v)}
-                />
-              </CaseStudyCard>
+                  <CaseStudyCard title="Integration Map">
+                    <IntegrationMapEditor
+                      value={project.integration_map}
+                      onChange={(v) => update("integration_map", v)}
+                    />
+                  </CaseStudyCard>
 
-              <CaseStudyCard title="Result Stats">
+                  <CaseStudyCard title="Trigger, Action, Output">
+                    <div className="grid gap-4 md:grid-cols-3">
+                      <div>
+                        <label className={labelCls}>Trigger</label>
+                        <textarea
+                          value={project.trigger_text}
+                          onChange={(e) => update("trigger_text", e.target.value)}
+                          rows={3}
+                          placeholder="What starts this automation? e.g. New form submission"
+                          className={`${inputCls} resize-y`}
+                        />
+                      </div>
+                      <div>
+                        <label className={labelCls}>Action</label>
+                        <textarea
+                          value={project.action_text}
+                          onChange={(e) => update("action_text", e.target.value)}
+                          rows={3}
+                          placeholder="What does the automation do? e.g. Parses the message and creates a task"
+                          className={`${inputCls} resize-y`}
+                        />
+                      </div>
+                      <div>
+                        <label className={labelCls}>Output</label>
+                        <textarea
+                          value={project.output_text}
+                          onChange={(e) => update("output_text", e.target.value)}
+                          rows={3}
+                          placeholder="What does the client get? e.g. A ready-to-send WhatsApp reply"
+                          className={`${inputCls} resize-y`}
+                        />
+                      </div>
+                    </div>
+                  </CaseStudyCard>
+                </>
+              ) : (
+                <>
+                  <CaseStudyCard title="Case Study — Narrative">
+                    <div>
+                      <label className={labelCls}>The Challenge</label>
+                      <textarea
+                        value={project.challenge}
+                        onChange={(e) => update("challenge", e.target.value)}
+                        rows={5}
+                        placeholder="Describe the core problem the client was facing before this project..."
+                        className={`${inputCls} resize-y`}
+                      />
+                    </div>
+                    <div>
+                      <label className={labelCls}>The Solution</label>
+                      <textarea
+                        value={project.solution}
+                        onChange={(e) => update("solution", e.target.value)}
+                        rows={5}
+                        placeholder="Describe what was built and how it solved the problem..."
+                        className={`${inputCls} resize-y`}
+                      />
+                    </div>
+                  </CaseStudyCard>
+
+                  <CaseStudyCard title="Process Steps">
+                    <ProcessStepsEditor
+                      value={project.process_steps}
+                      onChange={(v) => update("process_steps", v)}
+                    />
+                  </CaseStudyCard>
+                </>
+              )}
+
+              <CaseStudyCard title={isIntegrator ? "ROI Snapshot" : "Result Stats"}>
                 <ResultStatsEditor
                   value={project.result_stats}
                   onChange={(v) => update("result_stats", v)}
                 />
               </CaseStudyCard>
+
 
               <CaseStudyCard title="Client Testimonial">
                 <div>
@@ -696,6 +792,91 @@ function ClipCard({
   );
 }
 
+
+function IntegrationMapEditor({
+  value,
+  onChange,
+}: {
+  value: string[];
+  onChange: (v: string[]) => void;
+}) {
+  const [draft, setDraft] = useState("");
+  function add() {
+    const t = draft.trim();
+    if (!t) return;
+    onChange([...value, t]);
+    setDraft("");
+  }
+  function remove(i: number) {
+    onChange(value.filter((_, idx) => idx !== i));
+  }
+  function move(i: number, dir: -1 | 1) {
+    const j = i + dir;
+    if (j < 0 || j >= value.length) return;
+    const next = value.slice();
+    [next[i], next[j]] = [next[j], next[i]];
+    onChange(next);
+  }
+  return (
+    <div className="space-y-3">
+      <div className="space-y-2">
+        {value.map((node, i) => (
+          <div
+            key={`${node}-${i}`}
+            className="flex items-center gap-2 rounded-md border border-white/[0.08] bg-[#16181D] px-3 py-2"
+          >
+            <span className="font-mono text-xs text-white/40 w-6">{i + 1}.</span>
+            <span className="flex-1 text-sm text-white">{node}</span>
+            <button
+              type="button"
+              onClick={() => move(i, -1)}
+              className="text-white/50 hover:text-white text-xs px-2"
+              aria-label="Move up"
+            >
+              ↑
+            </button>
+            <button
+              type="button"
+              onClick={() => move(i, 1)}
+              className="text-white/50 hover:text-white text-xs px-2"
+              aria-label="Move down"
+            >
+              ↓
+            </button>
+            <button
+              type="button"
+              onClick={() => remove(i)}
+              className="text-red-400/70 hover:text-red-400 text-xs px-2"
+            >
+              Remove
+            </button>
+          </div>
+        ))}
+      </div>
+      <div className="flex gap-2">
+        <input
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              add();
+            }
+          }}
+          placeholder="Add a tool node (e.g. Gmail)…"
+          className="flex-1 rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none"
+        />
+        <button
+          type="button"
+          onClick={add}
+          className="rounded-md border border-white/[0.12] bg-white/[0.04] px-3 py-2 text-xs font-mono uppercase tracking-wider text-white/80 hover:bg-white/[0.08]"
+        >
+          + Add Node
+        </button>
+      </div>
+    </div>
+  );
+}
 
 function ProcessStepsEditor({
   value,
