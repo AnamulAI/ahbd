@@ -31,6 +31,7 @@ import { AdminShell, useAdminGate } from "@/components/admin/AdminShell";
 import {
   CATEGORY_OPTIONS,
   CATEGORY_COLOR,
+  CATEGORY_LABEL,
 } from "@/lib/admin-content-helpers";
 import {
   AlertDialog,
