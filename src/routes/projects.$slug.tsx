@@ -1009,6 +1009,10 @@ function PodcastDetail({
             </Link>
 
             <div className="mt-8 text-center">
+              <ClientLogoBadge
+                logoUrl={db.client_logo_url}
+                clientName={db.testimonial_name}
+              />
               {db.sub_category_label && (
                 <Eyebrow>// {db.sub_category_label}</Eyebrow>
               )}
