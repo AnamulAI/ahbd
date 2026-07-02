@@ -788,8 +788,10 @@ function WebsiteTab({
           })}
         </div>
       </Section>
+      )}
 
-      {/* Sub-Options */}
+      {panel === "website:suboptions" && (
+      /* Sub-Options */
       <Section
         title="Sub-Options"
         description="Add-on selections for website builds."
