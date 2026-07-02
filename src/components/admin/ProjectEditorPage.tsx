@@ -207,7 +207,7 @@ export function ProjectEditorPage({
     if (!project.title.trim()) return toast.error("Title is required");
     if (!project.slug.trim()) return toast.error("Slug is required");
     setSaving(true);
-    const isWeb = project.main_category === "web_development";
+    const isPodcast = project.main_category === "ai_podcast";
     const payload = {
       title: project.title.trim(),
       slug: project.slug.trim(),
@@ -217,18 +217,31 @@ export function ProjectEditorPage({
       gallery_image_urls: project.gallery_image_urls,
       description: project.description || null,
       tech_stack: project.tech_stack,
-      live_url: project.live_url || null,
-      github_url: project.github_url || null,
+      live_url: isPodcast ? null : (project.live_url || null),
+      github_url: isPodcast ? null : (project.github_url || null),
       is_featured: project.is_featured,
       sort_order: project.sort_order,
-      // Web-dev-only structured fields. For other categories, clear/reset.
-      challenge: isWeb ? (project.challenge || null) : null,
-      solution: isWeb ? (project.solution || null) : null,
-      process_steps: isWeb ? project.process_steps : [],
-      result_stats: isWeb ? project.result_stats : [],
-      testimonial_quote: isWeb ? (project.testimonial_quote || null) : null,
-      testimonial_name: isWeb ? (project.testimonial_name || null) : null,
-      testimonial_title: isWeb ? (project.testimonial_title || null) : null,
+      // Case-study fields are now shared across categories.
+      challenge: project.challenge || null,
+      solution: project.solution || null,
+      process_steps: project.process_steps,
+      result_stats: project.result_stats,
+      testimonial_quote: project.testimonial_quote || null,
+      testimonial_name: project.testimonial_name || null,
+      testimonial_title: project.testimonial_title || null,
+      // Podcast fields (only saved when podcast category; cleared otherwise).
+      spotify_url: isPodcast ? (project.spotify_url || null) : null,
+      apple_podcasts_url: isPodcast ? (project.apple_podcasts_url || null) : null,
+      youtube_url: isPodcast ? (project.youtube_url || null) : null,
+      episode_title: isPodcast ? (project.episode_title || null) : null,
+      episode_audio_url: isPodcast ? project.episode_audio_url : null,
+      episode_video_url: isPodcast ? project.episode_video_url : null,
+      ig_reel_url: isPodcast ? project.ig_reel_url : null,
+      ig_reel_caption: isPodcast ? (project.ig_reel_caption || null) : null,
+      tiktok_clip_url: isPodcast ? project.tiktok_clip_url : null,
+      tiktok_clip_caption: isPodcast ? (project.tiktok_clip_caption || null) : null,
+      linkedin_clip_url: isPodcast ? project.linkedin_clip_url : null,
+      linkedin_clip_caption: isPodcast ? (project.linkedin_clip_caption || null) : null,
     };
     let error;
     if (id) {
@@ -250,6 +263,7 @@ export function ProjectEditorPage({
       navigate({ to: "/admin/projects" });
     }
   }
+
 
   if (gate.status !== "ok" || loading) {
     return (
