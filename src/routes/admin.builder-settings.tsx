@@ -716,8 +716,10 @@ function WebsiteTab({
           ))}
         </div>
       </Section>
+      )}
 
-      {/* Scope Tiers */}
+      {panel === "website:tiers" && (
+      /* Scope Tiers */
       <Section
         title="Scope Tiers"
         description="Per use case, granular scope-based pricing add-ons."
