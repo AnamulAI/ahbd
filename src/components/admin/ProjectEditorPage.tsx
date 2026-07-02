@@ -567,42 +567,104 @@ export function ProjectEditorPage({
 
           <>
 
-              <CaseStudyCard title="Case Study — Narrative">
-                <div>
-                  <label className={labelCls}>The Challenge</label>
-                  <textarea
-                    value={project.challenge}
-                    onChange={(e) => update("challenge", e.target.value)}
-                    rows={5}
-                    placeholder="Describe the core problem the client was facing before this project..."
-                    className={`${inputCls} resize-y`}
-                  />
-                </div>
-                <div>
-                  <label className={labelCls}>The Solution</label>
-                  <textarea
-                    value={project.solution}
-                    onChange={(e) => update("solution", e.target.value)}
-                    rows={5}
-                    placeholder="Describe what was built and how it solved the problem..."
-                    className={`${inputCls} resize-y`}
-                  />
-                </div>
-              </CaseStudyCard>
+              {isIntegrator ? (
+                <>
+                  <CaseStudyCard title="The Problem">
+                    <div>
+                      <label className={labelCls}>The Problem</label>
+                      <textarea
+                        value={project.problem}
+                        onChange={(e) => update("problem", e.target.value)}
+                        rows={5}
+                        placeholder="Describe the client's manual or broken process before this automation..."
+                        className={`${inputCls} resize-y`}
+                      />
+                    </div>
+                  </CaseStudyCard>
 
-              <CaseStudyCard title="Process Steps">
-                <ProcessStepsEditor
-                  value={project.process_steps}
-                  onChange={(v) => update("process_steps", v)}
-                />
-              </CaseStudyCard>
+                  <CaseStudyCard title="Integration Map">
+                    <IntegrationMapEditor
+                      value={project.integration_map}
+                      onChange={(v) => update("integration_map", v)}
+                    />
+                  </CaseStudyCard>
 
-              <CaseStudyCard title="Result Stats">
+                  <CaseStudyCard title="Trigger, Action, Output">
+                    <div className="grid gap-4 md:grid-cols-3">
+                      <div>
+                        <label className={labelCls}>Trigger</label>
+                        <textarea
+                          value={project.trigger_text}
+                          onChange={(e) => update("trigger_text", e.target.value)}
+                          rows={3}
+                          placeholder="What starts this automation? e.g. New form submission"
+                          className={`${inputCls} resize-y`}
+                        />
+                      </div>
+                      <div>
+                        <label className={labelCls}>Action</label>
+                        <textarea
+                          value={project.action_text}
+                          onChange={(e) => update("action_text", e.target.value)}
+                          rows={3}
+                          placeholder="What does the automation do? e.g. Parses the message and creates a task"
+                          className={`${inputCls} resize-y`}
+                        />
+                      </div>
+                      <div>
+                        <label className={labelCls}>Output</label>
+                        <textarea
+                          value={project.output_text}
+                          onChange={(e) => update("output_text", e.target.value)}
+                          rows={3}
+                          placeholder="What does the client get? e.g. A ready-to-send WhatsApp reply"
+                          className={`${inputCls} resize-y`}
+                        />
+                      </div>
+                    </div>
+                  </CaseStudyCard>
+                </>
+              ) : (
+                <>
+                  <CaseStudyCard title="Case Study — Narrative">
+                    <div>
+                      <label className={labelCls}>The Challenge</label>
+                      <textarea
+                        value={project.challenge}
+                        onChange={(e) => update("challenge", e.target.value)}
+                        rows={5}
+                        placeholder="Describe the core problem the client was facing before this project..."
+                        className={`${inputCls} resize-y`}
+                      />
+                    </div>
+                    <div>
+                      <label className={labelCls}>The Solution</label>
+                      <textarea
+                        value={project.solution}
+                        onChange={(e) => update("solution", e.target.value)}
+                        rows={5}
+                        placeholder="Describe what was built and how it solved the problem..."
+                        className={`${inputCls} resize-y`}
+                      />
+                    </div>
+                  </CaseStudyCard>
+
+                  <CaseStudyCard title="Process Steps">
+                    <ProcessStepsEditor
+                      value={project.process_steps}
+                      onChange={(v) => update("process_steps", v)}
+                    />
+                  </CaseStudyCard>
+                </>
+              )}
+
+              <CaseStudyCard title={isIntegrator ? "ROI Snapshot" : "Result Stats"}>
                 <ResultStatsEditor
                   value={project.result_stats}
                   onChange={(v) => update("result_stats", v)}
                 />
               </CaseStudyCard>
+
 
               <CaseStudyCard title="Client Testimonial">
                 <div>
