@@ -590,8 +590,8 @@ export function ProjectEditorPage({
                   </div>
                 </div>
               </CaseStudyCard>
-            </>
-          )}
+          </>
+
         </div>
 
         <aside className="space-y-5 rounded-xl border border-white/[0.08] bg-[#11162A] p-5 h-fit">
