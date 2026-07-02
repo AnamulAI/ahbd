@@ -199,6 +199,7 @@ export function ProjectEditorPage({
           tiktok_clip_caption: s("tiktok_clip_caption"),
           linkedin_clip_url: n("linkedin_clip_url"),
           linkedin_clip_caption: s("linkedin_clip_caption"),
+          client_logo_url: n("client_logo_url"),
         } as Project);
         setSlugDirty(true);
       }
