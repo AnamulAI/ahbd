@@ -8,11 +8,11 @@ import { RevealBorder } from "@/components/site/RevealBorder";
 import { ProjectCard, ProjectCategoryBadge } from "@/components/site/ProjectCard";
 import {
   FEATURED_PROJECT_SLUG,
-  getAllProjects,
   getProjectBySlug,
   PROJECT_FILTERS,
   type ProjectCategory,
 } from "@/lib/projects-data";
+import { useAllProjects } from "@/lib/projects-loader";
 
 export const Route = createFileRoute("/projects/")({
   head: () => ({
@@ -140,7 +140,7 @@ function FeaturedSpotlight() {
 }
 
 function ProjectsIndexPage() {
-  const projects = getAllProjects();
+  const { projects } = useAllProjects();
   const [filter, setFilter] = useState<Filter>("All");
 
   const counts = useMemo(() => {
