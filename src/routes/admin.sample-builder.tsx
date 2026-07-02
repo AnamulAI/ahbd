@@ -931,6 +931,96 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
   );
 }
 
+type LogoRow = { id: string; logo_url: string; sort_order: number };
+
+function SocialProofLogosPanel({ pin }: { pin: string }) {
+  const listFn = useServerFn(listSocialProofLogos);
+  const createFn = useServerFn(createSocialProofLogo);
+  const deleteFn = useServerFn(deleteSocialProofLogo);
+  const reorderFn = useServerFn(reorderSocialProofLogos);
+  const [logos, setLogos] = useState<LogoRow[]>([]);
+  const [busy, setBusy] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const refresh = () => {
+    listFn().then((r) => setLogos((r.logos as LogoRow[]) || []));
+  };
+  useEffect(() => { refresh(); /* eslint-disable-next-line */ }, []);
+
+  const handleFile = async (file: File) => {
+    if (file.size > 2 * 1024 * 1024) return toast.error("Logo must be under 2MB");
+    const reader = new FileReader();
+    reader.onload = async () => {
+      setBusy(true);
+      try {
+        const res = await createFn({ data: { pin, logo_base64: reader.result as string, logo_filename: file.name } });
+        if (!res.ok) return toast.error(res.error || "Failed");
+        toast.success("Logo added");
+        refresh();
+      } finally { setBusy(false); }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const move = async (idx: number, dir: -1 | 1) => {
+    const next = [...logos];
+    const j = idx + dir;
+    if (j < 0 || j >= next.length) return;
+    [next[idx], next[j]] = [next[j], next[idx]];
+    setLogos(next);
+    await reorderFn({ data: { pin, ids: next.map((l) => l.id) } });
+  };
+
+  const remove = async (id: string) => {
+    if (!confirm("Delete this logo?")) return;
+    const res = await deleteFn({ data: { pin, id } });
+    if (!res.ok) return toast.error(res.error || "Failed");
+    refresh();
+  };
+
+  return (
+    <section className="card-elevated p-6 space-y-4">
+      <div>
+        <h2 className="text-lg">Social Proof Logos</h2>
+        <p className="text-xs text-muted-foreground">Shown on all sample pages. Global list, not per-sample.</p>
+      </div>
+      <div className="flex items-center gap-3">
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) handleFile(f);
+            e.target.value = "";
+          }}
+        />
+        <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()} disabled={busy}>
+          {busy ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />} Upload Logo
+        </Button>
+      </div>
+      {logos.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No logos yet.</p>
+      ) : (
+        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {logos.map((l, i) => (
+            <li key={l.id} className="flex items-center gap-3 rounded-md border border-white/10 bg-secondary/30 p-3">
+              <img src={l.logo_url} alt="" className="h-10 w-24 object-contain bg-white rounded p-1" />
+              <div className="ml-auto flex items-center gap-1">
+                <Button size="sm" variant="ghost" onClick={() => move(i, -1)} disabled={i === 0}>↑</Button>
+                <Button size="sm" variant="ghost" onClick={() => move(i, 1)} disabled={i === logos.length - 1}>↓</Button>
+                <Button size="sm" variant="ghost" onClick={() => remove(l.id)}><Trash2 className="size-4" /></Button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+
 function isYouTubeUrl(url: string): boolean {
   try {
     const host = new URL(url).hostname.replace(/^www\./, "");
