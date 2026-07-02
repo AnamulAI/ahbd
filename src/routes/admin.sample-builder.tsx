@@ -284,6 +284,20 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
         setClipIg(s.clip_instagram_url);
         setClipTt(s.clip_tiktok_url);
         setClipLi(s.clip_linkedin_url);
+        setClientIndustry((s as any).client_industry ?? "");
+        setScarcityEnabled(!!(s as any).scarcity_enabled);
+        setScarcityMessage((s as any).scarcity_message ?? "");
+        setWhatsappNumber((s as any).whatsapp_number ?? "");
+        setBookingLink((s as any).booking_link ?? "");
+        setEstListeners((s as any).estimated_listeners ?? "");
+        setEstReachGrowth((s as any).estimated_reach_growth ?? "");
+        setEstTimeSaved((s as any).estimated_time_saved ?? "");
+        setBeforeState((s as any).before_state ?? "");
+        setAfterState((s as any).after_state ?? "");
+        setIgCaption((s as any).ig_reel_caption ?? "");
+        setTtCaption((s as any).tiktok_clip_caption ?? "");
+        setLiCaption((s as any).linkedin_clip_caption ?? "");
+
       })
       .finally(() => !cancelled && setLoadingEdit(false));
     return () => { cancelled = true; };
