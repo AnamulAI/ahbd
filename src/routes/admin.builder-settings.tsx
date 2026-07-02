@@ -1044,6 +1044,7 @@ function AiTab({
   }
   return (
     <>
+      {panel === "ai:types" && (
       <Section
         title="AI Types"
         description="The core AI offerings customers can pick."
@@ -1051,6 +1052,8 @@ function AiTab({
       >
         <TypeList items={aiTypes} onUpdate={update} onDelete={del} />
       </Section>
+      )}
+      {panel === "ai:suboptions" && (
       <Section
         title="Sub-Options"
         description="AI add-ons grouped by configuration area."
@@ -1062,6 +1065,7 @@ function AiTab({
           setOptions={setOptions}
         />
       </Section>
+      )}
     </>
   );
 }
