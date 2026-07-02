@@ -94,6 +94,7 @@ const EMPTY: Project = {
   main_category: "web_development",
   sub_category_label: null,
   cover_image_url: null,
+  client_logo_url: null,
   gallery_image_urls: [],
   description: "",
   tech_stack: [],
