@@ -732,6 +732,14 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
                   onChange={setClipIg}
                   compact
                 />
+                <Field label="Instagram Caption">
+                  <Textarea
+                    rows={3}
+                    value={igCaption}
+                    onChange={(e) => setIgCaption(e.target.value)}
+                    placeholder="Write a caption with emojis and hashtags..."
+                  />
+                </Field>
                 <MediaUploadField
                   label="TikTok Clip"
                   accept=".mp4,.mov,video/*"
@@ -742,6 +750,14 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
                   onChange={setClipTt}
                   compact
                 />
+                <Field label="TikTok Caption">
+                  <Textarea
+                    rows={3}
+                    value={ttCaption}
+                    onChange={(e) => setTtCaption(e.target.value)}
+                    placeholder="Short, punchy hook with trending hashtags..."
+                  />
+                </Field>
                 <MediaUploadField
                   label="LinkedIn Clip"
                   accept=".mp4,.mov,video/*"
@@ -752,8 +768,17 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
                   onChange={setClipLi}
                   compact
                 />
+                <Field label="LinkedIn Caption">
+                  <Textarea
+                    rows={3}
+                    value={liCaption}
+                    onChange={(e) => setLiCaption(e.target.value)}
+                    placeholder="Write a professional caption..."
+                  />
+                </Field>
               </div>
             )}
+
 
             <Field label="Module Order (drag to reorder)">
               <DndContext
