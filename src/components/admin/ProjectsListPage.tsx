@@ -88,10 +88,16 @@ export async function fetchSubCategoriesFor(mainCategory: string): Promise<strin
 
 export function ProjectsListPage() {
   const gate = useAdminGate();
+  const navigate = useNavigate();
+  const searchParams = useSearch({ strict: false }) as {
+    main?: string;
+    sub?: string;
+  };
+  const activeMain = searchParams.main ?? "web_development";
+  const activeSub = searchParams.sub ?? "all";
+
   const [loading, setLoading] = useState(true);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [activeMain, setActiveMain] = useState<string>("web_development");
-  const [activeSub, setActiveSub] = useState<string>("all");
   const [subList, setSubList] = useState<string[]>([]);
   const [search, setSearch] = useState("");
   const [confirmDelete, setConfirmDelete] = useState<Project | null>(null);
@@ -112,7 +118,6 @@ export function ProjectsListPage() {
 
   useEffect(() => {
     fetchSubCategoriesFor(activeMain).then(setSubList);
-    setActiveSub("all");
   }, [activeMain]);
 
   const mainProjects = useMemo(
