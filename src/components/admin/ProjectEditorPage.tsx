@@ -50,6 +50,7 @@ type Project = {
   main_category: string;
   sub_category_label: string | null;
   cover_image_url: string | null;
+  client_logo_url: string | null;
   gallery_image_urls: string[];
   description: string;
   tech_stack: string[];
