@@ -659,7 +659,8 @@ function WebsiteTab({
 
   return (
     <>
-      {/* Tech Approaches */}
+      {panel === "website:tech" && (
+      /* Tech Approaches */
       <Section
         title="Tech Approaches"
         description="The two tracks customers can choose to build on."
