@@ -64,6 +64,19 @@ type Project = {
   testimonial_quote: string;
   testimonial_name: string;
   testimonial_title: string;
+  // Podcast-specific
+  spotify_url: string;
+  apple_podcasts_url: string;
+  youtube_url: string;
+  episode_title: string;
+  episode_audio_url: string | null;
+  episode_video_url: string | null;
+  ig_reel_url: string | null;
+  ig_reel_caption: string;
+  tiktok_clip_url: string | null;
+  tiktok_clip_caption: string;
+  linkedin_clip_url: string | null;
+  linkedin_clip_caption: string;
 };
 
 const DEFAULT_PROCESS_STEPS: ProcessStep[] = [
@@ -94,7 +107,20 @@ const EMPTY: Project = {
   testimonial_quote: "",
   testimonial_name: "",
   testimonial_title: "",
+  spotify_url: "",
+  apple_podcasts_url: "",
+  youtube_url: "",
+  episode_title: "",
+  episode_audio_url: null,
+  episode_video_url: null,
+  ig_reel_url: null,
+  ig_reel_caption: "",
+  tiktok_clip_url: null,
+  tiktok_clip_caption: "",
+  linkedin_clip_url: null,
+  linkedin_clip_caption: "",
 };
+
 
 function coerceProcessSteps(v: unknown): ProcessStep[] {
   if (!Array.isArray(v)) return [];
