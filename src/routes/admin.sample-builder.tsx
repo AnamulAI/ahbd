@@ -117,7 +117,7 @@ function PinGate({ onUnlock }: { onUnlock: (pin: string) => void }) {
   const verify = useServerFn(verifyPin);
 
   return (
-    <main className="min-h-screen bg-background flex items-center justify-center px-4">
+    <div className="flex items-center justify-center py-10">
       <form
         onSubmit={async (e) => {
           e.preventDefault();
@@ -153,9 +153,10 @@ function PinGate({ onUnlock }: { onUnlock: (pin: string) => void }) {
           {loading ? <Loader2 className="size-4 animate-spin" /> : "Unlock"}
         </Button>
       </form>
-    </main>
+    </div>
   );
 }
+
 
 type Sample = { id: string; slug: string; business_name: string; created_at: string };
 
