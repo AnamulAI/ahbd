@@ -554,6 +554,35 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
               </p>
             </Field>
 
+            <Field label="Client Industry">
+              <Input
+                value={clientIndustry}
+                onChange={(e) => setClientIndustry(e.target.value)}
+                placeholder="E-commerce, Business Coaching, Local Services, SaaS…"
+              />
+              <p className="text-xs text-muted-foreground">
+                Personalizes hero + closing CTA copy. Leave empty for generic copy.
+              </p>
+            </Field>
+
+            <div className="space-y-3 rounded-md border border-white/5 bg-secondary/20 p-4">
+              <ToggleRow
+                label="Show Scarcity Badge"
+                checked={scarcityEnabled}
+                onChange={setScarcityEnabled}
+              />
+              <Field label="Scarcity Message">
+                <Input
+                  value={scarcityMessage}
+                  onChange={(e) => setScarcityMessage(e.target.value)}
+                  placeholder="Only 5 free samples available this month"
+                />
+              </Field>
+            </div>
+
+
+
+
 
 
             <Field label="Logo">
