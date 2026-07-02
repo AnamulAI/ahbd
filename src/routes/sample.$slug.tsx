@@ -306,11 +306,36 @@ function SamplePage() {
   const platforms = (data.platforms as string[]) ?? [];
   const moduleOrder = (data.module_order as string[]) ?? [];
   const audience = normalizeAudience((data as any).audience_category);
-  const heroCopy = AUDIENCE_HERO_COPY[audience];
+  const industry: string = ((data as any).client_industry ?? "").toString().trim();
+  const baseHero = AUDIENCE_HERO_COPY[audience];
+  const heroCopy = industry
+    ? baseHero.replace(/^(B2B and content marketers|Content creators|SMBs and growing brands|Teachers, course creators, and trainers)/,
+        (m) => `${m} in the ${industry} space`)
+    : baseHero;
   const ctaCopy = AUDIENCE_CTA_COPY[audience];
+  const ctaSubheadline = industry
+    ? `${ctaCopy.subheadline} Built for teams in the ${industry} space.`
+    : ctaCopy.subheadline;
   const episodeTitle =
     data.episode_title?.trim() ||
     (data.topic ? `Episode 1: ${data.topic.split(/[.!?\n]/)[0].trim()}` : "Episode 1");
+
+  const scarcityEnabled = !!(data as any).scarcity_enabled;
+  const scarcityMessage = ((data as any).scarcity_message ?? "").toString().trim();
+  const showScarcity = scarcityEnabled && !!scarcityMessage;
+
+  const estListeners = ((data as any).estimated_listeners ?? "").toString().trim();
+  const estReach = ((data as any).estimated_reach_growth ?? "").toString().trim();
+  const estTime = ((data as any).estimated_time_saved ?? "").toString().trim();
+  const hasRoi = !!(estListeners || estReach || estTime);
+
+  const beforeState = ((data as any).before_state ?? "").toString().trim();
+  const afterState = ((data as any).after_state ?? "").toString().trim();
+  const hasBeforeAfter = !!(beforeState || afterState);
+
+  const whatsapp = ((data as any).whatsapp_number ?? "").toString().trim();
+  const bookingLink = ((data as any).booking_link ?? "").toString().trim();
+  const hasClaim = !!(whatsapp || bookingLink);
 
   return (
     <main className="min-h-screen bg-background">
@@ -325,6 +350,12 @@ function SamplePage() {
           ) : (
             <div className="mx-auto mb-6 size-24 rounded-2xl flex items-center justify-center bg-gradient-to-br from-primary to-orange text-4xl font-bold text-white">
               {data.business_name.slice(0, 1).toUpperCase()}
+            </div>
+          )}
+          {showScarcity && (
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-orange/40 bg-orange/10 px-3 py-1.5 text-xs font-medium text-orange">
+              <Flame className="size-3.5" />
+              <span>{scarcityMessage}</span>
             </div>
           )}
           <p className="text-xs font-mono uppercase tracking-wider text-[color:var(--primary)]">
@@ -346,6 +377,9 @@ function SamplePage() {
           </p>
         </div>
       </section>
+
+      <SocialProofStrip />
+
 
       <PublishEverywhereStrip />
 
