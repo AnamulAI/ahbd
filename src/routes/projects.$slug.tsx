@@ -114,6 +114,7 @@ type DbProject = {
   testimonial_quote: string | null;
   testimonial_name: string | null;
   testimonial_title: string | null;
+  client_logo_url: string | null;
   // Podcast
   spotify_url: string | null;
   apple_podcasts_url: string | null;
