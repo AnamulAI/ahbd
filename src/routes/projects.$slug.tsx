@@ -913,31 +913,18 @@ function dbToProjectCard(p: DbProject): Project {
 
 function ClosingCTA() {
   return (
-    <section className="py-16 sm:py-20">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6">
-        <CtaRevealCard>
-          <div className="flex flex-col items-center text-center">
-            <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">
-              Ready to Build{" "}
-              <span className="text-gradient-vo">Something Like This?</span>
-            </h2>
-            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Let's talk about what you're building.
-            </p>
-            <div className="mt-8">
-              <Link
-                to="/contact"
-                className="inline-flex items-center gap-2 rounded-full btn-gradient min-h-9 text-center px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_36px_-10px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] active:scale-[0.98]"
-              >
-                Discuss Your Project <ArrowRight className="h-4 w-4" aria-hidden />
-              </Link>
-            </div>
-          </div>
-        </CtaRevealCard>
-      </div>
-    </section>
+    <PremiumCta
+      badgeIcon={Star}
+      badgeText="LET'S BUILD IT"
+      headingLine1="Have a Project"
+      headingLine2="Worth Talking About?"
+      subtext="Let's talk about what you're building — from idea to a site that actually converts."
+      buttonLabel="Discuss Your Project"
+      buttonHref="/contact"
+    />
   );
 }
+
 
 
 // ---------- AI Podcast detail (DB-driven) ----------
