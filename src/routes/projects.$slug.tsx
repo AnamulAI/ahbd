@@ -1658,13 +1658,7 @@ function ClipPreview({
         </span>
       </div>
       <div className="mt-4 overflow-hidden rounded-xl border border-white/8 bg-black">
-        <video
-          src={url}
-          controls
-          preload="metadata"
-          className="aspect-[9/16] w-full bg-black"
-          playsInline
-        />
+        <ProjectVideo url={url} aspect="9/16" />
       </div>
       {caption && caption.trim() && (
         <div className="mt-4 rounded-xl border border-white/[0.06] bg-white/[0.03] p-4">
