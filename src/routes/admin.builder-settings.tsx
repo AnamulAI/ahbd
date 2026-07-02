@@ -1462,6 +1462,7 @@ function PackagePaymentTab({
 
   return (
     <>
+      {panel === "package:signature" && (
       <Section
         title="Signature Package ($4,990 offer)"
         description="Controls the Home page's Pricing Reveal Card. Total value is derived from the three line items; savings is derived from total minus bundle price."
