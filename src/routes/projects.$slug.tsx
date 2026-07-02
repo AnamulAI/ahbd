@@ -1527,16 +1527,18 @@ function AudioPlayerButton({ audioUrl, colorClass }: { audioUrl: string | null; 
 function SpotifyMockup({
   cover,
   title,
+  showName,
   audioUrl,
   externalUrl,
 }: {
   cover: string;
   title: string;
+  showName: string;
   audioUrl: string | null;
   externalUrl: string | null;
 }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/8 bg-[#121212] p-5 text-white shadow-[0_10px_30px_-12px_rgba(30,215,96,0.25)]">
+    <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-white/8 bg-[#121212] p-5 text-white shadow-[0_10px_30px_-12px_rgba(30,215,96,0.25)]">
       <div className="flex items-center justify-between">
         <div className="inline-flex items-center gap-2 text-sm font-semibold">
           <SiSpotify size={20} color="#1ED760" aria-hidden />
@@ -1553,7 +1555,7 @@ function SpotifyMockup({
       </div>
       <div className="mt-4">
         <div className="text-[11px] font-medium uppercase tracking-wider text-[#1ED760]">Episode</div>
-        <div className="mt-0.5 text-xs text-white/50">AnamDev · The Founder's Mic</div>
+        <div className="mt-0.5 text-xs text-white/50">AnamDev · {showName}</div>
         <h3 className="mt-1 line-clamp-2 text-base font-semibold text-white">{title}</h3>
       </div>
       {/* Scrubber */}
@@ -1567,7 +1569,7 @@ function SpotifyMockup({
           <span>4:12</span>
         </div>
       </div>
-      <div className="mt-3 flex items-center justify-center gap-4">
+      <div className="mt-auto pt-4 flex items-center justify-center gap-4">
         <Shuffle className="h-4 w-4 text-white/50" aria-hidden />
         <AudioPlayerButton audioUrl={audioUrl} colorClass="bg-[#1ED760] text-black hover:bg-[#1ED760]" />
         <Repeat className="h-4 w-4 text-white/50" aria-hidden />
@@ -1579,16 +1581,20 @@ function SpotifyMockup({
 function AppleMockup({
   cover,
   title,
+  description,
+  showName,
   audioUrl,
   externalUrl,
 }: {
   cover: string;
   title: string;
+  description: string | null;
+  showName: string;
   audioUrl: string | null;
   externalUrl: string | null;
 }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-black/5 bg-white p-5 text-neutral-900 shadow-[0_10px_30px_-12px_rgba(252,52,151,0.25)]">
+    <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-black/5 bg-white p-5 text-neutral-900 shadow-[0_10px_30px_-12px_rgba(252,52,151,0.25)]">
       <div className="flex items-center justify-between">
         <div className="inline-flex items-center gap-2 text-sm font-semibold">
           <SiApplepodcasts size={20} color="#A855F7" aria-hidden />
@@ -1636,12 +1642,28 @@ function AppleMockup({
           <h3 className="mt-1 line-clamp-2 text-sm font-semibold text-neutral-900">{title}</h3>
         </div>
       </div>
+      {description && description.trim() && (
+        <p className="mt-3 line-clamp-2 text-xs leading-relaxed text-neutral-500">
+          {description}
+        </p>
+      )}
       <div className="mt-4 flex items-center gap-3">
         <AudioPlayerButton
           audioUrl={audioUrl}
           colorClass="bg-gradient-to-br from-[#FC3497] to-[#A855F7]"
         />
         <div className="text-xs font-medium text-neutral-600">Tap to play</div>
+      </div>
+      {/* Show info row */}
+      <div className="mt-auto pt-4 flex items-center gap-2 border-t border-neutral-100">
+        <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-[#FC3497]/15 to-[#A855F7]/15 text-[#A855F7]">
+          <Mic className="h-3.5 w-3.5" aria-hidden />
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="text-[10px] font-medium uppercase tracking-wider text-neutral-400">Show</div>
+          <div className="truncate text-xs font-semibold text-neutral-800">{showName}</div>
+        </div>
+        <ChevronRight className="h-4 w-4 text-neutral-400" aria-hidden />
       </div>
     </div>
   );
@@ -1650,17 +1672,22 @@ function AppleMockup({
 function YouTubeMockup({
   cover,
   title,
+  showName,
+  channelAvatar,
   videoUrl,
   externalUrl,
 }: {
   cover: string;
   title: string;
+  showName: string;
+  channelAvatar: string | null;
   videoUrl: string | null;
   externalUrl: string | null;
 }) {
   const [playing, setPlaying] = React.useState(false);
+  const avatar = channelAvatar || cover;
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/8 bg-[#0F0F0F] p-5 text-white shadow-[0_10px_30px_-12px_rgba(255,0,0,0.25)]">
+    <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-white/8 bg-[#0F0F0F] p-5 text-white shadow-[0_10px_30px_-12px_rgba(255,0,0,0.25)]">
       <div className="flex items-center justify-between">
         <div className="inline-flex items-center gap-2 text-sm font-semibold">
           <SiYoutube size={22} color="#FF0033" aria-hidden />
@@ -1701,13 +1728,35 @@ function YouTubeMockup({
         )}
       </div>
       <h3 className="mt-4 line-clamp-2 text-sm font-semibold text-white">{title}</h3>
-      <div className="mt-1 text-xs text-white/50">AnamDev · Podcast</div>
       <div className="mt-1 text-[11px] text-white/40">
         1.2K views · 2 days ago
+      </div>
+      {/* Channel info row */}
+      <div className="mt-auto pt-4 flex items-center gap-3 border-t border-white/[0.06]">
+        <span className="inline-flex h-9 w-9 shrink-0 overflow-hidden rounded-full border border-white/10 bg-white/[0.06]">
+          {avatar ? (
+            <img src={avatar} alt="" className="h-full w-full object-cover" />
+          ) : (
+            <Mic className="m-auto h-4 w-4 text-white/60" aria-hidden />
+          )}
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-xs font-semibold text-white/90">{showName}</div>
+          <div className="text-[10px] text-white/45">2.1K subscribers</div>
+        </div>
+        <button
+          type="button"
+          tabIndex={-1}
+          aria-hidden
+          className="rounded-full bg-white px-3 py-1 text-[10px] font-semibold text-black"
+        >
+          Subscribe
+        </button>
       </div>
     </div>
   );
 }
+
 
 function ClipPreview({
   platform,
