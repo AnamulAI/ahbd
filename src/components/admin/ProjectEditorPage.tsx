@@ -352,6 +352,12 @@ export function ProjectEditorPage({
                 className={inputCls}
               />
             </div>
+            <div>
+              <ImageUploader
+                label="Client Logo / Photo (optional)"
+                value={project.client_logo_url}
+                onChange={(url) => update("client_logo_url", url)}
+              />
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label className={labelCls}>Main category</label>
