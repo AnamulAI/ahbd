@@ -366,7 +366,21 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
     setClipIg(null);
     setClipTt(null);
     setClipLi(null);
+    setClientIndustry("");
+    setScarcityEnabled(false);
+    setScarcityMessage("");
+    setWhatsappNumber("");
+    setBookingLink("");
+    setEstListeners("");
+    setEstReachGrowth("");
+    setEstTimeSaved("");
+    setBeforeState("");
+    setAfterState("");
+    setIgCaption("");
+    setTtCaption("");
+    setLiCaption("");
   };
+
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
