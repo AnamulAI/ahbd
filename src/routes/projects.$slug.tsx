@@ -23,8 +23,10 @@ import {
   Repeat,
   Star,
   ExternalLink,
+  Mic,
   type LucideIcon,
 } from "lucide-react";
+
 import type { IconType } from "react-icons";
 import {
   SiNextdotjs,
