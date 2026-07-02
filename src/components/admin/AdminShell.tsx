@@ -146,6 +146,13 @@ export function AdminShell({
             </div>
             <ul className="space-y-0.5">
               {group.items.map((item) => {
+                if (item.label === "__projects_tree__") {
+                  return (
+                    <li key="__projects_tree__">
+                      <ProjectsSidebarSection onNavigate={() => setMobileOpen(false)} />
+                    </li>
+                  );
+                }
                 const Icon = item.icon;
                 const active =
                   pathname === item.to ||
