@@ -47,8 +47,9 @@ import {
   SiYoutube,
   SiInstagram,
   SiTiktok,
-  SiLinkedin,
 } from "react-icons/si";
+import { FaLinkedin as SiLinkedin } from "react-icons/fa6";
+
 
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
