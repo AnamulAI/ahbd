@@ -1102,29 +1102,7 @@ function PodcastDetail({
               <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
                 Process — Step by Step
               </h2>
-              <ol className="mt-10 space-y-8">
-                {steps.map((s, i) => (
-                  <li
-                    key={i}
-                    className="grid grid-cols-[auto,1fr] gap-5 border-b border-white/[0.06] pb-8 last:border-b-0 last:pb-0"
-                  >
-                    <span
-                      aria-hidden
-                      className="font-display text-4xl font-bold leading-none text-white/15 sm:text-5xl"
-                    >
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <div>
-                      <h3 className="font-display text-lg font-bold text-white sm:text-xl">
-                        {s.title}
-                      </h3>
-                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
-                        {s.description}
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
+              <ProcessTimeline steps={steps} />
             </div>
           </section>
         )}
