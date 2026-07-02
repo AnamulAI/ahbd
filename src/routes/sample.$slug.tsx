@@ -430,11 +430,31 @@ function SamplePage() {
               clipInstagram={data.clip_instagram_url}
               clipTiktok={data.clip_tiktok_url}
               clipLinkedin={data.clip_linkedin_url}
+              captionInstagram={(data as any).ig_reel_caption ?? null}
+              captionTiktok={(data as any).tiktok_clip_caption ?? null}
+              captionLinkedin={(data as any).linkedin_clip_caption ?? null}
             />
           );
         }
         return null;
       })}
+
+      {hasRoi && (
+        <RoiSection listeners={estListeners} reach={estReach} time={estTime} />
+      )}
+
+      {hasBeforeAfter && (
+        <BeforeAfterSection before={beforeState} after={afterState} />
+      )}
+
+      {hasClaim && (
+        <ClaimSection
+          businessName={data.business_name}
+          whatsapp={whatsapp}
+          bookingLink={bookingLink}
+        />
+      )}
+
 
       <section className="py-20 sm:py-24">
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
