@@ -233,6 +233,7 @@ export function ProjectEditorPage({
       main_category: project.main_category,
       sub_category_label: project.sub_category_label || null,
       cover_image_url: project.cover_image_url,
+      client_logo_url: project.client_logo_url,
       gallery_image_urls: project.gallery_image_urls,
       description: project.description || null,
       tech_stack: project.tech_stack,
