@@ -1072,11 +1072,13 @@ function AiTab({
 
 // ---------- PODCAST TAB ----------
 function PodcastTab({
+  panel,
   podcastTypes,
   setPodcastTypes,
   options,
   setOptions,
 }: {
+  panel: BuilderPanelKey;
   podcastTypes: PodcastType[];
   setPodcastTypes: React.Dispatch<React.SetStateAction<PodcastType[]>>;
   options: BOption[];
