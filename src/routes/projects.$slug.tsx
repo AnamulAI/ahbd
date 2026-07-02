@@ -1507,11 +1507,24 @@ function SpotifyMockup({
       </div>
       <div className="mt-4">
         <div className="text-[11px] font-medium uppercase tracking-wider text-[#1ED760]">Episode</div>
+        <div className="mt-0.5 text-xs text-white/50">AnamDev · The Founder's Mic</div>
         <h3 className="mt-1 line-clamp-2 text-base font-semibold text-white">{title}</h3>
       </div>
-      <div className="mt-4 flex items-center gap-3">
+      {/* Scrubber */}
+      <div className="mt-4">
+        <div className="relative h-1 rounded-full bg-white/10" aria-hidden>
+          <div className="absolute inset-y-0 left-0 w-[30%] rounded-full bg-[#1ED760]" />
+          <div className="absolute -top-[3px] left-[30%] h-[7px] w-[7px] -translate-x-1/2 rounded-full bg-white" />
+        </div>
+        <div className="mt-1.5 flex items-center justify-between text-[10px] font-medium tabular-nums text-white/60">
+          <span>1:24</span>
+          <span>4:12</span>
+        </div>
+      </div>
+      <div className="mt-3 flex items-center justify-center gap-4">
+        <Shuffle className="h-4 w-4 text-white/50" aria-hidden />
         <AudioPlayerButton audioUrl={audioUrl} colorClass="bg-[#1ED760] text-black hover:bg-[#1ED760]" />
-        <div className="h-1 flex-1 rounded-full bg-white/10" aria-hidden />
+        <Repeat className="h-4 w-4 text-white/50" aria-hidden />
       </div>
     </div>
   );
@@ -1547,12 +1560,33 @@ function AppleMockup({
           </a>
         )}
       </div>
+      <div className="mt-4 flex items-center gap-2">
+        <span className="rounded-md bg-neutral-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-neutral-700">
+          Episode 12
+        </span>
+        <div className="inline-flex items-center gap-1 text-[11px] font-medium text-neutral-700">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <Star key={i} className="h-3 w-3 fill-[#F97316] text-[#F97316]" aria-hidden />
+          ))}
+          <span className="ml-1 tabular-nums">4.8</span>
+        </div>
+      </div>
       <div className="mt-4 flex gap-4">
         <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-neutral-100">
           {cover && <img src={cover} alt="" className="h-full w-full object-cover" />}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="text-[11px] font-medium uppercase tracking-wider text-[#FC3497]">Latest Episode</div>
+          <div className="flex items-center justify-between gap-2">
+            <div className="text-[11px] font-medium uppercase tracking-wider text-[#FC3497]">Latest Episode</div>
+            <button
+              type="button"
+              className="rounded-full border border-neutral-300 px-2 py-0.5 text-[10px] font-semibold text-neutral-700"
+              tabIndex={-1}
+              aria-hidden
+            >
+              Subscribe
+            </button>
+          </div>
           <h3 className="mt-1 line-clamp-2 text-sm font-semibold text-neutral-900">{title}</h3>
         </div>
       </div>
@@ -1588,15 +1622,9 @@ function YouTubeMockup({
         </div>
         {externalUrl && <ExternalIconLink href={externalUrl} />}
       </div>
-      <div className="mt-4 aspect-video overflow-hidden rounded-lg bg-black">
+      <div className="relative mt-4 aspect-video overflow-hidden rounded-lg bg-black">
         {playing && videoUrl ? (
-          <video
-            src={videoUrl}
-            controls
-            autoPlay
-            preload="metadata"
-            className="h-full w-full"
-          />
+          <ProjectVideo url={videoUrl} aspect="16/9" autoPlay />
         ) : (
           <button
             type="button"
@@ -1620,11 +1648,17 @@ function YouTubeMockup({
                 <Play className="h-6 w-6 translate-x-[1px] text-white" aria-hidden />
               </span>
             </span>
+            <span className="absolute bottom-2 right-2 rounded bg-black/80 px-1.5 py-0.5 text-[10px] font-semibold tabular-nums text-white">
+              12:34
+            </span>
           </button>
         )}
       </div>
       <h3 className="mt-4 line-clamp-2 text-sm font-semibold text-white">{title}</h3>
       <div className="mt-1 text-xs text-white/50">AnamDev · Podcast</div>
+      <div className="mt-1 text-[11px] text-white/40">
+        1.2K views · 2 days ago
+      </div>
     </div>
   );
 }
