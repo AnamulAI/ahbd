@@ -17,6 +17,9 @@ import {
   X as CloseIcon,
   ChevronLeft,
   ChevronRight,
+  Play,
+  Pause,
+  ExternalLink,
   type LucideIcon,
 } from "lucide-react";
 import type { IconType } from "react-icons";
@@ -39,7 +42,14 @@ import {
   SiZapier,
   SiAirtable,
   SiGoogleanalytics,
+  SiSpotify,
+  SiApplepodcasts,
+  SiYoutube,
+  SiInstagram,
+  SiTiktok,
+  SiLinkedin,
 } from "react-icons/si";
+
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { CtaRevealCard } from "@/components/site/CtaRevealCard";
