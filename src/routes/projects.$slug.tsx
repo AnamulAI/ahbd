@@ -363,11 +363,33 @@ function TechChips({ stack }: { stack: string[] }) {
   return (
     <div className="flex flex-wrap gap-2">
       {stack.map((t) => {
-        const match = TECH_ICONS[t.toLowerCase().trim()];
+        const key = t.toLowerCase().trim();
+        const match = TECH_ICONS[key];
+        const brand = getBrandChip(t);
+        const borderColor = brand?.color ?? "rgba(255,255,255,0.10)";
+        const textColor = brand?.text ?? brand?.color ?? "rgba(255,255,255,0.85)";
+        const bgColor = brand ? `${brand.color}14` : "rgba(255,255,255,0.04)";
+        const style: React.CSSProperties = brand?.gradient
+          ? {
+              backgroundColor: bgColor,
+              color: textColor,
+              borderWidth: 1,
+              borderStyle: "solid",
+              borderColor: "transparent",
+              backgroundImage: `linear-gradient(${bgColor},${bgColor}), ${brand.gradient}`,
+              backgroundOrigin: "border-box",
+              backgroundClip: "padding-box, border-box",
+            }
+          : {
+              backgroundColor: bgColor,
+              color: textColor,
+              borderColor,
+            };
         return (
           <span
             key={t}
-            className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-medium text-white/85"
+            className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium"
+            style={style}
           >
             {match ? (
               <match.Icon
@@ -378,7 +400,8 @@ function TechChips({ stack }: { stack: string[] }) {
               />
             ) : (
               <CreditCard
-                className="h-3.5 w-3.5 shrink-0 text-[color:var(--primary)]"
+                className="h-3.5 w-3.5 shrink-0"
+                style={{ color: brand?.color ?? "var(--primary)" }}
                 aria-hidden
               />
             )}
