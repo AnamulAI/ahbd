@@ -532,6 +532,7 @@ async function deleteRow(table: string, id: string) {
 
 // ---------- WEBSITE TAB ----------
 function WebsiteTab({
+  panel,
   techApproaches,
   setTechApproaches,
   useCases,
@@ -543,6 +544,7 @@ function WebsiteTab({
   options,
   setOptions,
 }: {
+  panel: BuilderPanelKey;
   techApproaches: TechApproach[];
   setTechApproaches: React.Dispatch<React.SetStateAction<TechApproach[]>>;
   useCases: UseCase[];
