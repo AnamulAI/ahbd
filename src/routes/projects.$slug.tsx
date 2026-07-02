@@ -23,8 +23,10 @@ import {
   Repeat,
   Star,
   ExternalLink,
+  Mic,
   type LucideIcon,
 } from "lucide-react";
+
 import type { IconType } from "react-icons";
 import {
   SiNextdotjs,
@@ -66,7 +68,7 @@ import {
   ProjectCategoryBadge,
 } from "@/components/site/ProjectCard";
 import {
-  CATEGORY_CTA,
+  
   getAdjacentProjects,
   getProjectBySlug,
   getRelatedProjects,
@@ -911,31 +913,18 @@ function dbToProjectCard(p: DbProject): Project {
 
 function ClosingCTA() {
   return (
-    <section className="py-16 sm:py-20">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6">
-        <CtaRevealCard>
-          <div className="flex flex-col items-center text-center">
-            <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">
-              Ready to Build{" "}
-              <span className="text-gradient-vo">Something Like This?</span>
-            </h2>
-            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Let's talk about what you're building.
-            </p>
-            <div className="mt-8">
-              <Link
-                to="/contact"
-                className="inline-flex items-center gap-2 rounded-full btn-gradient min-h-9 text-center px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_36px_-10px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] active:scale-[0.98]"
-              >
-                Discuss Your Project <ArrowRight className="h-4 w-4" aria-hidden />
-              </Link>
-            </div>
-          </div>
-        </CtaRevealCard>
-      </div>
-    </section>
+    <PremiumCta
+      badgeIcon={Star}
+      badgeText="LET'S BUILD IT"
+      headingLine1="Have a Project"
+      headingLine2="Worth Talking About?"
+      subtext="Let's talk about what you're building — from idea to a site that actually converts."
+      buttonLabel="Discuss Your Project"
+      buttonHref="/contact"
+    />
   );
 }
+
 
 
 // ---------- AI Podcast detail (DB-driven) ----------
@@ -1111,12 +1100,16 @@ function PodcastDetail({
         <PlatformMockups
           cover={cover}
           episodeTitle={episodeTitle}
+          description={db.description}
+          showName={db.testimonial_name || "The Founder's Mic"}
+          channelAvatar={db.client_logo_url}
           audioUrl={db.episode_audio_url}
           videoUrl={db.episode_video_url}
           spotifyUrl={db.spotify_url}
           applePodcastsUrl={db.apple_podcasts_url}
           youtubeUrl={db.youtube_url}
         />
+
 
         {/* Video podcast */}
         {db.episode_video_url && (
@@ -1332,23 +1325,63 @@ function PodcastDetail({
 
 function PodcastClosingCTA() {
   return (
+    <PremiumCta
+      badgeIcon={Star}
+      badgeText="READY WHEN YOU ARE"
+      headingLine1="Your Content Already Exists."
+      headingLine2="Let's Turn It Into a Show."
+      subtext="No microphone, no editing suite, no extra hours — just your existing content and AnamDev."
+      buttonLabel="Discuss Your Podcast"
+      buttonHref="/contact"
+    />
+  );
+}
+
+/**
+ * Shared premium closing-CTA layout: pill badge, two-line heading (second
+ * line uses the site's blue→orange gradient accent), muted subtext, and a
+ * single gradient button. Wrapped in the same CtaRevealCard glow used
+ * elsewhere on the site.
+ */
+function PremiumCta({
+  badgeIcon: BadgeIcon,
+  badgeText,
+  headingLine1,
+  headingLine2,
+  subtext,
+  buttonLabel,
+  buttonHref,
+}: {
+  badgeIcon: LucideIcon;
+  badgeText: string;
+  headingLine1: string;
+  headingLine2: string;
+  subtext: string;
+  buttonLabel: string;
+  buttonHref: string;
+}) {
+  return (
     <section className="py-16 sm:py-20">
       <div className="mx-auto max-w-4xl px-4 sm:px-6">
         <CtaRevealCard>
           <div className="flex flex-col items-center text-center">
-            <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">
-              Ready to Launch{" "}
-              <span className="text-gradient-vo">Something Like This</span>?
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.04] px-3.5 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-white/70">
+              <BadgeIcon className="h-3.5 w-3.5 text-[color:var(--orange)]" aria-hidden />
+              {badgeText}
+            </span>
+            <h2 className="mt-5 text-3xl font-bold leading-[1.12] text-white sm:text-4xl md:text-5xl">
+              <span className="block">{headingLine1}</span>
+              <span className="mt-1 block text-gradient-vo">{headingLine2}</span>
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Let's talk about the show you want to launch.
+              {subtext}
             </p>
             <div className="mt-8">
               <Link
-                to="/contact"
-                className="inline-flex items-center gap-2 rounded-full btn-gradient min-h-9 text-center px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_36px_-10px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] active:scale-[0.98]"
+                to={buttonHref}
+                className="inline-flex items-center gap-2 rounded-full btn-gradient h-11 px-5 text-sm font-semibold text-white shadow-[0_10px_36px_-10px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] active:scale-[0.98]"
               >
-                Discuss Your Podcast <ArrowRight className="h-4 w-4" aria-hidden />
+                {buttonLabel} <ArrowRight className="h-4 w-4" aria-hidden />
               </Link>
             </div>
           </div>
@@ -1358,9 +1391,13 @@ function PodcastClosingCTA() {
   );
 }
 
+
 function PlatformMockups({
   cover,
   episodeTitle,
+  description,
+  showName,
+  channelAvatar,
   audioUrl,
   videoUrl,
   spotifyUrl,
@@ -1369,6 +1406,9 @@ function PlatformMockups({
 }: {
   cover: string;
   episodeTitle: string;
+  description: string | null;
+  showName: string;
+  channelAvatar: string | null;
   audioUrl: string | null;
   videoUrl: string | null;
   spotifyUrl: string | null;
@@ -1390,11 +1430,12 @@ function PlatformMockups({
             <span className="text-gradient-vo">Platforms You Choose</span>
           </h2>
         </div>
-        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
           {showSpotify && (
             <SpotifyMockup
               cover={cover}
               title={episodeTitle}
+              showName={showName}
               audioUrl={audioUrl}
               externalUrl={spotifyUrl}
             />
@@ -1403,6 +1444,8 @@ function PlatformMockups({
             <AppleMockup
               cover={cover}
               title={episodeTitle}
+              description={description}
+              showName={showName}
               audioUrl={audioUrl}
               externalUrl={applePodcastsUrl}
             />
@@ -1411,6 +1454,8 @@ function PlatformMockups({
             <YouTubeMockup
               cover={cover}
               title={episodeTitle}
+              showName={showName}
+              channelAvatar={channelAvatar}
               videoUrl={videoUrl}
               externalUrl={youtubeUrl}
             />
@@ -1420,6 +1465,7 @@ function PlatformMockups({
     </section>
   );
 }
+
 
 function ExternalIconLink({ href }: { href: string }) {
   return (
@@ -1481,16 +1527,18 @@ function AudioPlayerButton({ audioUrl, colorClass }: { audioUrl: string | null; 
 function SpotifyMockup({
   cover,
   title,
+  showName,
   audioUrl,
   externalUrl,
 }: {
   cover: string;
   title: string;
+  showName: string;
   audioUrl: string | null;
   externalUrl: string | null;
 }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/8 bg-[#121212] p-5 text-white shadow-[0_10px_30px_-12px_rgba(30,215,96,0.25)]">
+    <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-white/8 bg-[#121212] p-5 text-white shadow-[0_10px_30px_-12px_rgba(30,215,96,0.25)]">
       <div className="flex items-center justify-between">
         <div className="inline-flex items-center gap-2 text-sm font-semibold">
           <SiSpotify size={20} color="#1ED760" aria-hidden />
@@ -1507,7 +1555,7 @@ function SpotifyMockup({
       </div>
       <div className="mt-4">
         <div className="text-[11px] font-medium uppercase tracking-wider text-[#1ED760]">Episode</div>
-        <div className="mt-0.5 text-xs text-white/50">AnamDev · The Founder's Mic</div>
+        <div className="mt-0.5 text-xs text-white/50">AnamDev · {showName}</div>
         <h3 className="mt-1 line-clamp-2 text-base font-semibold text-white">{title}</h3>
       </div>
       {/* Scrubber */}
@@ -1521,7 +1569,7 @@ function SpotifyMockup({
           <span>4:12</span>
         </div>
       </div>
-      <div className="mt-3 flex items-center justify-center gap-4">
+      <div className="mt-auto pt-4 flex items-center justify-center gap-4">
         <Shuffle className="h-4 w-4 text-white/50" aria-hidden />
         <AudioPlayerButton audioUrl={audioUrl} colorClass="bg-[#1ED760] text-black hover:bg-[#1ED760]" />
         <Repeat className="h-4 w-4 text-white/50" aria-hidden />
@@ -1533,16 +1581,20 @@ function SpotifyMockup({
 function AppleMockup({
   cover,
   title,
+  description,
+  showName,
   audioUrl,
   externalUrl,
 }: {
   cover: string;
   title: string;
+  description: string | null;
+  showName: string;
   audioUrl: string | null;
   externalUrl: string | null;
 }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-black/5 bg-white p-5 text-neutral-900 shadow-[0_10px_30px_-12px_rgba(252,52,151,0.25)]">
+    <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-black/5 bg-white p-5 text-neutral-900 shadow-[0_10px_30px_-12px_rgba(252,52,151,0.25)]">
       <div className="flex items-center justify-between">
         <div className="inline-flex items-center gap-2 text-sm font-semibold">
           <SiApplepodcasts size={20} color="#A855F7" aria-hidden />
@@ -1590,12 +1642,28 @@ function AppleMockup({
           <h3 className="mt-1 line-clamp-2 text-sm font-semibold text-neutral-900">{title}</h3>
         </div>
       </div>
+      {description && description.trim() && (
+        <p className="mt-3 line-clamp-2 text-xs leading-relaxed text-neutral-500">
+          {description}
+        </p>
+      )}
       <div className="mt-4 flex items-center gap-3">
         <AudioPlayerButton
           audioUrl={audioUrl}
           colorClass="bg-gradient-to-br from-[#FC3497] to-[#A855F7]"
         />
         <div className="text-xs font-medium text-neutral-600">Tap to play</div>
+      </div>
+      {/* Show info row */}
+      <div className="mt-auto pt-4 flex items-center gap-2 border-t border-neutral-100">
+        <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-[#FC3497]/15 to-[#A855F7]/15 text-[#A855F7]">
+          <Mic className="h-3.5 w-3.5" aria-hidden />
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="text-[10px] font-medium uppercase tracking-wider text-neutral-400">Show</div>
+          <div className="truncate text-xs font-semibold text-neutral-800">{showName}</div>
+        </div>
+        <ChevronRight className="h-4 w-4 text-neutral-400" aria-hidden />
       </div>
     </div>
   );
@@ -1604,17 +1672,22 @@ function AppleMockup({
 function YouTubeMockup({
   cover,
   title,
+  showName,
+  channelAvatar,
   videoUrl,
   externalUrl,
 }: {
   cover: string;
   title: string;
+  showName: string;
+  channelAvatar: string | null;
   videoUrl: string | null;
   externalUrl: string | null;
 }) {
   const [playing, setPlaying] = React.useState(false);
+  const avatar = channelAvatar || cover;
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/8 bg-[#0F0F0F] p-5 text-white shadow-[0_10px_30px_-12px_rgba(255,0,0,0.25)]">
+    <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-white/8 bg-[#0F0F0F] p-5 text-white shadow-[0_10px_30px_-12px_rgba(255,0,0,0.25)]">
       <div className="flex items-center justify-between">
         <div className="inline-flex items-center gap-2 text-sm font-semibold">
           <SiYoutube size={22} color="#FF0033" aria-hidden />
@@ -1655,13 +1728,35 @@ function YouTubeMockup({
         )}
       </div>
       <h3 className="mt-4 line-clamp-2 text-sm font-semibold text-white">{title}</h3>
-      <div className="mt-1 text-xs text-white/50">AnamDev · Podcast</div>
       <div className="mt-1 text-[11px] text-white/40">
         1.2K views · 2 days ago
+      </div>
+      {/* Channel info row */}
+      <div className="mt-auto pt-4 flex items-center gap-3 border-t border-white/[0.06]">
+        <span className="inline-flex h-9 w-9 shrink-0 overflow-hidden rounded-full border border-white/10 bg-white/[0.06]">
+          {avatar ? (
+            <img src={avatar} alt="" className="h-full w-full object-cover" />
+          ) : (
+            <Mic className="m-auto h-4 w-4 text-white/60" aria-hidden />
+          )}
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-xs font-semibold text-white/90">{showName}</div>
+          <div className="text-[10px] text-white/45">2.1K subscribers</div>
+        </div>
+        <button
+          type="button"
+          tabIndex={-1}
+          aria-hidden
+          className="rounded-full bg-white px-3 py-1 text-[10px] font-semibold text-black"
+        >
+          Subscribe
+        </button>
       </div>
     </div>
   );
 }
+
 
 function ClipPreview({
   platform,
@@ -1714,7 +1809,7 @@ function ClipPreview({
 function StaticProjectDetail({ project }: { project: Project }) {
   const related = getRelatedProjects(project.slug);
   const adjacent = getAdjacentProjects(project.slug);
-  const cta = CATEGORY_CTA[project.category];
+  
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -1959,29 +2054,16 @@ function StaticProjectDetail({ project }: { project: Project }) {
           </section>
         )}
 
-        <section className="py-16 sm:py-20">
-          <div className="mx-auto max-w-4xl px-4 sm:px-6">
-            <CtaRevealCard>
-              <div className="flex flex-col items-center text-center">
-                <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">
-                  Ready to Build{" "}
-                  <span className="text-gradient-vo">Something Like This?</span>
-                </h2>
-                <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-                  {cta.subheadline}
-                </p>
-                <div className="mt-8">
-                  <Link
-                    to={cta.href}
-                    className="inline-flex items-center gap-2 rounded-full btn-gradient min-h-9 text-center px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_36px_-10px_var(--vo-glow)]"
-                  >
-                    {cta.ctaLabel} <ArrowRight className="h-4 w-4" aria-hidden />
-                  </Link>
-                </div>
-              </div>
-            </CtaRevealCard>
-          </div>
-        </section>
+        <PremiumCta
+          badgeIcon={Star}
+          badgeText="LET'S BUILD IT"
+          headingLine1="Have a Project"
+          headingLine2="Worth Talking About?"
+          subtext="Let's talk about what you're building — from idea to a site that actually converts."
+          buttonLabel="Discuss Your Project"
+          buttonHref="/contact"
+        />
+
       </main>
       <SiteFooter />
     </div>

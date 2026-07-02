@@ -9,7 +9,9 @@ import {
   Star,
   FolderKanban,
   GripVertical,
+  ExternalLink,
 } from "lucide-react";
+
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import {
@@ -399,6 +401,16 @@ function SortableRow({
           <span className="mx-1.5 text-white/30">·</span>/{project.slug}
         </div>
       </div>
+      <a
+        href={`/projects/${project.slug}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="hidden sm:inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-white/50 transition-colors hover:text-[#3B82F6]"
+        aria-label={`View ${project.title} live in a new tab`}
+      >
+        <ExternalLink className="h-3.5 w-3.5" />
+        <span>View Live</span>
+      </a>
       <button
         type="button"
         onClick={onToggleFeatured}
@@ -407,6 +419,7 @@ function SortableRow({
       >
         <Star className="h-4 w-4" fill={project.is_featured ? "currentColor" : "none"} />
       </button>
+
       <Link
         to="/admin/projects/$id"
         params={{ id: project.id }}
