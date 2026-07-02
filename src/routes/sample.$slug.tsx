@@ -1,8 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
+import { useSuspenseQuery, useQuery, queryOptions } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Pause, Play, Rss, Heart, MoreHorizontal, Shuffle, Download, ThumbsUp, Share2 } from "lucide-react";
+import { ArrowRight, Pause, Play, Rss, Heart, MoreHorizontal, Shuffle, Download, ThumbsUp, Share2, Flame, XCircle, CheckCircle, MessageCircle, CalendarClock, TrendingUp, Users, Clock } from "lucide-react";
 import {
   SiSpotify, SiApplepodcasts, SiYoutube, SiInstagram, SiTiktok,
   SiFacebook, SiX, SiGoogle,
@@ -31,6 +31,19 @@ const getSampleBySlug = createServerFn({ method: "GET" })
     const { signSampleRow } = await import("@/lib/sample-builder.functions");
     return await signSampleRow(row);
   });
+
+const getSocialProofLogos = createServerFn({ method: "GET" }).handler(async () => {
+  const { listSocialProofLogos } = await import("@/lib/sample-builder.functions");
+  const raw = await (listSocialProofLogos as any)();
+  return (raw?.logos ?? []) as Array<{ id: string; logo_url: string }>;
+});
+
+const socialProofQuery = queryOptions({
+  queryKey: ["sample", "social-proof-logos"],
+  queryFn: () => getSocialProofLogos(),
+  staleTime: 60_000,
+});
+
 
 const sampleQuery = (slug: string) =>
   queryOptions({
@@ -306,11 +319,36 @@ function SamplePage() {
   const platforms = (data.platforms as string[]) ?? [];
   const moduleOrder = (data.module_order as string[]) ?? [];
   const audience = normalizeAudience((data as any).audience_category);
-  const heroCopy = AUDIENCE_HERO_COPY[audience];
+  const industry: string = ((data as any).client_industry ?? "").toString().trim();
+  const baseHero = AUDIENCE_HERO_COPY[audience];
+  const heroCopy = industry
+    ? baseHero.replace(/^(B2B and content marketers|Content creators|SMBs and growing brands|Teachers, course creators, and trainers)/,
+        (m) => `${m} in the ${industry} space`)
+    : baseHero;
   const ctaCopy = AUDIENCE_CTA_COPY[audience];
+  const ctaSubheadline = industry
+    ? `${ctaCopy.subheadline} Built for teams in the ${industry} space.`
+    : ctaCopy.subheadline;
   const episodeTitle =
     data.episode_title?.trim() ||
     (data.topic ? `Episode 1: ${data.topic.split(/[.!?\n]/)[0].trim()}` : "Episode 1");
+
+  const scarcityEnabled = !!(data as any).scarcity_enabled;
+  const scarcityMessage = ((data as any).scarcity_message ?? "").toString().trim();
+  const showScarcity = scarcityEnabled && !!scarcityMessage;
+
+  const estListeners = ((data as any).estimated_listeners ?? "").toString().trim();
+  const estReach = ((data as any).estimated_reach_growth ?? "").toString().trim();
+  const estTime = ((data as any).estimated_time_saved ?? "").toString().trim();
+  const hasRoi = !!(estListeners || estReach || estTime);
+
+  const beforeState = ((data as any).before_state ?? "").toString().trim();
+  const afterState = ((data as any).after_state ?? "").toString().trim();
+  const hasBeforeAfter = !!(beforeState || afterState);
+
+  const whatsapp = ((data as any).whatsapp_number ?? "").toString().trim();
+  const bookingLink = ((data as any).booking_link ?? "").toString().trim();
+  const hasClaim = !!(whatsapp || bookingLink);
 
   return (
     <main className="min-h-screen bg-background">
@@ -325,6 +363,12 @@ function SamplePage() {
           ) : (
             <div className="mx-auto mb-6 size-24 rounded-2xl flex items-center justify-center bg-gradient-to-br from-primary to-orange text-4xl font-bold text-white">
               {data.business_name.slice(0, 1).toUpperCase()}
+            </div>
+          )}
+          {showScarcity && (
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-orange/40 bg-orange/10 px-3 py-1.5 text-xs font-medium text-orange">
+              <Flame className="size-3.5" />
+              <span>{scarcityMessage}</span>
             </div>
           )}
           <p className="text-xs font-mono uppercase tracking-wider text-[color:var(--primary)]">
@@ -346,6 +390,9 @@ function SamplePage() {
           </p>
         </div>
       </section>
+
+      <SocialProofStrip />
+
 
       <PublishEverywhereStrip />
 
@@ -383,11 +430,31 @@ function SamplePage() {
               clipInstagram={data.clip_instagram_url}
               clipTiktok={data.clip_tiktok_url}
               clipLinkedin={data.clip_linkedin_url}
+              captionInstagram={(data as any).ig_reel_caption ?? null}
+              captionTiktok={(data as any).tiktok_clip_caption ?? null}
+              captionLinkedin={(data as any).linkedin_clip_caption ?? null}
             />
           );
         }
         return null;
       })}
+
+      {hasRoi && (
+        <RoiSection listeners={estListeners} reach={estReach} time={estTime} />
+      )}
+
+      {hasBeforeAfter && (
+        <BeforeAfterSection before={beforeState} after={afterState} />
+      )}
+
+      {hasClaim && (
+        <ClaimSection
+          businessName={data.business_name}
+          whatsapp={whatsapp}
+          bookingLink={bookingLink}
+        />
+      )}
+
 
       <section className="py-20 sm:py-24">
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
@@ -399,7 +466,8 @@ function SamplePage() {
                 {ctaCopy.headlineSuffix}
               </h2>
               <p className="mt-5 text-lg text-muted-foreground">
-                {ctaCopy.subheadline}
+                {ctaSubheadline}
+
               </p>
 
               <div className="mt-8">
@@ -808,7 +876,7 @@ function VideoModule({ businessName, episodeTitle, videoUrl }: { businessName: s
 }
 
 function SmmClipCard({
-  brand, Icon, color, label, snippet, clipUrl, iconColor, iconBg,
+  brand, Icon, color, label, snippet, clipUrl, iconColor, iconBg, caption,
 }: {
   brand: string;
   Icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
@@ -818,9 +886,11 @@ function SmmClipCard({
   clipUrl: string | null;
   iconColor?: string;
   iconBg?: string;
+  caption?: string | null;
 }) {
   const [playing, setPlaying] = useState(false);
   const youtube = clipUrl && isYouTubeUrl(clipUrl) ? clipUrl : null;
+  const trimmedCaption = (caption ?? "").trim();
   return (
     <div key={brand} className="rounded-xl overflow-hidden border border-white/10 bg-neutral-950 shadow-2xl">
       <div className="p-4 flex items-center gap-2 border-b border-white/5">
@@ -870,24 +940,45 @@ function SmmClipCard({
           </>
         )}
       </div>
+      {trimmedCaption && (
+        <div className="p-4 bg-white/[0.03] border-t border-white/5 space-y-2">
+          <div className="flex items-center gap-2 text-xs text-white/60">
+            {iconBg ? (
+              <div className="size-5 rounded flex items-center justify-center shrink-0" style={{ background: iconBg }}>
+                <Icon className="size-3" style={iconColor ? { color: iconColor } : undefined} />
+              </div>
+            ) : (
+              <Icon className="size-4" style={iconColor ? { color: iconColor } : undefined} />
+            )}
+            <span className="uppercase tracking-wider font-mono">{label} caption</span>
+          </div>
+          <p className="text-sm text-white/85 whitespace-pre-wrap leading-relaxed break-words">
+            {trimmedCaption}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
 
 function SmmModule({
   topic, businessName, clipInstagram, clipTiktok, clipLinkedin,
+  captionInstagram, captionTiktok, captionLinkedin,
 }: {
   topic: string;
   businessName: string;
   clipInstagram: string | null;
   clipTiktok: string | null;
   clipLinkedin: string | null;
+  captionInstagram?: string | null;
+  captionTiktok?: string | null;
+  captionLinkedin?: string | null;
 }) {
   const snippet = (topic || businessName).slice(0, 60);
   const cards = [
-    { brand: "instagram", Icon: SiInstagram, color: "linear-gradient(135deg, #F58529, #DD2A7B, #8134AF)", label: "Instagram Reel", clipUrl: clipInstagram, iconBg: "linear-gradient(135deg, #833AB4, #FD1D1D, #F56040)", iconColor: "#ffffff" },
-    { brand: "tiktok", Icon: SiTiktok, color: "#000000", label: "TikTok", clipUrl: clipTiktok, iconBg: "#000000", iconColor: "#00F2EA" },
-    { brand: "linkedin", Icon: SiLinkedin, color: "#0A66C2", label: "LinkedIn Clip", clipUrl: clipLinkedin, iconBg: "#ffffff", iconColor: "#0A66C2" },
+    { brand: "instagram", Icon: SiInstagram, color: "linear-gradient(135deg, #F58529, #DD2A7B, #8134AF)", label: "Instagram Reel", clipUrl: clipInstagram, iconBg: "linear-gradient(135deg, #833AB4, #FD1D1D, #F56040)", iconColor: "#ffffff", caption: captionInstagram },
+    { brand: "tiktok", Icon: SiTiktok, color: "#000000", label: "TikTok", clipUrl: clipTiktok, iconBg: "#000000", iconColor: "#00F2EA", caption: captionTiktok },
+    { brand: "linkedin", Icon: SiLinkedin, color: "#0A66C2", label: "LinkedIn Clip", clipUrl: clipLinkedin, iconBg: "#ffffff", iconColor: "#0A66C2", caption: captionLinkedin },
   ];
 
   return (
@@ -906,6 +997,7 @@ function SmmModule({
               clipUrl={c.clipUrl}
               iconColor={c.iconColor}
               iconBg={c.iconBg}
+              caption={c.caption}
             />
           ))}
         </div>
@@ -917,3 +1009,131 @@ function SmmModule({
     </section>
   );
 }
+
+/* ---------- New conversion sections ---------- */
+
+function SocialProofStrip() {
+  const { data: logos } = useQuery(socialProofQuery);
+  if (!logos || logos.length === 0) return null;
+  return (
+    <section className="py-8 px-6">
+      <div className="mx-auto max-w-5xl text-center space-y-4">
+        <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+          Trusted by teams building content-first brands
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+          {logos.map((l) => (
+            <img
+              key={l.id}
+              src={l.logo_url}
+              alt=""
+              className="h-8 w-auto max-w-[120px] object-contain opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition"
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function RoiStatCard({ Icon, label, value }: { Icon: React.ComponentType<{ className?: string }>; label: string; value: string }) {
+  return (
+    <div className="rounded-xl border border-white/10 bg-[#121A2E] p-6 text-center">
+      <div className="mx-auto mb-3 size-10 rounded-full bg-primary/15 flex items-center justify-center text-[color:var(--primary)]">
+        <Icon className="size-5" />
+      </div>
+      <div className="text-2xl font-semibold text-foreground">{value}</div>
+      <div className="mt-1 text-xs uppercase tracking-wider font-mono text-muted-foreground">{label}</div>
+    </div>
+  );
+}
+
+function RoiSection({ listeners, reach, time }: { listeners: string; reach: string; time: string }) {
+  return (
+    <section className="py-16 px-6">
+      <div className="mx-auto max-w-5xl">
+        <SectionHeader eyebrow="// PROJECTED IMPACT" title="What This Could Mean For You" />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {listeners && <RoiStatCard Icon={Users} label="Monthly Listeners" value={listeners} />}
+          {reach && <RoiStatCard Icon={TrendingUp} label="Reach Growth" value={reach} />}
+          {time && <RoiStatCard Icon={Clock} label="Time Saved" value={time} />}
+        </div>
+        <p className="mt-6 text-center text-xs text-muted-foreground">
+          Estimates based on comparable podcasts in similar niches — actual results vary.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function BeforeAfterSection({ before, after }: { before: string; after: string }) {
+  return (
+    <section className="py-16 px-6">
+      <div className="mx-auto max-w-5xl">
+        <SectionHeader eyebrow="// BEFORE vs AFTER" title="From Where You Are To Where You Could Be" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-6">
+            <div className="flex items-center gap-2 text-red-400 mb-3">
+              <XCircle className="size-5" />
+              <span className="text-xs font-mono uppercase tracking-wider">Before</span>
+            </div>
+            <p className="text-sm text-foreground/85 whitespace-pre-wrap leading-relaxed">
+              {before || "—"}
+            </p>
+          </div>
+          <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-6">
+            <div className="flex items-center gap-2 text-emerald-400 mb-3">
+              <CheckCircle className="size-5" />
+              <span className="text-xs font-mono uppercase tracking-wider">With AnamDev</span>
+            </div>
+            <p className="text-sm text-foreground/85 whitespace-pre-wrap leading-relaxed">
+              {after || "—"}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ClaimSection({ businessName, whatsapp, bookingLink }: { businessName: string; whatsapp: string; bookingLink: string }) {
+  const waHref = whatsapp
+    ? `https://wa.me/${whatsapp.replace(/[^\d]/g, "")}?text=${encodeURIComponent(`Hi, I saw my podcast preview for ${businessName} and I'm interested!`)}`
+    : null;
+  return (
+    <section className="py-16 px-6">
+      <div className="mx-auto max-w-3xl">
+        <div className="rounded-2xl border border-orange/30 bg-gradient-to-br from-orange/10 to-primary/10 p-8 text-center">
+          <p className="text-xs font-mono uppercase tracking-wider text-orange">// CLAIM THIS SETUP</p>
+          <h3 className="mt-3 text-2xl sm:text-3xl">Ready to make this real?</h3>
+          <p className="mt-2 text-muted-foreground">
+            Let's set it up for you.
+          </p>
+          <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+            {waHref && (
+              <a
+                href={waHref}
+                target="_blank"
+                rel="noreferrer"
+                className="btn-gradient min-h-9 text-center inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-base font-semibold"
+              >
+                <MessageCircle className="size-4" /> Claim This Setup
+              </a>
+            )}
+            {bookingLink && (
+              <a
+                href={bookingLink}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 text-sm text-foreground/80 hover:text-foreground underline underline-offset-4"
+              >
+                <CalendarClock className="size-4" /> Or schedule a call
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+

@@ -726,9 +726,13 @@ export type Database = {
       }
       sample_previews: {
         Row: {
+          after_state: string | null
           audience_category: string
           audio_url: string | null
+          before_state: string | null
+          booking_link: string | null
           business_name: string
+          client_industry: string | null
           clip_instagram_url: string | null
           clip_linkedin_url: string | null
           clip_tiktok_url: string | null
@@ -736,21 +740,34 @@ export type Database = {
           cta_link: string
           cta_text: string
           episode_title: string
+          estimated_listeners: string | null
+          estimated_reach_growth: string | null
+          estimated_time_saved: string | null
           id: string
+          ig_reel_caption: string | null
+          linkedin_clip_caption: string | null
           logo_url: string | null
           module_order: Json
           platforms: Json
+          scarcity_enabled: boolean
+          scarcity_message: string | null
           show_smm: boolean
           show_video: boolean
           slug: string
+          tiktok_clip_caption: string | null
           topic: string
           updated_at: string
           video_url: string | null
+          whatsapp_number: string | null
         }
         Insert: {
+          after_state?: string | null
           audience_category?: string
           audio_url?: string | null
+          before_state?: string | null
+          booking_link?: string | null
           business_name: string
+          client_industry?: string | null
           clip_instagram_url?: string | null
           clip_linkedin_url?: string | null
           clip_tiktok_url?: string | null
@@ -758,21 +775,34 @@ export type Database = {
           cta_link?: string
           cta_text?: string
           episode_title?: string
+          estimated_listeners?: string | null
+          estimated_reach_growth?: string | null
+          estimated_time_saved?: string | null
           id?: string
+          ig_reel_caption?: string | null
+          linkedin_clip_caption?: string | null
           logo_url?: string | null
           module_order?: Json
           platforms?: Json
+          scarcity_enabled?: boolean
+          scarcity_message?: string | null
           show_smm?: boolean
           show_video?: boolean
           slug: string
+          tiktok_clip_caption?: string | null
           topic?: string
           updated_at?: string
           video_url?: string | null
+          whatsapp_number?: string | null
         }
         Update: {
+          after_state?: string | null
           audience_category?: string
           audio_url?: string | null
+          before_state?: string | null
+          booking_link?: string | null
           business_name?: string
+          client_industry?: string | null
           clip_instagram_url?: string | null
           clip_linkedin_url?: string | null
           clip_tiktok_url?: string | null
@@ -780,16 +810,25 @@ export type Database = {
           cta_link?: string
           cta_text?: string
           episode_title?: string
+          estimated_listeners?: string | null
+          estimated_reach_growth?: string | null
+          estimated_time_saved?: string | null
           id?: string
+          ig_reel_caption?: string | null
+          linkedin_clip_caption?: string | null
           logo_url?: string | null
           module_order?: Json
           platforms?: Json
+          scarcity_enabled?: boolean
+          scarcity_message?: string | null
           show_smm?: boolean
           show_video?: boolean
           slug?: string
+          tiktok_clip_caption?: string | null
           topic?: string
           updated_at?: string
           video_url?: string | null
+          whatsapp_number?: string | null
         }
         Relationships: []
       }
@@ -838,6 +877,30 @@ export type Database = {
           web_dev_label?: string
           web_dev_price?: number
           whats_included?: Json
+        }
+        Relationships: []
+      }
+      social_proof_logos: {
+        Row: {
+          created_at: string
+          id: string
+          logo_url: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          logo_url: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          logo_url?: string
+          sort_order?: number
+          updated_at?: string
         }
         Relationships: []
       }

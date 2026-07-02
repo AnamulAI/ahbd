@@ -16,8 +16,10 @@ import {
   LogOut,
   Menu,
   X,
+  Wand2,
   type LucideIcon,
 } from "lucide-react";
+
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { ProjectsSidebarSection } from "@/components/admin/ProjectsSidebarSection";
@@ -39,7 +41,9 @@ const NAV: NavGroup[] = [
     items: [
       { label: "Dashboard", to: "/admin", icon: LayoutDashboard },
       { label: "Leads", to: "/admin/leads", icon: Target, badgeKey: "leads" },
+      { label: "Sample Builder", to: "/admin/sample-builder", icon: Wand2 },
     ],
+
   },
   {
     label: "Builder",

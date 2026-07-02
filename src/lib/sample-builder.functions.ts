@@ -243,7 +243,22 @@ export type SamplePayload = {
   clip_instagram_url?: string | null;
   clip_tiktok_url?: string | null;
   clip_linkedin_url?: string | null;
+  // New conversion-boosting fields
+  client_industry?: string | null;
+  scarcity_enabled?: boolean;
+  scarcity_message?: string | null;
+  whatsapp_number?: string | null;
+  booking_link?: string | null;
+  estimated_listeners?: string | null;
+  estimated_reach_growth?: string | null;
+  estimated_time_saved?: string | null;
+  before_state?: string | null;
+  after_state?: string | null;
+  ig_reel_caption?: string | null;
+  tiktok_clip_caption?: string | null;
+  linkedin_clip_caption?: string | null;
 };
+
 
 
 async function uploadLogoIfPresent(
@@ -342,10 +357,24 @@ export const createSample = createServerFn({ method: "POST" })
           clip_instagram_url: data.clip_instagram_url || null,
           clip_tiktok_url: data.clip_tiktok_url || null,
           clip_linkedin_url: data.clip_linkedin_url || null,
+          client_industry: data.client_industry ?? null,
+          scarcity_enabled: !!data.scarcity_enabled,
+          scarcity_message: data.scarcity_message ?? null,
+          whatsapp_number: data.whatsapp_number ?? null,
+          booking_link: data.booking_link ?? null,
+          estimated_listeners: data.estimated_listeners ?? null,
+          estimated_reach_growth: data.estimated_reach_growth ?? null,
+          estimated_time_saved: data.estimated_time_saved ?? null,
+          before_state: data.before_state ?? null,
+          after_state: data.after_state ?? null,
+          ig_reel_caption: data.ig_reel_caption ?? null,
+          tiktok_clip_caption: data.tiktok_clip_caption ?? null,
+          linkedin_clip_caption: data.linkedin_clip_caption ?? null,
         })
         .select("slug")
         .single();
       if (insErr) return { ok: false, error: insErr.message, slug: null };
+
       return { ok: true, error: null, slug: row.slug };
     } catch (error) {
       return { ok: false, error: errorMessage(error, "Failed to create sample"), slug: null };
@@ -408,7 +437,21 @@ export const updateSample = createServerFn({ method: "POST" })
           clip_instagram_url: data.clip_instagram_url || null,
           clip_tiktok_url: data.clip_tiktok_url || null,
           clip_linkedin_url: data.clip_linkedin_url || null,
+          client_industry: data.client_industry ?? null,
+          scarcity_enabled: !!data.scarcity_enabled,
+          scarcity_message: data.scarcity_message ?? null,
+          whatsapp_number: data.whatsapp_number ?? null,
+          booking_link: data.booking_link ?? null,
+          estimated_listeners: data.estimated_listeners ?? null,
+          estimated_reach_growth: data.estimated_reach_growth ?? null,
+          estimated_time_saved: data.estimated_time_saved ?? null,
+          before_state: data.before_state ?? null,
+          after_state: data.after_state ?? null,
+          ig_reel_caption: data.ig_reel_caption ?? null,
+          tiktok_clip_caption: data.tiktok_clip_caption ?? null,
+          linkedin_clip_caption: data.linkedin_clip_caption ?? null,
           updated_at: new Date().toISOString(),
+
         })
         .eq("id", data.id);
 
@@ -416,5 +459,102 @@ export const updateSample = createServerFn({ method: "POST" })
       return { ok: true, error: null, slug: existing.slug };
     } catch (error) {
       return { ok: false, error: errorMessage(error, "Failed to update sample"), slug: null };
+    }
+  });
+
+/* ---------- Social Proof Logos (global, shared across samples) ---------- */
+
+const SOCIAL_PROOF_BUCKET = "sample-logos"; // reuse existing logos bucket
+
+async function signSocialLogo(url: string | null | undefined): Promise<string | null> {
+  return maybeSignStorageUrl(url ?? null);
+}
+
+export const listSocialProofLogos = createServerFn({ method: "GET" }).handler(async () => {
+  try {
+    const supabasePublic = createPublicSupabaseClient();
+    const { data: rows, error } = await supabasePublic
+      .from("social_proof_logos")
+      .select("id, logo_url, sort_order, created_at")
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: true });
+    if (error) return { logos: [], error: error.message };
+    const signed = await Promise.all(
+      (rows ?? []).map(async (r) => ({ ...r, logo_url: (await signSocialLogo(r.logo_url)) ?? r.logo_url })),
+    );
+    return { logos: signed, error: null };
+  } catch (error) {
+    return { logos: [], error: errorMessage(error, "Could not load logos") };
+  }
+});
+
+export const createSocialProofLogo = createServerFn({ method: "POST" })
+  .inputValidator((d: { pin: string; logo_base64: string; logo_filename: string }) => d)
+  .handler(async ({ data }) => {
+    try {
+      checkPin(data.pin);
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      await ensureLogoBucket();
+      const match = data.logo_base64.match(/^data:(.+);base64,(.+)$/);
+      const mime = match?.[1] ?? "image/png";
+      const b64 = match?.[2] ?? data.logo_base64;
+      const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+      const ext = safeExt(data.logo_filename, "png");
+      const path = `social-proof/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error: upErr } = await supabaseAdmin.storage
+        .from(SOCIAL_PROOF_BUCKET)
+        .upload(path, bytes, { contentType: mime, upsert: true });
+      if (upErr) return { ok: false, error: upErr.message } as const;
+      const { data: pub } = supabaseAdmin.storage.from(SOCIAL_PROOF_BUCKET).getPublicUrl(path);
+
+      // Find max sort_order and append
+      const { data: last } = await supabaseAdmin
+        .from("social_proof_logos")
+        .select("sort_order")
+        .order("sort_order", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      const nextOrder = (last?.sort_order ?? -1) + 1;
+
+      const { error: insErr } = await supabaseAdmin
+        .from("social_proof_logos")
+        .insert({ logo_url: pub.publicUrl, sort_order: nextOrder });
+      if (insErr) return { ok: false, error: insErr.message } as const;
+      return { ok: true, error: null } as const;
+    } catch (error) {
+      return { ok: false, error: errorMessage(error, "Failed to add logo") } as const;
+    }
+  });
+
+export const deleteSocialProofLogo = createServerFn({ method: "POST" })
+  .inputValidator((d: { pin: string; id: string }) => d)
+  .handler(async ({ data }) => {
+    try {
+      checkPin(data.pin);
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { error } = await supabaseAdmin.from("social_proof_logos").delete().eq("id", data.id);
+      if (error) return { ok: false, error: error.message } as const;
+      return { ok: true, error: null } as const;
+    } catch (error) {
+      return { ok: false, error: errorMessage(error, "Failed to delete logo") } as const;
+    }
+  });
+
+export const reorderSocialProofLogos = createServerFn({ method: "POST" })
+  .inputValidator((d: { pin: string; ids: string[] }) => d)
+  .handler(async ({ data }) => {
+    try {
+      checkPin(data.pin);
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      for (let i = 0; i < data.ids.length; i++) {
+        const { error } = await supabaseAdmin
+          .from("social_proof_logos")
+          .update({ sort_order: i })
+          .eq("id", data.ids[i]);
+        if (error) return { ok: false, error: error.message } as const;
+      }
+      return { ok: true, error: null } as const;
+    } catch (error) {
+      return { ok: false, error: errorMessage(error, "Failed to reorder logos") } as const;
     }
   });

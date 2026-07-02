@@ -16,9 +16,10 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Check, Copy, ExternalLink, GripVertical, Loader2, Lock, Pencil, Upload, X } from "lucide-react";
+import { Check, Copy, ExternalLink, GripVertical, Loader2, Lock, Pencil, Trash2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 
+import { AdminShell, useAdminGate } from "@/components/admin/AdminShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,13 +31,18 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   createMediaUploadUrl,
   createSample,
+  createSocialProofLogo,
+  deleteSocialProofLogo,
   getSampleForEdit,
   listSamples,
+  listSocialProofLogos,
+  reorderSocialProofLogos,
   updateSample,
   verifyPin,
   AUDIENCE_CATEGORIES,
   type AudienceCategory,
 } from "@/lib/sample-builder.functions";
+
 
 const AUDIENCE_LABELS: Record<AudienceCategory, string> = {
   marketers: "Marketers",
@@ -77,6 +83,7 @@ const MODULE_LABELS: Record<string, string> = {
 type MediaKind = "audio" | "video" | "clip";
 
 function SampleBuilderPage() {
+  const gate = useAdminGate();
   const [pin, setPin] = useState<string | null>(null);
 
   useEffect(() => {
@@ -84,9 +91,25 @@ function SampleBuilderPage() {
     setPin(sessionStorage.getItem(PIN_KEY));
   }, []);
 
-  if (!pin) return <PinGate onUnlock={(p) => setPin(p)} />;
-  return <Builder pin={pin} onLock={() => { sessionStorage.removeItem(PIN_KEY); setPin(""); }} />;
+  if (gate.status === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0A0E1A]">
+        <Loader2 className="size-6 animate-spin text-white/60" />
+      </div>
+    );
+  }
+
+  return (
+    <AdminShell email={gate.email}>
+      {!pin ? (
+        <PinGate onUnlock={(p) => setPin(p)} />
+      ) : (
+        <Builder pin={pin} onLock={() => { sessionStorage.removeItem(PIN_KEY); setPin(""); }} />
+      )}
+    </AdminShell>
+  );
 }
+
 
 function PinGate({ onUnlock }: { onUnlock: (pin: string) => void }) {
   const [value, setValue] = useState("");
@@ -94,7 +117,7 @@ function PinGate({ onUnlock }: { onUnlock: (pin: string) => void }) {
   const verify = useServerFn(verifyPin);
 
   return (
-    <main className="min-h-screen bg-background flex items-center justify-center px-4">
+    <div className="flex items-center justify-center py-10">
       <form
         onSubmit={async (e) => {
           e.preventDefault();
@@ -130,9 +153,10 @@ function PinGate({ onUnlock }: { onUnlock: (pin: string) => void }) {
           {loading ? <Loader2 className="size-4 animate-spin" /> : "Unlock"}
         </Button>
       </form>
-    </main>
+    </div>
   );
 }
+
 
 type Sample = { id: string; slug: string; business_name: string; created_at: string };
 
@@ -170,11 +194,27 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
   const [clipTt, setClipTt] = useState<string | null>(null);
   const [clipLi, setClipLi] = useState<string | null>(null);
 
+  // New conversion-boosting fields
+  const [clientIndustry, setClientIndustry] = useState("");
+  const [scarcityEnabled, setScarcityEnabled] = useState(false);
+  const [scarcityMessage, setScarcityMessage] = useState("");
+  const [whatsappNumber, setWhatsappNumber] = useState("");
+  const [bookingLink, setBookingLink] = useState("");
+  const [estListeners, setEstListeners] = useState("");
+  const [estReachGrowth, setEstReachGrowth] = useState("");
+  const [estTimeSaved, setEstTimeSaved] = useState("");
+  const [beforeState, setBeforeState] = useState("");
+  const [afterState, setAfterState] = useState("");
+  const [igCaption, setIgCaption] = useState("");
+  const [ttCaption, setTtCaption] = useState("");
+  const [liCaption, setLiCaption] = useState("");
+
   const [submitting, setSubmitting] = useState(false);
   const [loadingEdit, setLoadingEdit] = useState(false);
   const [lastSlug, setLastSlug] = useState<string | null>(null);
   const [samples, setSamples] = useState<Sample[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
+
 
   const activeModules = useMemo(() => {
     const base: string[] = [];
@@ -244,6 +284,20 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
         setClipIg(s.clip_instagram_url);
         setClipTt(s.clip_tiktok_url);
         setClipLi(s.clip_linkedin_url);
+        setClientIndustry((s as any).client_industry ?? "");
+        setScarcityEnabled(!!(s as any).scarcity_enabled);
+        setScarcityMessage((s as any).scarcity_message ?? "");
+        setWhatsappNumber((s as any).whatsapp_number ?? "");
+        setBookingLink((s as any).booking_link ?? "");
+        setEstListeners((s as any).estimated_listeners ?? "");
+        setEstReachGrowth((s as any).estimated_reach_growth ?? "");
+        setEstTimeSaved((s as any).estimated_time_saved ?? "");
+        setBeforeState((s as any).before_state ?? "");
+        setAfterState((s as any).after_state ?? "");
+        setIgCaption((s as any).ig_reel_caption ?? "");
+        setTtCaption((s as any).tiktok_clip_caption ?? "");
+        setLiCaption((s as any).linkedin_clip_caption ?? "");
+
       })
       .finally(() => !cancelled && setLoadingEdit(false));
     return () => { cancelled = true; };
@@ -312,7 +366,21 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
     setClipIg(null);
     setClipTt(null);
     setClipLi(null);
+    setClientIndustry("");
+    setScarcityEnabled(false);
+    setScarcityMessage("");
+    setWhatsappNumber("");
+    setBookingLink("");
+    setEstListeners("");
+    setEstReachGrowth("");
+    setEstTimeSaved("");
+    setBeforeState("");
+    setAfterState("");
+    setIgCaption("");
+    setTtCaption("");
+    setLiCaption("");
   };
+
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -357,7 +425,21 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
         clip_instagram_url: clipIg,
         clip_tiktok_url: clipTt,
         clip_linkedin_url: clipLi,
+        client_industry: clientIndustry.trim() || null,
+        scarcity_enabled: scarcityEnabled,
+        scarcity_message: scarcityMessage.trim() || null,
+        whatsapp_number: whatsappNumber.trim() || null,
+        booking_link: bookingLink.trim() || null,
+        estimated_listeners: estListeners.trim() || null,
+        estimated_reach_growth: estReachGrowth.trim() || null,
+        estimated_time_saved: estTimeSaved.trim() || null,
+        before_state: beforeState.trim() || null,
+        after_state: afterState.trim() || null,
+        ig_reel_caption: igCaption.trim() || null,
+        tiktok_clip_caption: ttCaption.trim() || null,
+        linkedin_clip_caption: liCaption.trim() || null,
       };
+
 
       const res = isEditing && editId
         ? await updateFn({ data: { ...basePayload, id: editId } as any })
@@ -382,8 +464,9 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
   const lastUrl = lastSlug ? `${origin}/sample/${lastSlug}` : "";
 
   return (
-    <main className="min-h-screen bg-background py-10 px-4">
+    <div className="py-10 px-4">
       <div className="mx-auto max-w-3xl space-y-8">
+
         <header className="flex items-center justify-between">
           <div>
             <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
@@ -470,6 +553,35 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
                 Drives the hero description and closing CTA copy on the public preview.
               </p>
             </Field>
+
+            <Field label="Client Industry">
+              <Input
+                value={clientIndustry}
+                onChange={(e) => setClientIndustry(e.target.value)}
+                placeholder="E-commerce, Business Coaching, Local Services, SaaS…"
+              />
+              <p className="text-xs text-muted-foreground">
+                Personalizes hero + closing CTA copy. Leave empty for generic copy.
+              </p>
+            </Field>
+
+            <div className="space-y-3 rounded-md border border-white/5 bg-secondary/20 p-4">
+              <ToggleRow
+                label="Show Scarcity Badge"
+                checked={scarcityEnabled}
+                onChange={setScarcityEnabled}
+              />
+              <Field label="Scarcity Message">
+                <Input
+                  value={scarcityMessage}
+                  onChange={(e) => setScarcityMessage(e.target.value)}
+                  placeholder="Only 5 free samples available this month"
+                />
+              </Field>
+            </div>
+
+
+
 
 
 
@@ -620,6 +732,14 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
                   onChange={setClipIg}
                   compact
                 />
+                <Field label="Instagram Caption">
+                  <Textarea
+                    rows={3}
+                    value={igCaption}
+                    onChange={(e) => setIgCaption(e.target.value)}
+                    placeholder="Write a caption with emojis and hashtags..."
+                  />
+                </Field>
                 <MediaUploadField
                   label="TikTok Clip"
                   accept=".mp4,.mov,video/*"
@@ -630,6 +750,14 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
                   onChange={setClipTt}
                   compact
                 />
+                <Field label="TikTok Caption">
+                  <Textarea
+                    rows={3}
+                    value={ttCaption}
+                    onChange={(e) => setTtCaption(e.target.value)}
+                    placeholder="Short, punchy hook with trending hashtags..."
+                  />
+                </Field>
                 <MediaUploadField
                   label="LinkedIn Clip"
                   accept=".mp4,.mov,video/*"
@@ -640,8 +768,17 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
                   onChange={setClipLi}
                   compact
                 />
+                <Field label="LinkedIn Caption">
+                  <Textarea
+                    rows={3}
+                    value={liCaption}
+                    onChange={(e) => setLiCaption(e.target.value)}
+                    placeholder="Write a professional caption..."
+                  />
+                </Field>
               </div>
             )}
+
 
             <Field label="Module Order (drag to reorder)">
               <DndContext
@@ -675,6 +812,61 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
                 <Input value={ctaLink} onChange={(e) => setCtaLink(e.target.value)} />
               </Field>
             </div>
+
+            <div className="space-y-4 rounded-md border border-white/5 bg-secondary/20 p-4">
+              <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+                // ROI / Impact Estimator (optional)
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <Field label="Estimated Monthly Listeners">
+                  <Input value={estListeners} onChange={(e) => setEstListeners(e.target.value)} placeholder="500-800" />
+                </Field>
+                <Field label="Estimated Reach Growth">
+                  <Input value={estReachGrowth} onChange={(e) => setEstReachGrowth(e.target.value)} placeholder="3x in 90 days" />
+                </Field>
+                <Field label="Estimated Time Saved">
+                  <Input value={estTimeSaved} onChange={(e) => setEstTimeSaved(e.target.value)} placeholder="6 hrs/week" />
+                </Field>
+              </div>
+            </div>
+
+            <div className="space-y-4 rounded-md border border-white/5 bg-secondary/20 p-4">
+              <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+                // Before vs After (optional)
+              </p>
+              <Field label="Current State (Before)">
+                <Textarea
+                  rows={3}
+                  value={beforeState}
+                  onChange={(e) => setBeforeState(e.target.value)}
+                  placeholder="e.g. Blog posts with no audio presence, no podcast platform reach"
+                />
+              </Field>
+              <Field label="With AnamDev (After)">
+                <Textarea
+                  rows={3}
+                  value={afterState}
+                  onChange={(e) => setAfterState(e.target.value)}
+                  placeholder="e.g. Weekly podcast live on Spotify, Apple Podcasts, and YouTube, plus ready-to-post social clips"
+                />
+              </Field>
+            </div>
+
+            <div className="space-y-4 rounded-md border border-white/5 bg-secondary/20 p-4">
+              <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+                // Claim This Setup (optional)
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Field label="WhatsApp Number">
+                  <Input value={whatsappNumber} onChange={(e) => setWhatsappNumber(e.target.value)} placeholder="+8801XXXXXXXXX" />
+                </Field>
+                <Field label="Booking Link (optional)">
+                  <Input value={bookingLink} onChange={(e) => setBookingLink(e.target.value)} placeholder="https://calendly.com/…" />
+                </Field>
+              </div>
+            </div>
+
+
 
             <Button type="submit" className="btn-gradient min-h-9 text-center w-full" disabled={submitting}>
               {submitting ? <Loader2 className="size-4 animate-spin" /> : isEditing ? "Save Changes" : "Create Sample"}
@@ -730,10 +922,104 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
             </ul>
           )}
         </section>
+
+        <SocialProofLogosPanel pin={pin} />
+
       </div>
-    </main>
+    </div>
+
   );
 }
+
+type LogoRow = { id: string; logo_url: string; sort_order: number };
+
+function SocialProofLogosPanel({ pin }: { pin: string }) {
+  const listFn = useServerFn(listSocialProofLogos);
+  const createFn = useServerFn(createSocialProofLogo);
+  const deleteFn = useServerFn(deleteSocialProofLogo);
+  const reorderFn = useServerFn(reorderSocialProofLogos);
+  const [logos, setLogos] = useState<LogoRow[]>([]);
+  const [busy, setBusy] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const refresh = () => {
+    listFn().then((r) => setLogos((r.logos as LogoRow[]) || []));
+  };
+  useEffect(() => { refresh(); /* eslint-disable-next-line */ }, []);
+
+  const handleFile = async (file: File) => {
+    if (file.size > 2 * 1024 * 1024) return toast.error("Logo must be under 2MB");
+    const reader = new FileReader();
+    reader.onload = async () => {
+      setBusy(true);
+      try {
+        const res = await createFn({ data: { pin, logo_base64: reader.result as string, logo_filename: file.name } });
+        if (!res.ok) return toast.error(res.error || "Failed");
+        toast.success("Logo added");
+        refresh();
+      } finally { setBusy(false); }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const move = async (idx: number, dir: -1 | 1) => {
+    const next = [...logos];
+    const j = idx + dir;
+    if (j < 0 || j >= next.length) return;
+    [next[idx], next[j]] = [next[j], next[idx]];
+    setLogos(next);
+    await reorderFn({ data: { pin, ids: next.map((l) => l.id) } });
+  };
+
+  const remove = async (id: string) => {
+    if (!confirm("Delete this logo?")) return;
+    const res = await deleteFn({ data: { pin, id } });
+    if (!res.ok) return toast.error(res.error || "Failed");
+    refresh();
+  };
+
+  return (
+    <section className="card-elevated p-6 space-y-4">
+      <div>
+        <h2 className="text-lg">Social Proof Logos</h2>
+        <p className="text-xs text-muted-foreground">Shown on all sample pages. Global list, not per-sample.</p>
+      </div>
+      <div className="flex items-center gap-3">
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) handleFile(f);
+            e.target.value = "";
+          }}
+        />
+        <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()} disabled={busy}>
+          {busy ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />} Upload Logo
+        </Button>
+      </div>
+      {logos.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No logos yet.</p>
+      ) : (
+        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {logos.map((l, i) => (
+            <li key={l.id} className="flex items-center gap-3 rounded-md border border-white/10 bg-secondary/30 p-3">
+              <img src={l.logo_url} alt="" className="h-10 w-24 object-contain bg-white rounded p-1" />
+              <div className="ml-auto flex items-center gap-1">
+                <Button size="sm" variant="ghost" onClick={() => move(i, -1)} disabled={i === 0}>↑</Button>
+                <Button size="sm" variant="ghost" onClick={() => move(i, 1)} disabled={i === logos.length - 1}>↓</Button>
+                <Button size="sm" variant="ghost" onClick={() => remove(l.id)}><Trash2 className="size-4" /></Button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
 
 function isYouTubeUrl(url: string): boolean {
   try {
