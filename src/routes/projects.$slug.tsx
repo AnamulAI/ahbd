@@ -19,6 +19,9 @@ import {
   ChevronRight,
   Play,
   Pause,
+  Shuffle,
+  Repeat,
+  Star,
   ExternalLink,
   type LucideIcon,
 } from "lucide-react";
@@ -54,6 +57,10 @@ import { FaLinkedin as SiLinkedin } from "react-icons/fa6";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { CtaRevealCard } from "@/components/site/CtaRevealCard";
+import { ProjectVideo } from "@/components/site/ProjectVideo";
+import { ProcessTimeline } from "@/components/site/ProcessTimeline";
+import { ClientLogoBadge } from "@/components/site/ClientLogoBadge";
+import { getBrandChip } from "@/lib/tech-brand-colors";
 import {
   ProjectCard,
   ProjectCategoryBadge,
