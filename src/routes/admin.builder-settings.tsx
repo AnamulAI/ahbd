@@ -1400,6 +1400,7 @@ function Labeled({ label, children }: { label: string; children: ReactNode }) {
 
 // ---------- PACKAGE & PAYMENT TAB ----------
 function PackagePaymentTab({
+  panel,
   signature,
   setSignature,
   paymentPlan,
@@ -1407,6 +1408,7 @@ function PackagePaymentTab({
   copy,
   setCopy,
 }: {
+  panel: BuilderPanelKey;
   signature: SignaturePackage | null;
   setSignature: React.Dispatch<React.SetStateAction<SignaturePackage | null>>;
   paymentPlan: PaymentPlanSettings | null;
