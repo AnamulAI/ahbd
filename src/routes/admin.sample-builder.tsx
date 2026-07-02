@@ -464,8 +464,9 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
   const lastUrl = lastSlug ? `${origin}/sample/${lastSlug}` : "";
 
   return (
-    <main className="min-h-screen bg-background py-10 px-4">
+    <div className="py-10 px-4">
       <div className="mx-auto max-w-3xl space-y-8">
+
         <header className="flex items-center justify-between">
           <div>
             <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
