@@ -425,7 +425,21 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
         clip_instagram_url: clipIg,
         clip_tiktok_url: clipTt,
         clip_linkedin_url: clipLi,
+        client_industry: clientIndustry.trim() || null,
+        scarcity_enabled: scarcityEnabled,
+        scarcity_message: scarcityMessage.trim() || null,
+        whatsapp_number: whatsappNumber.trim() || null,
+        booking_link: bookingLink.trim() || null,
+        estimated_listeners: estListeners.trim() || null,
+        estimated_reach_growth: estReachGrowth.trim() || null,
+        estimated_time_saved: estTimeSaved.trim() || null,
+        before_state: beforeState.trim() || null,
+        after_state: afterState.trim() || null,
+        ig_reel_caption: igCaption.trim() || null,
+        tiktok_clip_caption: ttCaption.trim() || null,
+        linkedin_clip_caption: liCaption.trim() || null,
       };
+
 
       const res = isEditing && editId
         ? await updateFn({ data: { ...basePayload, id: editId } as any })
