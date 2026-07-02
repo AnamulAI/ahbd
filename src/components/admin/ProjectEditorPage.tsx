@@ -800,7 +800,7 @@ function IntegrationMapEditor({
   value: string[];
   onChange: (v: string[]) => void;
 }) {
-  const [draft, setDraft] = React.useState("");
+  const [draft, setDraft] = useState("");
   function add() {
     const t = draft.trim();
     if (!t) return;
