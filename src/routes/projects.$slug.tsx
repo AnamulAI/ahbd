@@ -130,6 +130,12 @@ type DbProject = {
   tiktok_clip_caption: string | null;
   linkedin_clip_url: string | null;
   linkedin_clip_caption: string | null;
+  // AI Integrator
+  problem: string | null;
+  integration_map: unknown;
+  trigger_text: string | null;
+  action_text: string | null;
+  output_text: string | null;
 };
 
 
