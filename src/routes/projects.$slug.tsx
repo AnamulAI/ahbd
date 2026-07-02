@@ -1128,13 +1128,7 @@ function PodcastDetail({
                 <span className="text-[color:var(--orange)]">Video</span>
               </h2>
               <div className="mt-8 overflow-hidden rounded-2xl border border-white/8 bg-black">
-                <video
-                  src={db.episode_video_url}
-                  controls
-                  preload="metadata"
-                  poster={cover || undefined}
-                  className="aspect-video w-full"
-                />
+                <ProjectVideo url={db.episode_video_url} poster={cover} aspect="16/9" />
               </div>
               <p className="mt-4 text-center text-sm text-muted-foreground">
                 Every episode can also be delivered as a publish-ready video.
