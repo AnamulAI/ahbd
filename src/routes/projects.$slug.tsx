@@ -1744,7 +1744,7 @@ function ClipPreview({
 function StaticProjectDetail({ project }: { project: Project }) {
   const related = getRelatedProjects(project.slug);
   const adjacent = getAdjacentProjects(project.slug);
-  const cta = CATEGORY_CTA[project.category];
+  
 
   return (
     <div className="min-h-screen bg-background text-foreground">
