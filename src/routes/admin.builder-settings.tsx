@@ -1676,8 +1676,11 @@ function PackagePaymentTab({
           </Labeled>
         </div>
       </Section>
+      )}
 
-      <BuilderCopySection copy={copy} setCopy={setCopy} />
+      {panel === "package:copy" && (
+        <BuilderCopySection copy={copy} setCopy={setCopy} />
+      )}
     </>
 
   );
