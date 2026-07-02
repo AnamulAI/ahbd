@@ -68,7 +68,7 @@ import {
   ProjectCategoryBadge,
 } from "@/components/site/ProjectCard";
 import {
-  CATEGORY_CTA,
+  
   getAdjacentProjects,
   getProjectBySlug,
   getRelatedProjects,
