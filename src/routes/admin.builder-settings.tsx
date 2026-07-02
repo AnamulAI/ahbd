@@ -1617,7 +1617,9 @@ function PackagePaymentTab({
           </Labeled>
         </div>
       </Section>
+      )}
 
+      {panel === "package:payment" && (
       <Section
         title="Payment Plan Settings"
         description="Controls the 3 payment plan cards shown in the builder after a visitor completes their build."
