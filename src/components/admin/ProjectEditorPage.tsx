@@ -637,6 +637,55 @@ function CaseStudyCard({
   );
 }
 
+function ClipCard({
+  platform,
+  captionLabel,
+  captionPlaceholder,
+  url,
+  caption,
+  onUrl,
+  onCaption,
+}: {
+  platform: string;
+  captionLabel: string;
+  captionPlaceholder: string;
+  url: string | null;
+  caption: string;
+  onUrl: (u: string | null) => void;
+  onCaption: (c: string) => void;
+}) {
+  const inputCls =
+    "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none";
+  return (
+    <div className="space-y-3 rounded-lg border border-white/[0.06] bg-[#0B0F1A] p-4">
+      <div className="flex items-center gap-2 border-l-2 border-[#F97316] pl-2">
+        <h3 className="text-[11px] font-mono uppercase tracking-wider text-[#F97316]">
+          {platform}
+        </h3>
+      </div>
+      <MediaUploader
+        value={url}
+        onChange={onUrl}
+        kind="video"
+        label="Vertical clip video (mp4)"
+      />
+      <div>
+        <label className="mb-1.5 block text-xs font-mono uppercase tracking-wider text-white/60">
+          {captionLabel}
+        </label>
+        <textarea
+          value={caption}
+          onChange={(e) => onCaption(e.target.value)}
+          rows={4}
+          placeholder={captionPlaceholder}
+          className={`${inputCls} resize-y`}
+        />
+      </div>
+    </div>
+  );
+}
+
+
 function ProcessStepsEditor({
   value,
   onChange,
