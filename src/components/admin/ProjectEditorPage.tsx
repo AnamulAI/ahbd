@@ -397,41 +397,131 @@ export function ProjectEditorPage({
               />
             </div>
             <div>
-              <label className={labelCls}>Tech stack</label>
+              <label className={labelCls}>{isPodcast ? "Tools used" : "Tech stack"}</label>
               <TagInput
                 value={project.tech_stack}
                 onChange={(v) => update("tech_stack", v)}
-                placeholder="Add a tech tag (e.g. React)…"
+                placeholder={isPodcast ? "Add a tool (e.g. ElevenLabs)…" : "Add a tech tag (e.g. React)…"}
               />
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <label className={labelCls}>Live URL</label>
-                <input
-                  value={project.live_url ?? ""}
-                  onChange={(e) => update("live_url", e.target.value)}
-                  placeholder="https://"
-                  className={inputCls}
-                />
+            {!isPodcast && (
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className={labelCls}>Live URL</label>
+                  <input
+                    value={project.live_url ?? ""}
+                    onChange={(e) => update("live_url", e.target.value)}
+                    placeholder="https://"
+                    className={inputCls}
+                  />
+                </div>
+                <div>
+                  <label className={labelCls}>GitHub URL</label>
+                  <input
+                    value={project.github_url ?? ""}
+                    onChange={(e) => update("github_url", e.target.value)}
+                    placeholder="https://github.com/…"
+                    className={inputCls}
+                  />
+                </div>
               </div>
-              <div>
-                <label className={labelCls}>GitHub URL</label>
-                <input
-                  value={project.github_url ?? ""}
-                  onChange={(e) => update("github_url", e.target.value)}
-                  placeholder="https://github.com/…"
-                  className={inputCls}
-                />
-              </div>
-            </div>
+            )}
             <GalleryEditor
               value={project.gallery_image_urls}
               onChange={(v) => update("gallery_image_urls", v)}
             />
           </div>
 
-          {isWeb && (
+          {isPodcast && (
             <>
+              <CaseStudyCard title="Platform Links">
+                <div>
+                  <label className={labelCls}>Spotify URL</label>
+                  <input
+                    value={project.spotify_url}
+                    onChange={(e) => update("spotify_url", e.target.value)}
+                    placeholder="https://open.spotify.com/episode/…"
+                    className={inputCls}
+                  />
+                </div>
+                <div>
+                  <label className={labelCls}>Apple Podcasts URL</label>
+                  <input
+                    value={project.apple_podcasts_url}
+                    onChange={(e) => update("apple_podcasts_url", e.target.value)}
+                    placeholder="https://podcasts.apple.com/…"
+                    className={inputCls}
+                  />
+                </div>
+                <div>
+                  <label className={labelCls}>YouTube URL</label>
+                  <input
+                    value={project.youtube_url}
+                    onChange={(e) => update("youtube_url", e.target.value)}
+                    placeholder="https://youtube.com/watch?v=…"
+                    className={inputCls}
+                  />
+                </div>
+              </CaseStudyCard>
+
+              <CaseStudyCard title="Episode Media">
+                <div>
+                  <label className={labelCls}>Episode Title</label>
+                  <input
+                    value={project.episode_title}
+                    onChange={(e) => update("episode_title", e.target.value)}
+                    placeholder="Defaults to project title if left empty"
+                    className={inputCls}
+                  />
+                </div>
+                <MediaUploader
+                  value={project.episode_audio_url}
+                  onChange={(url) => update("episode_audio_url", url)}
+                  kind="audio"
+                  label="Episode audio file (mp3/wav/m4a)"
+                />
+                <MediaUploader
+                  value={project.episode_video_url}
+                  onChange={(url) => update("episode_video_url", url)}
+                  kind="video"
+                  label="Episode video file (mp4)"
+                />
+              </CaseStudyCard>
+
+              <CaseStudyCard title="SMM Clips (Optional)">
+                <ClipCard
+                  platform="Instagram Reel"
+                  captionLabel="Instagram Caption"
+                  captionPlaceholder="Write a caption with emojis and hashtags… 🎙️✨ #podcast"
+                  url={project.ig_reel_url}
+                  caption={project.ig_reel_caption}
+                  onUrl={(u) => update("ig_reel_url", u)}
+                  onCaption={(c) => update("ig_reel_caption", c)}
+                />
+                <ClipCard
+                  platform="TikTok"
+                  captionLabel="TikTok Caption"
+                  captionPlaceholder="Short, punchy hook with trending hashtags… #fyp #podcast"
+                  url={project.tiktok_clip_url}
+                  caption={project.tiktok_clip_caption}
+                  onUrl={(u) => update("tiktok_clip_url", u)}
+                  onCaption={(c) => update("tiktok_clip_caption", c)}
+                />
+                <ClipCard
+                  platform="LinkedIn Clip"
+                  captionLabel="LinkedIn Caption"
+                  captionPlaceholder="Write a professional caption that opens a conversation…"
+                  url={project.linkedin_clip_url}
+                  caption={project.linkedin_clip_caption}
+                  onUrl={(u) => update("linkedin_clip_url", u)}
+                  onCaption={(c) => update("linkedin_clip_caption", c)}
+                />
+              </CaseStudyCard>
+            </>
+          )}
+
+          <>
+
               <CaseStudyCard title="Case Study — Narrative">
                 <div>
                   <label className={labelCls}>The Challenge</label>
