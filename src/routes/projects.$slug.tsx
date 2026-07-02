@@ -1100,12 +1100,16 @@ function PodcastDetail({
         <PlatformMockups
           cover={cover}
           episodeTitle={episodeTitle}
+          description={db.description}
+          showName={db.testimonial_name || "The Founder's Mic"}
+          channelAvatar={db.client_logo_url}
           audioUrl={db.episode_audio_url}
           videoUrl={db.episode_video_url}
           spotifyUrl={db.spotify_url}
           applePodcastsUrl={db.apple_podcasts_url}
           youtubeUrl={db.youtube_url}
         />
+
 
         {/* Video podcast */}
         {db.episode_video_url && (
