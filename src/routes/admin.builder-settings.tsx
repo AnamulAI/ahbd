@@ -1012,11 +1012,13 @@ function OptionGroupsEditor({
 
 // ---------- AI TAB ----------
 function AiTab({
+  panel,
   aiTypes,
   setAiTypes,
   options,
   setOptions,
 }: {
+  panel: BuilderPanelKey;
   aiTypes: AiType[];
   setAiTypes: React.Dispatch<React.SetStateAction<AiType[]>>;
   options: BOption[];
