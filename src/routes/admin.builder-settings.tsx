@@ -1104,6 +1104,7 @@ function PodcastTab({
   }
   return (
     <>
+      {panel === "podcast:types" && (
       <Section
         title="Podcast Types"
         description="The headline podcast offerings."
@@ -1111,6 +1112,8 @@ function PodcastTab({
       >
         <TypeList items={podcastTypes} onUpdate={update} onDelete={del} />
       </Section>
+      )}
+      {panel === "podcast:suboptions" && (
       <Section
         title="Sub-Options"
         description="Podcast configuration choices."
@@ -1122,6 +1125,7 @@ function PodcastTab({
           setOptions={setOptions}
         />
       </Section>
+      )}
     </>
   );
 }
