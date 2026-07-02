@@ -194,11 +194,27 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
   const [clipTt, setClipTt] = useState<string | null>(null);
   const [clipLi, setClipLi] = useState<string | null>(null);
 
+  // New conversion-boosting fields
+  const [clientIndustry, setClientIndustry] = useState("");
+  const [scarcityEnabled, setScarcityEnabled] = useState(false);
+  const [scarcityMessage, setScarcityMessage] = useState("");
+  const [whatsappNumber, setWhatsappNumber] = useState("");
+  const [bookingLink, setBookingLink] = useState("");
+  const [estListeners, setEstListeners] = useState("");
+  const [estReachGrowth, setEstReachGrowth] = useState("");
+  const [estTimeSaved, setEstTimeSaved] = useState("");
+  const [beforeState, setBeforeState] = useState("");
+  const [afterState, setAfterState] = useState("");
+  const [igCaption, setIgCaption] = useState("");
+  const [ttCaption, setTtCaption] = useState("");
+  const [liCaption, setLiCaption] = useState("");
+
   const [submitting, setSubmitting] = useState(false);
   const [loadingEdit, setLoadingEdit] = useState(false);
   const [lastSlug, setLastSlug] = useState<string | null>(null);
   const [samples, setSamples] = useState<Sample[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
+
 
   const activeModules = useMemo(() => {
     const base: string[] = [];
