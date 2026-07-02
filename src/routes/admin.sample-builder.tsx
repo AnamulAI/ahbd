@@ -922,6 +922,9 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
             </ul>
           )}
         </section>
+
+        <SocialProofLogosPanel pin={pin} />
+
       </div>
     </div>
 
