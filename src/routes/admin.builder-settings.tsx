@@ -693,8 +693,10 @@ function WebsiteTab({
           ))}
         </div>
       </Section>
+      )}
 
-      {/* Use Cases & Pricing */}
+      {panel === "website:usecases" && (
+      /* Use Cases & Pricing */
       <Section
         title="Use Cases & Pricing"
         description="Per use case, edit base price for each tech approach."
