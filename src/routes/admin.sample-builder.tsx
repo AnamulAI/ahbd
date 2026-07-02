@@ -814,7 +814,8 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
           )}
         </section>
       </div>
-    </main>
+    </div>
+
   );
 }
 
