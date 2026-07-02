@@ -252,28 +252,42 @@ function BuilderSettingsPage() {
     );
   }
 
+  const searchPanel = Route.useSearch().panel;
+  const panel: BuilderPanelKey = searchPanel ?? DEFAULT_BUILDER_PANEL;
+  const crumbs = BUILDER_PANELS[panel].crumbs;
+
   return (
     <AdminShell email={gate.email}>
-      <header className="mb-6">
-        <h1 className="font-display text-3xl font-bold tracking-tight">
+      <nav
+        aria-label="Breadcrumb"
+        className="mb-4 flex flex-wrap items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-white/45"
+      >
+        <Link to="/admin/builder-settings" className="hover:text-white/80">
           Builder Settings
+        </Link>
+        {crumbs.map((c, i) => (
+          <span key={i} className="flex items-center gap-1.5">
+            <ChevronRight className="h-3 w-3 text-white/25" />
+            <span className={i === crumbs.length - 1 ? "text-white/85" : "hover:text-white/80"}>
+              {c}
+            </span>
+          </span>
+        ))}
+      </nav>
+
+      <header className="mb-6">
+        <h1 className="font-display text-2xl font-bold tracking-tight text-white">
+          {crumbs[crumbs.length - 1]}
         </h1>
-        <p className="mt-1 text-sm text-white/55">
-          Manage every option, price, and tier in your custom builder.
-        </p>
       </header>
 
-      <Tabs defaultValue="website" className="w-full">
-        <TabsList className="bg-[#0F1320] border border-white/[0.08] h-auto p-1 flex flex-wrap gap-1">
-          <AdminTab value="website">Website</AdminTab>
-          <AdminTab value="ai">AI Agent</AdminTab>
-          <AdminTab value="podcast">Podcast</AdminTab>
-          <AdminTab value="promo">Promo Cards</AdminTab>
-          <AdminTab value="package">Package &amp; Payment</AdminTab>
-        </TabsList>
-
-        <TabsContent value="website" className="mt-6 space-y-8">
+      <div className="space-y-8">
+        {(panel === "website:tech" ||
+          panel === "website:usecases" ||
+          panel === "website:tiers" ||
+          panel === "website:suboptions") && (
           <WebsiteTab
+            panel={panel}
             techApproaches={techApproaches}
             setTechApproaches={setTechApproaches}
             useCases={useCases}
@@ -285,32 +299,37 @@ function BuilderSettingsPage() {
             options={options}
             setOptions={setOptions}
           />
-        </TabsContent>
+        )}
 
-        <TabsContent value="ai" className="mt-6 space-y-8">
+        {(panel === "ai:types" || panel === "ai:suboptions") && (
           <AiTab
+            panel={panel}
             aiTypes={aiTypes}
             setAiTypes={setAiTypes}
             options={options}
             setOptions={setOptions}
           />
-        </TabsContent>
+        )}
 
-        <TabsContent value="podcast" className="mt-6 space-y-8">
+        {(panel === "podcast:types" || panel === "podcast:suboptions") && (
           <PodcastTab
+            panel={panel}
             podcastTypes={podcastTypes}
             setPodcastTypes={setPodcastTypes}
             options={options}
             setOptions={setOptions}
           />
-        </TabsContent>
+        )}
 
-        <TabsContent value="promo" className="mt-6 space-y-8">
+        {panel === "promo" && (
           <PromoTab promoCards={promoCards} setPromoCards={setPromoCards} />
-        </TabsContent>
+        )}
 
-        <TabsContent value="package" className="mt-6 space-y-8">
+        {(panel === "package:signature" ||
+          panel === "package:payment" ||
+          panel === "package:copy") && (
           <PackagePaymentTab
+            panel={panel}
             signature={signature}
             setSignature={setSignature}
             paymentPlan={paymentPlan}
@@ -318,24 +337,13 @@ function BuilderSettingsPage() {
             copy={copy}
             setCopy={setCopy}
           />
-
-        </TabsContent>
-      </Tabs>
+        )}
+      </div>
     </AdminShell>
   );
 }
 
 // ---------- Shared building blocks ----------
-function AdminTab({ value, children }: { value: string; children: ReactNode }) {
-  return (
-    <TabsTrigger
-      value={value}
-      className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#3B82F6] data-[state=active]:to-[#F97316] data-[state=active]:text-white text-white/65 hover:text-white px-4 py-2 text-sm font-medium"
-    >
-      {children}
-    </TabsTrigger>
-  );
-}
 
 function Section({
   title,
