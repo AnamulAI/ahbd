@@ -913,7 +913,776 @@ function ClosingCTA() {
   );
 }
 
+
+// ---------- AI Podcast detail (DB-driven) ----------
+function PodcastDetail({
+  db,
+  related,
+}: {
+  db: DbProject;
+  related: DbProject[];
+}) {
+  const steps = coerceSteps(db.process_steps);
+  const stats = coerceStats(db.result_stats);
+  const gallery = db.gallery_image_urls ?? [];
+  const [lead, ...rest] = gallery;
+  const [lightbox, setLightbox] = React.useState<number | null>(null);
+  const openLightbox = (i: number) => setLightbox(i);
+  const closeLightbox = () => setLightbox(null);
+  const prevImg = () =>
+    setLightbox((i) => (i == null ? i : (i - 1 + gallery.length) % gallery.length));
+  const nextImg = () =>
+    setLightbox((i) => (i == null ? i : (i + 1) % gallery.length));
+
+  const readMin = estimateReadMinutes(
+    db.challenge,
+    db.solution,
+    ...steps.map((s) => s.description),
+    db.testimonial_quote,
+  );
+
+  const episodeTitle = (db.episode_title?.trim() || db.title).trim();
+  const cover = db.cover_image_url ?? "";
+
+  const clips = [
+    {
+      key: "instagram" as const,
+      label: "Instagram Reel",
+      url: db.ig_reel_url,
+      caption: db.ig_reel_caption,
+    },
+    {
+      key: "tiktok" as const,
+      label: "TikTok",
+      url: db.tiktok_clip_url,
+      caption: db.tiktok_clip_caption,
+    },
+    {
+      key: "linkedin" as const,
+      label: "LinkedIn Clip",
+      url: db.linkedin_clip_url,
+      caption: db.linkedin_clip_caption,
+    },
+  ].filter((c) => !!c.url) as {
+    key: "instagram" | "tiktok" | "linkedin";
+    label: string;
+    url: string;
+    caption: string | null;
+  }[];
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <SiteHeader />
+      <main>
+        {/* Back nav + Hero */}
+        <section className="relative section-glow-hero pt-8 sm:pt-12">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <Link
+              to="/projects"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-[color:var(--primary)]"
+            >
+              <ArrowLeft className="h-4 w-4" aria-hidden /> Back to Projects
+            </Link>
+
+            <div className="mt-8 text-center">
+              {db.sub_category_label && (
+                <Eyebrow>// {db.sub_category_label}</Eyebrow>
+              )}
+              <h1 className="mt-4 mx-auto max-w-4xl text-balance text-3xl font-bold leading-[1.15] text-white sm:text-4xl md:text-5xl">
+                {db.title}
+              </h1>
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm">
+                <span
+                  aria-hidden
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[color:var(--primary)] to-[color:var(--orange)] font-display text-xs font-bold text-white"
+                >
+                  MH
+                </span>
+                <span className="font-medium text-white/90">Mohammad Anamul Hoque</span>
+                <span aria-hidden className="text-white/25">·</span>
+                <span className="text-muted-foreground">{fmtDate(db.created_at)}</span>
+                <span aria-hidden className="text-white/25">·</span>
+                <span className="inline-flex items-center gap-1 text-muted-foreground">
+                  <Clock className="h-3.5 w-3.5" aria-hidden /> {readMin} min read
+                </span>
+              </div>
+              {db.tech_stack.length > 0 && (
+                <div className="mt-5 flex justify-center">
+                  <TechChips stack={db.tech_stack.slice(0, 6)} />
+                </div>
+              )}
+            </div>
+
+            {cover && (
+              <div className="mt-10 overflow-hidden rounded-2xl border border-white/8 bg-white/5">
+                <img
+                  src={cover}
+                  alt={db.title}
+                  className="aspect-[16/9] w-full object-cover"
+                />
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Challenge */}
+        {db.challenge && (
+          <section className="py-16 sm:py-20">
+            <div className="mx-auto max-w-3xl px-4 sm:px-6">
+              <Eyebrow>// THE CHALLENGE</Eyebrow>
+              <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
+                The {gradientWord("Challenge", "blue")}
+              </h2>
+              <div className="mt-6 relative overflow-hidden rounded-2xl border border-white/8 bg-[#121A2E] p-6 sm:p-8">
+                <span aria-hidden className="absolute left-0 top-0 h-full w-[3px] bg-[color:var(--primary)]" />
+                <div className="space-y-5">
+                  {toParagraphs(db.challenge).map((p, i) => (
+                    <p key={i} className="text-base leading-[1.8] text-muted-foreground sm:text-[17px]">
+                      {p}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Solution */}
+        {db.solution && (
+          <section className="py-16 sm:py-20 bg-white/[0.02]">
+            <div className="mx-auto max-w-3xl px-4 sm:px-6">
+              <Eyebrow>// THE SOLUTION</Eyebrow>
+              <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
+                The {gradientWord("Solution", "orange")}
+              </h2>
+              <div className="mt-6 space-y-5">
+                {toParagraphs(db.solution).map((p, i) => (
+                  <p key={i} className="text-base leading-[1.8] text-muted-foreground sm:text-[17px]">
+                    {p}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Process */}
+        {steps.length > 0 && (
+          <section className="py-16 sm:py-20">
+            <div className="mx-auto max-w-3xl px-4 sm:px-6">
+              <Eyebrow>// HOW WE DID IT</Eyebrow>
+              <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
+                Process — Step by Step
+              </h2>
+              <ol className="mt-10 space-y-8">
+                {steps.map((s, i) => (
+                  <li
+                    key={i}
+                    className="grid grid-cols-[auto,1fr] gap-5 border-b border-white/[0.06] pb-8 last:border-b-0 last:pb-0"
+                  >
+                    <span
+                      aria-hidden
+                      className="font-display text-4xl font-bold leading-none text-white/15 sm:text-5xl"
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <div>
+                      <h3 className="font-display text-lg font-bold text-white sm:text-xl">
+                        {s.title}
+                      </h3>
+                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
+                        {s.description}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </section>
+        )}
+
+        {/* Platform Mockups */}
+        <PlatformMockups
+          cover={cover}
+          episodeTitle={episodeTitle}
+          audioUrl={db.episode_audio_url}
+          videoUrl={db.episode_video_url}
+          spotifyUrl={db.spotify_url}
+          applePodcastsUrl={db.apple_podcasts_url}
+          youtubeUrl={db.youtube_url}
+        />
+
+        {/* Video podcast */}
+        {db.episode_video_url && (
+          <section className="py-16 sm:py-20">
+            <div className="mx-auto max-w-4xl px-4 sm:px-6">
+              <Eyebrow>// VIDEO PODCAST</Eyebrow>
+              <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
+                Your Episode, Also As a{" "}
+                <span className="text-[color:var(--orange)]">Video</span>
+              </h2>
+              <div className="mt-8 overflow-hidden rounded-2xl border border-white/8 bg-black">
+                <video
+                  src={db.episode_video_url}
+                  controls
+                  preload="metadata"
+                  poster={cover || undefined}
+                  className="aspect-video w-full"
+                />
+              </div>
+              <p className="mt-4 text-center text-sm text-muted-foreground">
+                Every episode can also be delivered as a publish-ready video.
+              </p>
+            </div>
+          </section>
+        )}
+
+        {/* SMM Clips */}
+        {clips.length > 0 && (
+          <section className="py-16 sm:py-20 bg-white/[0.02]">
+            <div className="mx-auto max-w-6xl px-4 sm:px-6">
+              <Eyebrow>// SOCIAL REPURPOSING</Eyebrow>
+              <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
+                Clips Ready for{" "}
+                <span className="text-gradient-vo">Every Platform</span>
+              </h2>
+              <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {clips.map((c) => (
+                  <ClipPreview key={c.key} platform={c.key} label={c.label} url={c.url} caption={c.caption} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Results */}
+        {stats.length > 0 && (
+          <section className="py-16 sm:py-20">
+            <div className="mx-auto max-w-5xl px-4 sm:px-6">
+              <div className="mx-auto max-w-3xl">
+                <h2 className="text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
+                  The {gradientWord("Results", "orange")}
+                </h2>
+              </div>
+              <div className="mt-10 grid gap-4 sm:grid-cols-3">
+                {stats.map((r, i) => {
+                  const Icon = pickResultIcon(r.value, r.label);
+                  const isBlue = i % 2 === 0;
+                  return (
+                    <div
+                      key={i}
+                      className="rounded-2xl border border-[#1E293B] bg-[#121A2E] p-7 text-center transition-all duration-200 hover:-translate-y-1 hover:border-[color:var(--primary)]/40 hover:shadow-[0_10px_30px_-12px_var(--vo-glow)] sm:p-8"
+                    >
+                      <div className="mx-auto inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[color:var(--primary)]/20 bg-[color:var(--primary)]/10">
+                        <Icon className="h-5 w-5 text-[color:var(--primary)]" aria-hidden />
+                      </div>
+                      <div
+                        className={[
+                          "mt-5 font-display text-3xl font-bold leading-tight sm:text-4xl",
+                          isBlue ? "text-[color:var(--primary)]" : "text-white",
+                        ].join(" ")}
+                      >
+                        {r.value}
+                      </div>
+                      <span
+                        aria-hidden
+                        className="mx-auto mt-3 block h-[2px] w-10 rounded-full bg-gradient-to-r from-[color:var(--primary)] to-[color:var(--orange)]"
+                      />
+                      <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                        {r.label}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Gallery */}
+        {gallery.length > 0 && (
+          <section className="py-16 sm:py-20 bg-white/[0.02]">
+            <div className="mx-auto max-w-6xl px-4 sm:px-6">
+              <div className="mx-auto max-w-3xl">
+                <Eyebrow>// PROJECT GALLERY</Eyebrow>
+                <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
+                  A Closer Look
+                </h2>
+              </div>
+              {lead && (
+                <button
+                  type="button"
+                  onClick={() => openLightbox(0)}
+                  className="mt-8 block w-full overflow-hidden rounded-2xl border border-white/8 bg-white/5"
+                >
+                  <img
+                    src={lead}
+                    alt={`${db.title} — image 1`}
+                    loading="lazy"
+                    className="aspect-[16/9] w-full object-cover transition-transform duration-300 hover:scale-[1.02]"
+                  />
+                </button>
+              )}
+              {rest.length > 0 && (
+                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+                  {rest.map((src, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => openLightbox(i + 1)}
+                      className="overflow-hidden rounded-2xl border border-white/8 bg-white/5"
+                    >
+                      <img
+                        src={src}
+                        alt={`${db.title} — image ${i + 2}`}
+                        loading="lazy"
+                        className="aspect-[16/10] w-full object-cover transition-transform duration-300 hover:scale-[1.02]"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            {lightbox != null && (
+              <Lightbox
+                images={gallery}
+                index={lightbox}
+                onClose={closeLightbox}
+                onPrev={prevImg}
+                onNext={nextImg}
+                alt={db.title}
+              />
+            )}
+          </section>
+        )}
+
+        {/* Testimonial */}
+        {db.testimonial_quote && (
+          <section className="py-16 sm:py-20">
+            <div className="mx-auto max-w-3xl px-4 sm:px-6">
+              <blockquote className="relative overflow-hidden rounded-2xl border border-[#1E293B] bg-[#121A2E] p-8 pl-10 sm:p-10 sm:pl-14">
+                <span aria-hidden className="absolute left-0 top-0 h-full w-[4px] bg-[color:var(--primary)]" />
+                <Quote
+                  aria-hidden
+                  className="pointer-events-none absolute right-6 top-6 h-20 w-20 text-[color:var(--primary)]/10 sm:h-24 sm:w-24"
+                />
+                <p className="relative font-display text-xl italic leading-snug text-white sm:text-2xl">
+                  "{db.testimonial_quote}"
+                </p>
+                {(db.testimonial_name || db.testimonial_title) && (
+                  <footer className="relative mt-6 flex items-center gap-3 text-sm">
+                    {db.testimonial_name && (
+                      <span
+                        aria-hidden
+                        className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[color:var(--primary)] to-[color:var(--orange)] font-display text-[13px] font-bold text-white"
+                      >
+                        {initialsOf(db.testimonial_name)}
+                      </span>
+                    )}
+                    <span>
+                      {db.testimonial_name && (
+                        <span className="font-semibold text-white">
+                          {db.testimonial_name}
+                        </span>
+                      )}
+                      {db.testimonial_title && (
+                        <span className="text-muted-foreground">
+                          {db.testimonial_name ? " — " : ""}
+                          {db.testimonial_title}
+                        </span>
+                      )}
+                    </span>
+                  </footer>
+                )}
+              </blockquote>
+            </div>
+          </section>
+        )}
+
+        {/* Related */}
+        {related.length > 0 && (
+          <section className="pb-16 pt-4 sm:pb-20">
+            <div className="mx-auto max-w-6xl px-4 sm:px-6">
+              <div className="mb-6 flex items-center justify-between">
+                <h2 className="text-xl font-bold text-white sm:text-2xl">Related Projects</h2>
+                <Link
+                  to="/projects"
+                  className="inline-flex items-center gap-1 text-sm text-[color:var(--primary)]"
+                >
+                  All projects <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+                </Link>
+              </div>
+              <div className="grid gap-6 max-md:place-items-center sm:grid-cols-2 lg:grid-cols-3">
+                {related.map((p) => (
+                  <div key={p.id} className="w-full max-w-sm sm:max-w-none">
+                    <ProjectCard project={dbToProjectCard(p)} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        <PodcastClosingCTA />
+      </main>
+      <SiteFooter />
+    </div>
+  );
+}
+
+function PodcastClosingCTA() {
+  return (
+    <section className="py-16 sm:py-20">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6">
+        <CtaRevealCard>
+          <div className="flex flex-col items-center text-center">
+            <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">
+              Ready to Launch{" "}
+              <span className="text-gradient-vo">Something Like This</span>?
+            </h2>
+            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+              Let's talk about the show you want to launch.
+            </p>
+            <div className="mt-8">
+              <Link
+                to="/contact"
+                className="inline-flex items-center gap-2 rounded-full btn-gradient min-h-9 text-center px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_36px_-10px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] active:scale-[0.98]"
+              >
+                Discuss Your Podcast <ArrowRight className="h-4 w-4" aria-hidden />
+              </Link>
+            </div>
+          </div>
+        </CtaRevealCard>
+      </div>
+    </section>
+  );
+}
+
+function PlatformMockups({
+  cover,
+  episodeTitle,
+  audioUrl,
+  videoUrl,
+  spotifyUrl,
+  applePodcastsUrl,
+  youtubeUrl,
+}: {
+  cover: string;
+  episodeTitle: string;
+  audioUrl: string | null;
+  videoUrl: string | null;
+  spotifyUrl: string | null;
+  applePodcastsUrl: string | null;
+  youtubeUrl: string | null;
+}) {
+  const showSpotify = !!(audioUrl || spotifyUrl);
+  const showApple = !!(audioUrl || applePodcastsUrl);
+  const showYouTube = !!(videoUrl || youtubeUrl);
+  if (!showSpotify && !showApple && !showYouTube) return null;
+
+  return (
+    <section className="py-16 sm:py-20 bg-white/[0.02]">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        <div className="mx-auto max-w-3xl text-center">
+          <Eyebrow>// PLATFORM PREVIEW</Eyebrow>
+          <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
+            See Your Show, Live On The{" "}
+            <span className="text-gradient-vo">Platforms You Choose</span>
+          </h2>
+        </div>
+        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {showSpotify && (
+            <SpotifyMockup
+              cover={cover}
+              title={episodeTitle}
+              audioUrl={audioUrl}
+              externalUrl={spotifyUrl}
+            />
+          )}
+          {showApple && (
+            <AppleMockup
+              cover={cover}
+              title={episodeTitle}
+              audioUrl={audioUrl}
+              externalUrl={applePodcastsUrl}
+            />
+          )}
+          {showYouTube && (
+            <YouTubeMockup
+              cover={cover}
+              title={episodeTitle}
+              videoUrl={videoUrl}
+              externalUrl={youtubeUrl}
+            />
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ExternalIconLink({ href }: { href: string }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white/80 hover:bg-white/20 hover:text-white"
+      aria-label="Open in new tab"
+    >
+      <ExternalLink className="h-4 w-4" aria-hidden />
+    </a>
+  );
+}
+
+function AudioPlayerButton({ audioUrl, colorClass }: { audioUrl: string | null; colorClass: string }) {
+  const audioRef = React.useRef<HTMLAudioElement | null>(null);
+  const [playing, setPlaying] = React.useState(false);
+  if (!audioUrl) {
+    return (
+      <button
+        type="button"
+        disabled
+        aria-label="No audio available"
+        className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/5 text-white/30"
+      >
+        <Play className="h-5 w-5" aria-hidden />
+      </button>
+    );
+  }
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => {
+          const el = audioRef.current;
+          if (!el) return;
+          if (playing) el.pause();
+          else el.play().catch(() => {});
+        }}
+        aria-label={playing ? "Pause episode" : "Play episode"}
+        className={`inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-white transition-transform hover:scale-105 ${colorClass}`}
+      >
+        {playing ? <Pause className="h-5 w-5" aria-hidden /> : <Play className="h-5 w-5 translate-x-[1px]" aria-hidden />}
+      </button>
+      <audio
+        ref={audioRef}
+        src={audioUrl}
+        preload="none"
+        onPlay={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
+        onEnded={() => setPlaying(false)}
+        className="hidden"
+      />
+    </>
+  );
+}
+
+function SpotifyMockup({
+  cover,
+  title,
+  audioUrl,
+  externalUrl,
+}: {
+  cover: string;
+  title: string;
+  audioUrl: string | null;
+  externalUrl: string | null;
+}) {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-white/8 bg-[#121212] p-5 text-white shadow-[0_10px_30px_-12px_rgba(30,215,96,0.25)]">
+      <div className="flex items-center justify-between">
+        <div className="inline-flex items-center gap-2 text-sm font-semibold">
+          <SiSpotify size={20} color="#1ED760" aria-hidden />
+          <span>Spotify</span>
+        </div>
+        {externalUrl && <ExternalIconLink href={externalUrl} />}
+      </div>
+      <div className="mt-4 overflow-hidden rounded-md bg-black">
+        {cover ? (
+          <img src={cover} alt="" className="aspect-square w-full object-cover" />
+        ) : (
+          <div className="aspect-square w-full bg-white/5" />
+        )}
+      </div>
+      <div className="mt-4">
+        <div className="text-[11px] font-medium uppercase tracking-wider text-[#1ED760]">Episode</div>
+        <h3 className="mt-1 line-clamp-2 text-base font-semibold text-white">{title}</h3>
+      </div>
+      <div className="mt-4 flex items-center gap-3">
+        <AudioPlayerButton audioUrl={audioUrl} colorClass="bg-[#1ED760] text-black hover:bg-[#1ED760]" />
+        <div className="h-1 flex-1 rounded-full bg-white/10" aria-hidden />
+      </div>
+    </div>
+  );
+}
+
+function AppleMockup({
+  cover,
+  title,
+  audioUrl,
+  externalUrl,
+}: {
+  cover: string;
+  title: string;
+  audioUrl: string | null;
+  externalUrl: string | null;
+}) {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-black/5 bg-white p-5 text-neutral-900 shadow-[0_10px_30px_-12px_rgba(252,52,151,0.25)]">
+      <div className="flex items-center justify-between">
+        <div className="inline-flex items-center gap-2 text-sm font-semibold">
+          <SiApplepodcasts size={20} color="#A855F7" aria-hidden />
+          <span>Apple Podcasts</span>
+        </div>
+        {externalUrl && (
+          <a
+            href={externalUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900"
+            aria-label="Open in new tab"
+          >
+            <ExternalLink className="h-4 w-4" aria-hidden />
+          </a>
+        )}
+      </div>
+      <div className="mt-4 flex gap-4">
+        <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-neutral-100">
+          {cover && <img src={cover} alt="" className="h-full w-full object-cover" />}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="text-[11px] font-medium uppercase tracking-wider text-[#FC3497]">Latest Episode</div>
+          <h3 className="mt-1 line-clamp-2 text-sm font-semibold text-neutral-900">{title}</h3>
+        </div>
+      </div>
+      <div className="mt-4 flex items-center gap-3">
+        <AudioPlayerButton
+          audioUrl={audioUrl}
+          colorClass="bg-gradient-to-br from-[#FC3497] to-[#A855F7]"
+        />
+        <div className="text-xs font-medium text-neutral-600">Tap to play</div>
+      </div>
+    </div>
+  );
+}
+
+function YouTubeMockup({
+  cover,
+  title,
+  videoUrl,
+  externalUrl,
+}: {
+  cover: string;
+  title: string;
+  videoUrl: string | null;
+  externalUrl: string | null;
+}) {
+  const [playing, setPlaying] = React.useState(false);
+  return (
+    <div className="overflow-hidden rounded-2xl border border-white/8 bg-[#0F0F0F] p-5 text-white shadow-[0_10px_30px_-12px_rgba(255,0,0,0.25)]">
+      <div className="flex items-center justify-between">
+        <div className="inline-flex items-center gap-2 text-sm font-semibold">
+          <SiYoutube size={22} color="#FF0033" aria-hidden />
+          <span>YouTube</span>
+        </div>
+        {externalUrl && <ExternalIconLink href={externalUrl} />}
+      </div>
+      <div className="mt-4 aspect-video overflow-hidden rounded-lg bg-black">
+        {playing && videoUrl ? (
+          <video
+            src={videoUrl}
+            controls
+            autoPlay
+            preload="metadata"
+            className="h-full w-full"
+          />
+        ) : (
+          <button
+            type="button"
+            onClick={() => videoUrl && setPlaying(true)}
+            disabled={!videoUrl}
+            className="group relative h-full w-full"
+            aria-label="Play video"
+          >
+            {cover ? (
+              <img src={cover} alt="" className="h-full w-full object-cover" />
+            ) : (
+              <div className="h-full w-full bg-white/5" />
+            )}
+            <span className="absolute inset-0 flex items-center justify-center bg-black/40 transition-colors group-hover:bg-black/50">
+              <span
+                className={[
+                  "inline-flex h-14 w-14 items-center justify-center rounded-full",
+                  videoUrl ? "bg-[#FF0033]" : "bg-white/20",
+                ].join(" ")}
+              >
+                <Play className="h-6 w-6 translate-x-[1px] text-white" aria-hidden />
+              </span>
+            </span>
+          </button>
+        )}
+      </div>
+      <h3 className="mt-4 line-clamp-2 text-sm font-semibold text-white">{title}</h3>
+      <div className="mt-1 text-xs text-white/50">AnamDev · Podcast</div>
+    </div>
+  );
+}
+
+function ClipPreview({
+  platform,
+  label,
+  url,
+  caption,
+}: {
+  platform: "instagram" | "tiktok" | "linkedin";
+  label: string;
+  url: string;
+  caption: string | null;
+}) {
+  const meta = {
+    instagram: { Icon: SiInstagram, color: "#E4405F" },
+    tiktok: { Icon: SiTiktok, color: "#69C9D0" },
+    linkedin: { Icon: SiLinkedin, color: "#0A66C2" },
+  }[platform];
+  const Icon = meta.Icon;
+  return (
+    <div className="flex flex-col rounded-2xl border border-white/8 bg-[#121A2E] p-5">
+      <div className="flex items-center gap-2">
+        <Icon size={18} color={meta.color} aria-hidden />
+        <span
+          className="font-mono text-[11px] uppercase tracking-[0.14em]"
+          style={{ color: meta.color }}
+        >
+          {label}
+        </span>
+      </div>
+      <div className="mt-4 overflow-hidden rounded-xl border border-white/8 bg-black">
+        <video
+          src={url}
+          controls
+          preload="metadata"
+          className="aspect-[9/16] w-full bg-black"
+          playsInline
+        />
+      </div>
+      {caption && caption.trim() && (
+        <div className="mt-4 rounded-xl border border-white/[0.06] bg-white/[0.03] p-4">
+          <div className="mb-2 flex items-center gap-2">
+            <Icon size={14} color={meta.color} aria-hidden />
+            <span className="text-[11px] font-medium text-white/60">Post preview</span>
+          </div>
+          <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-white/85">
+            {caption}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ---------- Legacy static Web Development detail (unchanged look) ----------
+
 function StaticProjectDetail({ project }: { project: Project }) {
   const related = getRelatedProjects(project.slug);
   const adjacent = getAdjacentProjects(project.slug);
