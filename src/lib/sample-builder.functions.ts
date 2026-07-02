@@ -243,7 +243,22 @@ export type SamplePayload = {
   clip_instagram_url?: string | null;
   clip_tiktok_url?: string | null;
   clip_linkedin_url?: string | null;
+  // New conversion-boosting fields
+  client_industry?: string | null;
+  scarcity_enabled?: boolean;
+  scarcity_message?: string | null;
+  whatsapp_number?: string | null;
+  booking_link?: string | null;
+  estimated_listeners?: string | null;
+  estimated_reach_growth?: string | null;
+  estimated_time_saved?: string | null;
+  before_state?: string | null;
+  after_state?: string | null;
+  ig_reel_caption?: string | null;
+  tiktok_clip_caption?: string | null;
+  linkedin_clip_caption?: string | null;
 };
+
 
 
 async function uploadLogoIfPresent(
