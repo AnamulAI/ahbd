@@ -793,6 +793,91 @@ function ClipCard({
 }
 
 
+function IntegrationMapEditor({
+  value,
+  onChange,
+}: {
+  value: string[];
+  onChange: (v: string[]) => void;
+}) {
+  const [draft, setDraft] = React.useState("");
+  function add() {
+    const t = draft.trim();
+    if (!t) return;
+    onChange([...value, t]);
+    setDraft("");
+  }
+  function remove(i: number) {
+    onChange(value.filter((_, idx) => idx !== i));
+  }
+  function move(i: number, dir: -1 | 1) {
+    const j = i + dir;
+    if (j < 0 || j >= value.length) return;
+    const next = value.slice();
+    [next[i], next[j]] = [next[j], next[i]];
+    onChange(next);
+  }
+  return (
+    <div className="space-y-3">
+      <div className="space-y-2">
+        {value.map((node, i) => (
+          <div
+            key={`${node}-${i}`}
+            className="flex items-center gap-2 rounded-md border border-white/[0.08] bg-[#16181D] px-3 py-2"
+          >
+            <span className="font-mono text-xs text-white/40 w-6">{i + 1}.</span>
+            <span className="flex-1 text-sm text-white">{node}</span>
+            <button
+              type="button"
+              onClick={() => move(i, -1)}
+              className="text-white/50 hover:text-white text-xs px-2"
+              aria-label="Move up"
+            >
+              ↑
+            </button>
+            <button
+              type="button"
+              onClick={() => move(i, 1)}
+              className="text-white/50 hover:text-white text-xs px-2"
+              aria-label="Move down"
+            >
+              ↓
+            </button>
+            <button
+              type="button"
+              onClick={() => remove(i)}
+              className="text-red-400/70 hover:text-red-400 text-xs px-2"
+            >
+              Remove
+            </button>
+          </div>
+        ))}
+      </div>
+      <div className="flex gap-2">
+        <input
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              add();
+            }
+          }}
+          placeholder="Add a tool node (e.g. Gmail)…"
+          className="flex-1 rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none"
+        />
+        <button
+          type="button"
+          onClick={add}
+          className="rounded-md border border-white/[0.12] bg-white/[0.04] px-3 py-2 text-xs font-mono uppercase tracking-wider text-white/80 hover:bg-white/[0.08]"
+        >
+          + Add Node
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function ProcessStepsEditor({
   value,
   onChange,
