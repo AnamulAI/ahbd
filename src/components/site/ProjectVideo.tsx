@@ -75,15 +75,9 @@ export function ProjectVideo({
 
   if (yt) {
     // Crop offset — pixels shifted from top + added to iframe height.
-    // Small enough not to visibly distort 16:9 content, large enough to
-    // hide the ~40px YouTube title overlay that appears on some videos.
+    // Small enough not to visibly distort content, large enough to hide
+    // the residual title/channel overlay YouTube renders on some videos.
     const crop = hideYouTubeChrome ? 44 : 0;
-    const iframeStyle: React.CSSProperties = isVertical
-      ? {
-          top: `calc(50% - ${crop}px)`,
-          height: `calc(100% + ${crop * 2}px)`,
-        }
-      : { top: `-${crop}px`, height: `calc(100% + ${crop * 2}px)` };
 
     return (
       <div
@@ -96,16 +90,13 @@ export function ProjectVideo({
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
           loading="lazy"
-          className={
-            isVertical
-              ? "absolute left-1/2 w-full -translate-x-1/2 -translate-y-1/2"
-              : "absolute left-0 w-full"
-          }
-          style={iframeStyle}
+          className="absolute left-0 w-full"
+          style={{ top: `-${crop}px`, height: `calc(100% + ${crop * 2}px)` }}
         />
       </div>
     );
   }
+
 
   return (
     <video
