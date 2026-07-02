@@ -466,7 +466,8 @@ function SamplePage() {
                 {ctaCopy.headlineSuffix}
               </h2>
               <p className="mt-5 text-lg text-muted-foreground">
-                {ctaCopy.subheadline}
+                {ctaSubheadline}
+
               </p>
 
               <div className="mt-8">
