@@ -599,6 +599,7 @@ export type Database = {
         Row: {
           apple_podcasts_url: string | null
           challenge: string | null
+          client_logo_url: string | null
           cover_image_url: string | null
           created_at: string
           description: string | null
@@ -635,6 +636,7 @@ export type Database = {
         Insert: {
           apple_podcasts_url?: string | null
           challenge?: string | null
+          client_logo_url?: string | null
           cover_image_url?: string | null
           created_at?: string
           description?: string | null
@@ -671,6 +673,7 @@ export type Database = {
         Update: {
           apple_podcasts_url?: string | null
           challenge?: string | null
+          client_logo_url?: string | null
           cover_image_url?: string | null
           created_at?: string
           description?: string | null
