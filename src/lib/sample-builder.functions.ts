@@ -437,7 +437,21 @@ export const updateSample = createServerFn({ method: "POST" })
           clip_instagram_url: data.clip_instagram_url || null,
           clip_tiktok_url: data.clip_tiktok_url || null,
           clip_linkedin_url: data.clip_linkedin_url || null,
+          client_industry: data.client_industry ?? null,
+          scarcity_enabled: !!data.scarcity_enabled,
+          scarcity_message: data.scarcity_message ?? null,
+          whatsapp_number: data.whatsapp_number ?? null,
+          booking_link: data.booking_link ?? null,
+          estimated_listeners: data.estimated_listeners ?? null,
+          estimated_reach_growth: data.estimated_reach_growth ?? null,
+          estimated_time_saved: data.estimated_time_saved ?? null,
+          before_state: data.before_state ?? null,
+          after_state: data.after_state ?? null,
+          ig_reel_caption: data.ig_reel_caption ?? null,
+          tiktok_clip_caption: data.tiktok_clip_caption ?? null,
+          linkedin_clip_caption: data.linkedin_clip_caption ?? null,
           updated_at: new Date().toISOString(),
+
         })
         .eq("id", data.id);
 
