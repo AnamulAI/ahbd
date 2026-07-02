@@ -32,6 +32,19 @@ const getSampleBySlug = createServerFn({ method: "GET" })
     return await signSampleRow(row);
   });
 
+const getSocialProofLogos = createServerFn({ method: "GET" }).handler(async () => {
+  const { listSocialProofLogos } = await import("@/lib/sample-builder.functions");
+  const raw = await (listSocialProofLogos as any)();
+  return (raw?.logos ?? []) as Array<{ id: string; logo_url: string }>;
+});
+
+const socialProofQuery = queryOptions({
+  queryKey: ["sample", "social-proof-logos"],
+  queryFn: () => getSocialProofLogos(),
+  staleTime: 60_000,
+});
+
+
 const sampleQuery = (slug: string) =>
   queryOptions({
     queryKey: ["sample", slug],
