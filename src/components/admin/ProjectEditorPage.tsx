@@ -172,19 +172,35 @@ export function ProjectEditorPage({
         .maybeSingle();
       if (error) toast.error(error.message);
       if (data) {
+        const d = data as Record<string, unknown>;
+        const s = (k: string) => (typeof d[k] === "string" ? (d[k] as string) : "");
+        const n = (k: string) => (typeof d[k] === "string" ? (d[k] as string) : null);
         setProject({
           ...EMPTY,
-          ...(data as Record<string, unknown>),
-          challenge: (data as { challenge?: string | null }).challenge ?? "",
-          solution: (data as { solution?: string | null }).solution ?? "",
-          process_steps: coerceProcessSteps((data as { process_steps?: unknown }).process_steps),
-          result_stats: coerceResultStats((data as { result_stats?: unknown }).result_stats),
-          testimonial_quote: (data as { testimonial_quote?: string | null }).testimonial_quote ?? "",
-          testimonial_name: (data as { testimonial_name?: string | null }).testimonial_name ?? "",
-          testimonial_title: (data as { testimonial_title?: string | null }).testimonial_title ?? "",
+          ...d,
+          challenge: s("challenge"),
+          solution: s("solution"),
+          process_steps: coerceProcessSteps(d.process_steps),
+          result_stats: coerceResultStats(d.result_stats),
+          testimonial_quote: s("testimonial_quote"),
+          testimonial_name: s("testimonial_name"),
+          testimonial_title: s("testimonial_title"),
+          spotify_url: s("spotify_url"),
+          apple_podcasts_url: s("apple_podcasts_url"),
+          youtube_url: s("youtube_url"),
+          episode_title: s("episode_title"),
+          episode_audio_url: n("episode_audio_url"),
+          episode_video_url: n("episode_video_url"),
+          ig_reel_url: n("ig_reel_url"),
+          ig_reel_caption: s("ig_reel_caption"),
+          tiktok_clip_url: n("tiktok_clip_url"),
+          tiktok_clip_caption: s("tiktok_clip_caption"),
+          linkedin_clip_url: n("linkedin_clip_url"),
+          linkedin_clip_caption: s("linkedin_clip_caption"),
         } as Project);
         setSlugDirty(true);
       }
+
       setLoading(false);
     })();
   }, [gate.status, id]);
