@@ -292,7 +292,7 @@ export function ProjectEditorPage({
   const inputCls =
     "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none";
   const labelCls = "block text-xs font-mono uppercase tracking-wider text-white/60 mb-1.5";
-  const isWeb = project.main_category === "web_development";
+  const isPodcast = project.main_category === "ai_podcast";
 
   return (
     <AdminShell email={gate.email}>
