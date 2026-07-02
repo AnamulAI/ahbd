@@ -597,6 +597,7 @@ export type Database = {
       }
       projects: {
         Row: {
+          action_text: string | null
           apple_podcasts_url: string | null
           challenge: string | null
           client_logo_url: string | null
@@ -611,11 +612,14 @@ export type Database = {
           id: string
           ig_reel_caption: string | null
           ig_reel_url: string | null
+          integration_map: Json
           is_featured: boolean
           linkedin_clip_caption: string | null
           linkedin_clip_url: string | null
           live_url: string | null
           main_category: string
+          output_text: string | null
+          problem: string | null
           process_steps: Json
           result_stats: Json
           slug: string
@@ -630,10 +634,12 @@ export type Database = {
           tiktok_clip_caption: string | null
           tiktok_clip_url: string | null
           title: string
+          trigger_text: string | null
           updated_at: string
           youtube_url: string | null
         }
         Insert: {
+          action_text?: string | null
           apple_podcasts_url?: string | null
           challenge?: string | null
           client_logo_url?: string | null
@@ -648,11 +654,14 @@ export type Database = {
           id?: string
           ig_reel_caption?: string | null
           ig_reel_url?: string | null
+          integration_map?: Json
           is_featured?: boolean
           linkedin_clip_caption?: string | null
           linkedin_clip_url?: string | null
           live_url?: string | null
           main_category: string
+          output_text?: string | null
+          problem?: string | null
           process_steps?: Json
           result_stats?: Json
           slug: string
@@ -667,10 +676,12 @@ export type Database = {
           tiktok_clip_caption?: string | null
           tiktok_clip_url?: string | null
           title: string
+          trigger_text?: string | null
           updated_at?: string
           youtube_url?: string | null
         }
         Update: {
+          action_text?: string | null
           apple_podcasts_url?: string | null
           challenge?: string | null
           client_logo_url?: string | null
@@ -685,11 +696,14 @@ export type Database = {
           id?: string
           ig_reel_caption?: string | null
           ig_reel_url?: string | null
+          integration_map?: Json
           is_featured?: boolean
           linkedin_clip_caption?: string | null
           linkedin_clip_url?: string | null
           live_url?: string | null
           main_category?: string
+          output_text?: string | null
+          problem?: string | null
           process_steps?: Json
           result_stats?: Json
           slug?: string
@@ -704,6 +718,7 @@ export type Database = {
           tiktok_clip_caption?: string | null
           tiktok_clip_url?: string | null
           title?: string
+          trigger_text?: string | null
           updated_at?: string
           youtube_url?: string | null
         }
