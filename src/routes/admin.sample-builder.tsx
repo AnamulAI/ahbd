@@ -16,9 +16,10 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Check, Copy, ExternalLink, GripVertical, Loader2, Lock, Pencil, Upload, X } from "lucide-react";
+import { Check, Copy, ExternalLink, GripVertical, Loader2, Lock, Pencil, Trash2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 
+import { AdminShell, useAdminGate } from "@/components/admin/AdminShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,13 +31,18 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   createMediaUploadUrl,
   createSample,
+  createSocialProofLogo,
+  deleteSocialProofLogo,
   getSampleForEdit,
   listSamples,
+  listSocialProofLogos,
+  reorderSocialProofLogos,
   updateSample,
   verifyPin,
   AUDIENCE_CATEGORIES,
   type AudienceCategory,
 } from "@/lib/sample-builder.functions";
+
 
 const AUDIENCE_LABELS: Record<AudienceCategory, string> = {
   marketers: "Marketers",
