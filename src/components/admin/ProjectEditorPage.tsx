@@ -281,6 +281,12 @@ export function ProjectEditorPage({
       tiktok_clip_caption: isPodcast ? (project.tiktok_clip_caption || null) : null,
       linkedin_clip_url: isPodcast ? project.linkedin_clip_url : null,
       linkedin_clip_caption: isPodcast ? (project.linkedin_clip_caption || null) : null,
+      // AI Integrator fields (only saved when integrator category; cleared otherwise).
+      problem: isIntegrator ? (project.problem || null) : null,
+      integration_map: isIntegrator ? project.integration_map : [],
+      trigger_text: isIntegrator ? (project.trigger_text || null) : null,
+      action_text: isIntegrator ? (project.action_text || null) : null,
+      output_text: isIntegrator ? (project.output_text || null) : null,
     };
     let error;
     if (id) {
