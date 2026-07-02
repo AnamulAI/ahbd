@@ -211,6 +211,13 @@ export function ProjectEditorPage({
           linkedin_clip_url: n("linkedin_clip_url"),
           linkedin_clip_caption: s("linkedin_clip_caption"),
           client_logo_url: n("client_logo_url"),
+          problem: s("problem"),
+          integration_map: Array.isArray(d.integration_map)
+            ? (d.integration_map as unknown[]).filter((x): x is string => typeof x === "string")
+            : [],
+          trigger_text: s("trigger_text"),
+          action_text: s("action_text"),
+          output_text: s("output_text"),
         } as Project);
         setSlugDirty(true);
       }
