@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   Loader2,
@@ -6,13 +6,19 @@ import {
   Trash2,
   ChevronDown,
   ChevronUp,
+  ChevronRight,
   ArrowUp,
   ArrowDown,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminShell, useAdminGate } from "@/components/admin/AdminShell";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import {
+  BUILDER_PANELS,
+  DEFAULT_BUILDER_PANEL,
+  isBuilderPanel,
+  type BuilderPanelKey,
+} from "@/components/admin/BuilderSettingsSidebarSection";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,6 +33,9 @@ import {
 export const Route = createFileRoute("/admin/builder-settings")({
   ssr: false,
   head: () => ({ meta: [{ title: "Builder Settings — AnamDev Admin" }] }),
+  validateSearch: (s: Record<string, unknown>) => ({
+    panel: isBuilderPanel(s.panel) ? s.panel : undefined,
+  }),
   component: BuilderSettingsPage,
 });
 
