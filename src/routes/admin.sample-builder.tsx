@@ -83,6 +83,7 @@ const MODULE_LABELS: Record<string, string> = {
 type MediaKind = "audio" | "video" | "clip";
 
 function SampleBuilderPage() {
+  const gate = useAdminGate();
   const [pin, setPin] = useState<string | null>(null);
 
   useEffect(() => {
@@ -90,9 +91,25 @@ function SampleBuilderPage() {
     setPin(sessionStorage.getItem(PIN_KEY));
   }, []);
 
-  if (!pin) return <PinGate onUnlock={(p) => setPin(p)} />;
-  return <Builder pin={pin} onLock={() => { sessionStorage.removeItem(PIN_KEY); setPin(""); }} />;
+  if (gate.status === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0A0E1A]">
+        <Loader2 className="size-6 animate-spin text-white/60" />
+      </div>
+    );
+  }
+
+  return (
+    <AdminShell email={gate.email}>
+      {!pin ? (
+        <PinGate onUnlock={(p) => setPin(p)} />
+      ) : (
+        <Builder pin={pin} onLock={() => { sessionStorage.removeItem(PIN_KEY); setPin(""); }} />
+      )}
+    </AdminShell>
+  );
 }
+
 
 function PinGate({ onUnlock }: { onUnlock: (pin: string) => void }) {
   const [value, setValue] = useState("");
