@@ -30,6 +30,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AdminShell, useAdminGate } from "@/components/admin/AdminShell";
 import { ImageUploader } from "@/components/admin/ImageUploader";
+import { MediaUploader } from "@/components/admin/MediaUploader";
 import { TagInput } from "@/components/admin/TagInput";
 import {
   CATEGORY_OPTIONS,
@@ -37,6 +38,7 @@ import {
   uploadContentImage,
 } from "@/lib/admin-content-helpers";
 import { fetchSubCategoriesFor } from "@/components/admin/ProjectsListPage";
+
 
 type ProcessStep = { title: string; description: string };
 type ResultStat = { value: string; label: string };
@@ -62,6 +64,19 @@ type Project = {
   testimonial_quote: string;
   testimonial_name: string;
   testimonial_title: string;
+  // Podcast-specific
+  spotify_url: string;
+  apple_podcasts_url: string;
+  youtube_url: string;
+  episode_title: string;
+  episode_audio_url: string | null;
+  episode_video_url: string | null;
+  ig_reel_url: string | null;
+  ig_reel_caption: string;
+  tiktok_clip_url: string | null;
+  tiktok_clip_caption: string;
+  linkedin_clip_url: string | null;
+  linkedin_clip_caption: string;
 };
 
 const DEFAULT_PROCESS_STEPS: ProcessStep[] = [
@@ -92,7 +107,20 @@ const EMPTY: Project = {
   testimonial_quote: "",
   testimonial_name: "",
   testimonial_title: "",
+  spotify_url: "",
+  apple_podcasts_url: "",
+  youtube_url: "",
+  episode_title: "",
+  episode_audio_url: null,
+  episode_video_url: null,
+  ig_reel_url: null,
+  ig_reel_caption: "",
+  tiktok_clip_url: null,
+  tiktok_clip_caption: "",
+  linkedin_clip_url: null,
+  linkedin_clip_caption: "",
 };
+
 
 function coerceProcessSteps(v: unknown): ProcessStep[] {
   if (!Array.isArray(v)) return [];
@@ -144,19 +172,35 @@ export function ProjectEditorPage({
         .maybeSingle();
       if (error) toast.error(error.message);
       if (data) {
+        const d = data as Record<string, unknown>;
+        const s = (k: string) => (typeof d[k] === "string" ? (d[k] as string) : "");
+        const n = (k: string) => (typeof d[k] === "string" ? (d[k] as string) : null);
         setProject({
           ...EMPTY,
-          ...(data as Record<string, unknown>),
-          challenge: (data as { challenge?: string | null }).challenge ?? "",
-          solution: (data as { solution?: string | null }).solution ?? "",
-          process_steps: coerceProcessSteps((data as { process_steps?: unknown }).process_steps),
-          result_stats: coerceResultStats((data as { result_stats?: unknown }).result_stats),
-          testimonial_quote: (data as { testimonial_quote?: string | null }).testimonial_quote ?? "",
-          testimonial_name: (data as { testimonial_name?: string | null }).testimonial_name ?? "",
-          testimonial_title: (data as { testimonial_title?: string | null }).testimonial_title ?? "",
+          ...d,
+          challenge: s("challenge"),
+          solution: s("solution"),
+          process_steps: coerceProcessSteps(d.process_steps),
+          result_stats: coerceResultStats(d.result_stats),
+          testimonial_quote: s("testimonial_quote"),
+          testimonial_name: s("testimonial_name"),
+          testimonial_title: s("testimonial_title"),
+          spotify_url: s("spotify_url"),
+          apple_podcasts_url: s("apple_podcasts_url"),
+          youtube_url: s("youtube_url"),
+          episode_title: s("episode_title"),
+          episode_audio_url: n("episode_audio_url"),
+          episode_video_url: n("episode_video_url"),
+          ig_reel_url: n("ig_reel_url"),
+          ig_reel_caption: s("ig_reel_caption"),
+          tiktok_clip_url: n("tiktok_clip_url"),
+          tiktok_clip_caption: s("tiktok_clip_caption"),
+          linkedin_clip_url: n("linkedin_clip_url"),
+          linkedin_clip_caption: s("linkedin_clip_caption"),
         } as Project);
         setSlugDirty(true);
       }
+
       setLoading(false);
     })();
   }, [gate.status, id]);
@@ -179,7 +223,7 @@ export function ProjectEditorPage({
     if (!project.title.trim()) return toast.error("Title is required");
     if (!project.slug.trim()) return toast.error("Slug is required");
     setSaving(true);
-    const isWeb = project.main_category === "web_development";
+    const isPodcast = project.main_category === "ai_podcast";
     const payload = {
       title: project.title.trim(),
       slug: project.slug.trim(),
@@ -189,18 +233,31 @@ export function ProjectEditorPage({
       gallery_image_urls: project.gallery_image_urls,
       description: project.description || null,
       tech_stack: project.tech_stack,
-      live_url: project.live_url || null,
-      github_url: project.github_url || null,
+      live_url: isPodcast ? null : (project.live_url || null),
+      github_url: isPodcast ? null : (project.github_url || null),
       is_featured: project.is_featured,
       sort_order: project.sort_order,
-      // Web-dev-only structured fields. For other categories, clear/reset.
-      challenge: isWeb ? (project.challenge || null) : null,
-      solution: isWeb ? (project.solution || null) : null,
-      process_steps: isWeb ? project.process_steps : [],
-      result_stats: isWeb ? project.result_stats : [],
-      testimonial_quote: isWeb ? (project.testimonial_quote || null) : null,
-      testimonial_name: isWeb ? (project.testimonial_name || null) : null,
-      testimonial_title: isWeb ? (project.testimonial_title || null) : null,
+      // Case-study fields are now shared across categories.
+      challenge: project.challenge || null,
+      solution: project.solution || null,
+      process_steps: project.process_steps,
+      result_stats: project.result_stats,
+      testimonial_quote: project.testimonial_quote || null,
+      testimonial_name: project.testimonial_name || null,
+      testimonial_title: project.testimonial_title || null,
+      // Podcast fields (only saved when podcast category; cleared otherwise).
+      spotify_url: isPodcast ? (project.spotify_url || null) : null,
+      apple_podcasts_url: isPodcast ? (project.apple_podcasts_url || null) : null,
+      youtube_url: isPodcast ? (project.youtube_url || null) : null,
+      episode_title: isPodcast ? (project.episode_title || null) : null,
+      episode_audio_url: isPodcast ? project.episode_audio_url : null,
+      episode_video_url: isPodcast ? project.episode_video_url : null,
+      ig_reel_url: isPodcast ? project.ig_reel_url : null,
+      ig_reel_caption: isPodcast ? (project.ig_reel_caption || null) : null,
+      tiktok_clip_url: isPodcast ? project.tiktok_clip_url : null,
+      tiktok_clip_caption: isPodcast ? (project.tiktok_clip_caption || null) : null,
+      linkedin_clip_url: isPodcast ? project.linkedin_clip_url : null,
+      linkedin_clip_caption: isPodcast ? (project.linkedin_clip_caption || null) : null,
     };
     let error;
     if (id) {
@@ -223,6 +280,7 @@ export function ProjectEditorPage({
     }
   }
 
+
   if (gate.status !== "ok" || loading) {
     return (
       <div className="min-h-screen bg-[#0A0E1A] flex items-center justify-center">
@@ -234,7 +292,7 @@ export function ProjectEditorPage({
   const inputCls =
     "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none";
   const labelCls = "block text-xs font-mono uppercase tracking-wider text-white/60 mb-1.5";
-  const isWeb = project.main_category === "web_development";
+  const isPodcast = project.main_category === "ai_podcast";
 
   return (
     <AdminShell email={gate.email}>
@@ -339,41 +397,131 @@ export function ProjectEditorPage({
               />
             </div>
             <div>
-              <label className={labelCls}>Tech stack</label>
+              <label className={labelCls}>{isPodcast ? "Tools used" : "Tech stack"}</label>
               <TagInput
                 value={project.tech_stack}
                 onChange={(v) => update("tech_stack", v)}
-                placeholder="Add a tech tag (e.g. React)…"
+                placeholder={isPodcast ? "Add a tool (e.g. ElevenLabs)…" : "Add a tech tag (e.g. React)…"}
               />
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <label className={labelCls}>Live URL</label>
-                <input
-                  value={project.live_url ?? ""}
-                  onChange={(e) => update("live_url", e.target.value)}
-                  placeholder="https://"
-                  className={inputCls}
-                />
+            {!isPodcast && (
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className={labelCls}>Live URL</label>
+                  <input
+                    value={project.live_url ?? ""}
+                    onChange={(e) => update("live_url", e.target.value)}
+                    placeholder="https://"
+                    className={inputCls}
+                  />
+                </div>
+                <div>
+                  <label className={labelCls}>GitHub URL</label>
+                  <input
+                    value={project.github_url ?? ""}
+                    onChange={(e) => update("github_url", e.target.value)}
+                    placeholder="https://github.com/…"
+                    className={inputCls}
+                  />
+                </div>
               </div>
-              <div>
-                <label className={labelCls}>GitHub URL</label>
-                <input
-                  value={project.github_url ?? ""}
-                  onChange={(e) => update("github_url", e.target.value)}
-                  placeholder="https://github.com/…"
-                  className={inputCls}
-                />
-              </div>
-            </div>
+            )}
             <GalleryEditor
               value={project.gallery_image_urls}
               onChange={(v) => update("gallery_image_urls", v)}
             />
           </div>
 
-          {isWeb && (
+          {isPodcast && (
             <>
+              <CaseStudyCard title="Platform Links">
+                <div>
+                  <label className={labelCls}>Spotify URL</label>
+                  <input
+                    value={project.spotify_url}
+                    onChange={(e) => update("spotify_url", e.target.value)}
+                    placeholder="https://open.spotify.com/episode/…"
+                    className={inputCls}
+                  />
+                </div>
+                <div>
+                  <label className={labelCls}>Apple Podcasts URL</label>
+                  <input
+                    value={project.apple_podcasts_url}
+                    onChange={(e) => update("apple_podcasts_url", e.target.value)}
+                    placeholder="https://podcasts.apple.com/…"
+                    className={inputCls}
+                  />
+                </div>
+                <div>
+                  <label className={labelCls}>YouTube URL</label>
+                  <input
+                    value={project.youtube_url}
+                    onChange={(e) => update("youtube_url", e.target.value)}
+                    placeholder="https://youtube.com/watch?v=…"
+                    className={inputCls}
+                  />
+                </div>
+              </CaseStudyCard>
+
+              <CaseStudyCard title="Episode Media">
+                <div>
+                  <label className={labelCls}>Episode Title</label>
+                  <input
+                    value={project.episode_title}
+                    onChange={(e) => update("episode_title", e.target.value)}
+                    placeholder="Defaults to project title if left empty"
+                    className={inputCls}
+                  />
+                </div>
+                <MediaUploader
+                  value={project.episode_audio_url}
+                  onChange={(url) => update("episode_audio_url", url)}
+                  kind="audio"
+                  label="Episode audio file (mp3/wav/m4a)"
+                />
+                <MediaUploader
+                  value={project.episode_video_url}
+                  onChange={(url) => update("episode_video_url", url)}
+                  kind="video"
+                  label="Episode video file (mp4)"
+                />
+              </CaseStudyCard>
+
+              <CaseStudyCard title="SMM Clips (Optional)">
+                <ClipCard
+                  platform="Instagram Reel"
+                  captionLabel="Instagram Caption"
+                  captionPlaceholder="Write a caption with emojis and hashtags… 🎙️✨ #podcast"
+                  url={project.ig_reel_url}
+                  caption={project.ig_reel_caption}
+                  onUrl={(u) => update("ig_reel_url", u)}
+                  onCaption={(c) => update("ig_reel_caption", c)}
+                />
+                <ClipCard
+                  platform="TikTok"
+                  captionLabel="TikTok Caption"
+                  captionPlaceholder="Short, punchy hook with trending hashtags… #fyp #podcast"
+                  url={project.tiktok_clip_url}
+                  caption={project.tiktok_clip_caption}
+                  onUrl={(u) => update("tiktok_clip_url", u)}
+                  onCaption={(c) => update("tiktok_clip_caption", c)}
+                />
+                <ClipCard
+                  platform="LinkedIn Clip"
+                  captionLabel="LinkedIn Caption"
+                  captionPlaceholder="Write a professional caption that opens a conversation…"
+                  url={project.linkedin_clip_url}
+                  caption={project.linkedin_clip_caption}
+                  onUrl={(u) => update("linkedin_clip_url", u)}
+                  onCaption={(c) => update("linkedin_clip_caption", c)}
+                />
+              </CaseStudyCard>
+            </>
+          )}
+
+          <>
+
               <CaseStudyCard title="Case Study — Narrative">
                 <div>
                   <label className={labelCls}>The Challenge</label>
@@ -442,8 +590,8 @@ export function ProjectEditorPage({
                   </div>
                 </div>
               </CaseStudyCard>
-            </>
-          )}
+          </>
+
         </div>
 
         <aside className="space-y-5 rounded-xl border border-white/[0.08] bg-[#11162A] p-5 h-fit">
@@ -488,6 +636,55 @@ function CaseStudyCard({
     </div>
   );
 }
+
+function ClipCard({
+  platform,
+  captionLabel,
+  captionPlaceholder,
+  url,
+  caption,
+  onUrl,
+  onCaption,
+}: {
+  platform: string;
+  captionLabel: string;
+  captionPlaceholder: string;
+  url: string | null;
+  caption: string;
+  onUrl: (u: string | null) => void;
+  onCaption: (c: string) => void;
+}) {
+  const inputCls =
+    "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none";
+  return (
+    <div className="space-y-3 rounded-lg border border-white/[0.06] bg-[#0B0F1A] p-4">
+      <div className="flex items-center gap-2 border-l-2 border-[#F97316] pl-2">
+        <h3 className="text-[11px] font-mono uppercase tracking-wider text-[#F97316]">
+          {platform}
+        </h3>
+      </div>
+      <MediaUploader
+        value={url}
+        onChange={onUrl}
+        kind="video"
+        label="Vertical clip video (mp4)"
+      />
+      <div>
+        <label className="mb-1.5 block text-xs font-mono uppercase tracking-wider text-white/60">
+          {captionLabel}
+        </label>
+        <textarea
+          value={caption}
+          onChange={(e) => onCaption(e.target.value)}
+          rows={4}
+          placeholder={captionPlaceholder}
+          className={`${inputCls} resize-y`}
+        />
+      </div>
+    </div>
+  );
+}
+
 
 function ProcessStepsEditor({
   value,
