@@ -96,7 +96,21 @@ type DbProject = {
   testimonial_quote: string | null;
   testimonial_name: string | null;
   testimonial_title: string | null;
+  // Podcast
+  spotify_url: string | null;
+  apple_podcasts_url: string | null;
+  youtube_url: string | null;
+  episode_title: string | null;
+  episode_audio_url: string | null;
+  episode_video_url: string | null;
+  ig_reel_url: string | null;
+  ig_reel_caption: string | null;
+  tiktok_clip_url: string | null;
+  tiktok_clip_caption: string | null;
+  linkedin_clip_url: string | null;
+  linkedin_clip_caption: string | null;
 };
+
 
 const DB_TO_CATEGORY: Record<string, ProjectCategory> = {
   web_development: "Web Development",
