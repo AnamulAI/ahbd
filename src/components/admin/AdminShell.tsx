@@ -21,6 +21,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { ProjectsSidebarSection } from "@/components/admin/ProjectsSidebarSection";
+import { BuilderSettingsSidebarSection } from "@/components/admin/BuilderSettingsSidebarSection";
 
 type NavItem = {
   label: string;
@@ -44,7 +45,7 @@ const NAV: NavGroup[] = [
     label: "Builder",
     items: [
       {
-        label: "Builder Settings",
+        label: "__builder_settings_tree__",
         to: "/admin/builder-settings",
         icon: Settings2,
       },
@@ -151,6 +152,13 @@ export function AdminShell({
                   return (
                     <li key="__projects_tree__">
                       <ProjectsSidebarSection onNavigate={() => setMobileOpen(false)} />
+                    </li>
+                  );
+                }
+                if (item.label === "__builder_settings_tree__") {
+                  return (
+                    <li key="__builder_settings_tree__">
+                      <BuilderSettingsSidebarSection onNavigate={() => setMobileOpen(false)} />
                     </li>
                   );
                 }

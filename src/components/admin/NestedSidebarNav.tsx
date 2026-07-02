@@ -6,9 +6,12 @@ import { cn } from "@/lib/utils";
 /**
  * Generic tree node used by NestedSidebarNav.
  *
- * - Nodes with `children` behave as expandable groups (click toggles).
- * - Nodes with `to` behave as navigable leaves (click navigates and shows active state).
- * - A node with both is treated as a group (children take precedence).
+ * - Nodes with `children` (length > 0) behave as expandable groups (click toggles).
+ * - Nodes with `to` and no children behave as navigable leaves (click navigates,
+ *   active state highlighted, no chevron shown). Works at ANY level — a Level-2
+ *   item with zero children renders as a directly-clickable leaf using the same
+ *   visual treatment as Level-3 leaves, just at its own indent depth.
+ * - A node with both children and `to` is treated as a group (children take precedence).
  */
 export type NestedNavNode = {
   id: string;
