@@ -30,6 +30,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AdminShell, useAdminGate } from "@/components/admin/AdminShell";
 import { ImageUploader } from "@/components/admin/ImageUploader";
+import { MediaUploader } from "@/components/admin/MediaUploader";
 import { TagInput } from "@/components/admin/TagInput";
 import {
   CATEGORY_OPTIONS,
@@ -37,6 +38,7 @@ import {
   uploadContentImage,
 } from "@/lib/admin-content-helpers";
 import { fetchSubCategoriesFor } from "@/components/admin/ProjectsListPage";
+
 
 type ProcessStep = { title: string; description: string };
 type ResultStat = { value: string; label: string };
