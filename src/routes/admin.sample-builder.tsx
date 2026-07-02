@@ -813,6 +813,61 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
               </Field>
             </div>
 
+            <div className="space-y-4 rounded-md border border-white/5 bg-secondary/20 p-4">
+              <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+                // ROI / Impact Estimator (optional)
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <Field label="Estimated Monthly Listeners">
+                  <Input value={estListeners} onChange={(e) => setEstListeners(e.target.value)} placeholder="500-800" />
+                </Field>
+                <Field label="Estimated Reach Growth">
+                  <Input value={estReachGrowth} onChange={(e) => setEstReachGrowth(e.target.value)} placeholder="3x in 90 days" />
+                </Field>
+                <Field label="Estimated Time Saved">
+                  <Input value={estTimeSaved} onChange={(e) => setEstTimeSaved(e.target.value)} placeholder="6 hrs/week" />
+                </Field>
+              </div>
+            </div>
+
+            <div className="space-y-4 rounded-md border border-white/5 bg-secondary/20 p-4">
+              <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+                // Before vs After (optional)
+              </p>
+              <Field label="Current State (Before)">
+                <Textarea
+                  rows={3}
+                  value={beforeState}
+                  onChange={(e) => setBeforeState(e.target.value)}
+                  placeholder="e.g. Blog posts with no audio presence, no podcast platform reach"
+                />
+              </Field>
+              <Field label="With AnamDev (After)">
+                <Textarea
+                  rows={3}
+                  value={afterState}
+                  onChange={(e) => setAfterState(e.target.value)}
+                  placeholder="e.g. Weekly podcast live on Spotify, Apple Podcasts, and YouTube, plus ready-to-post social clips"
+                />
+              </Field>
+            </div>
+
+            <div className="space-y-4 rounded-md border border-white/5 bg-secondary/20 p-4">
+              <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+                // Claim This Setup (optional)
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Field label="WhatsApp Number">
+                  <Input value={whatsappNumber} onChange={(e) => setWhatsappNumber(e.target.value)} placeholder="+8801XXXXXXXXX" />
+                </Field>
+                <Field label="Booking Link (optional)">
+                  <Input value={bookingLink} onChange={(e) => setBookingLink(e.target.value)} placeholder="https://calendly.com/…" />
+                </Field>
+              </div>
+            </div>
+
+
+
             <Button type="submit" className="btn-gradient min-h-9 text-center w-full" disabled={submitting}>
               {submitting ? <Loader2 className="size-4 animate-spin" /> : isEditing ? "Save Changes" : "Create Sample"}
             </Button>
