@@ -252,7 +252,15 @@ function ProjectDetailRoute() {
         />
       );
     }
-    // ai_integrator + anything else: Coming Soon
+    if (dbProject.main_category === "ai_integrator") {
+      return (
+        <IntegratorDetail
+          db={dbProject}
+          related={relatedDb.filter((p) => p.main_category === "ai_integrator")}
+        />
+      );
+    }
+    // Any unknown category: Coming Soon
     return <ComingSoonDetail title={dbProject.title} />;
   }
 
