@@ -245,6 +245,7 @@ export function ProjectEditorPage({
     if (!project.slug.trim()) return toast.error("Slug is required");
     setSaving(true);
     const isPodcast = project.main_category === "ai_podcast";
+    const isIntegrator = project.main_category === "ai_integrator";
     const payload = {
       title: project.title.trim(),
       slug: project.slug.trim(),
