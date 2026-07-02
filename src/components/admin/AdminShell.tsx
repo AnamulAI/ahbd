@@ -54,7 +54,7 @@ const NAV: NavGroup[] = [
     items: [
       { label: "Blog Posts", to: "/admin/blog", icon: FileText },
       { label: "Sidebar Cards", to: "/admin/blog-sidebar-cards", icon: PanelRight },
-      { label: "Projects", to: "/admin/projects", icon: FolderKanban },
+      { label: "__projects_tree__", to: "/admin/projects", icon: FolderKanban },
       { label: "Newsletter", to: "/admin/newsletter", icon: Mail },
     ],
   },
