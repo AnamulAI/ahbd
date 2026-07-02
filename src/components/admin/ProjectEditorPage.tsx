@@ -127,6 +127,11 @@ const EMPTY: Project = {
   tiktok_clip_caption: "",
   linkedin_clip_url: null,
   linkedin_clip_caption: "",
+  problem: "",
+  integration_map: [],
+  trigger_text: "",
+  action_text: "",
+  output_text: "",
 };
 
 
