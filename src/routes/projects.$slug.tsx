@@ -24,6 +24,11 @@ import {
   Star,
   ExternalLink,
   Mic,
+  ArrowDown,
+  Cog,
+  PackageCheck,
+  XCircle,
+  CheckCircle,
   type LucideIcon,
 } from "lucide-react";
 
