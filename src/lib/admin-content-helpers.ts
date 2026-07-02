@@ -35,6 +35,7 @@ export function estimateReadMinutes(html: string): number {
 }
 
 const BUCKET = "content-images";
+const PODCAST_BUCKET = "podcast-media";
 const ONE_YEAR = 60 * 60 * 24 * 365;
 
 export async function uploadContentImage(file: File): Promise<string> {
@@ -50,6 +51,21 @@ export async function uploadContentImage(file: File): Promise<string> {
   if (error) throw error;
   return data.signedUrl;
 }
+
+export async function uploadPodcastMedia(file: File): Promise<string> {
+  const ext = file.name.split(".").pop() || "bin";
+  const path = `${crypto.randomUUID()}.${ext.toLowerCase()}`;
+  const { error: upErr } = await supabase.storage
+    .from(PODCAST_BUCKET)
+    .upload(path, file, { cacheControl: "31536000", upsert: false, contentType: file.type || undefined });
+  if (upErr) throw upErr;
+  const { data, error } = await supabase.storage
+    .from(PODCAST_BUCKET)
+    .createSignedUrl(path, ONE_YEAR * 10);
+  if (error) throw error;
+  return data.signedUrl;
+}
+
 
 export function fmtDate(iso: string | null | undefined) {
   if (!iso) return "—";
