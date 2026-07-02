@@ -212,9 +212,27 @@ function ProjectDetailRoute() {
         />
       );
     }
-    // Non-web DB projects: Coming Soon
+    if (dbProject.main_category === "ai_podcast") {
+      return (
+        <PodcastDetail
+          db={dbProject}
+          related={relatedDb.filter((p) => p.main_category === "ai_podcast")}
+        />
+      );
+    }
+    // ai_integrator + anything else: Coming Soon
     return <ComingSoonDetail title={dbProject.title} />;
   }
+
+  // 2) Fall back to static seeded projects.
+  const staticProject = getProjectBySlug(slug);
+  if (staticProject) {
+    if (staticProject.category === "Web Development") {
+      return <StaticProjectDetail project={staticProject} />;
+    }
+    return <ComingSoonDetail title={staticProject.title} />;
+  }
+
 
   // 2) Fall back to static seeded projects.
   const staticProject = getProjectBySlug(slug);
