@@ -597,14 +597,22 @@ export type Database = {
       }
       projects: {
         Row: {
+          apple_podcasts_url: string | null
           challenge: string | null
           cover_image_url: string | null
           created_at: string
           description: string | null
+          episode_audio_url: string | null
+          episode_title: string | null
+          episode_video_url: string | null
           gallery_image_urls: string[]
           github_url: string | null
           id: string
+          ig_reel_caption: string | null
+          ig_reel_url: string | null
           is_featured: boolean
+          linkedin_clip_caption: string | null
+          linkedin_clip_url: string | null
           live_url: string | null
           main_category: string
           process_steps: Json
@@ -612,23 +620,35 @@ export type Database = {
           slug: string
           solution: string | null
           sort_order: number
+          spotify_url: string | null
           sub_category_label: string | null
           tech_stack: string[]
           testimonial_name: string | null
           testimonial_quote: string | null
           testimonial_title: string | null
+          tiktok_clip_caption: string | null
+          tiktok_clip_url: string | null
           title: string
           updated_at: string
+          youtube_url: string | null
         }
         Insert: {
+          apple_podcasts_url?: string | null
           challenge?: string | null
           cover_image_url?: string | null
           created_at?: string
           description?: string | null
+          episode_audio_url?: string | null
+          episode_title?: string | null
+          episode_video_url?: string | null
           gallery_image_urls?: string[]
           github_url?: string | null
           id?: string
+          ig_reel_caption?: string | null
+          ig_reel_url?: string | null
           is_featured?: boolean
+          linkedin_clip_caption?: string | null
+          linkedin_clip_url?: string | null
           live_url?: string | null
           main_category: string
           process_steps?: Json
@@ -636,23 +656,35 @@ export type Database = {
           slug: string
           solution?: string | null
           sort_order?: number
+          spotify_url?: string | null
           sub_category_label?: string | null
           tech_stack?: string[]
           testimonial_name?: string | null
           testimonial_quote?: string | null
           testimonial_title?: string | null
+          tiktok_clip_caption?: string | null
+          tiktok_clip_url?: string | null
           title: string
           updated_at?: string
+          youtube_url?: string | null
         }
         Update: {
+          apple_podcasts_url?: string | null
           challenge?: string | null
           cover_image_url?: string | null
           created_at?: string
           description?: string | null
+          episode_audio_url?: string | null
+          episode_title?: string | null
+          episode_video_url?: string | null
           gallery_image_urls?: string[]
           github_url?: string | null
           id?: string
+          ig_reel_caption?: string | null
+          ig_reel_url?: string | null
           is_featured?: boolean
+          linkedin_clip_caption?: string | null
+          linkedin_clip_url?: string | null
           live_url?: string | null
           main_category?: string
           process_steps?: Json
@@ -660,13 +692,17 @@ export type Database = {
           slug?: string
           solution?: string | null
           sort_order?: number
+          spotify_url?: string | null
           sub_category_label?: string | null
           tech_stack?: string[]
           testimonial_name?: string | null
           testimonial_quote?: string | null
           testimonial_title?: string | null
+          tiktok_clip_caption?: string | null
+          tiktok_clip_url?: string | null
           title?: string
           updated_at?: string
+          youtube_url?: string | null
         }
         Relationships: []
       }
