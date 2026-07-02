@@ -440,17 +440,17 @@ export function ProjectEditorPage({
               />
             </div>
             <div>
-              <label className={labelCls}>{isPodcast ? "Tools used" : "Tech stack"}</label>
+              <label className={labelCls}>{techLabel}</label>
               <TagInput
                 value={project.tech_stack}
                 onChange={(v) => update("tech_stack", v)}
-                placeholder={isPodcast ? "Add a tool (e.g. ElevenLabs)…" : "Add a tech tag (e.g. React)…"}
+                placeholder={techPh}
               />
             </div>
             {!isPodcast && (
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className={labelCls}>Live URL</label>
+                  <label className={labelCls}>{isIntegrator ? "Live Demo URL" : "Live URL"}</label>
                   <input
                     value={project.live_url ?? ""}
                     onChange={(e) => update("live_url", e.target.value)}
@@ -458,15 +458,17 @@ export function ProjectEditorPage({
                     className={inputCls}
                   />
                 </div>
-                <div>
-                  <label className={labelCls}>GitHub URL</label>
-                  <input
-                    value={project.github_url ?? ""}
-                    onChange={(e) => update("github_url", e.target.value)}
-                    placeholder="https://github.com/…"
-                    className={inputCls}
-                  />
-                </div>
+                {!isIntegrator && (
+                  <div>
+                    <label className={labelCls}>GitHub URL</label>
+                    <input
+                      value={project.github_url ?? ""}
+                      onChange={(e) => update("github_url", e.target.value)}
+                      placeholder="https://github.com/…"
+                      className={inputCls}
+                    />
+                  </div>
+                )}
               </div>
             )}
             <GalleryEditor
