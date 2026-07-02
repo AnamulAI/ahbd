@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+import { ProjectsSidebarSection } from "@/components/admin/ProjectsSidebarSection";
 
 type NavItem = {
   label: string;
@@ -54,7 +55,7 @@ const NAV: NavGroup[] = [
     items: [
       { label: "Blog Posts", to: "/admin/blog", icon: FileText },
       { label: "Sidebar Cards", to: "/admin/blog-sidebar-cards", icon: PanelRight },
-      { label: "Projects", to: "/admin/projects", icon: FolderKanban },
+      { label: "__projects_tree__", to: "/admin/projects", icon: FolderKanban },
       { label: "Newsletter", to: "/admin/newsletter", icon: Mail },
     ],
   },
@@ -146,6 +147,13 @@ export function AdminShell({
             </div>
             <ul className="space-y-0.5">
               {group.items.map((item) => {
+                if (item.label === "__projects_tree__") {
+                  return (
+                    <li key="__projects_tree__">
+                      <ProjectsSidebarSection onNavigate={() => setMobileOpen(false)} />
+                    </li>
+                  );
+                }
                 const Icon = item.icon;
                 const active =
                   pathname === item.to ||

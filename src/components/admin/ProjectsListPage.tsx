@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
   Loader2,
@@ -31,6 +31,7 @@ import { AdminShell, useAdminGate } from "@/components/admin/AdminShell";
 import {
   CATEGORY_OPTIONS,
   CATEGORY_COLOR,
+  CATEGORY_LABEL,
 } from "@/lib/admin-content-helpers";
 import {
   AlertDialog,
@@ -87,10 +88,16 @@ export async function fetchSubCategoriesFor(mainCategory: string): Promise<strin
 
 export function ProjectsListPage() {
   const gate = useAdminGate();
+  const navigate = useNavigate();
+  const searchParams = useSearch({ strict: false }) as {
+    main?: string;
+    sub?: string;
+  };
+  const activeMain = searchParams.main ?? "web_development";
+  const activeSub = searchParams.sub ?? "all";
+
   const [loading, setLoading] = useState(true);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [activeMain, setActiveMain] = useState<string>("web_development");
-  const [activeSub, setActiveSub] = useState<string>("all");
   const [subList, setSubList] = useState<string[]>([]);
   const [search, setSearch] = useState("");
   const [confirmDelete, setConfirmDelete] = useState<Project | null>(null);
@@ -111,7 +118,6 @@ export function ProjectsListPage() {
 
   useEffect(() => {
     fetchSubCategoriesFor(activeMain).then(setSubList);
-    setActiveSub("all");
   }, [activeMain]);
 
   const mainProjects = useMemo(
@@ -225,45 +231,23 @@ export function ProjectsListPage() {
         </Link>
       </div>
 
-      {/* Level 1: Main category tabs */}
-      <div className="mt-6 flex flex-wrap gap-2 border-b border-white/[0.08] pb-3">
-        {CATEGORY_OPTIONS.map((c) => {
-          const active = activeMain === c.key;
-          return (
-            <button
-              key={c.key}
-              type="button"
-              onClick={() => setActiveMain(c.key)}
-              className={cn(
-                "inline-flex items-center gap-2 rounded-md px-3.5 py-2 text-sm font-medium transition-colors",
-                active
-                  ? "bg-[#3B82F6]/15 text-white border border-[#3B82F6]/40"
-                  : "border border-white/[0.08] bg-white/[0.02] text-white/65 hover:text-white hover:bg-white/[0.06]",
-              )}
-            >
-              {c.label}
-              <span className="rounded-full bg-white/10 px-1.5 text-[10px] font-mono">{mainCounts[c.key] ?? 0}</span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Level 2: Sub-category chips */}
-      <div className="mt-4 -mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1">
-        <SubChip label={`All (${counts.all ?? 0})`} value="all" active={activeSub === "all"} onClick={setActiveSub} />
-        {subList.map((s) => (
-          <SubChip key={s} label={`${s} (${counts[s] ?? 0})`} value={s} active={activeSub === s} onClick={setActiveSub} />
-        ))}
-        {(counts[UNCATEGORIZED] ?? 0) > 0 && (
-          <SubChip
-            label={`Uncategorized (${counts[UNCATEGORIZED]})`}
-            value={UNCATEGORIZED}
-            active={activeSub === UNCATEGORIZED}
-            onClick={setActiveSub}
-            warn
-          />
-        )}
-      </div>
+      {/* Breadcrumb — reflects active sidebar selection */}
+      <nav
+        aria-label="Breadcrumb"
+        className="mt-6 flex flex-wrap items-center gap-1.5 text-[13px]"
+      >
+        <span className="text-white/45">Projects</span>
+        <span className="text-white/25">›</span>
+        <span className="text-white/45">{CATEGORY_LABEL[activeMain]}</span>
+        <span className="text-white/25">›</span>
+        <span className="font-semibold text-[#F97316]">
+          {activeSub === "all"
+            ? "All"
+            : activeSub === UNCATEGORIZED
+              ? "Uncategorized"
+              : activeSub}
+        </span>
+      </nav>
 
       <div className="mt-4 max-w-sm relative">
         <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
