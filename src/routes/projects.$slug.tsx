@@ -1321,23 +1321,63 @@ function PodcastDetail({
 
 function PodcastClosingCTA() {
   return (
+    <PremiumCta
+      badgeIcon={Star}
+      badgeText="READY WHEN YOU ARE"
+      headingLine1="Your Content Already Exists."
+      headingLine2="Let's Turn It Into a Show."
+      subtext="No microphone, no editing suite, no extra hours — just your existing content and AnamDev."
+      buttonLabel="Discuss Your Podcast"
+      buttonHref="/contact"
+    />
+  );
+}
+
+/**
+ * Shared premium closing-CTA layout: pill badge, two-line heading (second
+ * line uses the site's blue→orange gradient accent), muted subtext, and a
+ * single gradient button. Wrapped in the same CtaRevealCard glow used
+ * elsewhere on the site.
+ */
+function PremiumCta({
+  badgeIcon: BadgeIcon,
+  badgeText,
+  headingLine1,
+  headingLine2,
+  subtext,
+  buttonLabel,
+  buttonHref,
+}: {
+  badgeIcon: LucideIcon;
+  badgeText: string;
+  headingLine1: string;
+  headingLine2: string;
+  subtext: string;
+  buttonLabel: string;
+  buttonHref: string;
+}) {
+  return (
     <section className="py-16 sm:py-20">
       <div className="mx-auto max-w-4xl px-4 sm:px-6">
         <CtaRevealCard>
           <div className="flex flex-col items-center text-center">
-            <h2 className="text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">
-              Ready to Launch{" "}
-              <span className="text-gradient-vo">Something Like This</span>?
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.04] px-3.5 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-white/70">
+              <BadgeIcon className="h-3.5 w-3.5 text-[color:var(--orange)]" aria-hidden />
+              {badgeText}
+            </span>
+            <h2 className="mt-5 text-3xl font-bold leading-[1.12] text-white sm:text-4xl md:text-5xl">
+              <span className="block">{headingLine1}</span>
+              <span className="mt-1 block text-gradient-vo">{headingLine2}</span>
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Let's talk about the show you want to launch.
+              {subtext}
             </p>
             <div className="mt-8">
               <Link
-                to="/contact"
-                className="inline-flex items-center gap-2 rounded-full btn-gradient min-h-9 text-center px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_36px_-10px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] active:scale-[0.98]"
+                to={buttonHref}
+                className="inline-flex items-center gap-2 rounded-full btn-gradient h-11 px-5 text-sm font-semibold text-white shadow-[0_10px_36px_-10px_var(--vo-glow)] transition-all duration-200 hover:scale-[1.03] active:scale-[0.98]"
               >
-                Discuss Your Podcast <ArrowRight className="h-4 w-4" aria-hidden />
+                {buttonLabel} <ArrowRight className="h-4 w-4" aria-hidden />
               </Link>
             </div>
           </div>
@@ -1346,6 +1386,7 @@ function PodcastClosingCTA() {
     </section>
   );
 }
+
 
 function PlatformMockups({
   cover,
