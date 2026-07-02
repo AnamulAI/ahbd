@@ -19,6 +19,9 @@ import {
   ChevronRight,
   Play,
   Pause,
+  Shuffle,
+  Repeat,
+  Star,
   ExternalLink,
   type LucideIcon,
 } from "lucide-react";
@@ -54,6 +57,10 @@ import { FaLinkedin as SiLinkedin } from "react-icons/fa6";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { CtaRevealCard } from "@/components/site/CtaRevealCard";
+import { ProjectVideo } from "@/components/site/ProjectVideo";
+import { ProcessTimeline } from "@/components/site/ProcessTimeline";
+import { ClientLogoBadge } from "@/components/site/ClientLogoBadge";
+import { getBrandChip } from "@/lib/tech-brand-colors";
 import {
   ProjectCard,
   ProjectCategoryBadge,
@@ -107,6 +114,7 @@ type DbProject = {
   testimonial_quote: string | null;
   testimonial_name: string | null;
   testimonial_title: string | null;
+  client_logo_url: string | null;
   // Podcast
   spotify_url: string | null;
   apple_podcasts_url: string | null;
@@ -355,11 +363,33 @@ function TechChips({ stack }: { stack: string[] }) {
   return (
     <div className="flex flex-wrap gap-2">
       {stack.map((t) => {
-        const match = TECH_ICONS[t.toLowerCase().trim()];
+        const key = t.toLowerCase().trim();
+        const match = TECH_ICONS[key];
+        const brand = getBrandChip(t);
+        const borderColor = brand?.color ?? "rgba(255,255,255,0.10)";
+        const textColor = brand?.text ?? brand?.color ?? "rgba(255,255,255,0.85)";
+        const bgColor = brand ? `${brand.color}14` : "rgba(255,255,255,0.04)";
+        const style: React.CSSProperties = brand?.gradient
+          ? {
+              backgroundColor: bgColor,
+              color: textColor,
+              borderWidth: 1,
+              borderStyle: "solid",
+              borderColor: "transparent",
+              backgroundImage: `linear-gradient(${bgColor},${bgColor}), ${brand.gradient}`,
+              backgroundOrigin: "border-box",
+              backgroundClip: "padding-box, border-box",
+            }
+          : {
+              backgroundColor: bgColor,
+              color: textColor,
+              borderColor,
+            };
         return (
           <span
             key={t}
-            className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-medium text-white/85"
+            className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium"
+            style={style}
           >
             {match ? (
               <match.Icon
@@ -370,7 +400,8 @@ function TechChips({ stack }: { stack: string[] }) {
               />
             ) : (
               <CreditCard
-                className="h-3.5 w-3.5 shrink-0 text-[color:var(--primary)]"
+                className="h-3.5 w-3.5 shrink-0"
+                style={{ color: brand?.color ?? "var(--primary)" }}
                 aria-hidden
               />
             )}
@@ -551,6 +582,10 @@ function WebDevDetail({
             </Link>
 
             <div className="mt-8 text-center">
+              <ClientLogoBadge
+                logoUrl={db.client_logo_url}
+                clientName={db.testimonial_name}
+              />
               {db.sub_category_label && (
                 <Eyebrow>// {db.sub_category_label}</Eyebrow>
               )}
@@ -659,29 +694,7 @@ function WebDevDetail({
               <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
                 Process — Step by Step
               </h2>
-              <ol className="mt-10 space-y-8">
-                {steps.map((s, i) => (
-                  <li
-                    key={i}
-                    className="grid grid-cols-[auto,1fr] gap-5 border-b border-white/[0.06] pb-8 last:border-b-0 last:pb-0"
-                  >
-                    <span
-                      aria-hidden
-                      className="font-display text-4xl font-bold leading-none text-white/15 sm:text-5xl"
-                    >
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <div>
-                      <h3 className="font-display text-lg font-bold text-white sm:text-xl">
-                        {s.title}
-                      </h3>
-                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
-                        {s.description}
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
+              <ProcessTimeline steps={steps} />
             </div>
           </section>
         )}
@@ -996,6 +1009,10 @@ function PodcastDetail({
             </Link>
 
             <div className="mt-8 text-center">
+              <ClientLogoBadge
+                logoUrl={db.client_logo_url}
+                clientName={db.testimonial_name}
+              />
               {db.sub_category_label && (
                 <Eyebrow>// {db.sub_category_label}</Eyebrow>
               )}
@@ -1085,29 +1102,7 @@ function PodcastDetail({
               <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
                 Process — Step by Step
               </h2>
-              <ol className="mt-10 space-y-8">
-                {steps.map((s, i) => (
-                  <li
-                    key={i}
-                    className="grid grid-cols-[auto,1fr] gap-5 border-b border-white/[0.06] pb-8 last:border-b-0 last:pb-0"
-                  >
-                    <span
-                      aria-hidden
-                      className="font-display text-4xl font-bold leading-none text-white/15 sm:text-5xl"
-                    >
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <div>
-                      <h3 className="font-display text-lg font-bold text-white sm:text-xl">
-                        {s.title}
-                      </h3>
-                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
-                        {s.description}
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
+              <ProcessTimeline steps={steps} />
             </div>
           </section>
         )}
@@ -1133,13 +1128,7 @@ function PodcastDetail({
                 <span className="text-[color:var(--orange)]">Video</span>
               </h2>
               <div className="mt-8 overflow-hidden rounded-2xl border border-white/8 bg-black">
-                <video
-                  src={db.episode_video_url}
-                  controls
-                  preload="metadata"
-                  poster={cover || undefined}
-                  className="aspect-video w-full"
-                />
+                <ProjectVideo url={db.episode_video_url} poster={cover} aspect="16/9" />
               </div>
               <p className="mt-4 text-center text-sm text-muted-foreground">
                 Every episode can also be delivered as a publish-ready video.
@@ -1518,11 +1507,24 @@ function SpotifyMockup({
       </div>
       <div className="mt-4">
         <div className="text-[11px] font-medium uppercase tracking-wider text-[#1ED760]">Episode</div>
+        <div className="mt-0.5 text-xs text-white/50">AnamDev · The Founder's Mic</div>
         <h3 className="mt-1 line-clamp-2 text-base font-semibold text-white">{title}</h3>
       </div>
-      <div className="mt-4 flex items-center gap-3">
+      {/* Scrubber */}
+      <div className="mt-4">
+        <div className="relative h-1 rounded-full bg-white/10" aria-hidden>
+          <div className="absolute inset-y-0 left-0 w-[30%] rounded-full bg-[#1ED760]" />
+          <div className="absolute -top-[3px] left-[30%] h-[7px] w-[7px] -translate-x-1/2 rounded-full bg-white" />
+        </div>
+        <div className="mt-1.5 flex items-center justify-between text-[10px] font-medium tabular-nums text-white/60">
+          <span>1:24</span>
+          <span>4:12</span>
+        </div>
+      </div>
+      <div className="mt-3 flex items-center justify-center gap-4">
+        <Shuffle className="h-4 w-4 text-white/50" aria-hidden />
         <AudioPlayerButton audioUrl={audioUrl} colorClass="bg-[#1ED760] text-black hover:bg-[#1ED760]" />
-        <div className="h-1 flex-1 rounded-full bg-white/10" aria-hidden />
+        <Repeat className="h-4 w-4 text-white/50" aria-hidden />
       </div>
     </div>
   );
@@ -1558,12 +1560,33 @@ function AppleMockup({
           </a>
         )}
       </div>
+      <div className="mt-4 flex items-center gap-2">
+        <span className="rounded-md bg-neutral-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-neutral-700">
+          Episode 12
+        </span>
+        <div className="inline-flex items-center gap-1 text-[11px] font-medium text-neutral-700">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <Star key={i} className="h-3 w-3 fill-[#F97316] text-[#F97316]" aria-hidden />
+          ))}
+          <span className="ml-1 tabular-nums">4.8</span>
+        </div>
+      </div>
       <div className="mt-4 flex gap-4">
         <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-neutral-100">
           {cover && <img src={cover} alt="" className="h-full w-full object-cover" />}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="text-[11px] font-medium uppercase tracking-wider text-[#FC3497]">Latest Episode</div>
+          <div className="flex items-center justify-between gap-2">
+            <div className="text-[11px] font-medium uppercase tracking-wider text-[#FC3497]">Latest Episode</div>
+            <button
+              type="button"
+              className="rounded-full border border-neutral-300 px-2 py-0.5 text-[10px] font-semibold text-neutral-700"
+              tabIndex={-1}
+              aria-hidden
+            >
+              Subscribe
+            </button>
+          </div>
           <h3 className="mt-1 line-clamp-2 text-sm font-semibold text-neutral-900">{title}</h3>
         </div>
       </div>
@@ -1599,15 +1622,9 @@ function YouTubeMockup({
         </div>
         {externalUrl && <ExternalIconLink href={externalUrl} />}
       </div>
-      <div className="mt-4 aspect-video overflow-hidden rounded-lg bg-black">
+      <div className="relative mt-4 aspect-video overflow-hidden rounded-lg bg-black">
         {playing && videoUrl ? (
-          <video
-            src={videoUrl}
-            controls
-            autoPlay
-            preload="metadata"
-            className="h-full w-full"
-          />
+          <ProjectVideo url={videoUrl} aspect="16/9" autoPlay />
         ) : (
           <button
             type="button"
@@ -1631,11 +1648,17 @@ function YouTubeMockup({
                 <Play className="h-6 w-6 translate-x-[1px] text-white" aria-hidden />
               </span>
             </span>
+            <span className="absolute bottom-2 right-2 rounded bg-black/80 px-1.5 py-0.5 text-[10px] font-semibold tabular-nums text-white">
+              12:34
+            </span>
           </button>
         )}
       </div>
       <h3 className="mt-4 line-clamp-2 text-sm font-semibold text-white">{title}</h3>
       <div className="mt-1 text-xs text-white/50">AnamDev · Podcast</div>
+      <div className="mt-1 text-[11px] text-white/40">
+        1.2K views · 2 days ago
+      </div>
     </div>
   );
 }
@@ -1669,13 +1692,7 @@ function ClipPreview({
         </span>
       </div>
       <div className="mt-4 overflow-hidden rounded-xl border border-white/8 bg-black">
-        <video
-          src={url}
-          controls
-          preload="metadata"
-          className="aspect-[9/16] w-full bg-black"
-          playsInline
-        />
+        <ProjectVideo url={url} aspect="9/16" />
       </div>
       {caption && caption.trim() && (
         <div className="mt-4 rounded-xl border border-white/[0.06] bg-white/[0.03] p-4">
@@ -1799,29 +1816,7 @@ function StaticProjectDetail({ project }: { project: Project }) {
               <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
                 Process — Step by Step
               </h2>
-              <ol className="mt-10 space-y-8">
-                {project.processSteps.map((s, i) => (
-                  <li
-                    key={i}
-                    className="grid grid-cols-[auto,1fr] gap-5 border-b border-white/[0.06] pb-8 last:border-b-0 last:pb-0"
-                  >
-                    <span
-                      aria-hidden
-                      className="font-display text-4xl font-bold leading-none text-white/15 sm:text-5xl"
-                    >
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <div>
-                      <h3 className="font-display text-lg font-bold text-white sm:text-xl">
-                        {s.title}
-                      </h3>
-                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
-                        {s.description}
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
+              <ProcessTimeline steps={project.processSteps} />
             </div>
           </section>
         )}

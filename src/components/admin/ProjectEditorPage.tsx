@@ -50,6 +50,7 @@ type Project = {
   main_category: string;
   sub_category_label: string | null;
   cover_image_url: string | null;
+  client_logo_url: string | null;
   gallery_image_urls: string[];
   description: string;
   tech_stack: string[];
@@ -93,6 +94,7 @@ const EMPTY: Project = {
   main_category: "web_development",
   sub_category_label: null,
   cover_image_url: null,
+  client_logo_url: null,
   gallery_image_urls: [],
   description: "",
   tech_stack: [],
@@ -197,6 +199,7 @@ export function ProjectEditorPage({
           tiktok_clip_caption: s("tiktok_clip_caption"),
           linkedin_clip_url: n("linkedin_clip_url"),
           linkedin_clip_caption: s("linkedin_clip_caption"),
+          client_logo_url: n("client_logo_url"),
         } as Project);
         setSlugDirty(true);
       }
@@ -230,6 +233,7 @@ export function ProjectEditorPage({
       main_category: project.main_category,
       sub_category_label: project.sub_category_label || null,
       cover_image_url: project.cover_image_url,
+      client_logo_url: project.client_logo_url,
       gallery_image_urls: project.gallery_image_urls,
       description: project.description || null,
       tech_stack: project.tech_stack,
@@ -346,6 +350,13 @@ export function ProjectEditorPage({
                   update("slug", slugify(e.target.value));
                 }}
                 className={inputCls}
+              />
+            </div>
+            <div>
+              <ImageUploader
+                label="Client Logo / Photo (optional)"
+                value={project.client_logo_url}
+                onChange={(url) => update("client_logo_url", url)}
               />
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
