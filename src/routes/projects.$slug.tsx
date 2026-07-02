@@ -1395,6 +1395,9 @@ function PremiumCta({
 function PlatformMockups({
   cover,
   episodeTitle,
+  description,
+  showName,
+  channelAvatar,
   audioUrl,
   videoUrl,
   spotifyUrl,
@@ -1403,6 +1406,9 @@ function PlatformMockups({
 }: {
   cover: string;
   episodeTitle: string;
+  description: string | null;
+  showName: string;
+  channelAvatar: string | null;
   audioUrl: string | null;
   videoUrl: string | null;
   spotifyUrl: string | null;
@@ -1424,11 +1430,12 @@ function PlatformMockups({
             <span className="text-gradient-vo">Platforms You Choose</span>
           </h2>
         </div>
-        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
           {showSpotify && (
             <SpotifyMockup
               cover={cover}
               title={episodeTitle}
+              showName={showName}
               audioUrl={audioUrl}
               externalUrl={spotifyUrl}
             />
@@ -1437,6 +1444,8 @@ function PlatformMockups({
             <AppleMockup
               cover={cover}
               title={episodeTitle}
+              description={description}
+              showName={showName}
               audioUrl={audioUrl}
               externalUrl={applePodcastsUrl}
             />
@@ -1445,6 +1454,8 @@ function PlatformMockups({
             <YouTubeMockup
               cover={cover}
               title={episodeTitle}
+              showName={showName}
+              channelAvatar={channelAvatar}
               videoUrl={videoUrl}
               externalUrl={youtubeUrl}
             />
@@ -1454,6 +1465,7 @@ function PlatformMockups({
     </section>
   );
 }
+
 
 function ExternalIconLink({ href }: { href: string }) {
   return (
