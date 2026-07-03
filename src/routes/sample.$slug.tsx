@@ -376,11 +376,8 @@ function SamplePage() {
               {data.business_name.slice(0, 1).toUpperCase()}
             </div>
           )}
-          {showScarcity && (
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-orange/40 bg-orange/10 px-3 py-1.5 text-xs font-medium text-orange">
-              <Flame className="size-3.5" />
-              <span>{scarcityMessage}</span>
-            </div>
+          {showScarcity && scarcityExpiryMs != null && (
+            <ScarcityCountdownBadge expiryMs={scarcityExpiryMs} label={scarcityLabel} />
           )}
           <p className="text-xs font-mono uppercase tracking-wider text-[color:var(--primary)]">
             // YOUR PODCAST PREVIEW
