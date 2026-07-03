@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { useSuspenseQuery, useQuery, queryOptions } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Pause, Play, Rss, Heart, MoreHorizontal, Shuffle, Download, ThumbsUp, Share2, Flame, XCircle, CheckCircle, MessageCircle, CalendarClock, TrendingUp, Users, Clock } from "lucide-react";
+import { ArrowRight, Pause, Play, Rss, Heart, MoreHorizontal, Shuffle, Download, ThumbsUp, Share2, Flame, XCircle, CheckCircle, MessageCircle, CalendarClock, TrendingUp, Users, Clock, AlertCircle } from "lucide-react";
 import {
   SiSpotify, SiApplepodcasts, SiYoutube, SiInstagram, SiTiktok,
   SiFacebook, SiX, SiGoogle,
@@ -44,6 +44,38 @@ const socialProofQuery = queryOptions({
   staleTime: 60_000,
 });
 
+function ScarcityCountdownBadge({ expiryMs, label }: { expiryMs: number; label: string }) {
+  const [now, setNow] = useState<number>(() => Date.now());
+  useEffect(() => {
+    setNow(Date.now());
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const remaining = expiryMs - now;
+  if (remaining <= 0) {
+    return (
+      <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-red-500/40 bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-400">
+        <AlertCircle className="size-3.5" />
+        <span>এই অফার শেষ হয়ে গেছে</span>
+      </div>
+    );
+  }
+  const days = Math.floor(remaining / 86_400_000);
+  const hours = Math.floor((remaining % 86_400_000) / 3_600_000);
+  const mins = Math.floor((remaining % 3_600_000) / 60_000);
+  const secs = Math.floor((remaining % 60_000) / 1000);
+  return (
+    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-orange/40 bg-orange/10 px-3 py-1.5 text-xs font-medium text-orange">
+      <Clock className="size-3.5" />
+      <span>
+        {label ? `${label} — expires in ` : "Expires in "}
+        <span className="tabular-nums font-semibold">
+          {days}d {hours}h {mins}m {secs}s
+        </span>
+      </span>
+    </div>
+  );
+}
 
 const sampleQuery = (slug: string) =>
   queryOptions({
@@ -334,8 +366,19 @@ function SamplePage() {
     (data.topic ? `Episode 1: ${data.topic.split(/[.!?\n]/)[0].trim()}` : "Episode 1");
 
   const scarcityEnabled = !!(data as any).scarcity_enabled;
-  const scarcityMessage = ((data as any).scarcity_message ?? "").toString().trim();
-  const showScarcity = scarcityEnabled && !!scarcityMessage;
+  const scarcityDurationDays: number | null = (() => {
+    const v = (data as any).scarcity_duration_days;
+    if (v == null) return scarcityEnabled ? 7 : null; // legacy default when enabled
+    const n = Number(v);
+    return Number.isFinite(n) && n > 0 ? n : null;
+  })();
+  const scarcityLabel = ((data as any).scarcity_label ?? "").toString().trim();
+  const scarcityCreatedAt = (data as any).created_at as string | null;
+  const scarcityExpiryMs =
+    scarcityCreatedAt && scarcityDurationDays != null
+      ? new Date(scarcityCreatedAt).getTime() + scarcityDurationDays * 86_400_000
+      : null;
+  const showScarcity = scarcityEnabled && scarcityExpiryMs != null;
 
   const estListeners = ((data as any).estimated_listeners ?? "").toString().trim();
   const estReach = ((data as any).estimated_reach_growth ?? "").toString().trim();
@@ -365,11 +408,8 @@ function SamplePage() {
               {data.business_name.slice(0, 1).toUpperCase()}
             </div>
           )}
-          {showScarcity && (
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-orange/40 bg-orange/10 px-3 py-1.5 text-xs font-medium text-orange">
-              <Flame className="size-3.5" />
-              <span>{scarcityMessage}</span>
-            </div>
+          {showScarcity && scarcityExpiryMs != null && (
+            <ScarcityCountdownBadge expiryMs={scarcityExpiryMs} label={scarcityLabel} />
           )}
           <p className="text-xs font-mono uppercase tracking-wider text-[color:var(--primary)]">
             // YOUR PODCAST PREVIEW

@@ -749,7 +749,9 @@ export type Database = {
           logo_url: string | null
           module_order: Json
           platforms: Json
+          scarcity_duration_days: number | null
           scarcity_enabled: boolean
+          scarcity_label: string | null
           scarcity_message: string | null
           show_smm: boolean
           show_video: boolean
@@ -784,7 +786,9 @@ export type Database = {
           logo_url?: string | null
           module_order?: Json
           platforms?: Json
+          scarcity_duration_days?: number | null
           scarcity_enabled?: boolean
+          scarcity_label?: string | null
           scarcity_message?: string | null
           show_smm?: boolean
           show_video?: boolean
@@ -819,7 +823,9 @@ export type Database = {
           logo_url?: string | null
           module_order?: Json
           platforms?: Json
+          scarcity_duration_days?: number | null
           scarcity_enabled?: boolean
+          scarcity_label?: string | null
           scarcity_message?: string | null
           show_smm?: boolean
           show_video?: boolean

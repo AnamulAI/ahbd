@@ -164,6 +164,8 @@ function Builder() {
   const [clientIndustry, setClientIndustry] = useState("");
   const [scarcityEnabled, setScarcityEnabled] = useState(false);
   const [scarcityMessage, setScarcityMessage] = useState("");
+  const [scarcityDurationDays, setScarcityDurationDays] = useState<string>("7");
+  const [scarcityLabel, setScarcityLabel] = useState("Limited-time preview");
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [bookingLink, setBookingLink] = useState("");
   const [estListeners, setEstListeners] = useState("");
@@ -250,6 +252,10 @@ function Builder() {
         setClientIndustry(s.client_industry ?? "");
         setScarcityEnabled(!!s.scarcity_enabled);
         setScarcityMessage(s.scarcity_message ?? "");
+        setScarcityDurationDays(
+          s.scarcity_duration_days != null ? String(s.scarcity_duration_days) : "7",
+        );
+        setScarcityLabel(s.scarcity_label ?? "Limited-time preview");
         setWhatsappNumber(s.whatsapp_number ?? "");
         setBookingLink(s.booking_link ?? "");
         setEstListeners(s.estimated_listeners ?? "");
@@ -367,6 +373,11 @@ function Builder() {
         client_industry: clientIndustry.trim() || null,
         scarcity_enabled: scarcityEnabled,
         scarcity_message: scarcityMessage.trim() || null,
+        scarcity_duration_days: (() => {
+          const n = parseInt(scarcityDurationDays, 10);
+          return Number.isFinite(n) && n > 0 ? n : null;
+        })(),
+        scarcity_label: scarcityLabel.trim() || null,
         whatsapp_number: whatsappNumber.trim() || null,
         booking_link: bookingLink.trim() || null,
         estimated_listeners: estListeners.trim() || null,
@@ -568,14 +579,28 @@ function Builder() {
               checked={scarcityEnabled}
               onChange={setScarcityEnabled}
             />
-            <div>
-              <label className={labelCls}>Scarcity Message</label>
-              <input
-                value={scarcityMessage}
-                onChange={(e) => setScarcityMessage(e.target.value)}
-                placeholder="Only 5 free samples available this month"
-                className={inputCls}
-              />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className={labelCls}>Expires After (Days)</label>
+                <input
+                  type="number"
+                  min={1}
+                  step={1}
+                  value={scarcityDurationDays}
+                  onChange={(e) => setScarcityDurationDays(e.target.value)}
+                  placeholder="7"
+                  className={inputCls}
+                />
+              </div>
+              <div>
+                <label className={labelCls}>Label Text (optional)</label>
+                <input
+                  value={scarcityLabel}
+                  onChange={(e) => setScarcityLabel(e.target.value)}
+                  placeholder="Limited-time preview"
+                  className={inputCls}
+                />
+              </div>
             </div>
           </div>
 
