@@ -44,6 +44,38 @@ const socialProofQuery = queryOptions({
   staleTime: 60_000,
 });
 
+function ScarcityCountdownBadge({ expiryMs, label }: { expiryMs: number; label: string }) {
+  const [now, setNow] = useState<number>(() => Date.now());
+  useEffect(() => {
+    setNow(Date.now());
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const remaining = expiryMs - now;
+  if (remaining <= 0) {
+    return (
+      <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-red-500/40 bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-400">
+        <AlertCircle className="size-3.5" />
+        <span>এই অফার শেষ হয়ে গেছে</span>
+      </div>
+    );
+  }
+  const days = Math.floor(remaining / 86_400_000);
+  const hours = Math.floor((remaining % 86_400_000) / 3_600_000);
+  const mins = Math.floor((remaining % 3_600_000) / 60_000);
+  const secs = Math.floor((remaining % 60_000) / 1000);
+  return (
+    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-orange/40 bg-orange/10 px-3 py-1.5 text-xs font-medium text-orange">
+      <Clock className="size-3.5" />
+      <span>
+        {label ? `${label} — expires in ` : "Expires in "}
+        <span className="tabular-nums font-semibold">
+          {days}d {hours}h {mins}m {secs}s
+        </span>
+      </span>
+    </div>
+  );
+}
 
 const sampleQuery = (slug: string) =>
   queryOptions({
