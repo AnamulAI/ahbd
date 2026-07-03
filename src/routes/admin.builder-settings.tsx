@@ -253,42 +253,38 @@ function BuilderSettingsPage() {
     );
   }
 
-  const searchPanel = Route.useSearch().panel;
-  const panel: BuilderPanelKey = searchPanel ?? DEFAULT_BUILDER_PANEL;
-  const crumbs = BUILDER_PANELS[panel].crumbs;
-
   return (
     <AdminShell email={gate.email}>
-      <nav
-        aria-label="Breadcrumb"
-        className="mb-4 flex flex-wrap items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-white/45"
-      >
-        <Link to="/admin/builder-settings" className="hover:text-white/80">
-          Builder Settings
-        </Link>
-        {crumbs.map((c, i) => (
-          <span key={i} className="flex items-center gap-1.5">
-            <ChevronRight className="h-3 w-3 text-white/25" />
-            <span className={i === crumbs.length - 1 ? "text-white/85" : "hover:text-white/80"}>
-              {c}
-            </span>
-          </span>
-        ))}
-      </nav>
-
       <header className="mb-6">
         <h1 className="font-display text-2xl font-bold tracking-tight text-white">
-          {crumbs[crumbs.length - 1]}
+          Builder Settings
         </h1>
+        <p className="mt-1 text-sm text-white/55">
+          Edit every configurable field the live custom builder reads from.
+        </p>
       </header>
 
+      <div className="mb-6 flex flex-wrap gap-1.5 border-b border-white/[0.06] pb-2">
+        {TABS.map((t) => (
+          <button
+            key={t.key}
+            type="button"
+            onClick={() => setActiveTab(t.key)}
+            className={cn(
+              "rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors",
+              activeTab === t.key
+                ? "bg-[#3B82F6]/20 text-white border border-[#3B82F6]/50"
+                : "text-white/60 hover:text-white hover:bg-white/[0.05] border border-transparent",
+            )}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
       <div className="space-y-8">
-        {(panel === "website:tech" ||
-          panel === "website:usecases" ||
-          panel === "website:tiers" ||
-          panel === "website:suboptions") && (
+        {activeTab === "website" && (
           <WebsiteTab
-            panel={panel}
             techApproaches={techApproaches}
             setTechApproaches={setTechApproaches}
             useCases={useCases}
@@ -302,9 +298,8 @@ function BuilderSettingsPage() {
           />
         )}
 
-        {(panel === "ai:types" || panel === "ai:suboptions") && (
+        {activeTab === "ai" && (
           <AiTab
-            panel={panel}
             aiTypes={aiTypes}
             setAiTypes={setAiTypes}
             options={options}
@@ -312,9 +307,8 @@ function BuilderSettingsPage() {
           />
         )}
 
-        {(panel === "podcast:types" || panel === "podcast:suboptions") && (
+        {activeTab === "podcast" && (
           <PodcastTab
-            panel={panel}
             podcastTypes={podcastTypes}
             setPodcastTypes={setPodcastTypes}
             options={options}
@@ -322,15 +316,12 @@ function BuilderSettingsPage() {
           />
         )}
 
-        {panel === "promo" && (
+        {activeTab === "promo" && (
           <PromoTab promoCards={promoCards} setPromoCards={setPromoCards} />
         )}
 
-        {(panel === "package:signature" ||
-          panel === "package:payment" ||
-          panel === "package:copy") && (
+        {activeTab === "package" && (
           <PackagePaymentTab
-            panel={panel}
             signature={signature}
             setSignature={setSignature}
             paymentPlan={paymentPlan}
