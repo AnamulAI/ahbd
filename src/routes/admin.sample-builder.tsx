@@ -579,14 +579,28 @@ function Builder() {
               checked={scarcityEnabled}
               onChange={setScarcityEnabled}
             />
-            <div>
-              <label className={labelCls}>Scarcity Message</label>
-              <input
-                value={scarcityMessage}
-                onChange={(e) => setScarcityMessage(e.target.value)}
-                placeholder="Only 5 free samples available this month"
-                className={inputCls}
-              />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className={labelCls}>Expires After (Days)</label>
+                <input
+                  type="number"
+                  min={1}
+                  step={1}
+                  value={scarcityDurationDays}
+                  onChange={(e) => setScarcityDurationDays(e.target.value)}
+                  placeholder="7"
+                  className={inputCls}
+                />
+              </div>
+              <div>
+                <label className={labelCls}>Label Text (optional)</label>
+                <input
+                  value={scarcityLabel}
+                  onChange={(e) => setScarcityLabel(e.target.value)}
+                  placeholder="Limited-time preview"
+                  className={inputCls}
+                />
+              </div>
             </div>
           </div>
 
