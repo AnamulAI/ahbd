@@ -164,6 +164,8 @@ function Builder() {
   const [clientIndustry, setClientIndustry] = useState("");
   const [scarcityEnabled, setScarcityEnabled] = useState(false);
   const [scarcityMessage, setScarcityMessage] = useState("");
+  const [scarcityDurationDays, setScarcityDurationDays] = useState<string>("7");
+  const [scarcityLabel, setScarcityLabel] = useState("Limited-time preview");
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [bookingLink, setBookingLink] = useState("");
   const [estListeners, setEstListeners] = useState("");
