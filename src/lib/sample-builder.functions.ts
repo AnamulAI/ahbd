@@ -391,10 +391,11 @@ export const createSample = createServerFn({ method: "POST" })
 export type SampleUpdatePayload = SamplePayload & { id: string };
 
 export const updateSample = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((d: SampleUpdatePayload) => d)
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     try {
-      checkPin(data.pin);
+      await assertAdmin(context);
       if (!data.id) return { ok: false, error: "Missing sample id", slug: null };
       if (!data.business_name?.trim()) return { ok: false, error: "Business name required", slug: null };
       if (!Array.isArray(data.platforms) || data.platforms.length === 0) {
