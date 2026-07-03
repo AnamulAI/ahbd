@@ -308,10 +308,11 @@ function resolveLogoForUpdate(
 }
 
 export const createSample = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((d: SamplePayload) => d)
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     try {
-      checkPin(data.pin);
+      await assertAdmin(context);
       if (!data.business_name?.trim()) return { ok: false, error: "Business name required", slug: null };
       if (!Array.isArray(data.platforms) || data.platforms.length === 0) {
         return { ok: false, error: "Pick at least one platform", slug: null };
