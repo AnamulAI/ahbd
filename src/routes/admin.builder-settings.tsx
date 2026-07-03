@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   Loader2,
@@ -6,19 +6,13 @@ import {
   Trash2,
   ChevronDown,
   ChevronUp,
-  ChevronRight,
   ArrowUp,
   ArrowDown,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminShell, useAdminGate } from "@/components/admin/AdminShell";
-import {
-  BUILDER_PANELS,
-  DEFAULT_BUILDER_PANEL,
-  isBuilderPanel,
-  type BuilderPanelKey,
-} from "@/components/admin/BuilderSettingsSidebarSection";
+import { cn } from "@/lib/utils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,11 +27,17 @@ import {
 export const Route = createFileRoute("/admin/builder-settings")({
   ssr: false,
   head: () => ({ meta: [{ title: "Builder Settings — AnamDev Admin" }] }),
-  validateSearch: (s: Record<string, unknown>) => ({
-    panel: isBuilderPanel(s.panel) ? s.panel : undefined,
-  }),
   component: BuilderSettingsPage,
 });
+
+type TabKey = "website" | "ai" | "podcast" | "promo" | "package";
+const TABS: { key: TabKey; label: string }[] = [
+  { key: "website", label: "Website" },
+  { key: "ai", label: "AI Agent" },
+  { key: "podcast", label: "Podcast" },
+  { key: "promo", label: "Promo Cards" },
+  { key: "package", label: "Package & Payment" },
+];
 
 // ---------- Types ----------
 type TechApproach = {
