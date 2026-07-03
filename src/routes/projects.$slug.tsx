@@ -1072,7 +1072,7 @@ function IntegratorDetail({
         {/* Integration Map */}
         {nodes.length > 0 && (
           <section className="py-16 sm:py-20 bg-white/[0.02]">
-            <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <div className="mx-auto max-w-6xl px-4 sm:px-6 text-center">
               <div className="mx-auto max-w-3xl">
                 <Eyebrow>// HOW IT CONNECTS</Eyebrow>
                 <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
