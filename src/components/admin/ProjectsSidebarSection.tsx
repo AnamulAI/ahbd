@@ -1,36 +1,22 @@
 import { useEffect, useState } from "react";
-import { useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { FolderKanban } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { CATEGORY_OPTIONS } from "@/lib/admin-content-helpers";
-import { fetchSubCategoriesFor } from "@/components/admin/ProjectsListPage";
-import { NestedSidebarNav, type NestedNavNode } from "@/components/admin/NestedSidebarNav";
+import { cn } from "@/lib/utils";
 
-const UNCATEGORIZED = "__uncategorized__";
-
-type ProjectRow = {
-  main_category: string;
-  sub_category_label: string | null;
-};
+type ProjectRow = { main_category: string };
 
 export function ProjectsSidebarSection({ onNavigate }: { onNavigate?: () => void }) {
   const [projects, setProjects] = useState<ProjectRow[]>([]);
-  const [subsByMain, setSubsByMain] = useState<Record<string, string[]>>({});
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const search = useRouterState({ select: (s) => s.location.search as Record<string, string> });
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const { data } = await supabase
-        .from("projects")
-        .select("main_category,sub_category_label");
+      const { data } = await supabase.from("projects").select("main_category");
       if (!cancelled) setProjects((data ?? []) as ProjectRow[]);
-
-      const entries = await Promise.all(
-        CATEGORY_OPTIONS.map(async (c) => [c.key, await fetchSubCategoriesFor(c.key)] as const),
-      );
-      if (!cancelled) setSubsByMain(Object.fromEntries(entries));
     })();
     return () => {
       cancelled = true;
@@ -38,68 +24,52 @@ export function ProjectsSidebarSection({ onNavigate }: { onNavigate?: () => void
   }, []);
 
   const onProjectsRoute = pathname.startsWith("/admin/projects");
-  const activeMain = onProjectsRoute ? (search.main as string | undefined) : undefined;
-  const activeSub = onProjectsRoute ? (search.sub as string | undefined) : undefined;
+  const activeMain = onProjectsRoute
+    ? ((search.main as string | undefined) ?? "web_development")
+    : undefined;
 
-  const children: NestedNavNode[] = CATEGORY_OPTIONS.map((c) => {
-    const subs = subsByMain[c.key] ?? [];
-    const inMain = projects.filter((p) => p.main_category === c.key);
-    const subCounts: Record<string, number> = { [UNCATEGORIZED]: 0 };
-    for (const s of subs) subCounts[s] = 0;
-    for (const p of inMain) {
-      const l = p.sub_category_label;
-      if (l && subs.includes(l)) subCounts[l] = (subCounts[l] ?? 0) + 1;
-      else subCounts[UNCATEGORIZED] = (subCounts[UNCATEGORIZED] ?? 0) + 1;
-    }
+  const counts: Record<string, number> = {};
+  for (const c of CATEGORY_OPTIONS) counts[c.key] = 0;
+  for (const p of projects) counts[p.main_category] = (counts[p.main_category] ?? 0) + 1;
 
-    const isActiveMain = activeMain === c.key;
-
-    const subNodes: NestedNavNode[] = subs.map((label) => ({
-      id: `${c.key}:${label}`,
-      label,
-      count: subCounts[label] ?? 0,
-      to: "/admin/projects",
-      search: { main: c.key, sub: label },
-      active: isActiveMain && activeSub === label,
-    }));
-    // "All" pseudo-leaf so the main category is reachable as a filtered view too.
-    subNodes.unshift({
-      id: `${c.key}:all`,
-      label: "All",
-      count: inMain.length,
-      to: "/admin/projects",
-      search: { main: c.key, sub: undefined },
-      active: isActiveMain && !activeSub,
-    });
-    if ((subCounts[UNCATEGORIZED] ?? 0) > 0) {
-      subNodes.push({
-        id: `${c.key}:uncat`,
-        label: "Uncategorized",
-        count: subCounts[UNCATEGORIZED],
-        to: "/admin/projects",
-        search: { main: c.key, sub: UNCATEGORIZED },
-        active: isActiveMain && activeSub === UNCATEGORIZED,
-      });
-    }
-
-    return {
-      id: c.key,
-      label: c.label,
-      count: inMain.length,
-      children: subNodes,
-      defaultOpen: isActiveMain,
-    };
-  });
-
-  const tree: NestedNavNode[] = [
-    {
-      id: "projects",
-      label: "Projects",
-      icon: FolderKanban,
-      children,
-      defaultOpen: onProjectsRoute,
-    },
-  ];
-
-  return <NestedSidebarNav nodes={tree} onNavigate={onNavigate} />;
+  return (
+    <div>
+      <div className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-white/85">
+        <FolderKanban className="h-4 w-4 shrink-0 text-white/50" />
+        <span className="flex-1 truncate font-medium">Projects</span>
+      </div>
+      <ul className="mt-0.5 ml-4 space-y-0.5 border-l border-white/[0.06] pl-2">
+        {CATEGORY_OPTIONS.map((c) => {
+          const active = activeMain === c.key;
+          return (
+            <li key={c.key}>
+              <Link
+                to="/admin/projects"
+                search={{ main: c.key }}
+                onClick={onNavigate}
+                className={cn(
+                  "group flex items-center gap-2 rounded-md px-3 py-2 text-[13px] transition-colors border",
+                  active
+                    ? "bg-[#3B82F6]/15 text-white border-[#3B82F6]/30"
+                    : "text-white/70 hover:text-white hover:bg-white/[0.05] border-transparent",
+                )}
+              >
+                <span className="flex-1 truncate">{c.label}</span>
+                <span
+                  className={cn(
+                    "inline-flex h-4 min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-mono",
+                    active
+                      ? "bg-[#3B82F6]/25 text-[#93C5FD]"
+                      : "bg-white/[0.06] text-white/55",
+                  )}
+                >
+                  {counts[c.key] ?? 0}
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
 }
