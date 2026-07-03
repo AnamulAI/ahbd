@@ -172,6 +172,8 @@ const VISIBILITY_OPTIONS = [
 function BuilderSettingsPage() {
   const gate = useAdminGate();
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<TabKey>("website");
+  const [loading, setLoading] = useState(true);
 
   const [techApproaches, setTechApproaches] = useState<TechApproach[]>([]);
   const [useCases, setUseCases] = useState<UseCase[]>([]);
