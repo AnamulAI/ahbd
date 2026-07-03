@@ -1080,37 +1080,8 @@ function IntegratorDetail({
                 </h2>
               </div>
 
-              {/* Desktop: horizontal flow */}
-              <div className="mt-10 hidden md:block">
-                <div className="flex items-center gap-3 overflow-x-auto pb-2">
-                  {nodes.map((n, i) => (
-                    <React.Fragment key={`${n}-${i}`}>
-                      <IntegrationNode name={n} />
-                      {i < nodes.length - 1 && (
-                        <ArrowRight
-                          className="h-5 w-5 shrink-0 text-[color:var(--primary)]/70"
-                          aria-hidden
-                        />
-                      )}
-                    </React.Fragment>
-                  ))}
-                </div>
-              </div>
+              <AnimatedIntegrationMap nodes={nodes} />
 
-              {/* Mobile: vertical stack */}
-              <div className="mt-10 flex flex-col items-center gap-3 md:hidden">
-                {nodes.map((n, i) => (
-                  <React.Fragment key={`m-${n}-${i}`}>
-                    <IntegrationNode name={n} />
-                    {i < nodes.length - 1 && (
-                      <ArrowDown
-                        className="h-5 w-5 text-[color:var(--primary)]/70"
-                        aria-hidden
-                      />
-                    )}
-                  </React.Fragment>
-                ))}
-              </div>
             </div>
           </section>
         )}
