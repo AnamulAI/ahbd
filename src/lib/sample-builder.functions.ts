@@ -1,7 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "@/integrations/supabase/types";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const LOGO_BUCKET = "sample-logos";
 const SUPABASE_URL_FALLBACK = "https://kuqqfgngrwduzxrffyhj.supabase.co";
@@ -58,17 +59,17 @@ function safeExt(filename: string | null | undefined, fallback: string): string 
   return part.toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 6) || fallback;
 }
 
-function checkPin(pin: string) {
-  const expected = process.env.ADMIN_PIN;
-  if (!expected) throw new Error("ADMIN_PIN is not configured on the server.");
-  if (typeof pin !== "string" || pin.length === 0) throw new Error("PIN required");
-  if (pin.length !== expected.length) throw new Error("Invalid PIN");
-  let mismatch = 0;
-  for (let i = 0; i < expected.length; i++) {
-    mismatch |= pin.charCodeAt(i) ^ expected.charCodeAt(i);
-  }
-  if (mismatch !== 0) throw new Error("Invalid PIN");
+async function assertAdmin(context: { supabase: SupabaseClient<Database>; userId: string }) {
+  const { data, error } = await context.supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", context.userId)
+    .eq("role", "admin")
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!data) throw new Error("Forbidden: admin only");
 }
+
 
 async function ensureLogoBucket() {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -114,35 +115,39 @@ export async function signSampleRow<T extends Record<string, any> | null>(row: T
 }
 
 export const verifyPin = createServerFn({ method: "POST" })
-  .inputValidator((d: { pin: string }) => d)
-  .handler(async ({ data }) => {
-    checkPin(data.pin);
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
     return { ok: true };
   });
 
 export const listSamples = createServerFn({ method: "POST" })
-  .inputValidator((d: { pin: string }) => d)
-  .handler(async ({ data }) => {
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
     try {
-      checkPin(data.pin);
+      await assertAdmin(context);
       const supabasePublic = createPublicSupabaseClient();
       const { data: rows, error } = await supabasePublic
         .from("sample_previews")
-        .select("id, slug, business_name, created_at")
+        .select("id, slug, business_name, created_at, logo_url")
         .order("created_at", { ascending: false })
         .limit(200);
       if (error) return { samples: [], error: error.message };
-      return { samples: rows ?? [], error: null };
+      const signed = await Promise.all(
+        (rows ?? []).map(async (r) => ({ ...r, logo_url: await maybeSignStorageUrl(r.logo_url) })),
+      );
+      return { samples: signed, error: null };
     } catch (error) {
       return { samples: [], error: errorMessage(error, "Could not load samples") };
     }
   });
 
 export const getSampleForEdit = createServerFn({ method: "POST" })
-  .inputValidator((d: { pin: string; id: string }) => d)
-  .handler(async ({ data }) => {
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { id: string }) => d)
+  .handler(async ({ data, context }) => {
     try {
-      checkPin(data.pin);
+      await assertAdmin(context);
       const supabasePublic = createPublicSupabaseClient();
       const { data: row, error } = await supabasePublic
         .from("sample_previews")
@@ -162,10 +167,12 @@ export const getSampleForEdit = createServerFn({ method: "POST" })
  * canonical storage URL (which the public preview will re-sign at read time).
  */
 export const createMediaUploadUrl = createServerFn({ method: "POST" })
-  .inputValidator((d: { pin: string; kind: UploadKind; filename: string; slugHint?: string }) => d)
-  .handler(async ({ data }) => {
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { kind: UploadKind; filename: string; slugHint?: string }) => d)
+  .handler(async ({ data, context }) => {
     try {
-      checkPin(data.pin);
+      await assertAdmin(context);
+
       const bucket = UPLOAD_BUCKETS[data.kind];
       if (!bucket) return { ok: false, error: "Unknown upload kind" } as const;
 
@@ -223,7 +230,6 @@ function normalizeAudience(value: unknown): AudienceCategory {
 }
 
 export type SamplePayload = {
-  pin: string;
   business_name: string;
   audience_category: AudienceCategory;
   episode_title: string;
@@ -302,10 +308,11 @@ function resolveLogoForUpdate(
 }
 
 export const createSample = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((d: SamplePayload) => d)
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     try {
-      checkPin(data.pin);
+      await assertAdmin(context);
       if (!data.business_name?.trim()) return { ok: false, error: "Business name required", slug: null };
       if (!Array.isArray(data.platforms) || data.platforms.length === 0) {
         return { ok: false, error: "Pick at least one platform", slug: null };
@@ -384,10 +391,11 @@ export const createSample = createServerFn({ method: "POST" })
 export type SampleUpdatePayload = SamplePayload & { id: string };
 
 export const updateSample = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((d: SampleUpdatePayload) => d)
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     try {
-      checkPin(data.pin);
+      await assertAdmin(context);
       if (!data.id) return { ok: false, error: "Missing sample id", slug: null };
       if (!data.business_name?.trim()) return { ok: false, error: "Business name required", slug: null };
       if (!Array.isArray(data.platforms) || data.platforms.length === 0) {
@@ -489,10 +497,11 @@ export const listSocialProofLogos = createServerFn({ method: "GET" }).handler(as
 });
 
 export const createSocialProofLogo = createServerFn({ method: "POST" })
-  .inputValidator((d: { pin: string; logo_base64: string; logo_filename: string }) => d)
-  .handler(async ({ data }) => {
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { logo_base64: string; logo_filename: string }) => d)
+  .handler(async ({ data, context }) => {
     try {
-      checkPin(data.pin);
+      await assertAdmin(context);
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       await ensureLogoBucket();
       const match = data.logo_base64.match(/^data:(.+);base64,(.+)$/);
@@ -527,10 +536,11 @@ export const createSocialProofLogo = createServerFn({ method: "POST" })
   });
 
 export const deleteSocialProofLogo = createServerFn({ method: "POST" })
-  .inputValidator((d: { pin: string; id: string }) => d)
-  .handler(async ({ data }) => {
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { id: string }) => d)
+  .handler(async ({ data, context }) => {
     try {
-      checkPin(data.pin);
+      await assertAdmin(context);
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       const { error } = await supabaseAdmin.from("social_proof_logos").delete().eq("id", data.id);
       if (error) return { ok: false, error: error.message } as const;
@@ -541,10 +551,11 @@ export const deleteSocialProofLogo = createServerFn({ method: "POST" })
   });
 
 export const reorderSocialProofLogos = createServerFn({ method: "POST" })
-  .inputValidator((d: { pin: string; ids: string[] }) => d)
-  .handler(async ({ data }) => {
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { ids: string[] }) => d)
+  .handler(async ({ data, context }) => {
     try {
-      checkPin(data.pin);
+      await assertAdmin(context);
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       for (let i = 0; i < data.ids.length; i++) {
         const { error } = await supabaseAdmin

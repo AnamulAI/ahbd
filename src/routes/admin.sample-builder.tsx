@@ -16,15 +16,26 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Check, Copy, ExternalLink, GripVertical, Loader2, Lock, Pencil, Trash2, Upload, X } from "lucide-react";
+import {
+  Check,
+  Copy,
+  ExternalLink,
+  FileAudio,
+  FileVideo,
+  GripVertical,
+  ImagePlus,
+  Loader2,
+  Pencil,
+  Plus,
+  Save,
+  Trash2,
+  Upload,
+  Wand2,
+  X,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { AdminShell, useAdminGate } from "@/components/admin/AdminShell";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,11 +49,9 @@ import {
   listSocialProofLogos,
   reorderSocialProofLogos,
   updateSample,
-  verifyPin,
   AUDIENCE_CATEGORIES,
   type AudienceCategory,
 } from "@/lib/sample-builder.functions";
-
 
 const AUDIENCE_LABELS: Record<AudienceCategory, string> = {
   marketers: "Marketers",
@@ -54,19 +63,18 @@ const AUDIENCE_LABELS: Record<AudienceCategory, string> = {
 type SearchParams = { id?: string };
 
 export const Route = createFileRoute("/admin/sample-builder")({
+  ssr: false,
   validateSearch: (s: Record<string, unknown>): SearchParams => ({
     id: typeof s.id === "string" ? s.id : undefined,
   }),
   head: () => ({
     meta: [
-      { title: "Sample Preview Builder — AnamDev" },
+      { title: "Sample Builder — AnamDev Admin" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   component: SampleBuilderPage,
 });
-
-const PIN_KEY = "anamdev.sample_pin";
 
 const ALL_PLATFORMS = [
   { id: "spotify", label: "Spotify" },
@@ -82,85 +90,43 @@ const MODULE_LABELS: Record<string, string> = {
 
 type MediaKind = "audio" | "video" | "clip";
 
+// ---- Shared style tokens (mirror Projects editor) ----
+const inputCls =
+  "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none";
+const labelCls =
+  "block text-xs font-mono uppercase tracking-wider text-white/60 mb-1.5";
+const cardCls =
+  "space-y-5 rounded-xl border border-white/[0.08] bg-[#11162A] p-6";
+const sectionTitleCls =
+  "text-[11px] font-mono uppercase tracking-[0.2em] text-white/45";
+
 function SampleBuilderPage() {
   const gate = useAdminGate();
-  const [pin, setPin] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    setPin(sessionStorage.getItem(PIN_KEY));
-  }, []);
 
   if (gate.status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0A0E1A]">
-        <Loader2 className="size-6 animate-spin text-white/60" />
+      <div className="min-h-screen bg-[#0A0E1A] flex items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-white/60" />
       </div>
     );
   }
 
   return (
     <AdminShell email={gate.email}>
-      {!pin ? (
-        <PinGate onUnlock={(p) => setPin(p)} />
-      ) : (
-        <Builder pin={pin} onLock={() => { sessionStorage.removeItem(PIN_KEY); setPin(""); }} />
-      )}
+      <Builder />
     </AdminShell>
   );
 }
 
+type Sample = {
+  id: string;
+  slug: string;
+  business_name: string;
+  created_at: string;
+  logo_url: string | null;
+};
 
-function PinGate({ onUnlock }: { onUnlock: (pin: string) => void }) {
-  const [value, setValue] = useState("");
-  const [loading, setLoading] = useState(false);
-  const verify = useServerFn(verifyPin);
-
-  return (
-    <div className="flex items-center justify-center py-10">
-      <form
-        onSubmit={async (e) => {
-          e.preventDefault();
-          setLoading(true);
-          try {
-            await verify({ data: { pin: value } });
-            sessionStorage.setItem(PIN_KEY, value);
-            onUnlock(value);
-          } catch (err) {
-            toast.error("Invalid PIN");
-          } finally {
-            setLoading(false);
-          }
-        }}
-        className="card-elevated w-full max-w-sm p-8 space-y-5"
-      >
-        <div className="flex items-center gap-2 text-muted-foreground text-xs font-mono uppercase tracking-wider">
-          <Lock className="size-3.5" /> Admin Only
-        </div>
-        <h1 className="text-2xl">Sample Builder</h1>
-        <div className="space-y-2">
-          <Label htmlFor="pin">Enter PIN</Label>
-          <Input
-            id="pin"
-            type="password"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            autoFocus
-            autoComplete="off"
-          />
-        </div>
-        <Button type="submit" disabled={loading || !value} className="btn-gradient min-h-9 text-center w-full">
-          {loading ? <Loader2 className="size-4 animate-spin" /> : "Unlock"}
-        </Button>
-      </form>
-    </div>
-  );
-}
-
-
-type Sample = { id: string; slug: string; business_name: string; created_at: string };
-
-function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
+function Builder() {
   const navigate = useNavigate({ from: "/admin/sample-builder" });
   const { id: editId } = useSearch({ from: "/admin/sample-builder" });
 
@@ -181,7 +147,8 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
   const [showSmm, setShowSmm] = useState(true);
   const [ctaText, setCtaText] = useState("Get This Service →");
   const [ctaLink, setCtaLink] = useState("/services/ai-podcast");
-  const [logoMode, setLogoMode] = useState<"upload" | "link">("upload");
+
+  // Logo state — single dropzone workflow
   const [logoDataUrl, setLogoDataUrl] = useState<string | null>(null);
   const [logoFilename, setLogoFilename] = useState<string | null>(null);
   const [logoExistingUrl, setLogoExistingUrl] = useState<string | null>(null);
@@ -194,7 +161,6 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
   const [clipTt, setClipTt] = useState<string | null>(null);
   const [clipLi, setClipLi] = useState<string | null>(null);
 
-  // New conversion-boosting fields
   const [clientIndustry, setClientIndustry] = useState("");
   const [scarcityEnabled, setScarcityEnabled] = useState(false);
   const [scarcityMessage, setScarcityMessage] = useState("");
@@ -213,8 +179,6 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
   const [loadingEdit, setLoadingEdit] = useState(false);
   const [lastSlug, setLastSlug] = useState<string | null>(null);
   const [samples, setSamples] = useState<Sample[]>([]);
-  const fileRef = useRef<HTMLInputElement>(null);
-
 
   const activeModules = useMemo(() => {
     const base: string[] = [];
@@ -235,7 +199,7 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
   }, [activeModules]);
 
   const refreshList = async () => {
-    const res = await listFn({ data: { pin } });
+    const res = await listFn();
     setSamples(res.samples as Sample[]);
     if (res.error) toast.error(res.error);
   };
@@ -250,14 +214,14 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
     if (!editId) return;
     let cancelled = false;
     setLoadingEdit(true);
-    getFn({ data: { pin, id: editId } })
+    getFn({ data: { id: editId } })
       .then((res) => {
         if (cancelled) return;
         if (!res.sample) {
           toast.error(res.error || "Sample not found");
           return;
         }
-        const s = res.sample;
+        const s = res.sample as any;
         setBusinessName(s.business_name || "");
         setAudienceCategory(
           (AUDIENCE_CATEGORIES as readonly string[]).includes(s.audience_category)
@@ -277,48 +241,34 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
         setLogoDataUrl(null);
         setLogoFilename(null);
         setLogoLinkUrl("");
-        setLogoMode("upload");
         setLogoCleared(false);
         setAudioUrl(s.audio_url);
         setVideoUrl(s.video_url);
         setClipIg(s.clip_instagram_url);
         setClipTt(s.clip_tiktok_url);
         setClipLi(s.clip_linkedin_url);
-        setClientIndustry((s as any).client_industry ?? "");
-        setScarcityEnabled(!!(s as any).scarcity_enabled);
-        setScarcityMessage((s as any).scarcity_message ?? "");
-        setWhatsappNumber((s as any).whatsapp_number ?? "");
-        setBookingLink((s as any).booking_link ?? "");
-        setEstListeners((s as any).estimated_listeners ?? "");
-        setEstReachGrowth((s as any).estimated_reach_growth ?? "");
-        setEstTimeSaved((s as any).estimated_time_saved ?? "");
-        setBeforeState((s as any).before_state ?? "");
-        setAfterState((s as any).after_state ?? "");
-        setIgCaption((s as any).ig_reel_caption ?? "");
-        setTtCaption((s as any).tiktok_clip_caption ?? "");
-        setLiCaption((s as any).linkedin_clip_caption ?? "");
-
+        setClientIndustry(s.client_industry ?? "");
+        setScarcityEnabled(!!s.scarcity_enabled);
+        setScarcityMessage(s.scarcity_message ?? "");
+        setWhatsappNumber(s.whatsapp_number ?? "");
+        setBookingLink(s.booking_link ?? "");
+        setEstListeners(s.estimated_listeners ?? "");
+        setEstReachGrowth(s.estimated_reach_growth ?? "");
+        setEstTimeSaved(s.estimated_time_saved ?? "");
+        setBeforeState(s.before_state ?? "");
+        setAfterState(s.after_state ?? "");
+        setIgCaption(s.ig_reel_caption ?? "");
+        setTtCaption(s.tiktok_clip_caption ?? "");
+        setLiCaption(s.linkedin_clip_caption ?? "");
       })
       .finally(() => !cancelled && setLoadingEdit(false));
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editId]);
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
-
-  const handleLogoFile = (file: File) => {
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Logo must be under 5MB");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => {
-      setLogoDataUrl(reader.result as string);
-      setLogoFilename(file.name);
-      setLogoCleared(false);
-    };
-    reader.readAsDataURL(file);
-  };
 
   const togglePlatform = (id: string) => {
     setPlatforms((prev) => (prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]));
@@ -326,7 +276,7 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
 
   const uploadMedia = async (kind: MediaKind, file: File): Promise<string | null> => {
     const res = await uploadUrlFn({
-      data: { pin, kind, filename: file.name, slugHint: businessName || undefined },
+      data: { kind, filename: file.name, slugHint: businessName || undefined },
     });
     if (!res.ok) {
       toast.error(res.error || "Upload failed");
@@ -339,9 +289,6 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
       toast.error(error.message);
       return null;
     }
-    // previewUrl is a freshly-signed URL that works immediately in the
-    // admin form; it's stored verbatim and the public preview re-signs
-    // the bucket+path on every render so links never go stale.
     return res.previewUrl;
   };
 
@@ -355,7 +302,6 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
     setShowSmm(true);
     setCtaText("Get This Service →");
     setCtaLink("/services/ai-podcast");
-    setLogoMode("upload");
     setLogoDataUrl(null);
     setLogoFilename(null);
     setLogoExistingUrl(null);
@@ -381,34 +327,27 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
     setLiCaption("");
   };
 
-
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!businessName.trim()) return toast.error("Business name required");
     if (platforms.length === 0) return toast.error("Select at least one platform");
     setSubmitting(true);
     try {
-      // Resolve logo payload based on chosen mode.
-      // - upload + new file: send base64+filename, server uploads and stores canonical URL.
-      // - link mode with a URL: send logo_direct_url as the string to store.
-      // - any mode with explicit clear: send logo_direct_url: null.
-      // - else: leave all three undefined to keep the existing logo on update.
       const trimmedLink = logoLinkUrl.trim();
       let logoFields: {
         logo_base64?: string | null;
         logo_filename?: string | null;
         logo_direct_url?: string | null;
       } = {};
-      if (logoMode === "upload" && logoDataUrl) {
+      if (logoDataUrl) {
         logoFields = { logo_base64: logoDataUrl, logo_filename: logoFilename };
-      } else if (logoMode === "link" && trimmedLink) {
+      } else if (trimmedLink) {
         logoFields = { logo_direct_url: trimmedLink };
       } else if (logoCleared) {
         logoFields = { logo_direct_url: null };
       }
 
       const basePayload = {
-        pin,
         business_name: businessName,
         audience_category: audienceCategory,
         episode_title: episodeTitle,
@@ -440,7 +379,6 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
         linkedin_clip_caption: liCaption.trim() || null,
       };
 
-
       const res = isEditing && editId
         ? await updateFn({ data: { ...basePayload, id: editId } as any })
         : await createFn({ data: basePayload as any });
@@ -464,71 +402,94 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
   const lastUrl = lastSlug ? `${origin}/sample/${lastSlug}` : "";
 
   return (
-    <div className="py-10 px-4">
-      <div className="mx-auto max-w-3xl space-y-8">
-
-        <header className="flex items-center justify-between">
-          <div>
-            <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
-              // ADMIN
-            </p>
-            <h1 className="text-3xl mt-1">
-              {isEditing ? "Edit Sample" : "Sample Preview Builder"}
-            </h1>
-          </div>
-          <div className="flex gap-2">
-            {isEditing && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  resetForm();
-                  navigate({ search: {} });
-                }}
-              >
-                New Sample
-              </Button>
+    <>
+      {/* Page header — matches Projects list header */}
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="font-display text-2xl font-bold">
+            {isEditing ? "Edit Sample" : "Sample Builder"}
+          </h1>
+          <p className="mt-1 text-sm text-white/60">
+            Create a personalized podcast preview to send to a prospect.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          {isEditing && (
+            <button
+              type="button"
+              onClick={() => {
+                resetForm();
+                navigate({ search: {} });
+              }}
+              className="inline-flex h-10 items-center gap-2 rounded-md border border-white/[0.12] bg-white/[0.04] px-4 text-sm font-medium text-white hover:bg-white/[0.08]"
+            >
+              <Plus className="h-4 w-4" /> New Sample
+            </button>
+          )}
+          <button
+            type="submit"
+            form="sample-builder-form"
+            disabled={submitting}
+            className="inline-flex h-10 items-center gap-2 rounded-md bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-4 text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 hover:opacity-95 disabled:opacity-60"
+          >
+            {submitting ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="h-4 w-4" />
             )}
-            <Button variant="outline" onClick={onLock} size="sm">Lock</Button>
-          </div>
-        </header>
+            {isEditing ? "Save Changes" : "Create Sample"}
+          </button>
+        </div>
+      </div>
 
-        {lastSlug && (
-          <div className="card-elevated p-5 space-y-3">
-            <p className="text-sm text-muted-foreground">Shareable link ready:</p>
-            <div className="flex items-center gap-2 bg-secondary/40 rounded-md px-3 py-2 font-mono text-sm break-all">
-              {lastUrl}
+      {lastSlug && (
+        <div className="mt-6 flex flex-wrap items-center gap-3 rounded-xl border border-[#3B82F6]/30 bg-[#3B82F6]/[0.08] p-4">
+          <div className="flex-1 min-w-0">
+            <div className="text-xs text-white/60 mb-1">Shareable link ready:</div>
+            <div className="truncate font-mono text-sm text-white">{lastUrl}</div>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              navigator.clipboard.writeText(lastUrl);
+              toast.success("Copied");
+            }}
+            className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.12] bg-white/[0.04] px-3 py-1.5 text-xs text-white hover:bg-white/[0.08]"
+          >
+            <Copy className="h-3.5 w-3.5" /> Copy
+          </button>
+          <a
+            href={`/sample/${lastSlug}`}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.12] bg-white/[0.04] px-3 py-1.5 text-xs text-white hover:bg-white/[0.08]"
+          >
+            <ExternalLink className="h-3.5 w-3.5" /> Open
+          </a>
+        </div>
+      )}
+
+      {loadingEdit ? (
+        <div className="mt-6 flex justify-center rounded-xl border border-white/[0.08] bg-[#11162A] p-10">
+          <Loader2 className="h-6 w-6 animate-spin text-white/60" />
+        </div>
+      ) : (
+        <form id="sample-builder-form" onSubmit={onSubmit} className="mt-6 space-y-6">
+          {/* Basics */}
+          <div className={cardCls}>
+            <div className={sectionTitleCls}>// Basics</div>
+            <div>
+              <label className={labelCls}>Business / Brand Name *</label>
+              <input
+                value={businessName}
+                onChange={(e) => setBusinessName(e.target.value)}
+                required
+                className={inputCls}
+              />
             </div>
-            <div className="flex flex-wrap gap-2">
-              <Button
-                size="sm"
-                onClick={() => {
-                  navigator.clipboard.writeText(lastUrl);
-                  toast.success("Copied");
-                }}
-              >
-                <Copy className="size-4" /> Copy Link
-              </Button>
-              <Button size="sm" variant="outline" asChild>
-                <a href={`/sample/${lastSlug}`} target="_blank" rel="noreferrer">
-                  <ExternalLink className="size-4" /> Open Preview
-                </a>
-              </Button>
-            </div>
-          </div>
-        )}
 
-        {loadingEdit ? (
-          <div className="card-elevated p-10 flex justify-center">
-            <Loader2 className="size-6 animate-spin text-muted-foreground" />
-          </div>
-        ) : (
-          <form onSubmit={onSubmit} className="card-elevated p-6 space-y-6">
-            <Field label="Business / Brand Name *">
-              <Input value={businessName} onChange={(e) => setBusinessName(e.target.value)} required />
-            </Field>
-
-            <Field label="Target Audience *">
+            <div>
+              <label className={labelCls}>Target Audience *</label>
               <div className="grid grid-cols-2 gap-2">
                 {AUDIENCE_CATEGORIES.map((cat) => {
                   const active = audienceCategory === cat;
@@ -540,8 +501,8 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
                       className={cn(
                         "rounded-md border px-4 py-3 text-sm text-left transition-colors",
                         active
-                          ? "border-primary bg-primary/10 text-foreground"
-                          : "border-white/10 bg-secondary/30 text-muted-foreground hover:text-foreground hover:border-white/20",
+                          ? "border-[#3B82F6]/50 bg-[#3B82F6]/[0.12] text-white"
+                          : "border-white/[0.1] bg-[#16181D] text-white/70 hover:border-white/[0.2] hover:text-white",
                       )}
                     >
                       {AUDIENCE_LABELS[cat]}
@@ -549,238 +510,153 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
                   );
                 })}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="mt-1.5 text-[11px] text-white/40">
                 Drives the hero description and closing CTA copy on the public preview.
               </p>
-            </Field>
+            </div>
 
-            <Field label="Client Industry">
-              <Input
+            <div>
+              <label className={labelCls}>Client Industry</label>
+              <input
                 value={clientIndustry}
                 onChange={(e) => setClientIndustry(e.target.value)}
                 placeholder="E-commerce, Business Coaching, Local Services, SaaS…"
+                className={inputCls}
               />
-              <p className="text-xs text-muted-foreground">
+              <p className="mt-1.5 text-[11px] text-white/40">
                 Personalizes hero + closing CTA copy. Leave empty for generic copy.
               </p>
-            </Field>
-
-            <div className="space-y-3 rounded-md border border-white/5 bg-secondary/20 p-4">
-              <ToggleRow
-                label="Show Scarcity Badge"
-                checked={scarcityEnabled}
-                onChange={setScarcityEnabled}
-              />
-              <Field label="Scarcity Message">
-                <Input
-                  value={scarcityMessage}
-                  onChange={(e) => setScarcityMessage(e.target.value)}
-                  placeholder="Only 5 free samples available this month"
-                />
-              </Field>
             </div>
 
+            <ImageDropzone
+              label="Logo"
+              existingUrl={logoExistingUrl}
+              dataUrl={logoDataUrl}
+              cleared={logoCleared}
+              linkUrl={logoLinkUrl}
+              onFile={(f) => {
+                if (f.size > 5 * 1024 * 1024) return toast.error("Logo must be under 5MB");
+                const reader = new FileReader();
+                reader.onload = () => {
+                  setLogoDataUrl(reader.result as string);
+                  setLogoFilename(f.name);
+                  setLogoCleared(false);
+                  setLogoLinkUrl("");
+                };
+                reader.readAsDataURL(f);
+              }}
+              onLinkChange={(v) => {
+                setLogoLinkUrl(v);
+                setLogoCleared(false);
+                setLogoDataUrl(null);
+                setLogoFilename(null);
+              }}
+              onClear={() => {
+                setLogoDataUrl(null);
+                setLogoFilename(null);
+                setLogoLinkUrl("");
+                setLogoCleared(true);
+              }}
+            />
+          </div>
 
+          {/* Conversion — Scarcity */}
+          <div className={cardCls}>
+            <div className={sectionTitleCls}>// Scarcity Badge (optional)</div>
+            <ToggleRow
+              label="Show Scarcity Badge"
+              checked={scarcityEnabled}
+              onChange={setScarcityEnabled}
+            />
+            <div>
+              <label className={labelCls}>Scarcity Message</label>
+              <input
+                value={scarcityMessage}
+                onChange={(e) => setScarcityMessage(e.target.value)}
+                placeholder="Only 5 free samples available this month"
+                className={inputCls}
+              />
+            </div>
+          </div>
 
-
-
-
-            <Field label="Logo">
-              <ModeToggle mode={logoMode} onChange={(m) => { setLogoMode(m); setLogoCleared(false); }} />
-              {logoMode === "upload" ? (
-                <div className="flex items-center gap-4 mt-3">
-                  {logoDataUrl ? (
-                    <img src={logoDataUrl} alt="" className="size-16 rounded bg-white object-contain p-1" />
-                  ) : logoExistingUrl && !logoCleared ? (
-                    <img src={logoExistingUrl} alt="" className="size-16 rounded bg-white object-contain p-1" />
-                  ) : (
-                    <div className="size-16 rounded border border-dashed border-border flex items-center justify-center text-muted-foreground">
-                      <Upload className="size-5" />
-                    </div>
-                  )}
-                  <input
-                    ref={fileRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => {
-                      const f = e.target.files?.[0];
-                      if (f) handleLogoFile(f);
-                    }}
-                  />
-                  <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
-                    {logoDataUrl || (logoExistingUrl && !logoCleared) ? "Replace" : "Upload"}
-                  </Button>
-                  {(logoDataUrl || (logoExistingUrl && !logoCleared)) && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        setLogoDataUrl(null);
-                        setLogoFilename(null);
-                        setLogoCleared(true);
-                      }}
-                    >
-                      Remove
-                    </Button>
-                  )}
-                </div>
-              ) : (
-                <div className="space-y-3 mt-3">
-                  <Input
-                    type="url"
-                    placeholder="https://example.com/logo.png"
-                    value={logoLinkUrl}
-                    onChange={(e) => { setLogoLinkUrl(e.target.value); setLogoCleared(false); }}
-                  />
-                  {(logoLinkUrl.trim() || (logoExistingUrl && !logoCleared)) && (
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={logoLinkUrl.trim() || logoExistingUrl || ""}
-                        alt=""
-                        className="size-16 rounded bg-white object-contain p-1"
-                        onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0.3"; }}
-                      />
-                      {logoExistingUrl && !logoLinkUrl.trim() && !logoCleared && (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setLogoCleared(true)}
-                        >
-                          Remove
-                        </Button>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
-            </Field>
-
-
-            <Field label="Episode Title">
-              <Input
+          {/* Episode */}
+          <div className={cardCls}>
+            <div className={sectionTitleCls}>// Episode</div>
+            <div>
+              <label className={labelCls}>Episode Title</label>
+              <input
                 value={episodeTitle}
                 onChange={(e) => setEpisodeTitle(e.target.value)}
                 placeholder="Episode 1: From One Oven to Three Locations"
+                className={inputCls}
               />
-            </Field>
-
-            <Field label="Topic / Content">
-              <Textarea
+            </div>
+            <div>
+              <label className={labelCls}>Topic / Content</label>
+              <textarea
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
                 placeholder="5 Lessons From Scaling a Local Bakery to 3 Locations"
                 rows={3}
+                className={`${inputCls} resize-y`}
               />
-            </Field>
+            </div>
 
-            <MediaUploadField
+            <MediaDropzone
               label="Episode Audio File"
-              accept=".mp3,.wav,.m4a,audio/*"
               kind="audio"
-              previewType="audio"
+              accept=".mp3,.wav,.m4a,audio/*"
               value={audioUrl}
               onUpload={uploadMedia}
               onChange={setAudioUrl}
               hint="Optional — upload the real podcast audio (.mp3, .wav, .m4a) to make Spotify and Apple play buttons functional."
             />
-
-            <MediaUploadField
+            <MediaDropzone
               label="Episode Video File"
-              accept=".mp4,.mov,.webm,video/*"
               kind="video"
-              previewType="video"
+              accept=".mp4,.mov,.webm,video/*"
               value={videoUrl}
               onUpload={uploadMedia}
               onChange={setVideoUrl}
               hint="Optional — upload the full video episode to power the YouTube card and Video Podcast module."
             />
 
-            <Field label="Podcast Platforms to Preview *">
-              <div className="flex flex-wrap gap-4">
-                {ALL_PLATFORMS.map((p) => (
-                  <label key={p.id} className="flex items-center gap-2 cursor-pointer">
-                    <Checkbox
-                      checked={platforms.includes(p.id)}
-                      onCheckedChange={() => togglePlatform(p.id)}
-                    />
-                    <span className="text-sm">{p.label}</span>
-                  </label>
-                ))}
+            <div>
+              <label className={labelCls}>Podcast Platforms to Preview *</label>
+              <div className="flex flex-wrap gap-2">
+                {ALL_PLATFORMS.map((p) => {
+                  const active = platforms.includes(p.id);
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => togglePlatform(p.id)}
+                      className={cn(
+                        "inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-xs transition-colors",
+                        active
+                          ? "border-[#F97316]/50 bg-[#F97316]/[0.15] text-white"
+                          : "border-white/[0.1] bg-[#16181D] text-white/70 hover:text-white",
+                      )}
+                    >
+                      {active && <Check className="h-3.5 w-3.5" />}
+                      {p.label}
+                    </button>
+                  );
+                })}
               </div>
-            </Field>
+            </div>
+          </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {/* Modules */}
+          <div className={cardCls}>
+            <div className={sectionTitleCls}>// Modules</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <ToggleRow label="Video Podcast Preview" checked={showVideo} onChange={setShowVideo} />
               <ToggleRow label="SMM Marketing Kit Preview" checked={showSmm} onChange={setShowSmm} />
             </div>
 
-            {showSmm && (
-              <div className="space-y-4 rounded-md border border-white/5 bg-secondary/20 p-4">
-                <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
-                  // SMM clips (optional)
-                </p>
-                <MediaUploadField
-                  label="Instagram Reel Clip"
-                  accept=".mp4,.mov,video/*"
-                  kind="clip"
-                  previewType="video"
-                  value={clipIg}
-                  onUpload={uploadMedia}
-                  onChange={setClipIg}
-                  compact
-                />
-                <Field label="Instagram Caption">
-                  <Textarea
-                    rows={3}
-                    value={igCaption}
-                    onChange={(e) => setIgCaption(e.target.value)}
-                    placeholder="Write a caption with emojis and hashtags..."
-                  />
-                </Field>
-                <MediaUploadField
-                  label="TikTok Clip"
-                  accept=".mp4,.mov,video/*"
-                  kind="clip"
-                  previewType="video"
-                  value={clipTt}
-                  onUpload={uploadMedia}
-                  onChange={setClipTt}
-                  compact
-                />
-                <Field label="TikTok Caption">
-                  <Textarea
-                    rows={3}
-                    value={ttCaption}
-                    onChange={(e) => setTtCaption(e.target.value)}
-                    placeholder="Short, punchy hook with trending hashtags..."
-                  />
-                </Field>
-                <MediaUploadField
-                  label="LinkedIn Clip"
-                  accept=".mp4,.mov,video/*"
-                  kind="clip"
-                  previewType="video"
-                  value={clipLi}
-                  onUpload={uploadMedia}
-                  onChange={setClipLi}
-                  compact
-                />
-                <Field label="LinkedIn Caption">
-                  <Textarea
-                    rows={3}
-                    value={liCaption}
-                    onChange={(e) => setLiCaption(e.target.value)}
-                    placeholder="Write a professional caption..."
-                  />
-                </Field>
-              </div>
-            )}
-
-
-            <Field label="Module Order (drag to reorder)">
+            <div>
+              <label className={labelCls}>Module Order (drag to reorder)</label>
               <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}
@@ -802,405 +678,456 @@ function Builder({ pin, onLock }: { pin: string; onLock: () => void }) {
                   </ul>
                 </SortableContext>
               </DndContext>
-            </Field>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <Field label="CTA Button Text">
-                <Input value={ctaText} onChange={(e) => setCtaText(e.target.value)} />
-              </Field>
-              <Field label="CTA Link">
-                <Input value={ctaLink} onChange={(e) => setCtaLink(e.target.value)} />
-              </Field>
             </div>
+          </div>
 
-            <div className="space-y-4 rounded-md border border-white/5 bg-secondary/20 p-4">
-              <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
-                // ROI / Impact Estimator (optional)
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <Field label="Estimated Monthly Listeners">
-                  <Input value={estListeners} onChange={(e) => setEstListeners(e.target.value)} placeholder="500-800" />
-                </Field>
-                <Field label="Estimated Reach Growth">
-                  <Input value={estReachGrowth} onChange={(e) => setEstReachGrowth(e.target.value)} placeholder="3x in 90 days" />
-                </Field>
-                <Field label="Estimated Time Saved">
-                  <Input value={estTimeSaved} onChange={(e) => setEstTimeSaved(e.target.value)} placeholder="6 hrs/week" />
-                </Field>
+          {/* SMM clips */}
+          {showSmm && (
+            <div className={cardCls}>
+              <div className={sectionTitleCls}>// SMM Clips (optional)</div>
+
+              <MediaDropzone
+                label="Instagram Reel Clip"
+                kind="clip"
+                accept=".mp4,.mov,video/*"
+                value={clipIg}
+                onUpload={uploadMedia}
+                onChange={setClipIg}
+              />
+              <div>
+                <label className={labelCls}>Instagram Caption</label>
+                <textarea
+                  rows={3}
+                  value={igCaption}
+                  onChange={(e) => setIgCaption(e.target.value)}
+                  placeholder="Write a caption with emojis and hashtags..."
+                  className={`${inputCls} resize-y`}
+                />
+              </div>
+
+              <MediaDropzone
+                label="TikTok Clip"
+                kind="clip"
+                accept=".mp4,.mov,video/*"
+                value={clipTt}
+                onUpload={uploadMedia}
+                onChange={setClipTt}
+              />
+              <div>
+                <label className={labelCls}>TikTok Caption</label>
+                <textarea
+                  rows={3}
+                  value={ttCaption}
+                  onChange={(e) => setTtCaption(e.target.value)}
+                  placeholder="Short, punchy hook with trending hashtags..."
+                  className={`${inputCls} resize-y`}
+                />
+              </div>
+
+              <MediaDropzone
+                label="LinkedIn Clip"
+                kind="clip"
+                accept=".mp4,.mov,video/*"
+                value={clipLi}
+                onUpload={uploadMedia}
+                onChange={setClipLi}
+              />
+              <div>
+                <label className={labelCls}>LinkedIn Caption</label>
+                <textarea
+                  rows={3}
+                  value={liCaption}
+                  onChange={(e) => setLiCaption(e.target.value)}
+                  placeholder="Write a professional caption..."
+                  className={`${inputCls} resize-y`}
+                />
               </div>
             </div>
+          )}
 
-            <div className="space-y-4 rounded-md border border-white/5 bg-secondary/20 p-4">
-              <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
-                // Before vs After (optional)
-              </p>
-              <Field label="Current State (Before)">
-                <Textarea
-                  rows={3}
-                  value={beforeState}
-                  onChange={(e) => setBeforeState(e.target.value)}
-                  placeholder="e.g. Blog posts with no audio presence, no podcast platform reach"
-                />
-              </Field>
-              <Field label="With AnamDev (After)">
-                <Textarea
-                  rows={3}
-                  value={afterState}
-                  onChange={(e) => setAfterState(e.target.value)}
-                  placeholder="e.g. Weekly podcast live on Spotify, Apple Podcasts, and YouTube, plus ready-to-post social clips"
-                />
-              </Field>
-            </div>
-
-            <div className="space-y-4 rounded-md border border-white/5 bg-secondary/20 p-4">
-              <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
-                // Claim This Setup (optional)
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Field label="WhatsApp Number">
-                  <Input value={whatsappNumber} onChange={(e) => setWhatsappNumber(e.target.value)} placeholder="+8801XXXXXXXXX" />
-                </Field>
-                <Field label="Booking Link (optional)">
-                  <Input value={bookingLink} onChange={(e) => setBookingLink(e.target.value)} placeholder="https://calendly.com/…" />
-                </Field>
+          {/* Call to action */}
+          <div className={cardCls}>
+            <div className={sectionTitleCls}>// Call to Action</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className={labelCls}>CTA Button Text</label>
+                <input value={ctaText} onChange={(e) => setCtaText(e.target.value)} className={inputCls} />
+              </div>
+              <div>
+                <label className={labelCls}>CTA Link</label>
+                <input value={ctaLink} onChange={(e) => setCtaLink(e.target.value)} className={inputCls} />
               </div>
             </div>
+          </div>
 
+          {/* ROI */}
+          <div className={cardCls}>
+            <div className={sectionTitleCls}>// ROI / Impact Estimator (optional)</div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className={labelCls}>Estimated Monthly Listeners</label>
+                <input value={estListeners} onChange={(e) => setEstListeners(e.target.value)} placeholder="500-800" className={inputCls} />
+              </div>
+              <div>
+                <label className={labelCls}>Estimated Reach Growth</label>
+                <input value={estReachGrowth} onChange={(e) => setEstReachGrowth(e.target.value)} placeholder="3x in 90 days" className={inputCls} />
+              </div>
+              <div>
+                <label className={labelCls}>Estimated Time Saved</label>
+                <input value={estTimeSaved} onChange={(e) => setEstTimeSaved(e.target.value)} placeholder="6 hrs/week" className={inputCls} />
+              </div>
+            </div>
+          </div>
 
+          {/* Before / After */}
+          <div className={cardCls}>
+            <div className={sectionTitleCls}>// Before vs After (optional)</div>
+            <div>
+              <label className={labelCls}>Current State (Before)</label>
+              <textarea rows={3} value={beforeState} onChange={(e) => setBeforeState(e.target.value)} placeholder="e.g. Blog posts with no audio presence, no podcast platform reach" className={`${inputCls} resize-y`} />
+            </div>
+            <div>
+              <label className={labelCls}>With AnamDev (After)</label>
+              <textarea rows={3} value={afterState} onChange={(e) => setAfterState(e.target.value)} placeholder="e.g. Weekly podcast live on Spotify, Apple Podcasts, and YouTube, plus ready-to-post social clips" className={`${inputCls} resize-y`} />
+            </div>
+          </div>
 
-            <Button type="submit" className="btn-gradient min-h-9 text-center w-full" disabled={submitting}>
-              {submitting ? <Loader2 className="size-4 animate-spin" /> : isEditing ? "Save Changes" : "Create Sample"}
-            </Button>
-          </form>
-        )}
+          {/* Contact */}
+          <div className={cardCls}>
+            <div className={sectionTitleCls}>// Claim This Setup (optional)</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className={labelCls}>WhatsApp Number</label>
+                <input value={whatsappNumber} onChange={(e) => setWhatsappNumber(e.target.value)} placeholder="+8801XXXXXXXXX" className={inputCls} />
+              </div>
+              <div>
+                <label className={labelCls}>Booking Link (optional)</label>
+                <input value={bookingLink} onChange={(e) => setBookingLink(e.target.value)} placeholder="https://calendly.com/…" className={inputCls} />
+              </div>
+            </div>
+          </div>
 
-        <section className="card-elevated p-6">
-          <h2 className="text-lg mb-4">Previous Samples</h2>
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              disabled={submitting}
+              className="inline-flex h-10 items-center gap-2 rounded-md bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-5 text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 hover:opacity-95 disabled:opacity-60"
+            >
+              {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+              {isEditing ? "Save Changes" : "Create Sample"}
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* Previous Samples */}
+      <section className="mt-8">
+        <div className="mb-3 flex items-end justify-between gap-3">
+          <div>
+            <h2 className="font-display text-lg font-semibold">Previous Samples</h2>
+            <p className="text-xs text-white/50">Every sample you've generated.</p>
+          </div>
+        </div>
+        <div className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#11162A]">
           {samples.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No samples yet.</p>
+            <div className="flex flex-col items-center justify-center gap-3 py-14 text-center">
+              <Wand2 className="h-10 w-10 text-white/30" />
+              <p className="text-sm text-white/60">No samples yet.</p>
+            </div>
           ) : (
-            <ul className="divide-y divide-white/10">
-              {samples.map((s) => {
-                const url = `${origin}/sample/${s.slug}`;
-                return (
-                  <li key={s.id} className="py-3 flex flex-wrap items-center gap-3">
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium truncate">{s.business_name}</div>
-                      <div className="text-xs text-muted-foreground font-mono truncate">/sample/{s.slug}</div>
-                    </div>
-                    <span className="text-xs text-muted-foreground">
-                      {new Date(s.created_at).toLocaleDateString()}
-                    </span>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => {
-                        navigate({ search: { id: s.id } });
-                        window.scrollTo({ top: 0, behavior: "smooth" });
-                      }}
-                    >
-                      <Pencil className="size-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => {
-                        navigator.clipboard.writeText(url);
-                        toast.success("Copied");
-                      }}
-                    >
-                      <Copy className="size-4" />
-                    </Button>
-                    <Button size="sm" variant="outline" asChild>
-                      <a href={`/sample/${s.slug}`} target="_blank" rel="noreferrer">
-                        <ExternalLink className="size-4" />
-                      </a>
-                    </Button>
-                  </li>
-                );
-              })}
+            <ul className="divide-y divide-white/[0.05]">
+              {samples.map((s) => (
+                <SampleRow
+                  key={s.id}
+                  sample={s}
+                  onEdit={() => {
+                    navigate({ search: { id: s.id } });
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                  onDuplicate={() => {
+                    navigator.clipboard.writeText(`${origin}/sample/${s.slug}`);
+                    toast.success("Link copied");
+                  }}
+                />
+              ))}
             </ul>
           )}
-        </section>
+        </div>
+      </section>
 
-        <SocialProofLogosPanel pin={pin} />
-
-      </div>
-    </div>
-
+      <SocialProofLogosPanel />
+    </>
   );
 }
 
-type LogoRow = { id: string; logo_url: string; sort_order: number };
-
-function SocialProofLogosPanel({ pin }: { pin: string }) {
-  const listFn = useServerFn(listSocialProofLogos);
-  const createFn = useServerFn(createSocialProofLogo);
-  const deleteFn = useServerFn(deleteSocialProofLogo);
-  const reorderFn = useServerFn(reorderSocialProofLogos);
-  const [logos, setLogos] = useState<LogoRow[]>([]);
-  const [busy, setBusy] = useState(false);
-  const fileRef = useRef<HTMLInputElement>(null);
-
-  const refresh = () => {
-    listFn().then((r) => setLogos((r.logos as LogoRow[]) || []));
-  };
-  useEffect(() => { refresh(); /* eslint-disable-next-line */ }, []);
-
-  const handleFile = async (file: File) => {
-    if (file.size > 2 * 1024 * 1024) return toast.error("Logo must be under 2MB");
-    const reader = new FileReader();
-    reader.onload = async () => {
-      setBusy(true);
-      try {
-        const res = await createFn({ data: { pin, logo_base64: reader.result as string, logo_filename: file.name } });
-        if (!res.ok) return toast.error(res.error || "Failed");
-        toast.success("Logo added");
-        refresh();
-      } finally { setBusy(false); }
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const move = async (idx: number, dir: -1 | 1) => {
-    const next = [...logos];
-    const j = idx + dir;
-    if (j < 0 || j >= next.length) return;
-    [next[idx], next[j]] = [next[j], next[idx]];
-    setLogos(next);
-    await reorderFn({ data: { pin, ids: next.map((l) => l.id) } });
-  };
-
-  const remove = async (id: string) => {
-    if (!confirm("Delete this logo?")) return;
-    const res = await deleteFn({ data: { pin, id } });
-    if (!res.ok) return toast.error(res.error || "Failed");
-    refresh();
-  };
-
-  return (
-    <section className="card-elevated p-6 space-y-4">
-      <div>
-        <h2 className="text-lg">Social Proof Logos</h2>
-        <p className="text-xs text-muted-foreground">Shown on all sample pages. Global list, not per-sample.</p>
-      </div>
-      <div className="flex items-center gap-3">
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={(e) => {
-            const f = e.target.files?.[0];
-            if (f) handleFile(f);
-            e.target.value = "";
-          }}
-        />
-        <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()} disabled={busy}>
-          {busy ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />} Upload Logo
-        </Button>
-      </div>
-      {logos.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No logos yet.</p>
-      ) : (
-        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {logos.map((l, i) => (
-            <li key={l.id} className="flex items-center gap-3 rounded-md border border-white/10 bg-secondary/30 p-3">
-              <img src={l.logo_url} alt="" className="h-10 w-24 object-contain bg-white rounded p-1" />
-              <div className="ml-auto flex items-center gap-1">
-                <Button size="sm" variant="ghost" onClick={() => move(i, -1)} disabled={i === 0}>↑</Button>
-                <Button size="sm" variant="ghost" onClick={() => move(i, 1)} disabled={i === logos.length - 1}>↓</Button>
-                <Button size="sm" variant="ghost" onClick={() => remove(l.id)}><Trash2 className="size-4" /></Button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
-  );
-}
-
-
-function isYouTubeUrl(url: string): boolean {
-  try {
-    const host = new URL(url).hostname.replace(/^www\./, "");
-    return host === "youtu.be" || host.endsWith("youtube.com");
-  } catch { return false; }
-}
-
-function ModeToggle({
-  mode, onChange,
+function SampleRow({
+  sample,
+  onEdit,
+  onDuplicate,
 }: {
-  mode: "upload" | "link";
-  onChange: (m: "upload" | "link") => void;
+  sample: Sample;
+  onEdit: () => void;
+  onDuplicate: () => void;
 }) {
   return (
-    <div className="inline-flex rounded-md border border-white/10 bg-secondary/30 p-0.5 text-xs">
+    <li className="flex items-center gap-3 px-4 py-3 hover:bg-white/[0.02]">
+      <div className="h-12 w-16 shrink-0 overflow-hidden rounded-md border border-white/[0.06] bg-[#0B0F1A] flex items-center justify-center">
+        {sample.logo_url ? (
+          <img src={sample.logo_url} alt="" className="h-full w-full object-contain p-1" />
+        ) : (
+          <Wand2 className="h-5 w-5 text-white/30" />
+        )}
+      </div>
+      <div className="flex-1 min-w-0">
+        <button
+          type="button"
+          onClick={onEdit}
+          className="block truncate text-left text-sm font-medium text-white hover:text-[#3B82F6]"
+        >
+          {sample.business_name}
+        </button>
+        <div className="truncate text-[11px] text-white/45 font-mono">
+          /sample/{sample.slug}
+        </div>
+      </div>
+      <a
+        href={`/sample/${sample.slug}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="hidden sm:inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-white/50 transition-colors hover:text-[#3B82F6]"
+        aria-label={`View ${sample.business_name} live in a new tab`}
+      >
+        <ExternalLink className="h-3.5 w-3.5" />
+        <span>View Live</span>
+      </a>
       <button
         type="button"
-        onClick={() => onChange("upload")}
-        className={cn(
-          "px-3 py-1 rounded transition-colors",
-          mode === "upload" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground",
-        )}
+        onClick={onEdit}
+        className="inline-flex h-8 w-8 items-center justify-center rounded-md text-white/60 hover:bg-white/[0.06] hover:text-white"
+        aria-label="Edit"
       >
-        Upload File
+        <Pencil className="h-4 w-4" />
       </button>
       <button
         type="button"
-        onClick={() => onChange("link")}
-        className={cn(
-          "px-3 py-1 rounded transition-colors",
-          mode === "link" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground",
-        )}
+        onClick={onDuplicate}
+        className="inline-flex h-8 w-8 items-center justify-center rounded-md text-white/60 hover:bg-white/[0.06] hover:text-white"
+        aria-label="Copy link"
       >
-        Paste Link
+        <Copy className="h-4 w-4" />
       </button>
+    </li>
+  );
+}
+
+// ---------------- Dropzone components (Projects-style) ----------------
+
+function ImageDropzone({
+  label,
+  existingUrl,
+  dataUrl,
+  cleared,
+  linkUrl,
+  onFile,
+  onLinkChange,
+  onClear,
+}: {
+  label: string;
+  existingUrl: string | null;
+  dataUrl: string | null;
+  cleared: boolean;
+  linkUrl: string;
+  onFile: (f: File) => void;
+  onLinkChange: (v: string) => void;
+  onClear: () => void;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const shown = dataUrl || linkUrl.trim() || (cleared ? null : existingUrl);
+  return (
+    <div className="space-y-2">
+      <label className={labelCls}>{label}</label>
+      {shown ? (
+        <div className="relative overflow-hidden rounded-md border border-white/[0.08] bg-[#0B0F1A]">
+          <img src={shown} alt="" className="mx-auto max-h-40 object-contain p-4" />
+          <button
+            type="button"
+            onClick={onClear}
+            className="absolute top-2 right-2 inline-flex h-7 w-7 items-center justify-center rounded-md bg-black/70 text-white/80 hover:bg-black/90 hover:text-white"
+            aria-label="Remove"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          className="flex aspect-[3/1] w-full flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-white/[0.12] bg-[#0B0F1A] text-white/50 hover:border-[#3B82F6]/40 hover:text-white/80"
+        >
+          <ImagePlus className="h-6 w-6" />
+          <span className="text-xs">Click to upload</span>
+        </button>
+      )}
+      <div className="flex gap-2">
+        <input
+          type="text"
+          placeholder="…or paste a public image URL"
+          value={linkUrl}
+          onChange={(e) => onLinkChange(e.target.value)}
+          className="flex-1 rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-1.5 text-xs text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none"
+        />
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.1] bg-white/[0.04] px-3 py-1.5 text-xs text-white/80 hover:bg-white/[0.08]"
+        >
+          <Upload className="h-3.5 w-3.5" /> Upload
+        </button>
+      </div>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) onFile(f);
+          e.target.value = "";
+        }}
+      />
     </div>
   );
 }
 
-function MediaUploadField({
+function MediaDropzone({
   label,
-  accept,
   kind,
-  previewType,
+  accept,
   value,
   onUpload,
   onChange,
   hint,
-  compact,
 }: {
   label: string;
-  accept: string;
   kind: MediaKind;
-  previewType: "audio" | "video";
+  accept: string;
   value: string | null;
   onUpload: (kind: MediaKind, file: File) => Promise<string | null>;
   onChange: (url: string | null) => void;
   hint?: string;
-  compact?: boolean;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [uploading, setUploading] = useState(false);
-  const [mode, setMode] = useState<"upload" | "link">("upload");
-  const [linkDraft, setLinkDraft] = useState<string>("");
-
-  // If a value exists that doesn't look like a storage signed/public URL,
-  // default the view to "link" mode so Anamul sees what was saved.
-  useEffect(() => {
-    if (value && !/\/storage\/v1\/object\//.test(value)) {
-      setMode("link");
-      setLinkDraft(value);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const [busy, setBusy] = useState(false);
+  const Icon = kind === "audio" ? FileAudio : FileVideo;
+  const isAudio = kind === "audio";
 
   const handleFile = async (file: File) => {
-    setUploading(true);
+    setBusy(true);
     try {
       const url = await onUpload(kind, file);
       if (url) onChange(url);
     } finally {
-      setUploading(false);
+      setBusy(false);
     }
   };
 
-  const commitLink = (raw: string) => {
-    const trimmed = raw.trim();
-    onChange(trimmed ? trimmed : null);
-  };
-
-  const isYoutube = value ? isYouTubeUrl(value) : false;
+  const isYoutube = value
+    ? (() => {
+        try {
+          const h = new URL(value).hostname.replace(/^www\./, "");
+          return h === "youtu.be" || h.endsWith("youtube.com");
+        } catch {
+          return false;
+        }
+      })()
+    : false;
 
   return (
     <div className="space-y-2">
-      <Label>{label}</Label>
-      <ModeToggle mode={mode} onChange={setMode} />
-      <div className={cn("flex flex-wrap items-start gap-3 mt-2", compact && "items-center")}>
-        {mode === "upload" ? (
-          <>
-            <input
-              ref={inputRef}
-              type="file"
-              accept={accept}
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) handleFile(f);
-                e.target.value = "";
-              }}
-            />
-            <Button
+      <label className={labelCls}>{label}</label>
+      {value ? (
+        <div className="space-y-2 rounded-md border border-white/[0.08] bg-[#0B0F1A] p-3">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex min-w-0 items-center gap-2 text-xs text-white/70">
+              <Icon className="h-4 w-4 shrink-0 text-[#3B82F6]" />
+              <span className="truncate">{value.split("/").pop()?.split("?")[0] || value}</span>
+            </div>
+            <button
               type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => inputRef.current?.click()}
-              disabled={uploading}
+              onClick={() => onChange(null)}
+              className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-red-400/80 hover:bg-red-500/10 hover:text-red-300"
+              aria-label="Remove"
             >
-              {uploading ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />}
-              {uploading ? "Uploading…" : value && /\/storage\/v1\/object\//.test(value) ? "Replace" : "Upload"}
-            </Button>
-            {value && (
-              <Button type="button" variant="ghost" size="sm" onClick={() => onChange(null)}>
-                <X className="size-4" /> Remove
-              </Button>
-            )}
-          </>
-        ) : (
-          <div className="flex w-full flex-wrap items-center gap-2">
-            <Input
-              type="url"
-              value={linkDraft}
-              onChange={(e) => setLinkDraft(e.target.value)}
-              onBlur={(e) => commitLink(e.target.value)}
-              placeholder="https://… (YouTube link or direct .mp4/.mp3 URL)"
-              className="flex-1 min-w-[200px]"
-            />
-            <Button type="button" size="sm" onClick={() => commitLink(linkDraft)}>
-              Save Link
-            </Button>
-            {value && (
-              <Button type="button" variant="ghost" size="sm" onClick={() => { setLinkDraft(""); onChange(null); }}>
-                <X className="size-4" /> Remove
-              </Button>
-            )}
+              <X className="h-4 w-4" />
+            </button>
           </div>
-        )}
+          {isYoutube ? (
+            <p className="text-[11px] text-white/45 font-mono break-all">
+              YouTube link saved — will embed on preview
+            </p>
+          ) : isAudio ? (
+            <audio src={value} controls className="w-full" preload="metadata" />
+          ) : (
+            <video src={value} controls preload="metadata" className="w-full rounded-md bg-black" style={{ maxHeight: 220 }} />
+          )}
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          disabled={busy}
+          className="flex w-full flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-white/[0.12] bg-[#0B0F1A] px-3 py-6 text-white/50 hover:border-[#3B82F6]/40 hover:text-white/80 disabled:opacity-60"
+        >
+          {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : <Icon className="h-5 w-5" />}
+          <span className="text-xs">Click to upload {isAudio ? "audio" : "video"}</span>
+        </button>
+      )}
 
-        {value && (
-          <div className={cn("w-full", compact ? "max-w-xs" : "max-w-md")}>
-            {isYoutube ? (
-              <p className="text-xs text-muted-foreground font-mono break-all">
-                YouTube link saved · will embed on preview
-              </p>
-            ) : previewType === "audio" ? (
-              <audio src={value} controls className="w-full" />
-            ) : (
-              <video src={value} controls className="w-full rounded-md bg-black" style={{ maxHeight: 200 }} />
-            )}
-          </div>
-        )}
+      <div className="flex gap-2">
+        <input
+          type="text"
+          placeholder="…or paste a public URL (YouTube, .mp4, .mp3)"
+          value={value ?? ""}
+          onChange={(e) => onChange(e.target.value || null)}
+          className="flex-1 rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-1.5 text-xs text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none"
+        />
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.1] bg-white/[0.04] px-3 py-1.5 text-xs text-white/80 hover:bg-white/[0.08]"
+        >
+          <Upload className="h-3.5 w-3.5" /> Upload
+        </button>
       </div>
-      {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept={accept}
+        className="hidden"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) handleFile(f);
+          e.target.value = "";
+        }}
+      />
+      {hint && <p className="text-[11px] text-white/40">{hint}</p>}
     </div>
   );
 }
 
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function ToggleRow({
+  label,
+  checked,
+  onChange,
+}: {
+  label: string;
+  checked: boolean;
+  onChange: (b: boolean) => void;
+}) {
   return (
-    <div className="space-y-2">
-      <Label>{label}</Label>
-      {children}
-    </div>
-  );
-}
-
-function ToggleRow({ label, checked, onChange }: { label: string; checked: boolean; onChange: (b: boolean) => void }) {
-  return (
-    <div className="flex items-center justify-between bg-secondary/30 rounded-md px-4 py-3">
-      <span className="text-sm">{label}</span>
+    <div className="flex items-center justify-between rounded-md border border-white/[0.08] bg-[#16181D] px-4 py-3">
+      <span className="text-sm text-white/85">{label}</span>
       <Switch checked={checked} onCheckedChange={onChange} />
     </div>
   );
@@ -1213,15 +1140,149 @@ function SortableItem({ id, label }: { id: string; label: string }) {
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
       className={cn(
-        "flex items-center gap-3 bg-secondary/40 rounded-md px-4 py-3 border border-white/5",
-        isDragging && "opacity-60"
+        "flex items-center gap-3 rounded-md border border-white/[0.08] bg-[#16181D] px-4 py-3",
+        isDragging && "opacity-60",
       )}
     >
-      <button type="button" className="cursor-grab touch-none text-muted-foreground" {...attributes} {...listeners}>
-        <GripVertical className="size-4" />
+      <button type="button" className="cursor-grab touch-none text-white/40" {...attributes} {...listeners}>
+        <GripVertical className="h-4 w-4" />
       </button>
-      <Check className="size-4 text-primary" />
-      <span className="text-sm">{label}</span>
+      <Check className="h-4 w-4 text-[#3B82F6]" />
+      <span className="text-sm text-white/85">{label}</span>
     </li>
+  );
+}
+
+// ---------------- Social Proof Logos ----------------
+
+type LogoRow = { id: string; logo_url: string; sort_order: number };
+
+function SocialProofLogosPanel() {
+  const listFn = useServerFn(listSocialProofLogos);
+  const createFn = useServerFn(createSocialProofLogo);
+  const deleteFn = useServerFn(deleteSocialProofLogo);
+  const reorderFn = useServerFn(reorderSocialProofLogos);
+  const [logos, setLogos] = useState<LogoRow[]>([]);
+  const [busy, setBusy] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const refresh = () => {
+    listFn().then((r) => setLogos((r.logos as LogoRow[]) || []));
+  };
+  useEffect(() => {
+    refresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleFile = async (file: File) => {
+    if (file.size > 2 * 1024 * 1024) return toast.error("Logo must be under 2MB");
+    const reader = new FileReader();
+    reader.onload = async () => {
+      setBusy(true);
+      try {
+        const res = await createFn({
+          data: { logo_base64: reader.result as string, logo_filename: file.name },
+        });
+        if (!res.ok) return toast.error(res.error || "Failed");
+        toast.success("Logo added");
+        refresh();
+      } finally {
+        setBusy(false);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const move = async (idx: number, dir: -1 | 1) => {
+    const next = [...logos];
+    const j = idx + dir;
+    if (j < 0 || j >= next.length) return;
+    [next[idx], next[j]] = [next[j], next[idx]];
+    setLogos(next);
+    await reorderFn({ data: { ids: next.map((l) => l.id) } });
+  };
+
+  const remove = async (id: string) => {
+    if (!confirm("Delete this logo?")) return;
+    const res = await deleteFn({ data: { id } });
+    if (!res.ok) return toast.error(res.error || "Failed");
+    refresh();
+  };
+
+  return (
+    <section className="mt-8">
+      <div className="mb-3 flex items-end justify-between gap-3">
+        <div>
+          <h2 className="font-display text-lg font-semibold">Social Proof Logos</h2>
+          <p className="text-xs text-white/50">
+            Shown on all sample pages. Global list, not per-sample.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => fileRef.current?.click()}
+          disabled={busy}
+          className="inline-flex h-9 items-center gap-2 rounded-md border border-white/[0.12] bg-white/[0.04] px-3 text-xs font-medium text-white hover:bg-white/[0.08] disabled:opacity-60"
+        >
+          {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
+          Upload Logo
+        </button>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) handleFile(f);
+            e.target.value = "";
+          }}
+        />
+      </div>
+      <div className="rounded-xl border border-white/[0.08] bg-[#11162A] p-4">
+        {logos.length === 0 ? (
+          <p className="py-8 text-center text-sm text-white/50">No logos yet.</p>
+        ) : (
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {logos.map((l, i) => (
+              <li
+                key={l.id}
+                className="flex items-center gap-3 rounded-md border border-white/[0.08] bg-[#16181D] p-3"
+              >
+                <img src={l.logo_url} alt="" className="h-10 w-24 rounded bg-white object-contain p-1" />
+                <div className="ml-auto flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => move(i, -1)}
+                    disabled={i === 0}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-md text-white/60 hover:bg-white/[0.06] hover:text-white disabled:opacity-30"
+                    aria-label="Move up"
+                  >
+                    ↑
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => move(i, 1)}
+                    disabled={i === logos.length - 1}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-md text-white/60 hover:bg-white/[0.06] hover:text-white disabled:opacity-30"
+                    aria-label="Move down"
+                  >
+                    ↓
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => remove(l.id)}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-md text-red-400/80 hover:bg-red-500/10 hover:text-red-300"
+                    aria-label="Delete"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </section>
   );
 }
