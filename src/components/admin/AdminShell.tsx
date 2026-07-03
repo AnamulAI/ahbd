@@ -23,7 +23,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { ProjectsSidebarSection } from "@/components/admin/ProjectsSidebarSection";
-import { BuilderSettingsSidebarSection } from "@/components/admin/BuilderSettingsSidebarSection";
+
 
 type NavItem = {
   label: string;
