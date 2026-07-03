@@ -1080,37 +1080,8 @@ function IntegratorDetail({
                 </h2>
               </div>
 
-              {/* Desktop: horizontal flow */}
-              <div className="mt-10 hidden md:block">
-                <div className="flex items-center gap-3 overflow-x-auto pb-2">
-                  {nodes.map((n, i) => (
-                    <React.Fragment key={`${n}-${i}`}>
-                      <IntegrationNode name={n} />
-                      {i < nodes.length - 1 && (
-                        <ArrowRight
-                          className="h-5 w-5 shrink-0 text-[color:var(--primary)]/70"
-                          aria-hidden
-                        />
-                      )}
-                    </React.Fragment>
-                  ))}
-                </div>
-              </div>
+              <AnimatedIntegrationMap nodes={nodes} />
 
-              {/* Mobile: vertical stack */}
-              <div className="mt-10 flex flex-col items-center gap-3 md:hidden">
-                {nodes.map((n, i) => (
-                  <React.Fragment key={`m-${n}-${i}`}>
-                    <IntegrationNode name={n} />
-                    {i < nodes.length - 1 && (
-                      <ArrowDown
-                        className="h-5 w-5 text-[color:var(--primary)]/70"
-                        aria-hidden
-                      />
-                    )}
-                  </React.Fragment>
-                ))}
-              </div>
             </div>
           </section>
         )}
@@ -1125,26 +1096,14 @@ function IntegratorDetail({
                   Trigger, Action, {gradientWord("Output", "orange")}
                 </h2>
               </div>
-              <div className="mt-10 grid gap-4 md:grid-cols-3">
-                <TaoCard
-                  label="Trigger"
-                  Icon={Zap}
-                  text={db.trigger_text ?? ""}
-                  accent="blue"
-                />
-                <TaoCard
-                  label="Action"
-                  Icon={Cog}
-                  text={db.action_text ?? ""}
-                  accent="orange"
-                />
-                <TaoCard
-                  label="Output"
-                  Icon={PackageCheck}
-                  text={db.output_text ?? ""}
-                  accent="teal"
-                />
-              </div>
+              <AnimatedTaoRow
+                items={[
+                  { label: "Trigger", Icon: Zap, text: db.trigger_text ?? "", accent: "blue" },
+                  { label: "Action", Icon: Cog, text: db.action_text ?? "", accent: "orange" },
+                  { label: "Output", Icon: PackageCheck, text: db.output_text ?? "", accent: "teal" },
+                ]}
+              />
+
             </div>
           </section>
         )}
@@ -1440,6 +1399,185 @@ function TaoCard({
       </div>
       <div className="mt-4 font-display text-lg font-bold text-white">{label}</div>
       <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{text}</p>
+    </div>
+  );
+}
+
+/** Play a one-shot sequential reveal when the ref enters view; never reverses. */
+function useSequentialReveal(count: number, stepMs = 180) {
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
+  const [reached, setReached] = React.useState(-1);
+  const [triggered, setTriggered] = React.useState(false);
+
+  React.useEffect(() => {
+    const el = containerRef.current;
+    if (!el || triggered) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setTriggered(true);
+            io.disconnect();
+          }
+        }
+      },
+      { rootMargin: "0px 0px -15% 0px", threshold: 0.15 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [triggered]);
+
+  React.useEffect(() => {
+    if (!triggered) return;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    for (let i = 0; i < count; i++) {
+      timers.push(setTimeout(() => setReached((r) => (i > r ? i : r)), i * stepMs));
+    }
+    return () => timers.forEach((t) => clearTimeout(t));
+  }, [triggered, count, stepMs]);
+
+  return { containerRef, reached };
+}
+
+function AnimatedIntegrationMap({ nodes }: { nodes: string[] }) {
+  // Each node is a step; arrows share the reveal index of the preceding node.
+  const { containerRef, reached } = useSequentialReveal(nodes.length, 200);
+  const isRevealed = (i: number) => reached >= i;
+
+  return (
+    <div ref={containerRef}>
+      {/* Desktop: horizontal flow */}
+      <div className="mt-10 hidden md:block">
+        <div className="flex items-center gap-3 overflow-x-auto pb-2">
+          {nodes.map((n, i) => (
+            <React.Fragment key={`${n}-${i}`}>
+              <span
+                className="transition-all duration-[400ms] ease-out will-change-transform"
+                style={{
+                  opacity: isRevealed(i) ? 1 : 0,
+                  transform: isRevealed(i) ? "scale(1)" : "scale(0.9)",
+                }}
+              >
+                <IntegrationNode name={n} />
+              </span>
+              {i < nodes.length - 1 && (
+                <span
+                  className="transition-opacity duration-300 ease-out"
+                  style={{ opacity: isRevealed(i) ? 1 : 0 }}
+                >
+                  <ArrowRight
+                    className="integrator-flow-arrow-h h-5 w-5 shrink-0 text-[color:var(--primary)]/70"
+                    style={{ animationDelay: `${i * 220}ms` }}
+                    aria-hidden
+                  />
+                </span>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+
+      {/* Mobile: vertical stack */}
+      <div className="mt-10 flex flex-col items-center gap-3 md:hidden">
+        {nodes.map((n, i) => (
+          <React.Fragment key={`m-${n}-${i}`}>
+            <span
+              className="transition-all duration-[400ms] ease-out"
+              style={{
+                opacity: isRevealed(i) ? 1 : 0,
+                transform: isRevealed(i) ? "translateY(0)" : "translateY(8px)",
+              }}
+            >
+              <IntegrationNode name={n} />
+            </span>
+            {i < nodes.length - 1 && (
+              <span
+                className="transition-opacity duration-300 ease-out"
+                style={{ opacity: isRevealed(i) ? 1 : 0 }}
+              >
+                <ArrowDown
+                  className="integrator-flow-arrow-v h-5 w-5 text-[color:var(--primary)]/70"
+                  style={{ animationDelay: `${i * 220}ms` }}
+                  aria-hidden
+                />
+              </span>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+type TaoItem = {
+  label: string;
+  Icon: LucideIcon;
+  text: string;
+  accent: "blue" | "orange" | "teal";
+};
+
+function AnimatedTaoRow({ items }: { items: TaoItem[] }) {
+  // Cards + interleaved connectors: total reveal steps = items.length + (items.length - 1)
+  const totalSteps = items.length * 2 - 1;
+  const { containerRef, reached } = useSequentialReveal(totalSteps, 240);
+  const cardStep = (i: number) => i * 2;
+  const connectorStep = (i: number) => i * 2 + 1;
+
+  return (
+    <div ref={containerRef} className="mt-10">
+      {/* Desktop: horizontal with chevron connectors */}
+      <div className="hidden md:flex md:items-stretch md:gap-3">
+        {items.map((it, i) => (
+          <React.Fragment key={`d-${it.label}`}>
+            <div
+              className="flex-1 transition-all ease-out"
+              style={{
+                transitionDuration: "400ms",
+                opacity: reached >= cardStep(i) ? 1 : 0,
+                transform: reached >= cardStep(i) ? "translateY(0)" : "translateY(12px)",
+              }}
+            >
+              <TaoCard {...it} />
+            </div>
+            {i < items.length - 1 && (
+              <div
+                className="flex items-center justify-center transition-opacity duration-300"
+                style={{ opacity: reached >= connectorStep(i) ? 1 : 0 }}
+                aria-hidden
+              >
+                <ChevronRight className="h-6 w-6 text-[color:var(--primary)]/60" />
+              </div>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+
+      {/* Mobile: stacked with downward chevrons */}
+      <div className="flex flex-col gap-3 md:hidden">
+        {items.map((it, i) => (
+          <React.Fragment key={`m-${it.label}`}>
+            <div
+              className="transition-all ease-out"
+              style={{
+                transitionDuration: "400ms",
+                opacity: reached >= cardStep(i) ? 1 : 0,
+                transform: reached >= cardStep(i) ? "translateY(0)" : "translateY(12px)",
+              }}
+            >
+              <TaoCard {...it} />
+            </div>
+            {i < items.length - 1 && (
+              <div
+                className="flex items-center justify-center transition-opacity duration-300"
+                style={{ opacity: reached >= connectorStep(i) ? 1 : 0 }}
+                aria-hidden
+              >
+                <ArrowDown className="h-6 w-6 text-[color:var(--primary)]/60" />
+              </div>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
     </div>
   );
 }

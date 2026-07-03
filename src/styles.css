@@ -478,6 +478,28 @@ html {
   &::-webkit-scrollbar { display: none; }
 }
 
+/* AI Integrator — continuous "data flow" pulse on connector arrows */
+@keyframes integrator-flow-pulse-h {
+  0%, 100% { opacity: 0.45; transform: translateX(-3px); }
+  50%      { opacity: 1;    transform: translateX(3px); }
+}
+@keyframes integrator-flow-pulse-v {
+  0%, 100% { opacity: 0.45; transform: translateY(-3px); }
+  50%      { opacity: 1;    transform: translateY(3px); }
+}
+.integrator-flow-arrow-h {
+  animation: integrator-flow-pulse-h 1.8s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+.integrator-flow-arrow-v {
+  animation: integrator-flow-pulse-v 1.8s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+@media (prefers-reduced-motion: reduce) {
+  .integrator-flow-arrow-h,
+  .integrator-flow-arrow-v { animation: none !important; transform: none !important; }
+}
+
 /* When capturing a card as an image (html-to-image), background-clip:text
    gradients render as solid bars. Force gradient text to a flat color
    only while the .share-capturing class is present on the captured node. */
