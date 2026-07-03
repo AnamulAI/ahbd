@@ -1406,7 +1406,7 @@ function TaoCard({
         : "border-emerald-400/30 bg-emerald-400/10 text-emerald-300";
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl border ${accentClasses} bg-[#121A2E] p-6 sm:p-7 transition-all duration-200 hover:-translate-y-1`}
+      className={`relative flex h-full flex-col overflow-hidden rounded-2xl border ${accentClasses} bg-[#121A2E] p-6 sm:p-7 transition-all duration-200 hover:-translate-y-1`}
     >
       <div
         className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border ${iconWrap}`}
