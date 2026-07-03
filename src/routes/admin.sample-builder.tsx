@@ -373,6 +373,11 @@ function Builder() {
         client_industry: clientIndustry.trim() || null,
         scarcity_enabled: scarcityEnabled,
         scarcity_message: scarcityMessage.trim() || null,
+        scarcity_duration_days: (() => {
+          const n = parseInt(scarcityDurationDays, 10);
+          return Number.isFinite(n) && n > 0 ? n : null;
+        })(),
+        scarcity_label: scarcityLabel.trim() || null,
         whatsapp_number: whatsappNumber.trim() || null,
         booking_link: bookingLink.trim() || null,
         estimated_listeners: estListeners.trim() || null,
