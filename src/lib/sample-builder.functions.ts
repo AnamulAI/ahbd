@@ -452,6 +452,8 @@ export const updateSample = createServerFn({ method: "POST" })
           client_industry: data.client_industry ?? null,
           scarcity_enabled: !!data.scarcity_enabled,
           scarcity_message: data.scarcity_message ?? null,
+          scarcity_duration_days: data.scarcity_duration_days ?? null,
+          scarcity_label: data.scarcity_label ?? null,
           whatsapp_number: data.whatsapp_number ?? null,
           booking_link: data.booking_link ?? null,
           estimated_listeners: data.estimated_listeners ?? null,
