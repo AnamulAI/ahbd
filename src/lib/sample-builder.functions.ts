@@ -497,10 +497,11 @@ export const listSocialProofLogos = createServerFn({ method: "GET" }).handler(as
 });
 
 export const createSocialProofLogo = createServerFn({ method: "POST" })
-  .inputValidator((d: { pin: string; logo_base64: string; logo_filename: string }) => d)
-  .handler(async ({ data }) => {
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { logo_base64: string; logo_filename: string }) => d)
+  .handler(async ({ data, context }) => {
     try {
-      checkPin(data.pin);
+      await assertAdmin(context);
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       await ensureLogoBucket();
       const match = data.logo_base64.match(/^data:(.+);base64,(.+)$/);
@@ -535,10 +536,11 @@ export const createSocialProofLogo = createServerFn({ method: "POST" })
   });
 
 export const deleteSocialProofLogo = createServerFn({ method: "POST" })
-  .inputValidator((d: { pin: string; id: string }) => d)
-  .handler(async ({ data }) => {
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { id: string }) => d)
+  .handler(async ({ data, context }) => {
     try {
-      checkPin(data.pin);
+      await assertAdmin(context);
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       const { error } = await supabaseAdmin.from("social_proof_logos").delete().eq("id", data.id);
       if (error) return { ok: false, error: error.message } as const;
@@ -549,10 +551,11 @@ export const deleteSocialProofLogo = createServerFn({ method: "POST" })
   });
 
 export const reorderSocialProofLogos = createServerFn({ method: "POST" })
-  .inputValidator((d: { pin: string; ids: string[] }) => d)
-  .handler(async ({ data }) => {
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { ids: string[] }) => d)
+  .handler(async ({ data, context }) => {
     try {
-      checkPin(data.pin);
+      await assertAdmin(context);
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       for (let i = 0; i < data.ids.length; i++) {
         const { error } = await supabaseAdmin
