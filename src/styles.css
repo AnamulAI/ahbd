@@ -478,26 +478,58 @@ html {
   &::-webkit-scrollbar { display: none; }
 }
 
-/* AI Integrator — continuous "data flow" pulse on connector arrows */
-@keyframes integrator-flow-pulse-h {
-  0%, 100% { opacity: 0.45; transform: translateX(-3px); }
-  50%      { opacity: 1;    transform: translateX(3px); }
+/* AI Integrator — Integration Map node border sweep.
+   Text fades in first, then a conic-gradient stroke "traces" around the
+   chip perimeter until the border is fully drawn, then stays solid. */
+@property --integration-node-angle {
+  syntax: "<angle>";
+  initial-value: 360deg;
+  inherits: false;
 }
-@keyframes integrator-flow-pulse-v {
-  0%, 100% { opacity: 0.45; transform: translateY(-3px); }
-  50%      { opacity: 1;    transform: translateY(3px); }
+.integration-node {
+  border: 1px solid color-mix(in oklab, var(--primary) 15%, transparent);
 }
-.integrator-flow-arrow-h {
-  animation: integrator-flow-pulse-h 1.8s ease-in-out infinite;
-  will-change: transform, opacity;
+.integration-node::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 9999px;
+  padding: 1.5px;
+  background: conic-gradient(
+    from 0deg,
+    transparent var(--integration-node-angle),
+    var(--primary) 0
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0;
+  pointer-events: none;
+  --integration-node-angle: 360deg;
 }
-.integrator-flow-arrow-v {
-  animation: integrator-flow-pulse-v 1.8s ease-in-out infinite;
-  will-change: transform, opacity;
+@keyframes integration-node-border-sweep {
+  from { --integration-node-angle: 360deg; }
+  to   { --integration-node-angle: 0deg; }
+}
+.integration-node--animating::before {
+  opacity: 1;
+  animation: integration-node-border-sweep 520ms ease-out forwards;
+}
+.integration-node--done::before {
+  opacity: 1;
+  --integration-node-angle: 0deg;
 }
 @media (prefers-reduced-motion: reduce) {
-  .integrator-flow-arrow-h,
-  .integrator-flow-arrow-v { animation: none !important; transform: none !important; }
+  .integration-node::before {
+    animation: none !important;
+  }
+  .integration-node--animating::before,
+  .integration-node--done::before {
+    opacity: 1;
+    --integration-node-angle: 0deg;
+  }
 }
 
 /* When capturing a card as an image (html-to-image), background-clip:text

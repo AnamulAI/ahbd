@@ -1072,7 +1072,7 @@ function IntegratorDetail({
         {/* Integration Map */}
         {nodes.length > 0 && (
           <section className="py-16 sm:py-20 bg-white/[0.02]">
-            <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <div className="mx-auto max-w-6xl px-4 sm:px-6 text-center">
               <div className="mx-auto max-w-3xl">
                 <Eyebrow>// HOW IT CONNECTS</Eyebrow>
                 <h2 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl">
@@ -1357,10 +1357,26 @@ function IntegratorDetail({
   );
 }
 
-function IntegrationNode({ name }: { name: string }) {
+function IntegrationNode({
+  name,
+  textVisible,
+  borderVisible,
+}: {
+  name: string;
+  textVisible: boolean;
+  borderVisible: boolean;
+}) {
+  const state = borderVisible ? "done" : textVisible ? "animating" : "hidden";
   return (
-    <span className="inline-flex shrink-0 items-center rounded-full border border-[color:var(--primary)]/30 bg-[#121A2E] px-4 py-2 text-sm font-semibold text-white shadow-[0_4px_20px_-8px_var(--vo-glow)]">
-      {name}
+    <span
+      className={`integration-node integration-node--${state} relative inline-flex shrink-0 items-center rounded-full bg-[#121A2E] px-4 py-2 text-sm font-semibold text-white shadow-[0_4px_20px_-8px_var(--vo-glow)]`}
+    >
+      <span
+        className="relative z-[1] transition-opacity duration-300 ease-out"
+        style={{ opacity: textVisible ? 1 : 0 }}
+      >
+        {name}
+      </span>
     </span>
   );
 }
@@ -1390,7 +1406,7 @@ function TaoCard({
         : "border-emerald-400/30 bg-emerald-400/10 text-emerald-300";
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl border ${accentClasses} bg-[#121A2E] p-6 sm:p-7 transition-all duration-200 hover:-translate-y-1`}
+      className={`relative flex h-full flex-col overflow-hidden rounded-2xl border ${accentClasses} bg-[#121A2E] p-6 sm:p-7 transition-all duration-200 hover:-translate-y-1`}
     >
       <div
         className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border ${iconWrap}`}
@@ -1440,34 +1456,84 @@ function useSequentialReveal(count: number, stepMs = 180) {
 }
 
 function AnimatedIntegrationMap({ nodes }: { nodes: string[] }) {
-  // Each node is a step; arrows share the reveal index of the preceding node.
-  const { containerRef, reached } = useSequentialReveal(nodes.length, 200);
-  const isRevealed = (i: number) => reached >= i;
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
+  const [triggered, setTriggered] = React.useState(false);
+  const [textReveal, setTextReveal] = React.useState<boolean[]>(() =>
+    nodes.map(() => false),
+  );
+  const [borderReveal, setBorderReveal] = React.useState<boolean[]>(() =>
+    nodes.map(() => false),
+  );
+  const [arrowReveal, setArrowReveal] = React.useState<boolean[]>(() =>
+    nodes.slice(0, Math.max(0, nodes.length - 1)).map(() => false),
+  );
+
+  React.useEffect(() => {
+    const el = containerRef.current;
+    if (!el || triggered) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            setTriggered(true);
+            io.disconnect();
+          }
+        }
+      },
+      { rootMargin: "0px 0px -15% 0px", threshold: 0.15 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [triggered]);
+
+  React.useEffect(() => {
+    if (!triggered) return;
+    const TEXT_TO_BORDER = 220;
+    const BORDER_DUR = 520;
+    const ARROW_TO_NEXT = 260;
+    const NODE_STEP = TEXT_TO_BORDER + BORDER_DUR + ARROW_TO_NEXT; // 1000ms
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    const flip =
+      (setter: React.Dispatch<React.SetStateAction<boolean[]>>, i: number) =>
+      () =>
+        setter((prev) => {
+          if (prev[i]) return prev;
+          const next = [...prev];
+          next[i] = true;
+          return next;
+        });
+    for (let i = 0; i < nodes.length; i++) {
+      const t = i * NODE_STEP;
+      timers.push(setTimeout(flip(setTextReveal, i), t));
+      timers.push(setTimeout(flip(setBorderReveal, i), t + TEXT_TO_BORDER));
+      if (i < nodes.length - 1) {
+        timers.push(
+          setTimeout(flip(setArrowReveal, i), t + TEXT_TO_BORDER + BORDER_DUR),
+        );
+      }
+    }
+    return () => timers.forEach(clearTimeout);
+  }, [triggered, nodes.length]);
 
   return (
     <div ref={containerRef}>
-      {/* Desktop: horizontal flow */}
+      {/* Desktop: horizontal flow (centered) */}
       <div className="mt-10 hidden md:block">
-        <div className="flex items-center gap-3 overflow-x-auto pb-2">
+        <div className="flex flex-wrap items-center justify-center gap-3">
           {nodes.map((n, i) => (
             <React.Fragment key={`${n}-${i}`}>
-              <span
-                className="transition-all duration-[400ms] ease-out will-change-transform"
-                style={{
-                  opacity: isRevealed(i) ? 1 : 0,
-                  transform: isRevealed(i) ? "scale(1)" : "scale(0.9)",
-                }}
-              >
-                <IntegrationNode name={n} />
-              </span>
+              <IntegrationNode
+                name={n}
+                textVisible={!!textReveal[i]}
+                borderVisible={!!borderReveal[i]}
+              />
               {i < nodes.length - 1 && (
                 <span
                   className="transition-opacity duration-300 ease-out"
-                  style={{ opacity: isRevealed(i) ? 1 : 0 }}
+                  style={{ opacity: arrowReveal[i] ? 1 : 0 }}
                 >
                   <ArrowRight
-                    className="integrator-flow-arrow-h h-5 w-5 shrink-0 text-[color:var(--primary)]/70"
-                    style={{ animationDelay: `${i * 220}ms` }}
+                    className="h-5 w-5 shrink-0 text-[color:var(--primary)]/70"
                     aria-hidden
                   />
                 </span>
@@ -1477,27 +1543,22 @@ function AnimatedIntegrationMap({ nodes }: { nodes: string[] }) {
         </div>
       </div>
 
-      {/* Mobile: vertical stack */}
+      {/* Mobile: vertical stack (centered) */}
       <div className="mt-10 flex flex-col items-center gap-3 md:hidden">
         {nodes.map((n, i) => (
           <React.Fragment key={`m-${n}-${i}`}>
-            <span
-              className="transition-all duration-[400ms] ease-out"
-              style={{
-                opacity: isRevealed(i) ? 1 : 0,
-                transform: isRevealed(i) ? "translateY(0)" : "translateY(8px)",
-              }}
-            >
-              <IntegrationNode name={n} />
-            </span>
+            <IntegrationNode
+              name={n}
+              textVisible={!!textReveal[i]}
+              borderVisible={!!borderReveal[i]}
+            />
             {i < nodes.length - 1 && (
               <span
                 className="transition-opacity duration-300 ease-out"
-                style={{ opacity: isRevealed(i) ? 1 : 0 }}
+                style={{ opacity: arrowReveal[i] ? 1 : 0 }}
               >
                 <ArrowDown
-                  className="integrator-flow-arrow-v h-5 w-5 text-[color:var(--primary)]/70"
-                  style={{ animationDelay: `${i * 220}ms` }}
+                  className="h-5 w-5 text-[color:var(--primary)]/70"
                   aria-hidden
                 />
               </span>
