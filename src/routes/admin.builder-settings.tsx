@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   Loader2,
@@ -6,19 +6,13 @@ import {
   Trash2,
   ChevronDown,
   ChevronUp,
-  ChevronRight,
   ArrowUp,
   ArrowDown,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminShell, useAdminGate } from "@/components/admin/AdminShell";
-import {
-  BUILDER_PANELS,
-  DEFAULT_BUILDER_PANEL,
-  isBuilderPanel,
-  type BuilderPanelKey,
-} from "@/components/admin/BuilderSettingsSidebarSection";
+import { cn } from "@/lib/utils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,11 +27,17 @@ import {
 export const Route = createFileRoute("/admin/builder-settings")({
   ssr: false,
   head: () => ({ meta: [{ title: "Builder Settings — AnamDev Admin" }] }),
-  validateSearch: (s: Record<string, unknown>) => ({
-    panel: isBuilderPanel(s.panel) ? s.panel : undefined,
-  }),
   component: BuilderSettingsPage,
 });
+
+type TabKey = "website" | "ai" | "podcast" | "promo" | "package";
+const TABS: { key: TabKey; label: string }[] = [
+  { key: "website", label: "Website" },
+  { key: "ai", label: "AI Agent" },
+  { key: "podcast", label: "Podcast" },
+  { key: "promo", label: "Promo Cards" },
+  { key: "package", label: "Package & Payment" },
+];
 
 // ---------- Types ----------
 type TechApproach = {
@@ -172,6 +172,7 @@ const VISIBILITY_OPTIONS = [
 function BuilderSettingsPage() {
   const gate = useAdminGate();
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<TabKey>("website");
 
   const [techApproaches, setTechApproaches] = useState<TechApproach[]>([]);
   const [useCases, setUseCases] = useState<UseCase[]>([]);
@@ -252,42 +253,38 @@ function BuilderSettingsPage() {
     );
   }
 
-  const searchPanel = Route.useSearch().panel;
-  const panel: BuilderPanelKey = searchPanel ?? DEFAULT_BUILDER_PANEL;
-  const crumbs = BUILDER_PANELS[panel].crumbs;
-
   return (
     <AdminShell email={gate.email}>
-      <nav
-        aria-label="Breadcrumb"
-        className="mb-4 flex flex-wrap items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-white/45"
-      >
-        <Link to="/admin/builder-settings" className="hover:text-white/80">
-          Builder Settings
-        </Link>
-        {crumbs.map((c, i) => (
-          <span key={i} className="flex items-center gap-1.5">
-            <ChevronRight className="h-3 w-3 text-white/25" />
-            <span className={i === crumbs.length - 1 ? "text-white/85" : "hover:text-white/80"}>
-              {c}
-            </span>
-          </span>
-        ))}
-      </nav>
-
       <header className="mb-6">
         <h1 className="font-display text-2xl font-bold tracking-tight text-white">
-          {crumbs[crumbs.length - 1]}
+          Builder Settings
         </h1>
+        <p className="mt-1 text-sm text-white/55">
+          Edit every configurable field the live custom builder reads from.
+        </p>
       </header>
 
+      <div className="mb-6 flex flex-wrap gap-1.5 border-b border-white/[0.06] pb-2">
+        {TABS.map((t) => (
+          <button
+            key={t.key}
+            type="button"
+            onClick={() => setActiveTab(t.key)}
+            className={cn(
+              "rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors",
+              activeTab === t.key
+                ? "bg-[#3B82F6]/20 text-white border border-[#3B82F6]/50"
+                : "text-white/60 hover:text-white hover:bg-white/[0.05] border border-transparent",
+            )}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
       <div className="space-y-8">
-        {(panel === "website:tech" ||
-          panel === "website:usecases" ||
-          panel === "website:tiers" ||
-          panel === "website:suboptions") && (
+        {activeTab === "website" && (
           <WebsiteTab
-            panel={panel}
             techApproaches={techApproaches}
             setTechApproaches={setTechApproaches}
             useCases={useCases}
@@ -301,9 +298,8 @@ function BuilderSettingsPage() {
           />
         )}
 
-        {(panel === "ai:types" || panel === "ai:suboptions") && (
+        {activeTab === "ai" && (
           <AiTab
-            panel={panel}
             aiTypes={aiTypes}
             setAiTypes={setAiTypes}
             options={options}
@@ -311,9 +307,8 @@ function BuilderSettingsPage() {
           />
         )}
 
-        {(panel === "podcast:types" || panel === "podcast:suboptions") && (
+        {activeTab === "podcast" && (
           <PodcastTab
-            panel={panel}
             podcastTypes={podcastTypes}
             setPodcastTypes={setPodcastTypes}
             options={options}
@@ -321,15 +316,12 @@ function BuilderSettingsPage() {
           />
         )}
 
-        {panel === "promo" && (
+        {activeTab === "promo" && (
           <PromoTab promoCards={promoCards} setPromoCards={setPromoCards} />
         )}
 
-        {(panel === "package:signature" ||
-          panel === "package:payment" ||
-          panel === "package:copy") && (
+        {activeTab === "package" && (
           <PackagePaymentTab
-            panel={panel}
             signature={signature}
             setSignature={setSignature}
             paymentPlan={paymentPlan}
@@ -532,7 +524,6 @@ async function deleteRow(table: string, id: string) {
 
 // ---------- WEBSITE TAB ----------
 function WebsiteTab({
-  panel,
   techApproaches,
   setTechApproaches,
   useCases,
@@ -544,7 +535,6 @@ function WebsiteTab({
   options,
   setOptions,
 }: {
-  panel: BuilderPanelKey;
   techApproaches: TechApproach[];
   setTechApproaches: React.Dispatch<React.SetStateAction<TechApproach[]>>;
   useCases: UseCase[];
@@ -659,7 +649,6 @@ function WebsiteTab({
 
   return (
     <>
-      {panel === "website:tech" && (
       /* Tech Approaches */
       <Section
         title="Tech Approaches"
@@ -693,9 +682,7 @@ function WebsiteTab({
           ))}
         </div>
       </Section>
-      )}
 
-      {panel === "website:usecases" && (
       /* Use Cases & Pricing */
       <Section
         title="Use Cases & Pricing"
@@ -716,9 +703,7 @@ function WebsiteTab({
           ))}
         </div>
       </Section>
-      )}
 
-      {panel === "website:tiers" && (
       /* Scope Tiers */
       <Section
         title="Scope Tiers"
@@ -788,9 +773,7 @@ function WebsiteTab({
           })}
         </div>
       </Section>
-      )}
 
-      {panel === "website:suboptions" && (
       /* Sub-Options */
       <Section
         title="Sub-Options"
@@ -803,7 +786,6 @@ function WebsiteTab({
           setOptions={setOptions}
         />
       </Section>
-      )}
     </>
   );
 }
@@ -1012,13 +994,11 @@ function OptionGroupsEditor({
 
 // ---------- AI TAB ----------
 function AiTab({
-  panel,
   aiTypes,
   setAiTypes,
   options,
   setOptions,
 }: {
-  panel: BuilderPanelKey;
   aiTypes: AiType[];
   setAiTypes: React.Dispatch<React.SetStateAction<AiType[]>>;
   options: BOption[];
@@ -1044,7 +1024,6 @@ function AiTab({
   }
   return (
     <>
-      {panel === "ai:types" && (
       <Section
         title="AI Types"
         description="The core AI offerings customers can pick."
@@ -1052,8 +1031,6 @@ function AiTab({
       >
         <TypeList items={aiTypes} onUpdate={update} onDelete={del} />
       </Section>
-      )}
-      {panel === "ai:suboptions" && (
       <Section
         title="Sub-Options"
         description="AI add-ons grouped by configuration area."
@@ -1065,20 +1042,17 @@ function AiTab({
           setOptions={setOptions}
         />
       </Section>
-      )}
     </>
   );
 }
 
 // ---------- PODCAST TAB ----------
 function PodcastTab({
-  panel,
   podcastTypes,
   setPodcastTypes,
   options,
   setOptions,
 }: {
-  panel: BuilderPanelKey;
   podcastTypes: PodcastType[];
   setPodcastTypes: React.Dispatch<React.SetStateAction<PodcastType[]>>;
   options: BOption[];
@@ -1104,7 +1078,6 @@ function PodcastTab({
   }
   return (
     <>
-      {panel === "podcast:types" && (
       <Section
         title="Podcast Types"
         description="The headline podcast offerings."
@@ -1112,8 +1085,6 @@ function PodcastTab({
       >
         <TypeList items={podcastTypes} onUpdate={update} onDelete={del} />
       </Section>
-      )}
-      {panel === "podcast:suboptions" && (
       <Section
         title="Sub-Options"
         description="Podcast configuration choices."
@@ -1125,7 +1096,6 @@ function PodcastTab({
           setOptions={setOptions}
         />
       </Section>
-      )}
     </>
   );
 }
@@ -1400,7 +1370,6 @@ function Labeled({ label, children }: { label: string; children: ReactNode }) {
 
 // ---------- PACKAGE & PAYMENT TAB ----------
 function PackagePaymentTab({
-  panel,
   signature,
   setSignature,
   paymentPlan,
@@ -1408,7 +1377,6 @@ function PackagePaymentTab({
   copy,
   setCopy,
 }: {
-  panel: BuilderPanelKey;
   signature: SignaturePackage | null;
   setSignature: React.Dispatch<React.SetStateAction<SignaturePackage | null>>;
   paymentPlan: PaymentPlanSettings | null;
@@ -1462,7 +1430,6 @@ function PackagePaymentTab({
 
   return (
     <>
-      {panel === "package:signature" && (
       <Section
         title="Signature Package ($4,990 offer)"
         description="Controls the Home page's Pricing Reveal Card. Total value is derived from the three line items; savings is derived from total minus bundle price."
@@ -1617,9 +1584,7 @@ function PackagePaymentTab({
           </Labeled>
         </div>
       </Section>
-      )}
 
-      {panel === "package:payment" && (
       <Section
         title="Payment Plan Settings"
         description="Controls the 3 payment plan cards shown in the builder after a visitor completes their build."
@@ -1676,11 +1641,8 @@ function PackagePaymentTab({
           </Labeled>
         </div>
       </Section>
-      )}
 
-      {panel === "package:copy" && (
         <BuilderCopySection copy={copy} setCopy={setCopy} />
-      )}
     </>
 
   );
