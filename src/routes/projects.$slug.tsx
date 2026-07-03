@@ -1096,26 +1096,14 @@ function IntegratorDetail({
                   Trigger, Action, {gradientWord("Output", "orange")}
                 </h2>
               </div>
-              <div className="mt-10 grid gap-4 md:grid-cols-3">
-                <TaoCard
-                  label="Trigger"
-                  Icon={Zap}
-                  text={db.trigger_text ?? ""}
-                  accent="blue"
-                />
-                <TaoCard
-                  label="Action"
-                  Icon={Cog}
-                  text={db.action_text ?? ""}
-                  accent="orange"
-                />
-                <TaoCard
-                  label="Output"
-                  Icon={PackageCheck}
-                  text={db.output_text ?? ""}
-                  accent="teal"
-                />
-              </div>
+              <AnimatedTaoRow
+                items={[
+                  { label: "Trigger", Icon: Zap, text: db.trigger_text ?? "", accent: "blue" },
+                  { label: "Action", Icon: Cog, text: db.action_text ?? "", accent: "orange" },
+                  { label: "Output", Icon: PackageCheck, text: db.output_text ?? "", accent: "teal" },
+                ]}
+              />
+
             </div>
           </section>
         )}
