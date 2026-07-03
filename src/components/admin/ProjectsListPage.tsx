@@ -215,13 +215,24 @@ export function ProjectsListPage() {
     );
   }
 
+  const activeMainLabel = CATEGORY_LABEL[activeMain] ?? "Projects";
+
+  function setSub(next: string) {
+    navigate({
+      to: "/admin/projects",
+      search: { main: activeMain, sub: next === "all" ? undefined : next },
+    });
+  }
+
   return (
     <AdminShell email={gate.email}>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl font-bold">Projects</h1>
-          <p className="mt-1 text-sm text-white/60">
-            Manage your portfolio — drag to reorder within a sub-category.
+          <h1 className="font-display text-2xl font-bold tracking-tight text-white">
+            {activeMainLabel}
+          </h1>
+          <p className="mt-1 text-sm text-white/55">
+            Manage your {activeMainLabel} portfolio — drag to reorder within a sub-category.
           </p>
         </div>
         <Link
@@ -233,23 +244,30 @@ export function ProjectsListPage() {
         </Link>
       </div>
 
-      {/* Breadcrumb — reflects active sidebar selection */}
-      <nav
-        aria-label="Breadcrumb"
-        className="mt-6 flex flex-wrap items-center gap-1.5 text-[13px]"
-      >
-        <span className="text-white/45">Projects</span>
-        <span className="text-white/25">›</span>
-        <span className="text-white/45">{CATEGORY_LABEL[activeMain]}</span>
-        <span className="text-white/25">›</span>
-        <span className="font-semibold text-[#F97316]">
-          {activeSub === "all"
-            ? "All"
-            : activeSub === UNCATEGORIZED
-              ? "Uncategorized"
-              : activeSub}
-        </span>
-      </nav>
+      {/* Sub-category tab row (Builder Settings pattern) */}
+      <div className="mt-6 mb-2 flex flex-wrap gap-1.5 border-b border-white/[0.06] pb-2">
+        <SubTab label="All" value="all" active={activeSub === "all"} count={counts.all ?? 0} onClick={setSub} />
+        {subList.map((s) => (
+          <SubTab
+            key={s}
+            label={s}
+            value={s}
+            active={activeSub === s}
+            count={counts[s] ?? 0}
+            onClick={setSub}
+          />
+        ))}
+        {(counts[UNCATEGORIZED] ?? 0) > 0 && (
+          <SubTab
+            label="Uncategorized"
+            value={UNCATEGORIZED}
+            active={activeSub === UNCATEGORIZED}
+            count={counts[UNCATEGORIZED] ?? 0}
+            onClick={setSub}
+            warn
+          />
+        )}
+      </div>
 
       <div className="mt-4 max-w-sm relative">
         <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
@@ -260,6 +278,7 @@ export function ProjectsListPage() {
           className="w-full rounded-md border border-white/[0.1] bg-[#16181D] pl-9 pr-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none"
         />
       </div>
+
 
       <div className="mt-5 overflow-hidden rounded-xl border border-white/[0.08] bg-[#11162A]">
         {loading ? (
