@@ -48,11 +48,7 @@ const NAV: NavGroup[] = [
   {
     label: "Builder",
     items: [
-      {
-        label: "__builder_settings_tree__",
-        to: "/admin/builder-settings",
-        icon: Settings2,
-      },
+      { label: "Builder Settings", to: "/admin/builder-settings", icon: Settings2 },
     ],
   },
   {
