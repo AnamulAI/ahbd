@@ -335,7 +335,7 @@ export function ProjectEditorPage({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <button
           type="button"
-          onClick={() => navigate({ to: "/admin/projects" })}
+          onClick={() => navigate({ to: "/admin/projects", search: { main: project.main_category, sub: project.sub_category_label ?? undefined } })}
           className="inline-flex items-center gap-2 text-sm text-white/60 hover:text-white"
         >
           <ArrowLeft className="h-4 w-4" /> Back to Projects
