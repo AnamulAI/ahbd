@@ -524,7 +524,6 @@ async function deleteRow(table: string, id: string) {
 
 // ---------- WEBSITE TAB ----------
 function WebsiteTab({
-  panel,
   techApproaches,
   setTechApproaches,
   useCases,
@@ -536,7 +535,6 @@ function WebsiteTab({
   options,
   setOptions,
 }: {
-  panel: BuilderPanelKey;
   techApproaches: TechApproach[];
   setTechApproaches: React.Dispatch<React.SetStateAction<TechApproach[]>>;
   useCases: UseCase[];
@@ -651,7 +649,6 @@ function WebsiteTab({
 
   return (
     <>
-      {panel === "website:tech" && (
       /* Tech Approaches */
       <Section
         title="Tech Approaches"
@@ -685,9 +682,7 @@ function WebsiteTab({
           ))}
         </div>
       </Section>
-      )}
 
-      {panel === "website:usecases" && (
       /* Use Cases & Pricing */
       <Section
         title="Use Cases & Pricing"
@@ -708,9 +703,7 @@ function WebsiteTab({
           ))}
         </div>
       </Section>
-      )}
 
-      {panel === "website:tiers" && (
       /* Scope Tiers */
       <Section
         title="Scope Tiers"
@@ -780,9 +773,7 @@ function WebsiteTab({
           })}
         </div>
       </Section>
-      )}
 
-      {panel === "website:suboptions" && (
       /* Sub-Options */
       <Section
         title="Sub-Options"
@@ -795,7 +786,6 @@ function WebsiteTab({
           setOptions={setOptions}
         />
       </Section>
-      )}
     </>
   );
 }
@@ -1004,13 +994,11 @@ function OptionGroupsEditor({
 
 // ---------- AI TAB ----------
 function AiTab({
-  panel,
   aiTypes,
   setAiTypes,
   options,
   setOptions,
 }: {
-  panel: BuilderPanelKey;
   aiTypes: AiType[];
   setAiTypes: React.Dispatch<React.SetStateAction<AiType[]>>;
   options: BOption[];
@@ -1036,7 +1024,6 @@ function AiTab({
   }
   return (
     <>
-      {panel === "ai:types" && (
       <Section
         title="AI Types"
         description="The core AI offerings customers can pick."
@@ -1044,8 +1031,6 @@ function AiTab({
       >
         <TypeList items={aiTypes} onUpdate={update} onDelete={del} />
       </Section>
-      )}
-      {panel === "ai:suboptions" && (
       <Section
         title="Sub-Options"
         description="AI add-ons grouped by configuration area."
@@ -1057,20 +1042,17 @@ function AiTab({
           setOptions={setOptions}
         />
       </Section>
-      )}
     </>
   );
 }
 
 // ---------- PODCAST TAB ----------
 function PodcastTab({
-  panel,
   podcastTypes,
   setPodcastTypes,
   options,
   setOptions,
 }: {
-  panel: BuilderPanelKey;
   podcastTypes: PodcastType[];
   setPodcastTypes: React.Dispatch<React.SetStateAction<PodcastType[]>>;
   options: BOption[];
@@ -1096,7 +1078,6 @@ function PodcastTab({
   }
   return (
     <>
-      {panel === "podcast:types" && (
       <Section
         title="Podcast Types"
         description="The headline podcast offerings."
@@ -1104,8 +1085,6 @@ function PodcastTab({
       >
         <TypeList items={podcastTypes} onUpdate={update} onDelete={del} />
       </Section>
-      )}
-      {panel === "podcast:suboptions" && (
       <Section
         title="Sub-Options"
         description="Podcast configuration choices."
@@ -1117,7 +1096,6 @@ function PodcastTab({
           setOptions={setOptions}
         />
       </Section>
-      )}
     </>
   );
 }
@@ -1392,7 +1370,6 @@ function Labeled({ label, children }: { label: string; children: ReactNode }) {
 
 // ---------- PACKAGE & PAYMENT TAB ----------
 function PackagePaymentTab({
-  panel,
   signature,
   setSignature,
   paymentPlan,
@@ -1400,7 +1377,6 @@ function PackagePaymentTab({
   copy,
   setCopy,
 }: {
-  panel: BuilderPanelKey;
   signature: SignaturePackage | null;
   setSignature: React.Dispatch<React.SetStateAction<SignaturePackage | null>>;
   paymentPlan: PaymentPlanSettings | null;
@@ -1454,7 +1430,6 @@ function PackagePaymentTab({
 
   return (
     <>
-      {panel === "package:signature" && (
       <Section
         title="Signature Package ($4,990 offer)"
         description="Controls the Home page's Pricing Reveal Card. Total value is derived from the three line items; savings is derived from total minus bundle price."
@@ -1609,9 +1584,7 @@ function PackagePaymentTab({
           </Labeled>
         </div>
       </Section>
-      )}
 
-      {panel === "package:payment" && (
       <Section
         title="Payment Plan Settings"
         description="Controls the 3 payment plan cards shown in the builder after a visitor completes their build."
@@ -1668,11 +1641,8 @@ function PackagePaymentTab({
           </Labeled>
         </div>
       </Section>
-      )}
 
-      {panel === "package:copy" && (
         <BuilderCopySection copy={copy} setCopy={setCopy} />
-      )}
     </>
 
   );
