@@ -305,7 +305,7 @@ export function ProjectEditorPage({
       });
       setSlugDirty(false);
     } else {
-      navigate({ to: "/admin/projects" });
+      navigate({ to: "/admin/projects", search: { main: project.main_category, sub: project.sub_category_label ?? undefined } });
     }
   }
 
