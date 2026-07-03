@@ -253,6 +253,8 @@ export type SamplePayload = {
   client_industry?: string | null;
   scarcity_enabled?: boolean;
   scarcity_message?: string | null;
+  scarcity_duration_days?: number | null;
+  scarcity_label?: string | null;
   whatsapp_number?: string | null;
   booking_link?: string | null;
   estimated_listeners?: string | null;
