@@ -252,6 +252,10 @@ function Builder() {
         setClientIndustry(s.client_industry ?? "");
         setScarcityEnabled(!!s.scarcity_enabled);
         setScarcityMessage(s.scarcity_message ?? "");
+        setScarcityDurationDays(
+          s.scarcity_duration_days != null ? String(s.scarcity_duration_days) : "7",
+        );
+        setScarcityLabel(s.scarcity_label ?? "Limited-time preview");
         setWhatsappNumber(s.whatsapp_number ?? "");
         setBookingLink(s.booking_link ?? "");
         setEstListeners(s.estimated_listeners ?? "");
