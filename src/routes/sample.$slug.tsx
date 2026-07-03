@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { useSuspenseQuery, useQuery, queryOptions } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Pause, Play, Rss, Heart, MoreHorizontal, Shuffle, Download, ThumbsUp, Share2, Flame, XCircle, CheckCircle, MessageCircle, CalendarClock, TrendingUp, Users, Clock } from "lucide-react";
+import { ArrowRight, Pause, Play, Rss, Heart, MoreHorizontal, Shuffle, Download, ThumbsUp, Share2, Flame, XCircle, CheckCircle, MessageCircle, CalendarClock, TrendingUp, Users, Clock, AlertCircle } from "lucide-react";
 import {
   SiSpotify, SiApplepodcasts, SiYoutube, SiInstagram, SiTiktok,
   SiFacebook, SiX, SiGoogle,
