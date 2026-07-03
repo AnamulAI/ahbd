@@ -1357,10 +1357,26 @@ function IntegratorDetail({
   );
 }
 
-function IntegrationNode({ name }: { name: string }) {
+function IntegrationNode({
+  name,
+  textVisible,
+  borderVisible,
+}: {
+  name: string;
+  textVisible: boolean;
+  borderVisible: boolean;
+}) {
+  const state = borderVisible ? "done" : textVisible ? "animating" : "hidden";
   return (
-    <span className="inline-flex shrink-0 items-center rounded-full border border-[color:var(--primary)]/30 bg-[#121A2E] px-4 py-2 text-sm font-semibold text-white shadow-[0_4px_20px_-8px_var(--vo-glow)]">
-      {name}
+    <span
+      className={`integration-node integration-node--${state} relative inline-flex shrink-0 items-center rounded-full bg-[#121A2E] px-4 py-2 text-sm font-semibold text-white shadow-[0_4px_20px_-8px_var(--vo-glow)]`}
+    >
+      <span
+        className="relative z-[1] transition-opacity duration-300 ease-out"
+        style={{ opacity: textVisible ? 1 : 0 }}
+      >
+        {name}
+      </span>
     </span>
   );
 }
