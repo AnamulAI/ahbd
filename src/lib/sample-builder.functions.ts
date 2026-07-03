@@ -59,17 +59,17 @@ function safeExt(filename: string | null | undefined, fallback: string): string 
   return part.toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 6) || fallback;
 }
 
-function checkPin(pin: string) {
-  const expected = process.env.ADMIN_PIN;
-  if (!expected) throw new Error("ADMIN_PIN is not configured on the server.");
-  if (typeof pin !== "string" || pin.length === 0) throw new Error("PIN required");
-  if (pin.length !== expected.length) throw new Error("Invalid PIN");
-  let mismatch = 0;
-  for (let i = 0; i < expected.length; i++) {
-    mismatch |= pin.charCodeAt(i) ^ expected.charCodeAt(i);
-  }
-  if (mismatch !== 0) throw new Error("Invalid PIN");
+async function assertAdmin(context: { supabase: SupabaseClient<Database>; userId: string }) {
+  const { data, error } = await context.supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", context.userId)
+    .eq("role", "admin")
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!data) throw new Error("Forbidden: admin only");
 }
+
 
 async function ensureLogoBucket() {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
