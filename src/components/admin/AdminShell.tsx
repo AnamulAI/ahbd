@@ -155,13 +155,6 @@ export function AdminShell({
                     </li>
                   );
                 }
-                if (item.label === "__builder_settings_tree__") {
-                  return (
-                    <li key="__builder_settings_tree__">
-                      <BuilderSettingsSidebarSection onNavigate={() => setMobileOpen(false)} />
-                    </li>
-                  );
-                }
                 const Icon = item.icon;
                 const active =
                   pathname === item.to ||
