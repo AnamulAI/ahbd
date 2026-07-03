@@ -230,7 +230,6 @@ function normalizeAudience(value: unknown): AudienceCategory {
 }
 
 export type SamplePayload = {
-  pin: string;
   business_name: string;
   audience_category: AudienceCategory;
   episode_title: string;
