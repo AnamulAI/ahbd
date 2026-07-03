@@ -334,8 +334,19 @@ function SamplePage() {
     (data.topic ? `Episode 1: ${data.topic.split(/[.!?\n]/)[0].trim()}` : "Episode 1");
 
   const scarcityEnabled = !!(data as any).scarcity_enabled;
-  const scarcityMessage = ((data as any).scarcity_message ?? "").toString().trim();
-  const showScarcity = scarcityEnabled && !!scarcityMessage;
+  const scarcityDurationDays: number | null = (() => {
+    const v = (data as any).scarcity_duration_days;
+    if (v == null) return scarcityEnabled ? 7 : null; // legacy default when enabled
+    const n = Number(v);
+    return Number.isFinite(n) && n > 0 ? n : null;
+  })();
+  const scarcityLabel = ((data as any).scarcity_label ?? "").toString().trim();
+  const scarcityCreatedAt = (data as any).created_at as string | null;
+  const scarcityExpiryMs =
+    scarcityCreatedAt && scarcityDurationDays != null
+      ? new Date(scarcityCreatedAt).getTime() + scarcityDurationDays * 86_400_000
+      : null;
+  const showScarcity = scarcityEnabled && scarcityExpiryMs != null;
 
   const estListeners = ((data as any).estimated_listeners ?? "").toString().trim();
   const estReach = ((data as any).estimated_reach_growth ?? "").toString().trim();
