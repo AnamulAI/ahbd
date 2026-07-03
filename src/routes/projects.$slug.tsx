@@ -1452,7 +1452,7 @@ function AnimatedIntegrationMap({ nodes }: { nodes: string[] }) {
           {nodes.map((n, i) => (
             <React.Fragment key={`${n}-${i}`}>
               <span
-                className="transition-all duration-400 ease-out will-change-transform"
+                className="transition-all duration-[400ms] ease-out will-change-transform"
                 style={{
                   opacity: isRevealed(i) ? 1 : 0,
                   transform: isRevealed(i) ? "scale(1)" : "scale(0.9)",
@@ -1482,7 +1482,7 @@ function AnimatedIntegrationMap({ nodes }: { nodes: string[] }) {
         {nodes.map((n, i) => (
           <React.Fragment key={`m-${n}-${i}`}>
             <span
-              className="transition-all duration-400 ease-out"
+              className="transition-all duration-[400ms] ease-out"
               style={{
                 opacity: isRevealed(i) ? 1 : 0,
                 transform: isRevealed(i) ? "translateY(0)" : "translateY(8px)",
