@@ -115,35 +115,39 @@ export async function signSampleRow<T extends Record<string, any> | null>(row: T
 }
 
 export const verifyPin = createServerFn({ method: "POST" })
-  .inputValidator((d: { pin: string }) => d)
-  .handler(async ({ data }) => {
-    checkPin(data.pin);
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
     return { ok: true };
   });
 
 export const listSamples = createServerFn({ method: "POST" })
-  .inputValidator((d: { pin: string }) => d)
-  .handler(async ({ data }) => {
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
     try {
-      checkPin(data.pin);
+      await assertAdmin(context);
       const supabasePublic = createPublicSupabaseClient();
       const { data: rows, error } = await supabasePublic
         .from("sample_previews")
-        .select("id, slug, business_name, created_at")
+        .select("id, slug, business_name, created_at, logo_url")
         .order("created_at", { ascending: false })
         .limit(200);
       if (error) return { samples: [], error: error.message };
-      return { samples: rows ?? [], error: null };
+      const signed = await Promise.all(
+        (rows ?? []).map(async (r) => ({ ...r, logo_url: await maybeSignStorageUrl(r.logo_url) })),
+      );
+      return { samples: signed, error: null };
     } catch (error) {
       return { samples: [], error: errorMessage(error, "Could not load samples") };
     }
   });
 
 export const getSampleForEdit = createServerFn({ method: "POST" })
-  .inputValidator((d: { pin: string; id: string }) => d)
-  .handler(async ({ data }) => {
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { id: string }) => d)
+  .handler(async ({ data, context }) => {
     try {
-      checkPin(data.pin);
+      await assertAdmin(context);
       const supabasePublic = createPublicSupabaseClient();
       const { data: row, error } = await supabasePublic
         .from("sample_previews")
@@ -163,10 +167,12 @@ export const getSampleForEdit = createServerFn({ method: "POST" })
  * canonical storage URL (which the public preview will re-sign at read time).
  */
 export const createMediaUploadUrl = createServerFn({ method: "POST" })
-  .inputValidator((d: { pin: string; kind: UploadKind; filename: string; slugHint?: string }) => d)
-  .handler(async ({ data }) => {
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { kind: UploadKind; filename: string; slugHint?: string }) => d)
+  .handler(async ({ data, context }) => {
     try {
-      checkPin(data.pin);
+      await assertAdmin(context);
+
       const bucket = UPLOAD_BUCKETS[data.kind];
       if (!bucket) return { ok: false, error: "Unknown upload kind" } as const;
 
