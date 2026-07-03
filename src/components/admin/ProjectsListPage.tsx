@@ -335,16 +335,18 @@ export function ProjectsListPage() {
   );
 }
 
-function SubChip({
+function SubTab({
   label,
   value,
   active,
+  count,
   onClick,
   warn,
 }: {
   label: string;
   value: string;
   active: boolean;
+  count: number;
   onClick: (v: string) => void;
   warn?: boolean;
 }) {
@@ -353,18 +355,27 @@ function SubChip({
       type="button"
       onClick={() => onClick(value)}
       className={cn(
-        "shrink-0 rounded-full border px-3 py-1 text-xs transition-colors",
+        "inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors border",
         active
-          ? "border-[#F97316]/50 bg-[#F97316]/15 text-white"
+          ? "bg-[#3B82F6]/20 text-white border-[#3B82F6]/50"
           : warn
             ? "border-amber-500/30 bg-amber-500/[0.06] text-amber-200/80 hover:bg-amber-500/[0.12]"
-            : "border-white/[0.1] bg-white/[0.03] text-white/70 hover:bg-white/[0.07] hover:text-white",
+            : "text-white/60 hover:text-white hover:bg-white/[0.05] border-transparent",
       )}
     >
-      {label}
+      <span>{label}</span>
+      <span
+        className={cn(
+          "inline-flex h-4 min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-mono",
+          active ? "bg-white/15 text-white/90" : "bg-white/[0.06] text-white/55",
+        )}
+      >
+        {count}
+      </span>
     </button>
   );
 }
+
 
 function SortableRow({
   project,
