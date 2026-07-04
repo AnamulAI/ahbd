@@ -70,10 +70,8 @@ export async function fetchDbPublishedPosts(): Promise<BlogPost[]> {
   return (data as DbBlogRow[]).map(dbRowToPost);
 }
 
-function mergeSorted(dbPosts: BlogPost[]): BlogPost[] {
-  const seen = new Set(dbPosts.map((p) => p.slug));
-  const combined = [...dbPosts, ...BLOG_POSTS.filter((p) => !seen.has(p.slug))];
-  return combined.sort(
+function sortByDate(posts: BlogPost[]): BlogPost[] {
+  return [...posts].sort(
     (a, b) =>
       new Date(b.publishedDate).getTime() -
       new Date(a.publishedDate).getTime(),
@@ -81,13 +79,13 @@ function mergeSorted(dbPosts: BlogPost[]): BlogPost[] {
 }
 
 export function useAllBlogPosts(): { posts: BlogPost[]; loading: boolean } {
-  const [posts, setPosts] = useState<BlogPost[]>(() => mergeSorted([]));
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     let active = true;
     fetchDbPublishedPosts().then((db) => {
       if (!active) return;
-      setPosts(mergeSorted(db));
+      setPosts(sortByDate(db));
       setLoading(false);
     });
     return () => {
@@ -102,19 +100,11 @@ export function useBlogPostBySlug(slug: string): {
   loading: boolean;
 } {
   const [state, setState] = useState<{ post: BlogPost | null; loading: boolean }>(
-    () => {
-      const fromStatic = BLOG_POSTS.find((p) => p.slug === slug) ?? null;
-      return { post: fromStatic, loading: !fromStatic };
-    },
+    { post: null, loading: true },
   );
   useEffect(() => {
     let active = true;
     (async () => {
-      const fromStatic = BLOG_POSTS.find((p) => p.slug === slug);
-      if (fromStatic) {
-        if (active) setState({ post: fromStatic, loading: false });
-        return;
-      }
       const { data, error } = await supabase
         .from("blog_posts")
         .select(
@@ -136,3 +126,4 @@ export function useBlogPostBySlug(slug: string): {
   }, [slug]);
   return state;
 }
+
