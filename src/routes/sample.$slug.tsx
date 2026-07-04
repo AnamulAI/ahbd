@@ -272,10 +272,24 @@ const AUDIENCE_CTA_COPY: Record<AudienceCategory, CtaCopy> = {
   },
 };
 
-function normalizeAudience(value: unknown): AudienceCategory {
-  return value === "marketers" || value === "creators" || value === "businesses" || value === "educators"
-    ? value
-    : "businesses";
+const KNOWN_AUDIENCE_KEYS = ["marketers", "creators", "businesses", "educators"] as const;
+
+function knownAudienceKey(value: unknown): AudienceCategory | null {
+  const s = typeof value === "string" ? value.trim().toLowerCase() : "";
+  return (KNOWN_AUDIENCE_KEYS as readonly string[]).includes(s)
+    ? (s as AudienceCategory)
+    : null;
+}
+
+/** Display label for a free-text audience value (falls back to "Businesses"). */
+function audienceDisplay(value: unknown): string {
+  const raw = typeof value === "string" ? value.trim() : "";
+  if (!raw) return "Businesses";
+  const known = knownAudienceKey(raw);
+  if (known) {
+    return { marketers: "Marketers", creators: "Content Creators", businesses: "Businesses", educators: "Educators" }[known];
+  }
+  return raw;
 }
 
 /* ---------- Marquee strip ---------- */
