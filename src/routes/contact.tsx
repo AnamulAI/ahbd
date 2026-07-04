@@ -100,6 +100,11 @@ function ContactForm({ formRef }: { formRef: React.RefObject<HTMLDivElement | nu
       toast.error("Something went wrong. Please try again.");
       return;
     }
+    // Record conversion for analytics
+    try {
+      const { recordConversion } = await import("@/lib/analytics-tracker");
+      await recordConversion("lead_submitted");
+    } catch {}
     toast.success("Message sent! I'll reply within 24 hours.");
     setFullName("");
     setEmail("");

@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { ScrollUX } from "@/components/site/ScrollUX";
+import { VisitorTrackerMount } from "@/components/site/VisitorTrackerMount";
 import { SiteHeadInjector, OrganizationJsonLd } from "@/lib/seo-runtime";
 
 function NotFoundComponent() {
@@ -131,6 +132,7 @@ function RootComponent() {
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
       <ScrollUX />
+      <VisitorTrackerMount />
       <Toaster position="top-center" theme="dark" richColors />
       <SiteHeadInjector />
       <OrganizationJsonLd />

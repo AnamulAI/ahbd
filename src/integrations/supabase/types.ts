@@ -565,6 +565,30 @@ export type Database = {
         }
         Relationships: []
       }
+      conversion_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          path: string | null
+          session_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          path?: string | null
+          session_id: string
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          path?: string | null
+          session_id?: string
+        }
+        Relationships: []
+      }
       newsletter_subscribers: {
         Row: {
           email: string
@@ -610,6 +634,75 @@ export type Database = {
           label?: string
           updated_at?: string
           url?: string
+        }
+        Relationships: []
+      }
+      page_visits: {
+        Row: {
+          browser: string | null
+          city: string | null
+          country: string | null
+          device_type: string | null
+          id: string
+          ip_truncated: string | null
+          is_admin: boolean
+          is_bot: boolean
+          is_new_visitor: boolean
+          os: string | null
+          path: string
+          referrer_category: string | null
+          referrer_raw: string | null
+          session_id: string
+          time_on_page_seconds: number | null
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          visited_at: string
+          visitor_id: string
+        }
+        Insert: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          device_type?: string | null
+          id?: string
+          ip_truncated?: string | null
+          is_admin?: boolean
+          is_bot?: boolean
+          is_new_visitor?: boolean
+          os?: string | null
+          path: string
+          referrer_category?: string | null
+          referrer_raw?: string | null
+          session_id: string
+          time_on_page_seconds?: number | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          visited_at?: string
+          visitor_id: string
+        }
+        Update: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          device_type?: string | null
+          id?: string
+          ip_truncated?: string | null
+          is_admin?: boolean
+          is_bot?: boolean
+          is_new_visitor?: boolean
+          os?: string | null
+          path?: string
+          referrer_category?: string | null
+          referrer_raw?: string | null
+          session_id?: string
+          time_on_page_seconds?: number | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          visited_at?: string
+          visitor_id?: string
         }
         Relationships: []
       }

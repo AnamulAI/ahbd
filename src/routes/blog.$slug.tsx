@@ -925,6 +925,10 @@ function SidebarCard({ card }: { card: SidebarCardRow }) {
     }
     toast.success("Thanks for subscribing!");
     fireNewsletterWebhook(value);
+    try {
+      const { recordConversion } = await import("@/lib/analytics-tracker");
+      await recordConversion("newsletter_subscribed");
+    } catch {}
     setEmail("");
   }
 
