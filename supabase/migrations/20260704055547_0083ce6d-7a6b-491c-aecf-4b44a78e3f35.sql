@@ -1,0 +1,1 @@
+ALTER TABLE public.sample_previews DROP CONSTRAINT IF EXISTS sample_previews_audience_category_check;
