@@ -118,8 +118,8 @@ function ProjectsIndexPage() {
           </div>
         </section>
 
-        {/* Featured spotlight */}
-        <FeaturedSpotlight />
+
+
 
         {/* Filter tabs */}
         <section className="pt-10 sm:pt-14">
