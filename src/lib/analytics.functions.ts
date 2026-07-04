@@ -24,15 +24,54 @@ async function assertAnalyticsAccess(context: any) {
   if (!data) throw new Error("Forbidden");
 }
 
-async function baseVisitsQuery(context: any, range: Range) {
+async function fetchVisitsBetween(
+  context: any,
+  fromIso: string | null,
+  toIso: string | null,
+  includeAdmin: boolean,
+) {
   const sb = context.supabase as any;
   let q = sb.from("page_visits").select("*").eq("is_bot", false);
-  if (!range.includeAdmin) q = q.eq("is_admin", false);
-  const since = sinceIso(range.days ?? null);
-  if (since) q = q.gte("visited_at", since);
+  if (!includeAdmin) q = q.eq("is_admin", false);
+  if (fromIso) q = q.gte("visited_at", fromIso);
+  if (toIso) q = q.lt("visited_at", toIso);
   const { data, error } = await q.order("visited_at", { ascending: false }).limit(50000);
   if (error) throw new Error(error.message);
   return (data ?? []) as any[];
+}
+
+async function baseVisitsQuery(context: any, range: Range) {
+  const since = range.days ? new Date(Date.now() - range.days * 24 * 60 * 60 * 1000).toISOString() : null;
+  return fetchVisitsBetween(context, since, null, Boolean(range.includeAdmin));
+}
+
+function computeTotals(visits: any[]) {
+  const uniqueVisitors = new Set(visits.map((v) => v.visitor_id)).size;
+  const newVisitors = visits.filter((v) => v.is_new_visitor).length;
+  const returningVisitors = visits.length - newVisitors;
+  const bySession = new Map<string, any[]>();
+  for (const v of visits) {
+    const arr = bySession.get(v.session_id) ?? [];
+    arr.push(v);
+    bySession.set(v.session_id, arr);
+  }
+  let totalDuration = 0;
+  let countedSessions = 0;
+  let bouncedSessions = 0;
+  for (const [, rows] of bySession) {
+    const dur = rows.reduce((acc, r) => acc + (r.time_on_page_seconds || 0), 0);
+    if (rows.length > 0) countedSessions++;
+    totalDuration += dur;
+    if (rows.length === 1) bouncedSessions++;
+  }
+  return {
+    pageviews: visits.length,
+    uniqueVisitors,
+    newVisitors,
+    returningVisitors,
+    avgSessionSeconds: countedSessions > 0 ? Math.round(totalDuration / countedSessions) : 0,
+    bounceRate: bySession.size > 0 ? bouncedSessions / bySession.size : 0,
+  };
 }
 
 export const getAnalyticsOverview = createServerFn({ method: "POST" })
@@ -41,29 +80,18 @@ export const getAnalyticsOverview = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     await assertAnalyticsAccess(context);
     const visits = await baseVisitsQuery(context, data);
+    const totals = computeTotals(visits);
 
-    const uniqueVisitors = new Set(visits.map((v) => v.visitor_id)).size;
-    const newVisitors = visits.filter((v) => v.is_new_visitor).length;
-    const returningVisitors = visits.length - newVisitors;
-
-    // session-level metrics
-    const bySession = new Map<string, any[]>();
-    for (const v of visits) {
-      const arr = bySession.get(v.session_id) ?? [];
-      arr.push(v);
-      bySession.set(v.session_id, arr);
+    // Previous-period totals for trend deltas (only when a bounded range is set).
+    let previousTotals: ReturnType<typeof computeTotals> | null = null;
+    if (data.days) {
+      const now = Date.now();
+      const rangeMs = data.days * 24 * 60 * 60 * 1000;
+      const prevFrom = new Date(now - rangeMs * 2).toISOString();
+      const prevTo = new Date(now - rangeMs).toISOString();
+      const prev = await fetchVisitsBetween(context, prevFrom, prevTo, Boolean(data.includeAdmin));
+      if (prev.length > 0) previousTotals = computeTotals(prev);
     }
-    let totalDuration = 0;
-    let countedSessions = 0;
-    let bouncedSessions = 0;
-    for (const [, rows] of bySession) {
-      const dur = rows.reduce((acc, r) => acc + (r.time_on_page_seconds || 0), 0);
-      if (rows.length > 0) countedSessions++;
-      totalDuration += dur;
-      if (rows.length === 1) bouncedSessions++;
-    }
-    const avgSessionSeconds = countedSessions > 0 ? Math.round(totalDuration / countedSessions) : 0;
-    const bounceRate = bySession.size > 0 ? bouncedSessions / bySession.size : 0;
 
     // countries
     const countryMap = new Map<string, number>();
@@ -135,14 +163,8 @@ export const getAnalyticsOverview = createServerFn({ method: "POST" })
     const sampleLinkVisits = visits.filter((v) => (v.path as string).startsWith("/sample/")).length;
 
     return {
-      totals: {
-        pageviews: visits.length,
-        uniqueVisitors,
-        newVisitors,
-        returningVisitors,
-        avgSessionSeconds,
-        bounceRate,
-      },
+      totals,
+      previousTotals,
       countries,
       devices,
       browsers,

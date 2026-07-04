@@ -24,20 +24,62 @@ function pickClientIp(request: Request): string | null {
   return cand || null;
 }
 
-async function geoLookup(ip: string | null): Promise<{ country: string | null; city: string | null }> {
-  if (!ip || ip.startsWith("127.") || ip.startsWith("10.") || ip.startsWith("192.168.") || ip === "::1") {
-    return { country: null, city: null };
+function isPrivateIp(ip: string): boolean {
+  if (
+    ip === "::1" ||
+    ip === "localhost" ||
+    ip.startsWith("127.") ||
+    ip.startsWith("10.") ||
+    ip.startsWith("192.168.") ||
+    ip.startsWith("169.254.") ||
+    ip.startsWith("fc") ||
+    ip.startsWith("fd")
+  )
+    return true;
+  // 172.16.0.0 – 172.31.255.255
+  if (ip.startsWith("172.")) {
+    const second = parseInt(ip.split(".")[1] ?? "0", 10);
+    if (second >= 16 && second <= 31) return true;
   }
+  return false;
+}
+
+async function fetchWithTimeout(url: string, ms: number, init?: RequestInit) {
+  const ac = new AbortController();
+  const t = setTimeout(() => ac.abort(), ms);
   try {
-    const res = await fetch(
-      `https://ipapi.co/${encodeURIComponent(ip)}/json/`,
+    return await fetch(url, { ...init, signal: ac.signal });
+  } finally {
+    clearTimeout(t);
+  }
+}
+
+/**
+ * Resolves country/city for an IP.
+ *
+ * - Returns `{ country: "Local" }` for local/private IPs and network failures
+ *   so preview/dev traffic is visibly distinct from real geographic data.
+ * - Uses ip-api.com's free keyless endpoint by default; if a future integration
+ *   provides its own API key we can fall back to that here.
+ * - Bounded by a short timeout so a slow lookup never delays the visit log.
+ */
+async function geoLookup(
+  ip: string | null,
+): Promise<{ country: string | null; city: string | null }> {
+  if (!ip || isPrivateIp(ip)) return { country: "Local", city: null };
+  try {
+    // ip-api.com free tier — no key required, HTTP only for the free endpoint.
+    const res = await fetchWithTimeout(
+      `http://ip-api.com/json/${encodeURIComponent(ip)}?fields=status,country,city`,
+      2500,
       { headers: { Accept: "application/json" } },
     );
-    if (!res.ok) return { country: null, city: null };
-    const j = (await res.json()) as { country_name?: string; city?: string };
-    return { country: j.country_name ?? null, city: j.city ?? null };
+    if (!res.ok) return { country: "Local", city: null };
+    const j = (await res.json()) as { status?: string; country?: string; city?: string };
+    if (j.status !== "success" || !j.country) return { country: "Local", city: null };
+    return { country: j.country, city: j.city || null };
   } catch {
-    return { country: null, city: null };
+    return { country: "Local", city: null };
   }
 }
 
