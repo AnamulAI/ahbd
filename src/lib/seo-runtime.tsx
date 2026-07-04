@@ -15,6 +15,23 @@ export type SiteSettings = {
   google_site_verification: string;
   custom_head_scripts: string;
   custom_body_scripts: string;
+  // Part 1 + 2
+  bing_site_verification: string;
+  facebook_domain_verification: string;
+  tiktok_pixel_id: string;
+  pinterest_tag_id: string;
+  pinterest_domain_verification: string;
+  linkedin_partner_id: string;
+  // Part 3
+  newsletter_webhook_url: string;
+  // Part 4 — stored as "true" / "false"
+  allow_gptbot: string;
+  allow_google_extended: string;
+  allow_claudebot: string;
+  allow_perplexitybot: string;
+  allow_ccbot: string;
+  // Part 5
+  llms_txt_content: string;
 };
 
 const EMPTY_SETTINGS: SiteSettings = {
@@ -26,6 +43,19 @@ const EMPTY_SETTINGS: SiteSettings = {
   google_site_verification: "",
   custom_head_scripts: "",
   custom_body_scripts: "",
+  bing_site_verification: "",
+  facebook_domain_verification: "",
+  tiktok_pixel_id: "",
+  pinterest_tag_id: "",
+  pinterest_domain_verification: "",
+  linkedin_partner_id: "",
+  newsletter_webhook_url: "",
+  allow_gptbot: "true",
+  allow_google_extended: "true",
+  allow_claudebot: "true",
+  allow_perplexitybot: "true",
+  allow_ccbot: "true",
+  llms_txt_content: "",
 };
 
 export async function fetchSiteSettings(): Promise<SiteSettings> {
@@ -74,7 +104,7 @@ export function useStaticPageSeo(pageKey: string) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Head tag helpers (client-side DOM injection)                                */
+/* Head tag helpers                                                            */
 /* -------------------------------------------------------------------------- */
 
 function setMetaTag(selector: string, attrs: Record<string, string>) {
@@ -108,7 +138,7 @@ function applyTitleTemplate(template: string, pageTitle: string) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* <PageSeo /> — sets document.title, meta description, og:*, twitter:*        */
+/* <PageSeo />                                                                 */
 /* -------------------------------------------------------------------------- */
 
 export function PageSeo({
@@ -204,10 +234,6 @@ export function PageSeo({
   return null;
 }
 
-/* -------------------------------------------------------------------------- */
-/* <StaticPageSeo /> — fetches static_page_seo row for a given key             */
-/* -------------------------------------------------------------------------- */
-
 export function StaticPageSeo({
   pageKey,
   defaultTitle,
@@ -227,13 +253,13 @@ export function StaticPageSeo({
       title={title}
       description={description}
       image={image}
-      useTitleTemplate={false /* full titles authored explicitly for static pages */}
+      useTitleTemplate={false}
     />
   );
 }
 
 /* -------------------------------------------------------------------------- */
-/* <JsonLd /> — inject a schema.org JSON-LD script tag                         */
+/* <JsonLd />                                                                  */
 /* -------------------------------------------------------------------------- */
 
 export function JsonLd({ data, id }: { data: unknown; id: string }) {
@@ -252,7 +278,7 @@ export function JsonLd({ data, id }: { data: unknown; id: string }) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* <SiteHeadInjector /> — global tracking / verification / custom scripts       */
+/* <SiteHeadInjector />                                                        */
 /* -------------------------------------------------------------------------- */
 
 const INJECTED_ATTR = "data-lovable-seo-injected";
@@ -263,7 +289,6 @@ function injectRawHtml(target: HTMLElement, html: string, tag: string): Node[] {
   template.innerHTML = html;
   const nodes: Node[] = [];
   Array.from(template.content.childNodes).forEach((child) => {
-    // For <script> tags, we must re-create the element so browsers actually execute it.
     if (child.nodeType === 1 && (child as Element).tagName === "SCRIPT") {
       const src = child as HTMLScriptElement;
       const s = document.createElement("script");
@@ -281,6 +306,14 @@ function injectRawHtml(target: HTMLElement, html: string, tag: string): Node[] {
   return nodes;
 }
 
+function appendInlineScript(text: string, tag: string): () => void {
+  const s = document.createElement("script");
+  s.setAttribute(INJECTED_ATTR, tag);
+  s.text = text;
+  document.head.appendChild(s);
+  return () => s.remove();
+}
+
 export function SiteHeadInjector() {
   const { data: settings } = useSiteSettings();
 
@@ -288,7 +321,7 @@ export function SiteHeadInjector() {
     if (typeof document === "undefined" || !settings) return;
     const cleanups: Array<() => void> = [];
 
-    // 1. Google Site Verification
+    // --- Verification meta tags ---
     if (settings.google_site_verification.trim()) {
       cleanups.push(
         setMetaTag('meta[name="google-site-verification"]', {
@@ -297,8 +330,32 @@ export function SiteHeadInjector() {
         }),
       );
     }
+    if (settings.bing_site_verification.trim()) {
+      cleanups.push(
+        setMetaTag('meta[name="msvalidate.01"]', {
+          name: "msvalidate.01",
+          content: settings.bing_site_verification.trim(),
+        }),
+      );
+    }
+    if (settings.facebook_domain_verification.trim()) {
+      cleanups.push(
+        setMetaTag('meta[name="facebook-domain-verification"]', {
+          name: "facebook-domain-verification",
+          content: settings.facebook_domain_verification.trim(),
+        }),
+      );
+    }
+    if (settings.pinterest_domain_verification.trim()) {
+      cleanups.push(
+        setMetaTag('meta[name="p:domain_verify"]', {
+          name: "p:domain_verify",
+          content: settings.pinterest_domain_verification.trim(),
+        }),
+      );
+    }
 
-    // 2. GA4
+    // --- GA4 ---
     const ga4 = settings.ga4_measurement_id.trim();
     if (ga4 && /^G-[A-Z0-9]+$/i.test(ga4)) {
       const gtagLoader = document.createElement("script");
@@ -306,33 +363,65 @@ export function SiteHeadInjector() {
       gtagLoader.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(ga4)}`;
       gtagLoader.setAttribute(INJECTED_ATTR, "ga4-loader");
       document.head.appendChild(gtagLoader);
-
-      const gtagInit = document.createElement("script");
-      gtagInit.setAttribute(INJECTED_ATTR, "ga4-init");
-      gtagInit.text = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${ga4}');`;
-      document.head.appendChild(gtagInit);
-
-      cleanups.push(() => {
-        gtagLoader.remove();
-        gtagInit.remove();
-      });
+      cleanups.push(() => gtagLoader.remove());
+      cleanups.push(
+        appendInlineScript(
+          `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${ga4}');`,
+          "ga4-init",
+        ),
+      );
     }
 
-    // 3. Facebook Pixel
+    // --- Facebook Pixel ---
     const fb = settings.facebook_pixel_id.trim();
     if (fb && /^[0-9]+$/.test(fb)) {
-      const fbScript = document.createElement("script");
-      fbScript.setAttribute(INJECTED_ATTR, "fb-pixel");
-      fbScript.text = `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${fb}');fbq('track','PageView');`;
-      document.head.appendChild(fbScript);
-      cleanups.push(() => fbScript.remove());
+      cleanups.push(
+        appendInlineScript(
+          `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${fb}');fbq('track','PageView');`,
+          "fb-pixel",
+        ),
+      );
     }
 
-    // 4. Custom head scripts (raw HTML)
+    // --- TikTok Pixel ---
+    const tk = settings.tiktok_pixel_id.trim();
+    if (tk) {
+      const safe = tk.replace(/[^A-Za-z0-9]/g, "");
+      cleanups.push(
+        appendInlineScript(
+          `!function (w, d, t) {w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e};ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};ttq.load('${safe}');ttq.page();}(window, document, 'ttq');`,
+          "tiktok-pixel",
+        ),
+      );
+    }
+
+    // --- Pinterest Tag ---
+    const pin = settings.pinterest_tag_id.trim();
+    if (pin) {
+      const safe = pin.replace(/[^A-Za-z0-9]/g, "");
+      cleanups.push(
+        appendInlineScript(
+          `!function(e){if(!window.pintrk){window.pintrk=function(){window.pintrk.queue.push(Array.prototype.slice.call(arguments))};var n=window.pintrk;n.queue=[],n.version="3.0";var t=document.createElement("script");t.async=!0,t.src=e;var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(t,r)}}("https://s.pinimg.com/ct/core.js");pintrk('load','${safe}');pintrk('page');`,
+          "pinterest-tag",
+        ),
+      );
+    }
+
+    // --- LinkedIn Insight Tag ---
+    const li = settings.linkedin_partner_id.trim();
+    if (li && /^[0-9]+$/.test(li)) {
+      cleanups.push(
+        appendInlineScript(
+          `_linkedin_partner_id="${li}";window._linkedin_data_partner_ids=window._linkedin_data_partner_ids||[];window._linkedin_data_partner_ids.push(_linkedin_partner_id);(function(l){if(!l){window.lintrk=function(a,b){window.lintrk.q.push([a,b])};window.lintrk.q=[]}var s=document.getElementsByTagName("script")[0];var b=document.createElement("script");b.type="text/javascript";b.async=true;b.src="https://snap.licdn.com/li.lms-analytics/insight.min.js";s.parentNode.insertBefore(b,s)})(window.lintrk);`,
+          "linkedin-insight",
+        ),
+      );
+    }
+
+    // --- Custom head + body raw HTML ---
     const headNodes = injectRawHtml(document.head, settings.custom_head_scripts, "custom-head");
     cleanups.push(() => headNodes.forEach((n) => n.parentNode?.removeChild(n)));
 
-    // 5. Custom body scripts (raw HTML — appended at end of body)
     const bodyNodes = injectRawHtml(document.body, settings.custom_body_scripts, "custom-body");
     cleanups.push(() => bodyNodes.forEach((n) => n.parentNode?.removeChild(n)));
 
@@ -345,18 +434,23 @@ export function SiteHeadInjector() {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Organization JSON-LD (sitewide)                                             */
+/* Organization + Service JSON-LD                                              */
 /* -------------------------------------------------------------------------- */
+
+const SITE_URL = "https://ahbd.lovable.app";
+const ORG_NODE = {
+  "@type": "Organization",
+  name: "AnamDev",
+  alternateName: "Mohammad Anamul Hoque",
+  url: SITE_URL,
+  logo: `${SITE_URL}/favicon.ico`,
+};
 
 export function OrganizationJsonLd() {
   const data = useMemo(
     () => ({
       "@context": "https://schema.org",
-      "@type": "Organization",
-      name: "AnamDev",
-      alternateName: "Mohammad Anamul Hoque",
-      url: "https://ahbd.lovable.app",
-      logo: "https://ahbd.lovable.app/favicon.ico",
+      ...ORG_NODE,
       sameAs: [
         "https://www.linkedin.com/in/anamulhoque",
         "https://github.com/anamulhoque",
@@ -367,8 +461,66 @@ export function OrganizationJsonLd() {
   return <JsonLd id="org" data={data} />;
 }
 
+export function ServiceJsonLd({
+  id,
+  name,
+  description,
+  url,
+  serviceType,
+}: {
+  id: string;
+  name: string;
+  description: string;
+  url: string;
+  serviceType?: string;
+}) {
+  const data = useMemo(
+    () => ({
+      "@context": "https://schema.org",
+      "@type": "Service",
+      name,
+      description,
+      url,
+      serviceType: serviceType ?? name,
+      provider: ORG_NODE,
+      areaServed: { "@type": "Place", name: "Worldwide" },
+    }),
+    [name, description, url, serviceType],
+  );
+  return <JsonLd id={`service-${id}`} data={data} />;
+}
+
 /* -------------------------------------------------------------------------- */
-/* FAQ extractor — matches the H2/H3 FAQ-detection used in blog.$slug.tsx      */
+/* Newsletter webhook (best-effort, fire-and-forget)                           */
+/* -------------------------------------------------------------------------- */
+
+export function fireNewsletterWebhook(email: string): void {
+  if (typeof window === "undefined") return;
+  // Fetch the URL fresh each time so admin edits take effect immediately.
+  void (async () => {
+    try {
+      const { data } = await supabase
+        .from("site_settings")
+        .select("setting_value")
+        .eq("setting_key", "newsletter_webhook_url")
+        .maybeSingle();
+      const url = ((data as { setting_value: string | null } | null)?.setting_value ?? "").trim();
+      if (!url) return;
+      await fetch(url, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, subscribed_at: new Date().toISOString() }),
+        keepalive: true,
+      });
+    } catch {
+      /* best-effort */
+    }
+  })();
+}
+
+/* -------------------------------------------------------------------------- */
+/* FAQ extractor                                                               */
 /* -------------------------------------------------------------------------- */
 
 const FAQ_HEADING = /(frequently\s*asked|faq|common\s*questions)/i;
@@ -380,7 +532,6 @@ export function extractFaqFromHtml(html: string): { q: string; a: string }[] {
     const headings = Array.from(doc.querySelectorAll("h2, h3"));
     const startIdx = headings.findIndex((h) => FAQ_HEADING.test(h.textContent ?? ""));
     if (startIdx < 0) return [];
-    // Collect Q/A pairs from the FAQ block: subsequent H3s + following paragraph(s).
     const items: { q: string; a: string }[] = [];
     const faqHeading = headings[startIdx];
     let node: Element | null = faqHeading.nextElementSibling;

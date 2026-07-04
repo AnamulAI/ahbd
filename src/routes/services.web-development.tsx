@@ -82,7 +82,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { CtaRevealCard } from "@/components/site/CtaRevealCard";
 import { BrandIcon, brandColor } from "@/components/site/BrandIcon";
 import { ShareQuoteButton } from "@/components/site/ShareQuoteButton";
-import { StaticPageSeo } from "@/lib/seo-runtime";
+import { StaticPageSeo, ServiceJsonLd } from "@/lib/seo-runtime";
 
 import {
   Accordion,
@@ -1766,6 +1766,13 @@ function WebDevPage() {
         pageKey="services"
         defaultTitle="Services — AnamDev"
         defaultDescription="Web Development, AI Integrator, and AI Podcast services by Mohammad Anamul Hoque."
+      />
+      <ServiceJsonLd
+        id="web-development"
+        name="Web Development"
+        description="Modern, fast, SEO-ready websites and web apps built with production-grade tooling."
+        url="https://ahbd.lovable.app/services/web-development"
+        serviceType="Web Development"
       />
       <SiteHeader />
       <main>

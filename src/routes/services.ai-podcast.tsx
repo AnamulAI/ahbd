@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ServiceJsonLd } from "@/lib/seo-runtime";
 import { useEffect, useRef, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -1970,6 +1971,13 @@ function AiPodcastPage() {
 
   return (
     <div className="min-h-dvh bg-background text-foreground">
+      <ServiceJsonLd
+        id="ai-podcast"
+        name="AI Podcast Production"
+        description="Done-for-you AI podcast production. Turn a topic, blog post, URL, or PDF into a publish-ready audio and video podcast — no recording required."
+        url="https://ahbd.lovable.app/services/ai-podcast"
+        serviceType="Podcast Production"
+      />
       <SiteHeader />
       <main>
         <HeroSection onHowItWorksClick={scrollToHowItWorks} />

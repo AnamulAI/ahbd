@@ -14,6 +14,7 @@ import {
   type BlogPost,
 } from "@/lib/blog-data";
 import { useAllBlogPosts } from "@/lib/blog-loader";
+import { fireNewsletterWebhook } from "@/lib/seo-runtime";
 
 export const Route = createFileRoute("/blog/")({
   head: () => ({
@@ -71,6 +72,7 @@ function NewsletterSection() {
       return;
     }
     toast.success("Thanks for subscribing!");
+    fireNewsletterWebhook(value);
     setEmail("");
   }
 

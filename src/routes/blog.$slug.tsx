@@ -32,7 +32,7 @@ import {
 } from "@/lib/blog-data";
 import { useAllBlogPosts, useBlogPostBySlug } from "@/lib/blog-loader";
 import { supabase } from "@/integrations/supabase/client";
-import { PageSeo, JsonLd, extractFaqFromHtml } from "@/lib/seo-runtime";
+import { PageSeo, JsonLd, extractFaqFromHtml, fireNewsletterWebhook } from "@/lib/seo-runtime";
 
 type TocHeading = { id: string; text: string; level: 2 | 3 };
 
@@ -924,6 +924,7 @@ function SidebarCard({ card }: { card: SidebarCardRow }) {
       return;
     }
     toast.success("Thanks for subscribing!");
+    fireNewsletterWebhook(value);
     setEmail("");
   }
 

@@ -9,6 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -38,6 +40,16 @@ import { Route as AdminComingSoonKeyRouteImport } from './routes/admin.coming-so
 import { Route as AdminBlogNewRouteImport } from './routes/admin.blog.new'
 import { Route as AdminBlogIdRouteImport } from './routes/admin.blog.$id'
 
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
+  id: '/llms.txt',
+  path: '/llms.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -183,6 +195,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/llms.txt': typeof LlmsDottxtRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/admin/blog-sidebar-cards': typeof AdminBlogSidebarCardsRoute
   '/admin/builder-settings': typeof AdminBuilderSettingsRoute
   '/admin/leads': typeof AdminLeadsRoute
@@ -213,6 +227,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/llms.txt': typeof LlmsDottxtRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/admin/blog-sidebar-cards': typeof AdminBlogSidebarCardsRoute
   '/admin/builder-settings': typeof AdminBuilderSettingsRoute
   '/admin/leads': typeof AdminLeadsRoute
@@ -244,6 +260,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/llms.txt': typeof LlmsDottxtRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/admin/blog-sidebar-cards': typeof AdminBlogSidebarCardsRoute
   '/admin/builder-settings': typeof AdminBuilderSettingsRoute
   '/admin/leads': typeof AdminLeadsRoute
@@ -276,6 +294,8 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/llms.txt'
+    | '/robots.txt'
     | '/admin/blog-sidebar-cards'
     | '/admin/builder-settings'
     | '/admin/leads'
@@ -306,6 +326,8 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/llms.txt'
+    | '/robots.txt'
     | '/admin/blog-sidebar-cards'
     | '/admin/builder-settings'
     | '/admin/leads'
@@ -336,6 +358,8 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/llms.txt'
+    | '/robots.txt'
     | '/admin/blog-sidebar-cards'
     | '/admin/builder-settings'
     | '/admin/leads'
@@ -367,6 +391,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
+  LlmsDottxtRoute: typeof LlmsDottxtRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
   AdminBlogSidebarCardsRoute: typeof AdminBlogSidebarCardsRoute
   AdminBuilderSettingsRoute: typeof AdminBuilderSettingsRoute
   AdminLeadsRoute: typeof AdminLeadsRoute
@@ -396,6 +422,20 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/llms.txt': {
+      id: '/llms.txt'
+      path: '/llms.txt'
+      fullPath: '/llms.txt'
+      preLoaderRoute: typeof LlmsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -599,6 +639,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
+  LlmsDottxtRoute: LlmsDottxtRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
   AdminBlogSidebarCardsRoute: AdminBlogSidebarCardsRoute,
   AdminBuilderSettingsRoute: AdminBuilderSettingsRoute,
   AdminLeadsRoute: AdminLeadsRoute,
