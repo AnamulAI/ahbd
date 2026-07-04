@@ -242,6 +242,10 @@ function PhaseCard({
 
 
 function Index() {
+  const { projects: allProjects } = useAllProjects();
+  const { posts: allPosts } = useAllBlogPosts();
+  const latestProjects = allProjects.slice(0, 3);
+  const latestPosts = allPosts.slice(0, 3);
   const [journeyBadge1, setJourneyBadge1] = useState(false);
   const [journeyLine1, setJourneyLine1] = useState(false);
   const [journeyBadge2, setJourneyBadge2] = useState(false);
@@ -249,6 +253,7 @@ function Index() {
   const [journeyBadge3, setJourneyBadge3] = useState(false);
   const [sig, setSig] = useState<SignaturePackage>(SIGNATURE_DEFAULTS);
   const [dividerText, setDividerText] = useState<string>("— or build your own —");
+
 
   useEffect(() => {
     let cancelled = false;
