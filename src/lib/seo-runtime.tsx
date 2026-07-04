@@ -513,7 +513,7 @@ export function fireNewsletterWebhook(email: string): void {
   void (async () => {
     try {
       const { data } = await supabase
-        .from("newsletter_webhooks" as never)
+        .from("newsletter_webhooks")
         .select("url");
       const rows = (data ?? []) as Array<{ url: string | null }>;
       const payload = JSON.stringify({ email, subscribed_at: new Date().toISOString() });

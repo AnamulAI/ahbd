@@ -185,10 +185,10 @@ export function IntegrationsPage() {
     if (gate.status !== "ok") return;
     (async () => {
       const [a, w, t, h] = await Promise.all([
-        supabase.from("ai_provider_keys" as never).select("id,provider,custom_provider_name,api_key,label").order("created_at", { ascending: true }),
-        supabase.from("whatsapp_accounts" as never).select("id,label,access_token,phone_number_id").order("created_at", { ascending: true }),
-        supabase.from("telegram_bots" as never).select("id,label,bot_token").order("created_at", { ascending: true }),
-        supabase.from("newsletter_webhooks" as never).select("id,label,url").order("created_at", { ascending: true }),
+        supabase.from("ai_provider_keys").select("id,provider,custom_provider_name,api_key,label").order("created_at", { ascending: true }),
+        supabase.from("whatsapp_accounts").select("id,label,access_token,phone_number_id").order("created_at", { ascending: true }),
+        supabase.from("telegram_bots").select("id,label,bot_token").order("created_at", { ascending: true }),
+        supabase.from("newsletter_webhooks").select("id,label,url").order("created_at", { ascending: true }),
       ]);
       if (a.error) toast.error(a.error.message);
       setAiKeys(((a.data ?? []) as unknown as AiKeyRow[]));
@@ -222,11 +222,11 @@ export function IntegrationsPage() {
       label: (aiDraft.label ?? "").trim() || null,
     };
     if (aiDraft.id) {
-      const { error } = await supabase.from("ai_provider_keys" as never).update(payload).eq("id", aiDraft.id);
+      const { error } = await supabase.from("ai_provider_keys").update(payload).eq("id", aiDraft.id);
       if (error) { setSaving(false); return toast.error(error.message); }
       setAiKeys((c) => c.map((r) => (r.id === aiDraft.id ? { ...r, ...payload } : r)));
     } else {
-      const { data, error } = await supabase.from("ai_provider_keys" as never).insert(payload).select("id,provider,custom_provider_name,api_key,label").single();
+      const { data, error } = await supabase.from("ai_provider_keys").insert(payload).select("id,provider,custom_provider_name,api_key,label").single();
       if (error) { setSaving(false); return toast.error(error.message); }
       setAiKeys((c) => [...c, data as unknown as AiKeyRow]);
     }
@@ -236,7 +236,7 @@ export function IntegrationsPage() {
   }
   async function deleteAi(id: string) {
     if (!confirm("Delete this API key?")) return;
-    const { error } = await supabase.from("ai_provider_keys" as never).delete().eq("id", id);
+    const { error } = await supabase.from("ai_provider_keys").delete().eq("id", id);
     if (error) return toast.error(error.message);
     setAiKeys((c) => c.filter((r) => r.id !== id));
   }
@@ -255,11 +255,11 @@ export function IntegrationsPage() {
       phone_number_id: (waDraft.phone_number_id ?? "").trim() || null,
     };
     if (waDraft.id) {
-      const { error } = await supabase.from("whatsapp_accounts" as never).update(payload).eq("id", waDraft.id);
+      const { error } = await supabase.from("whatsapp_accounts").update(payload).eq("id", waDraft.id);
       if (error) { setSaving(false); return toast.error(error.message); }
       setWaAccounts((c) => c.map((r) => (r.id === waDraft.id ? { ...r, ...payload } : r)));
     } else {
-      const { data, error } = await supabase.from("whatsapp_accounts" as never).insert(payload).select("id,label,access_token,phone_number_id").single();
+      const { data, error } = await supabase.from("whatsapp_accounts").insert(payload).select("id,label,access_token,phone_number_id").single();
       if (error) { setSaving(false); return toast.error(error.message); }
       setWaAccounts((c) => [...c, data as unknown as WhatsappRow]);
     }
@@ -269,7 +269,7 @@ export function IntegrationsPage() {
   }
   async function deleteWa(id: string) {
     if (!confirm("Delete this WhatsApp account?")) return;
-    const { error } = await supabase.from("whatsapp_accounts" as never).delete().eq("id", id);
+    const { error } = await supabase.from("whatsapp_accounts").delete().eq("id", id);
     if (error) return toast.error(error.message);
     setWaAccounts((c) => c.filter((r) => r.id !== id));
   }
@@ -284,11 +284,11 @@ export function IntegrationsPage() {
     setSaving(true);
     const payload = { label, bot_token: token };
     if (tgDraft.id) {
-      const { error } = await supabase.from("telegram_bots" as never).update(payload).eq("id", tgDraft.id);
+      const { error } = await supabase.from("telegram_bots").update(payload).eq("id", tgDraft.id);
       if (error) { setSaving(false); return toast.error(error.message); }
       setTgBots((c) => c.map((r) => (r.id === tgDraft.id ? { ...r, ...payload } : r)));
     } else {
-      const { data, error } = await supabase.from("telegram_bots" as never).insert(payload).select("id,label,bot_token").single();
+      const { data, error } = await supabase.from("telegram_bots").insert(payload).select("id,label,bot_token").single();
       if (error) { setSaving(false); return toast.error(error.message); }
       setTgBots((c) => [...c, data as unknown as TelegramRow]);
     }
@@ -298,7 +298,7 @@ export function IntegrationsPage() {
   }
   async function deleteTg(id: string) {
     if (!confirm("Delete this Telegram bot?")) return;
-    const { error } = await supabase.from("telegram_bots" as never).delete().eq("id", id);
+    const { error } = await supabase.from("telegram_bots").delete().eq("id", id);
     if (error) return toast.error(error.message);
     setTgBots((c) => c.filter((r) => r.id !== id));
   }
@@ -313,11 +313,11 @@ export function IntegrationsPage() {
     setSaving(true);
     const payload = { label: (whDraft.label ?? "").trim() || "", url };
     if (whDraft.id) {
-      const { error } = await supabase.from("newsletter_webhooks" as never).update(payload).eq("id", whDraft.id);
+      const { error } = await supabase.from("newsletter_webhooks").update(payload).eq("id", whDraft.id);
       if (error) { setSaving(false); return toast.error(error.message); }
       setWebhooks((c) => c.map((r) => (r.id === whDraft.id ? { ...r, ...payload } : r)));
     } else {
-      const { data, error } = await supabase.from("newsletter_webhooks" as never).insert(payload).select("id,label,url").single();
+      const { data, error } = await supabase.from("newsletter_webhooks").insert(payload).select("id,label,url").single();
       if (error) { setSaving(false); return toast.error(error.message); }
       setWebhooks((c) => [...c, data as unknown as WebhookRow]);
     }
@@ -327,7 +327,7 @@ export function IntegrationsPage() {
   }
   async function deleteWh(id: string) {
     if (!confirm("Delete this webhook?")) return;
-    const { error } = await supabase.from("newsletter_webhooks" as never).delete().eq("id", id);
+    const { error } = await supabase.from("newsletter_webhooks").delete().eq("id", id);
     if (error) return toast.error(error.message);
     setWebhooks((c) => c.filter((r) => r.id !== id));
   }
