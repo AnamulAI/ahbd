@@ -163,7 +163,7 @@ export function AdminShell({
                 const Icon = item.icon;
                 const active =
                   pathname === item.to ||
-                  (item.to !== "/admin" && pathname.startsWith(item.to));
+                  (item.to !== "/admin" && pathname.startsWith(item.to + "/"));
                 const badge =
                   item.badgeKey === "leads" && newLeadsCount > 0
                     ? newLeadsCount

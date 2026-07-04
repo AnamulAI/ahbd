@@ -476,6 +476,21 @@ export const updateSample = createServerFn({ method: "POST" })
     }
   });
 
+export const deleteSample = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { id: string }) => d)
+  .handler(async ({ data, context }) => {
+    try {
+      await assertAdmin(context);
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { error } = await supabaseAdmin.from("sample_previews").delete().eq("id", data.id);
+      if (error) return { ok: false, error: error.message } as const;
+      return { ok: true, error: null } as const;
+    } catch (error) {
+      return { ok: false, error: errorMessage(error, "Failed to delete sample") } as const;
+    }
+  });
+
 /* ---------- Social Proof Logos (global, shared across samples) ---------- */
 
 const SOCIAL_PROOF_BUCKET = "sample-logos"; // reuse existing logos bucket
