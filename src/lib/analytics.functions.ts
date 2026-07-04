@@ -163,14 +163,8 @@ export const getAnalyticsOverview = createServerFn({ method: "POST" })
     const sampleLinkVisits = visits.filter((v) => (v.path as string).startsWith("/sample/")).length;
 
     return {
-      totals: {
-        pageviews: visits.length,
-        uniqueVisitors,
-        newVisitors,
-        returningVisitors,
-        avgSessionSeconds,
-        bounceRate,
-      },
+      totals,
+      previousTotals,
       countries,
       devices,
       browsers,
