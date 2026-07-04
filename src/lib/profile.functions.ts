@@ -13,6 +13,7 @@ export const SECTION_KEYS = [
   "newsletter",
   "pages",
   "seo_tracking",
+  "analytics",
   "integrations",
   "profile",
 ] as const;
@@ -29,6 +30,7 @@ export const SECTION_LABELS: Record<SectionKey, string> = {
   newsletter: "Newsletter",
   pages: "Pages",
   seo_tracking: "SEO & Tracking",
+  analytics: "Analytics",
   integrations: "Integrations",
   profile: "Profile",
 };

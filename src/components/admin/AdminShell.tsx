@@ -18,6 +18,7 @@ import {
   Menu,
   X,
   Wand2,
+  BarChart3,
   type LucideIcon,
   UserCircle,
 } from "lucide-react";
@@ -75,6 +76,7 @@ const NAV: NavGroup[] = [
         comingSoon: true,
       },
       { label: "SEO & Tracking", to: "/admin/seo", icon: Search, sectionKey: "seo_tracking" },
+      { label: "Analytics", to: "/admin/analytics", icon: BarChart3, sectionKey: "analytics" },
       { label: "Integrations", to: "/admin/integrations", icon: Plug, sectionKey: "integrations" },
       { label: "Branding", to: "/admin/coming-soon/branding", icon: Palette, comingSoon: true },
     ],
@@ -116,6 +118,7 @@ function pathToSection(pathname: string): SectionKey | null {
   if (pathname.startsWith("/admin/newsletter")) return "newsletter";
   if (pathname.startsWith("/admin/pages")) return "pages";
   if (pathname.startsWith("/admin/seo")) return "seo_tracking";
+  if (pathname.startsWith("/admin/analytics")) return "analytics";
   if (pathname.startsWith("/admin/integrations")) return "integrations";
   if (pathname.startsWith("/admin/profile")) return "profile";
   return null;
