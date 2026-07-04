@@ -45,12 +45,12 @@ import {
   type AudienceCategory,
 } from "@/lib/sample-builder.functions";
 
-const AUDIENCE_LABELS: Record<AudienceCategory, string> = {
-  marketers: "Marketers",
-  creators: "Content Creators",
-  businesses: "Businesses",
-  educators: "Educators",
-};
+const AUDIENCE_SUGGESTIONS: { value: string; label: string }[] = [
+  { value: "marketers", label: "Marketers" },
+  { value: "creators", label: "Content Creators" },
+  { value: "businesses", label: "Businesses" },
+  { value: "educators", label: "Educators" },
+];
 
 const ALL_PLATFORMS = [
   { id: "spotify", label: "Spotify" },
