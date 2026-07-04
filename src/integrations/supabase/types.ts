@@ -622,6 +622,8 @@ export type Database = {
           problem: string | null
           process_steps: Json
           result_stats: Json
+          seo_description: string | null
+          seo_title: string | null
           slug: string
           solution: string | null
           sort_order: number
@@ -664,6 +666,8 @@ export type Database = {
           problem?: string | null
           process_steps?: Json
           result_stats?: Json
+          seo_description?: string | null
+          seo_title?: string | null
           slug: string
           solution?: string | null
           sort_order?: number
@@ -706,6 +710,8 @@ export type Database = {
           problem?: string | null
           process_steps?: Json
           result_stats?: Json
+          seo_description?: string | null
+          seo_title?: string | null
           slug?: string
           solution?: string | null
           sort_order?: number
@@ -886,6 +892,24 @@ export type Database = {
         }
         Relationships: []
       }
+      site_settings: {
+        Row: {
+          setting_key: string
+          setting_value: string | null
+          updated_at: string
+        }
+        Insert: {
+          setting_key: string
+          setting_value?: string | null
+          updated_at?: string
+        }
+        Update: {
+          setting_key?: string
+          setting_value?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       social_proof_logos: {
         Row: {
           created_at: string
@@ -906,6 +930,33 @@ export type Database = {
           id?: string
           logo_url?: string
           sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      static_page_seo: {
+        Row: {
+          id: string
+          page_key: string
+          page_label: string
+          seo_description: string | null
+          seo_title: string | null
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          page_key: string
+          page_label: string
+          seo_description?: string | null
+          seo_title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          page_key?: string
+          page_label?: string
+          seo_description?: string | null
+          seo_title?: string | null
           updated_at?: string
         }
         Relationships: []
