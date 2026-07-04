@@ -385,9 +385,10 @@ export function AnalyticsPage() {
       {/* Header */}
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">
+          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#3B82F6]">
             // site
           </div>
+
           <h1 className="mt-1 font-display text-3xl font-bold tracking-tight text-white">
             Analytics
           </h1>
