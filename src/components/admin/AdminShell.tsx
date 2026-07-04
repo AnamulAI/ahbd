@@ -11,6 +11,7 @@ import {
   Layout,
   Eye,
   Search,
+  Plug,
   Palette,
   ExternalLink,
   LogOut,
