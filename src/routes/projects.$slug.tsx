@@ -92,13 +92,17 @@ const CATEGORY_LABEL_MAP: Record<string, string> = {
 };
 
 function ProjectSeoBundle({ db }: { db: DbProject }) {
+  const { data: settings } = useSiteSettings();
+  const siteUrl = resolveSiteBaseUrl(settings);
   const title = (db.seo_title?.trim() || db.title) ?? "";
   const description =
     db.seo_description?.trim() || (db.description ?? "").split(/\n\s*\n/)[0] || "";
   const image = db.cover_image_url || undefined;
+  const canonical = siteUrl ? `${siteUrl}/projects/${db.slug}` : undefined;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
+    ...(canonical ? { "@id": canonical, url: canonical } : {}),
     name: db.title,
     headline: db.title,
     description,
