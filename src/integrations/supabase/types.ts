@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_provider_keys: {
+        Row: {
+          api_key: string
+          created_at: string
+          custom_provider_name: string | null
+          id: string
+          label: string | null
+          provider: string
+          updated_at: string
+        }
+        Insert: {
+          api_key: string
+          created_at?: string
+          custom_provider_name?: string | null
+          id?: string
+          label?: string | null
+          provider: string
+          updated_at?: string
+        }
+        Update: {
+          api_key?: string
+          created_at?: string
+          custom_provider_name?: string | null
+          id?: string
+          label?: string | null
+          provider?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       blog_posts: {
         Row: {
           body_html: string | null
@@ -559,6 +589,30 @@ export type Database = {
         }
         Relationships: []
       }
+      newsletter_webhooks: {
+        Row: {
+          created_at: string
+          id: string
+          label: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label?: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
       payment_plan_settings: {
         Row: {
           advance_percent: number
@@ -961,6 +1015,30 @@ export type Database = {
         }
         Relationships: []
       }
+      telegram_bots: {
+        Row: {
+          bot_token: string
+          created_at: string
+          id: string
+          label: string
+          updated_at: string
+        }
+        Insert: {
+          bot_token: string
+          created_at?: string
+          id?: string
+          label?: string
+          updated_at?: string
+        }
+        Update: {
+          bot_token?: string
+          created_at?: string
+          id?: string
+          label?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -979,6 +1057,33 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      whatsapp_accounts: {
+        Row: {
+          access_token: string
+          created_at: string
+          id: string
+          label: string
+          phone_number_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          access_token: string
+          created_at?: string
+          id?: string
+          label?: string
+          phone_number_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          access_token?: string
+          created_at?: string
+          id?: string
+          label?: string
+          phone_number_id?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
