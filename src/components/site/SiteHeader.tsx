@@ -245,6 +245,7 @@ export type SiteHeaderProps = {
 
 export function SiteHeader({ onCtaClick, ctaLabel = "Let's Talk" }: SiteHeaderProps) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const servicesRoute = useServicesRoute();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(() =>
     pathname.startsWith("/services"),
@@ -270,6 +271,7 @@ export function SiteHeader({ onCtaClick, ctaLabel = "Let's Talk" }: SiteHeaderPr
                     key={link.to}
                     pathname={pathname}
                     isActive={isActive}
+                    servicesRoute={servicesRoute}
                   />
                 );
               }
