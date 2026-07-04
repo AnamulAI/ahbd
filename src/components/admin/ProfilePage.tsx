@@ -129,7 +129,11 @@ function YourProfileCard() {
 
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  // avatarPath is the storage object path stored in user_profiles.avatar_url.
+  // Because the `profile-avatars` bucket is private (workspace blocks public
+  // buckets), we resolve it to a signed URL for display each time it changes.
+  const [avatarPath, setAvatarPath] = useState<string | null>(null);
+  const [avatarDisplayUrl, setAvatarDisplayUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement | null>(null);
 
@@ -137,9 +141,38 @@ function YourProfileCard() {
     if (profile) {
       setFullName(profile.full_name ?? "");
       setPhone(profile.phone ?? "");
-      setAvatarUrl(profile.avatar_url ?? null);
+      setAvatarPath(profile.avatar_url ?? null);
     }
   }, [profile]);
+
+  // Resolve stored path/URL to a display URL. Full http(s) URLs (legacy or
+  // external) are used as-is; anything else is treated as a storage object
+  // path in the profile-avatars bucket and signed for 7 days.
+  useEffect(() => {
+    let cancelled = false;
+    if (!avatarPath) {
+      setAvatarDisplayUrl(null);
+      return;
+    }
+    if (/^https?:\/\//i.test(avatarPath)) {
+      setAvatarDisplayUrl(avatarPath);
+      return;
+    }
+    (async () => {
+      const { data, error } = await supabase.storage
+        .from("profile-avatars")
+        .createSignedUrl(avatarPath, 60 * 60 * 24 * 7);
+      if (cancelled) return;
+      if (error || !data?.signedUrl) {
+        setAvatarDisplayUrl(null);
+        return;
+      }
+      setAvatarDisplayUrl(data.signedUrl);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [avatarPath]);
 
   const mutation = useMutation({
     mutationFn: () =>
@@ -147,7 +180,7 @@ function YourProfileCard() {
         data: {
           full_name: fullName || null,
           phone: phone || null,
-          avatar_url: avatarUrl,
+          avatar_url: avatarPath,
         },
       }),
     onSuccess: async () => {
@@ -162,16 +195,31 @@ function YourProfileCard() {
     if (!profile) return;
     setUploading(true);
     try {
-      const ext = file.name.split(".").pop() ?? "png";
+      const ext = (file.name.split(".").pop() || "png").toLowerCase();
       const path = `${profile.id}/${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("profile-avatars").upload(path, file, {
-        upsert: true,
-        contentType: file.type,
-      });
+      const { error: upErr } = await supabase.storage
+        .from("profile-avatars")
+        .upload(path, file, {
+          upsert: true,
+          contentType: file.type,
+        });
       if (upErr) throw upErr;
-      const { data: pub } = supabase.storage.from("profile-avatars").getPublicUrl(path);
-      setAvatarUrl(pub.publicUrl);
-      toast.success("Avatar uploaded — remember to Save.");
+
+      // Persist the new avatar path immediately so it survives a refresh
+      // without needing the user to click Save.
+      const saved = await saveProfile({
+        data: {
+          full_name: fullName || null,
+          phone: phone || null,
+          avatar_url: path,
+        },
+      });
+      // Reflect the newly saved path locally and refresh the profile query so
+      // any other consumer re-reads. The path change triggers the signed-URL
+      // effect and the avatar re-renders without a page reload.
+      setAvatarPath(saved.avatar_url ?? path);
+      qc.invalidateQueries({ queryKey: ["my-profile"] });
+      toast.success("Avatar updated");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Upload failed");
     } finally {
@@ -194,8 +242,8 @@ function YourProfileCard() {
             className="group relative flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-white/20 bg-[#0A0E1A] hover:border-[#3B82F6]/50 transition-colors"
             disabled={uploading}
           >
-            {avatarUrl ? (
-              <img src={avatarUrl} alt="Avatar" className="h-full w-full object-cover" />
+            {avatarDisplayUrl ? (
+              <img src={avatarDisplayUrl} alt="Avatar" className="h-full w-full object-cover" />
             ) : (
               <div className="flex flex-col items-center gap-1 text-white/40">
                 {uploading ? (
@@ -217,6 +265,8 @@ function YourProfileCard() {
             onChange={(e) => {
               const f = e.target.files?.[0];
               if (f) handleUpload(f);
+              // reset so re-uploading the same file still fires onChange
+              e.target.value = "";
             }}
           />
         </div>
