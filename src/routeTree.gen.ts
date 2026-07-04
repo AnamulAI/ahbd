@@ -30,6 +30,7 @@ import { Route as AdminSampleBuilderRouteImport } from './routes/admin.sample-bu
 import { Route as AdminNewsletterRouteImport } from './routes/admin.newsletter'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
+import { Route as AdminIntegrationsRouteImport } from './routes/admin.integrations'
 import { Route as AdminBuilderSettingsRouteImport } from './routes/admin.builder-settings'
 import { Route as AdminBlogSidebarCardsRouteImport } from './routes/admin.blog-sidebar-cards'
 import { Route as AdminProjectsIndexRouteImport } from './routes/admin.projects.index'
@@ -145,6 +146,11 @@ const AdminLeadsRoute = AdminLeadsRouteImport.update({
   path: '/admin/leads',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIntegrationsRoute = AdminIntegrationsRouteImport.update({
+  id: '/admin/integrations',
+  path: '/admin/integrations',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminBuilderSettingsRoute = AdminBuilderSettingsRouteImport.update({
   id: '/admin/builder-settings',
   path: '/admin/builder-settings',
@@ -199,6 +205,7 @@ export interface FileRoutesByFullPath {
   '/robots.txt': typeof RobotsDottxtRoute
   '/admin/blog-sidebar-cards': typeof AdminBlogSidebarCardsRoute
   '/admin/builder-settings': typeof AdminBuilderSettingsRoute
+  '/admin/integrations': typeof AdminIntegrationsRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
@@ -231,6 +238,7 @@ export interface FileRoutesByTo {
   '/robots.txt': typeof RobotsDottxtRoute
   '/admin/blog-sidebar-cards': typeof AdminBlogSidebarCardsRoute
   '/admin/builder-settings': typeof AdminBuilderSettingsRoute
+  '/admin/integrations': typeof AdminIntegrationsRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
@@ -264,6 +272,7 @@ export interface FileRoutesById {
   '/robots.txt': typeof RobotsDottxtRoute
   '/admin/blog-sidebar-cards': typeof AdminBlogSidebarCardsRoute
   '/admin/builder-settings': typeof AdminBuilderSettingsRoute
+  '/admin/integrations': typeof AdminIntegrationsRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
@@ -298,6 +307,7 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/admin/blog-sidebar-cards'
     | '/admin/builder-settings'
+    | '/admin/integrations'
     | '/admin/leads'
     | '/admin/login'
     | '/admin/newsletter'
@@ -330,6 +340,7 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/admin/blog-sidebar-cards'
     | '/admin/builder-settings'
+    | '/admin/integrations'
     | '/admin/leads'
     | '/admin/login'
     | '/admin/newsletter'
@@ -362,6 +373,7 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/admin/blog-sidebar-cards'
     | '/admin/builder-settings'
+    | '/admin/integrations'
     | '/admin/leads'
     | '/admin/login'
     | '/admin/newsletter'
@@ -395,6 +407,7 @@ export interface RootRouteChildren {
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   AdminBlogSidebarCardsRoute: typeof AdminBlogSidebarCardsRoute
   AdminBuilderSettingsRoute: typeof AdminBuilderSettingsRoute
+  AdminIntegrationsRoute: typeof AdminIntegrationsRoute
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminNewsletterRoute: typeof AdminNewsletterRoute
@@ -569,6 +582,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLeadsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/integrations': {
+      id: '/admin/integrations'
+      path: '/admin/integrations'
+      fullPath: '/admin/integrations'
+      preLoaderRoute: typeof AdminIntegrationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/builder-settings': {
       id: '/admin/builder-settings'
       path: '/admin/builder-settings'
@@ -643,6 +663,7 @@ const rootRouteChildren: RootRouteChildren = {
   RobotsDottxtRoute: RobotsDottxtRoute,
   AdminBlogSidebarCardsRoute: AdminBlogSidebarCardsRoute,
   AdminBuilderSettingsRoute: AdminBuilderSettingsRoute,
+  AdminIntegrationsRoute: AdminIntegrationsRoute,
   AdminLeadsRoute: AdminLeadsRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminNewsletterRoute: AdminNewsletterRoute,
