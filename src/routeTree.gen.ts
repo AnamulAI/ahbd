@@ -26,6 +26,7 @@ import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
 import { Route as InternalBuilderDataTestRouteImport } from './routes/internal.builder-data-test'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AdminSeoRouteImport } from './routes/admin.seo'
+import { Route as AdminProfileRouteImport } from './routes/admin.profile'
 import { Route as AdminPagesRouteImport } from './routes/admin.pages'
 import { Route as AdminNewsletterRouteImport } from './routes/admin.newsletter'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
@@ -129,6 +130,11 @@ const AdminSeoRoute = AdminSeoRouteImport.update({
   path: '/admin/seo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminProfileRoute = AdminProfileRouteImport.update({
+  id: '/admin/profile',
+  path: '/admin/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminPagesRoute = AdminPagesRouteImport.update({
   id: '/admin/pages',
   path: '/admin/pages',
@@ -228,6 +234,7 @@ export interface FileRoutesByFullPath {
   '/admin/login': typeof AdminLoginRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/pages': typeof AdminPagesRoute
+  '/admin/profile': typeof AdminProfileRoute
   '/admin/seo': typeof AdminSeoRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/internal/builder-data-test': typeof InternalBuilderDataTestRoute
@@ -264,6 +271,7 @@ export interface FileRoutesByTo {
   '/admin/login': typeof AdminLoginRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/pages': typeof AdminPagesRoute
+  '/admin/profile': typeof AdminProfileRoute
   '/admin/seo': typeof AdminSeoRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/internal/builder-data-test': typeof InternalBuilderDataTestRoute
@@ -301,6 +309,7 @@ export interface FileRoutesById {
   '/admin/login': typeof AdminLoginRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/pages': typeof AdminPagesRoute
+  '/admin/profile': typeof AdminProfileRoute
   '/admin/seo': typeof AdminSeoRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/internal/builder-data-test': typeof InternalBuilderDataTestRoute
@@ -339,6 +348,7 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/newsletter'
     | '/admin/pages'
+    | '/admin/profile'
     | '/admin/seo'
     | '/blog/$slug'
     | '/internal/builder-data-test'
@@ -375,6 +385,7 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/newsletter'
     | '/admin/pages'
+    | '/admin/profile'
     | '/admin/seo'
     | '/blog/$slug'
     | '/internal/builder-data-test'
@@ -411,6 +422,7 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/newsletter'
     | '/admin/pages'
+    | '/admin/profile'
     | '/admin/seo'
     | '/blog/$slug'
     | '/internal/builder-data-test'
@@ -448,6 +460,7 @@ export interface RootRouteChildren {
   AdminLoginRoute: typeof AdminLoginRoute
   AdminNewsletterRoute: typeof AdminNewsletterRoute
   AdminPagesRoute: typeof AdminPagesRoute
+  AdminProfileRoute: typeof AdminProfileRoute
   AdminSeoRoute: typeof AdminSeoRoute
   BlogSlugRoute: typeof BlogSlugRoute
   InternalBuilderDataTestRoute: typeof InternalBuilderDataTestRoute
@@ -593,6 +606,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSeoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/profile': {
+      id: '/admin/profile'
+      path: '/admin/profile'
+      fullPath: '/admin/profile'
+      preLoaderRoute: typeof AdminProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/pages': {
       id: '/admin/pages'
       path: '/admin/pages'
@@ -728,6 +748,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminLoginRoute: AdminLoginRoute,
   AdminNewsletterRoute: AdminNewsletterRoute,
   AdminPagesRoute: AdminPagesRoute,
+  AdminProfileRoute: AdminProfileRoute,
   AdminSeoRoute: AdminSeoRoute,
   BlogSlugRoute: BlogSlugRoute,
   InternalBuilderDataTestRoute: InternalBuilderDataTestRoute,
