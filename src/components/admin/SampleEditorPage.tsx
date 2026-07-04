@@ -41,8 +41,6 @@ import {
   createSample,
   getSampleForEdit,
   updateSample,
-  AUDIENCE_CATEGORIES,
-  type AudienceCategory,
 } from "@/lib/sample-builder.functions";
 
 const AUDIENCE_SUGGESTIONS: { value: string; label: string }[] = [
