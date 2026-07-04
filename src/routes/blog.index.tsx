@@ -72,6 +72,7 @@ function NewsletterSection() {
       return;
     }
     toast.success("Thanks for subscribing!");
+    fireNewsletterWebhook(value);
     setEmail("");
   }
 
