@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 /* -------------------------------------------------------------------------- */
 
 export type SiteSettings = {
+  site_base_url: string;
   default_meta_title_template: string;
   default_meta_description: string;
   default_og_image_url: string;
@@ -15,26 +16,22 @@ export type SiteSettings = {
   google_site_verification: string;
   custom_head_scripts: string;
   custom_body_scripts: string;
-  // Part 1 + 2
   bing_site_verification: string;
   facebook_domain_verification: string;
   tiktok_pixel_id: string;
   pinterest_tag_id: string;
   pinterest_domain_verification: string;
   linkedin_partner_id: string;
-  // Part 3
-  newsletter_webhook_url: string;
-  // Part 4 — stored as "true" / "false"
   allow_gptbot: string;
   allow_google_extended: string;
   allow_claudebot: string;
   allow_perplexitybot: string;
   allow_ccbot: string;
-  // Part 5
   llms_txt_content: string;
 };
 
 const EMPTY_SETTINGS: SiteSettings = {
+  site_base_url: "",
   default_meta_title_template: "{page} | AnamDev",
   default_meta_description: "",
   default_og_image_url: "",
@@ -49,7 +46,6 @@ const EMPTY_SETTINGS: SiteSettings = {
   pinterest_tag_id: "",
   pinterest_domain_verification: "",
   linkedin_partner_id: "",
-  newsletter_webhook_url: "",
   allow_gptbot: "true",
   allow_google_extended: "true",
   allow_claudebot: "true",
@@ -57,6 +53,15 @@ const EMPTY_SETTINGS: SiteSettings = {
   allow_ccbot: "true",
   llms_txt_content: "",
 };
+
+export function resolveSiteBaseUrl(settings?: SiteSettings | null): string {
+  const stored = settings?.site_base_url?.trim();
+  if (stored) return stored.replace(/\/+$/, "");
+  if (typeof window !== "undefined" && window.location?.origin) {
+    return window.location.origin.replace(/\/+$/, "");
+  }
+  return "";
+}
 
 export async function fetchSiteSettings(): Promise<SiteSettings> {
   const { data } = await supabase
