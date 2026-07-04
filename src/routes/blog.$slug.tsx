@@ -1050,11 +1050,7 @@ function BlogPostRoute() {
   const { slug } = Route.useParams();
   const { post, loading } = useBlogPostBySlug(slug);
 
-  useEffect(() => {
-    if (post && typeof document !== "undefined") {
-      document.title = `${post.title} — AnamDev Blog`;
-    }
-  }, [post]);
+  // Title/meta handled by <PageSeo /> inside <BlogPostPage /> once the post loads.
 
   if (loading) {
     return (
