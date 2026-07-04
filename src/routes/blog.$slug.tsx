@@ -32,6 +32,7 @@ import {
 } from "@/lib/blog-data";
 import { useAllBlogPosts, useBlogPostBySlug } from "@/lib/blog-loader";
 import { supabase } from "@/integrations/supabase/client";
+import { PageSeo, JsonLd, extractFaqFromHtml } from "@/lib/seo-runtime";
 
 type TocHeading = { id: string; text: string; level: 2 | 3 };
 
@@ -1113,10 +1114,48 @@ function BlogPostPage({ post }: { post: BlogPost }) {
   );
   const headings = post.bodyHtml ? htmlHeadings : blockHeadings;
 
-
+  const seoTitle = post.seoTitle?.trim() || post.title;
+  const seoDescription = post.seoDescription?.trim() || post.excerpt || "";
+  const articleJsonLd = useMemo(
+    () => ({
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: post.title,
+      description: seoDescription,
+      ...(post.coverImage ? { image: post.coverImage } : {}),
+      datePublished: post.publishedDate,
+      author: {
+        "@type": "Person",
+        name: "Mohammad Anamul Hoque",
+      },
+    }),
+    [post.title, seoDescription, post.coverImage, post.publishedDate],
+  );
+  const faqItems = useMemo(() => {
+    if (post.faq && post.faq.length > 0) return post.faq;
+    return extractFaqFromHtml(post.bodyHtml ?? "");
+  }, [post.faq, post.bodyHtml]);
+  const faqJsonLd = useMemo(
+    () =>
+      faqItems.length > 0
+        ? {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqItems.map((f) => ({
+              "@type": "Question",
+              name: f.q,
+              acceptedAnswer: { "@type": "Answer", text: f.a },
+            })),
+          }
+        : null,
+    [faqItems],
+  );
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <PageSeo title={seoTitle} description={seoDescription} image={post.coverImage} />
+      <JsonLd id={`article-${post.slug}`} data={articleJsonLd} />
+      {faqJsonLd && <JsonLd id={`faq-${post.slug}`} data={faqJsonLd} />}
       <SiteHeader />
       <FloatingShareBar title={post.title} image={post.coverImage} />
       <style dangerouslySetInnerHTML={{ __html: PROSE_STYLE }} />
