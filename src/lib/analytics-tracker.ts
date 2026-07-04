@@ -136,15 +136,21 @@ async function isAdminSession(): Promise<boolean> {
 let currentVisitId: string | null = null;
 let visitStartMs = 0;
 let heartbeatTimer: number | null = null;
+let initialTimer: number | null = null;
 let lastTrackedPath: string | null = null;
+let pendingFinalOnInsert = false;
 
 async function sendHeartbeat(final = false) {
-  if (!currentVisitId) return;
+  if (!currentVisitId) {
+    // Row hasn't been created yet — remember to send once it lands.
+    if (final) pendingFinalOnInsert = true;
+    return;
+  }
   const seconds = Math.max(0, Math.round((Date.now() - visitStartMs) / 1000));
   const payload = JSON.stringify({ id: currentVisitId, seconds });
   const url = "/api/public/track-heartbeat";
   try {
-    if (final && "sendBeacon" in navigator) {
+    if (final && typeof navigator !== "undefined" && "sendBeacon" in navigator) {
       const blob = new Blob([payload], { type: "application/json" });
       navigator.sendBeacon(url, blob);
     } else {
@@ -158,18 +164,26 @@ async function sendHeartbeat(final = false) {
   } catch {}
 }
 
-function stopHeartbeat() {
+function stopTimers() {
   if (heartbeatTimer !== null) {
     window.clearInterval(heartbeatTimer);
     heartbeatTimer = null;
   }
+  if (initialTimer !== null) {
+    window.clearTimeout(initialTimer);
+    initialTimer = null;
+  }
 }
 
-function startHeartbeat() {
-  stopHeartbeat();
+function startTimers() {
+  stopTimers();
+  // First short-delay heartbeat so even brief visits log a non-zero duration.
+  initialTimer = window.setTimeout(() => {
+    if (document.visibilityState === "visible") sendHeartbeat(false);
+  }, 5_000);
   heartbeatTimer = window.setInterval(() => {
     if (document.visibilityState === "visible") sendHeartbeat(false);
-  }, 20_000);
+  }, 15_000);
 }
 
 export async function trackPageview(pathOverride?: string) {
@@ -178,9 +192,11 @@ export async function trackPageview(pathOverride?: string) {
   if (path === lastTrackedPath) return;
   lastTrackedPath = path;
 
-  // finish previous visit's time first
+  // Finalize previous visit's time first.
   if (currentVisitId) await sendHeartbeat(true);
+  stopTimers();
   currentVisitId = null;
+  pendingFinalOnInsert = false;
   visitStartMs = Date.now();
 
   const ua = navigator.userAgent || "";
@@ -223,7 +239,12 @@ export async function trackPageview(pathOverride?: string) {
       const json = (await res.json()) as { id?: string };
       if (json.id) {
         currentVisitId = json.id;
-        startHeartbeat();
+        startTimers();
+        // If the user already tried to leave while we were inserting, flush now.
+        if (pendingFinalOnInsert) {
+          pendingFinalOnInsert = false;
+          sendHeartbeat(true);
+        }
       }
     }
   } catch {}
