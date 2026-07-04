@@ -10,8 +10,9 @@ import { PackageBuilder } from "@/components/site/PackageBuilder";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { BlogCard } from "@/components/site/BlogCard";
 import { StaticPageSeo } from "@/lib/seo-runtime";
-import { getLatestProjects } from "@/lib/projects-data";
-import { getPostBySlug } from "@/lib/blog-data";
+import { useAllProjects } from "@/lib/projects-loader";
+import { useAllBlogPosts } from "@/lib/blog-loader";
+
 import {
   Accordion,
   AccordionContent,
