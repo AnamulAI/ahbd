@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 /* -------------------------------------------------------------------------- */
 
 export type SiteSettings = {
+  site_base_url: string;
   default_meta_title_template: string;
   default_meta_description: string;
   default_og_image_url: string;
@@ -15,26 +16,22 @@ export type SiteSettings = {
   google_site_verification: string;
   custom_head_scripts: string;
   custom_body_scripts: string;
-  // Part 1 + 2
   bing_site_verification: string;
   facebook_domain_verification: string;
   tiktok_pixel_id: string;
   pinterest_tag_id: string;
   pinterest_domain_verification: string;
   linkedin_partner_id: string;
-  // Part 3
-  newsletter_webhook_url: string;
-  // Part 4 — stored as "true" / "false"
   allow_gptbot: string;
   allow_google_extended: string;
   allow_claudebot: string;
   allow_perplexitybot: string;
   allow_ccbot: string;
-  // Part 5
   llms_txt_content: string;
 };
 
 const EMPTY_SETTINGS: SiteSettings = {
+  site_base_url: "",
   default_meta_title_template: "{page} | AnamDev",
   default_meta_description: "",
   default_og_image_url: "",
@@ -49,7 +46,6 @@ const EMPTY_SETTINGS: SiteSettings = {
   pinterest_tag_id: "",
   pinterest_domain_verification: "",
   linkedin_partner_id: "",
-  newsletter_webhook_url: "",
   allow_gptbot: "true",
   allow_google_extended: "true",
   allow_claudebot: "true",
@@ -57,6 +53,15 @@ const EMPTY_SETTINGS: SiteSettings = {
   allow_ccbot: "true",
   llms_txt_content: "",
 };
+
+export function resolveSiteBaseUrl(settings?: SiteSettings | null): string {
+  const stored = settings?.site_base_url?.trim();
+  if (stored) return stored.replace(/\/+$/, "");
+  if (typeof window !== "undefined" && window.location?.origin) {
+    return window.location.origin.replace(/\/+$/, "");
+  }
+  return "";
+}
 
 export async function fetchSiteSettings(): Promise<SiteSettings> {
   const { data } = await supabase
@@ -437,26 +442,30 @@ export function SiteHeadInjector() {
 /* Organization + Service JSON-LD                                              */
 /* -------------------------------------------------------------------------- */
 
-const SITE_URL = "https://ahbd.lovable.app";
-const ORG_NODE = {
-  "@type": "Organization",
-  name: "AnamDev",
-  alternateName: "Mohammad Anamul Hoque",
-  url: SITE_URL,
-  logo: `${SITE_URL}/favicon.ico`,
-};
+function buildOrgNode(siteUrl: string) {
+  const base = siteUrl || "";
+  return {
+    "@type": "Organization" as const,
+    name: "AnamDev",
+    alternateName: "Mohammad Anamul Hoque",
+    url: base,
+    logo: base ? `${base}/favicon.ico` : "/favicon.ico",
+  };
+}
 
 export function OrganizationJsonLd() {
+  const { data: settings } = useSiteSettings();
+  const siteUrl = resolveSiteBaseUrl(settings);
   const data = useMemo(
     () => ({
       "@context": "https://schema.org",
-      ...ORG_NODE,
+      ...buildOrgNode(siteUrl),
       sameAs: [
         "https://www.linkedin.com/in/anamulhoque",
         "https://github.com/anamulhoque",
       ],
     }),
-    [],
+    [siteUrl],
   );
   return <JsonLd id="org" data={data} />;
 }
@@ -465,54 +474,63 @@ export function ServiceJsonLd({
   id,
   name,
   description,
-  url,
+  path,
   serviceType,
 }: {
   id: string;
   name: string;
   description: string;
-  url: string;
+  /** Path (e.g. "/services/web-development"). Base URL is prepended dynamically. */
+  path: string;
   serviceType?: string;
 }) {
+  const { data: settings } = useSiteSettings();
+  const siteUrl = resolveSiteBaseUrl(settings);
+  const url = `${siteUrl}${path.startsWith("/") ? path : `/${path}`}`;
   const data = useMemo(
     () => ({
       "@context": "https://schema.org",
       "@type": "Service",
+      "@id": url,
       name,
       description,
       url,
       serviceType: serviceType ?? name,
-      provider: ORG_NODE,
+      provider: buildOrgNode(siteUrl),
       areaServed: { "@type": "Place", name: "Worldwide" },
     }),
-    [name, description, url, serviceType],
+    [siteUrl, url, name, description, serviceType],
   );
   return <JsonLd id={`service-${id}`} data={data} />;
 }
 
 /* -------------------------------------------------------------------------- */
-/* Newsletter webhook (best-effort, fire-and-forget)                           */
+/* Newsletter webhooks (fan-out to every configured URL, fire-and-forget)     */
 /* -------------------------------------------------------------------------- */
 
 export function fireNewsletterWebhook(email: string): void {
   if (typeof window === "undefined") return;
-  // Fetch the URL fresh each time so admin edits take effect immediately.
   void (async () => {
     try {
       const { data } = await supabase
-        .from("site_settings")
-        .select("setting_value")
-        .eq("setting_key", "newsletter_webhook_url")
-        .maybeSingle();
-      const url = ((data as { setting_value: string | null } | null)?.setting_value ?? "").trim();
-      if (!url) return;
-      await fetch(url, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, subscribed_at: new Date().toISOString() }),
-        keepalive: true,
-      });
+        .from("newsletter_webhooks")
+        .select("url");
+      const rows = (data ?? []) as Array<{ url: string | null }>;
+      const payload = JSON.stringify({ email, subscribed_at: new Date().toISOString() });
+      await Promise.allSettled(
+        rows
+          .map((r) => (r.url ?? "").trim())
+          .filter(Boolean)
+          .map((url) =>
+            fetch(url, {
+              method: "POST",
+              mode: "no-cors",
+              headers: { "Content-Type": "application/json" },
+              body: payload,
+              keepalive: true,
+            }),
+          ),
+      );
     } catch {
       /* best-effort */
     }

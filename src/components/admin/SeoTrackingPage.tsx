@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Loader2, Pencil, Save, X, Info, Search, Share2, Send, Bot, FileText } from "lucide-react";
+import { Loader2, Pencil, Save, X, Info, Search, Share2, Bot, FileText } from "lucide-react";
 import { AdminShell, useAdminGate } from "@/components/admin/AdminShell";
 import { ImageUploader } from "@/components/admin/ImageUploader";
 import { Switch } from "@/components/ui/switch";
@@ -29,23 +29,26 @@ Site owner: Mohammad Anamul Hoque (AnamDev).
 
 ## Services
 
-- [Web Development](https://ahbd.lovable.app/services/web-development) — Modern, fast, SEO-ready websites and web apps.
-- [AI Integrator](https://ahbd.lovable.app/services/ai-integrator) — Custom GPTs, Copilot agents, and API integrations into real business systems.
-- [AI Podcast](https://ahbd.lovable.app/services/ai-podcast) — Done-for-you AI podcast production from a topic, blog post, URL, or PDF.
+- [Web Development]({{SITE_URL}}/services/web-development) — Modern, fast, SEO-ready websites and web apps.
+- [AI Integrator]({{SITE_URL}}/services/ai-integrator) — Custom GPTs, Copilot agents, and API integrations into real business systems.
+- [AI Podcast]({{SITE_URL}}/services/ai-podcast) — Done-for-you AI podcast production from a topic, blog post, URL, or PDF.
 
 ## Key pages
 
-- [Home](https://ahbd.lovable.app/)
-- [Projects](https://ahbd.lovable.app/projects)
-- [Blog](https://ahbd.lovable.app/blog)
-- [About](https://ahbd.lovable.app/about)
-- [Contact](https://ahbd.lovable.app/contact)
+- [Home]({{SITE_URL}}/)
+- [Projects]({{SITE_URL}}/projects)
+- [Blog]({{SITE_URL}}/blog)
+- [About]({{SITE_URL}}/about)
+- [Contact]({{SITE_URL}}/contact)
 
 ## How to describe this business
 
-AnamDev is the freelance practice of Mohammad Anamul Hoque, offering web development, AI integration, and AI podcast production for brands, founders, and small teams.`;
+AnamDev is the freelance practice of Mohammad Anamul Hoque, offering web development, AI integration, and AI podcast production for brands, founders, and small teams.
+
+Note: {{SITE_URL}} is replaced automatically with the current Site Base URL from Global Defaults.`;
 
 const SETTING_KEYS = [
+  "site_base_url",
   "default_meta_title_template",
   "default_meta_description",
   "default_og_image_url",
@@ -60,7 +63,6 @@ const SETTING_KEYS = [
   "pinterest_tag_id",
   "pinterest_domain_verification",
   "linkedin_partner_id",
-  "newsletter_webhook_url",
   "allow_gptbot",
   "allow_google_extended",
   "allow_claudebot",
@@ -95,6 +97,7 @@ export function SeoTrackingPage() {
   const [editDesc, setEditDesc] = useState("");
 
   const [settings, setSettings] = useState<Record<SettingKey, string>>({
+    site_base_url: "",
     default_meta_title_template: "{page} | AnamDev",
     default_meta_description: "",
     default_og_image_url: "",
@@ -109,7 +112,6 @@ export function SeoTrackingPage() {
     pinterest_tag_id: "",
     pinterest_domain_verification: "",
     linkedin_partner_id: "",
-    newsletter_webhook_url: "",
     allow_gptbot: "true",
     allow_google_extended: "true",
     allow_claudebot: "true",
@@ -310,6 +312,21 @@ export function SeoTrackingPage() {
         </header>
 
         <div>
+          <label className={labelCls}>Site Base URL</label>
+          <input
+            value={settings.site_base_url}
+            onChange={(e) => updateSetting("site_base_url", e.target.value)}
+            className={inputCls}
+            placeholder="https://yourdomain.com"
+          />
+          <p className={helperCls}>
+            Used to generate all absolute URLs across the site (llms.txt, structured data,
+            sitemap, canonical tags, Open Graph tags). Update this the moment you connect your
+            custom domain.
+          </p>
+        </div>
+
+        <div>
           <label className={labelCls}>Default Meta Title Template</label>
           <input
             value={settings.default_meta_title_template}
@@ -343,6 +360,7 @@ export function SeoTrackingPage() {
           <SaveBtn
             onClick={() =>
               saveKeys([
+                "site_base_url",
                 "default_meta_title_template",
                 "default_meta_description",
                 "default_og_image_url",
@@ -530,35 +548,6 @@ export function SeoTrackingPage() {
         </div>
       </section>
 
-      {/* ------ Email Marketing Integration ------ */}
-      <section className="mt-8 space-y-5 rounded-xl border border-white/[0.08] bg-[#11162A] p-6">
-        <header className="flex items-center gap-2 border-l-2 border-[#F97316] pl-3">
-          <Send className="h-4 w-4 text-[#F97316]" />
-          <h2 className="text-sm font-mono uppercase tracking-wider text-[#F97316]">
-            Email Marketing Integration
-          </h2>
-        </header>
-
-        <div>
-          <label className={labelCls}>Webhook URL (optional)</label>
-          <input
-            value={settings.newsletter_webhook_url}
-            onChange={(e) => updateSetting("newsletter_webhook_url", e.target.value)}
-            className={inputCls}
-            placeholder="https://hooks.zapier.com/... or any webhook endpoint"
-          />
-          <p className={helperCls}>
-            Whenever someone subscribes to your newsletter, their email will also be POSTed to this
-            URL as JSON ({"{ email, subscribed_at }"}). Use this to connect any email marketing
-            tool (Mailchimp, ConvertKit, Brevo, etc.) via Zapier, Make.com, or a direct webhook —
-            no code changes needed.
-          </p>
-        </div>
-
-        <div className="flex justify-end">
-          <SaveBtn onClick={() => saveKeys(["newsletter_webhook_url"])} />
-        </div>
-      </section>
 
       {/* ------ AI Crawler Access ------ */}
       <section className="mt-8 space-y-5 rounded-xl border border-white/[0.08] bg-[#11162A] p-6">

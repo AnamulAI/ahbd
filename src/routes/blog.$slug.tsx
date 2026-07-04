@@ -32,7 +32,7 @@ import {
 } from "@/lib/blog-data";
 import { useAllBlogPosts, useBlogPostBySlug } from "@/lib/blog-loader";
 import { supabase } from "@/integrations/supabase/client";
-import { PageSeo, JsonLd, extractFaqFromHtml, fireNewsletterWebhook } from "@/lib/seo-runtime";
+import { PageSeo, JsonLd, extractFaqFromHtml, fireNewsletterWebhook, useSiteSettings, resolveSiteBaseUrl } from "@/lib/seo-runtime";
 
 type TocHeading = { id: string; text: string; level: 2 | 3 };
 
@@ -1113,10 +1113,14 @@ function BlogPostPage({ post }: { post: BlogPost }) {
 
   const seoTitle = post.seoTitle?.trim() || post.title;
   const seoDescription = post.seoDescription?.trim() || post.excerpt || "";
+  const { data: settings } = useSiteSettings();
+  const siteUrl = resolveSiteBaseUrl(settings);
+  const canonicalUrl = siteUrl ? `${siteUrl}/blog/${post.slug}` : undefined;
   const articleJsonLd = useMemo(
     () => ({
       "@context": "https://schema.org",
       "@type": "Article",
+      ...(canonicalUrl ? { "@id": canonicalUrl, url: canonicalUrl, mainEntityOfPage: canonicalUrl } : {}),
       headline: post.title,
       description: seoDescription,
       ...(post.coverImage ? { image: post.coverImage } : {}),
@@ -1126,7 +1130,7 @@ function BlogPostPage({ post }: { post: BlogPost }) {
         name: "Mohammad Anamul Hoque",
       },
     }),
-    [post.title, seoDescription, post.coverImage, post.publishedDate],
+    [post.title, seoDescription, post.coverImage, post.publishedDate, canonicalUrl],
   );
   const faqItems = useMemo(() => {
     if (post.faq && post.faq.length > 0) return post.faq;

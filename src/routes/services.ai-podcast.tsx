@@ -1975,7 +1975,7 @@ function AiPodcastPage() {
         id="ai-podcast"
         name="AI Podcast Production"
         description="Done-for-you AI podcast production. Turn a topic, blog post, URL, or PDF into a publish-ready audio and video podcast — no recording required."
-        url="https://ahbd.lovable.app/services/ai-podcast"
+        path="/services/ai-podcast"
         serviceType="Podcast Production"
       />
       <SiteHeader />
