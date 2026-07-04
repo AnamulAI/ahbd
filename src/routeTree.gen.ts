@@ -34,9 +34,12 @@ import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminIntegrationsRouteImport } from './routes/admin.integrations'
 import { Route as AdminBuilderSettingsRouteImport } from './routes/admin.builder-settings'
 import { Route as AdminBlogSidebarCardsRouteImport } from './routes/admin.blog-sidebar-cards'
+import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminSampleBuilderIndexRouteImport } from './routes/admin.sample-builder.index'
 import { Route as AdminProjectsIndexRouteImport } from './routes/admin.projects.index'
 import { Route as AdminBlogIndexRouteImport } from './routes/admin.blog.index'
+import { Route as ApiPublicTrackVisitRouteImport } from './routes/api/public/track-visit'
+import { Route as ApiPublicTrackHeartbeatRouteImport } from './routes/api/public/track-heartbeat'
 import { Route as AdminSampleBuilderNewRouteImport } from './routes/admin.sample-builder.new'
 import { Route as AdminSampleBuilderIdRouteImport } from './routes/admin.sample-builder.$id'
 import { Route as AdminProjectsNewRouteImport } from './routes/admin.projects.new'
@@ -170,6 +173,11 @@ const AdminBlogSidebarCardsRoute = AdminBlogSidebarCardsRouteImport.update({
   path: '/admin/blog-sidebar-cards',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
+  id: '/admin/analytics',
+  path: '/admin/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminSampleBuilderIndexRoute = AdminSampleBuilderIndexRouteImport.update({
   id: '/admin/sample-builder/',
   path: '/admin/sample-builder/',
@@ -183,6 +191,16 @@ const AdminProjectsIndexRoute = AdminProjectsIndexRouteImport.update({
 const AdminBlogIndexRoute = AdminBlogIndexRouteImport.update({
   id: '/admin/blog/',
   path: '/admin/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicTrackVisitRoute = ApiPublicTrackVisitRouteImport.update({
+  id: '/api/public/track-visit',
+  path: '/api/public/track-visit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicTrackHeartbeatRoute = ApiPublicTrackHeartbeatRouteImport.update({
+  id: '/api/public/track-heartbeat',
+  path: '/api/public/track-heartbeat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminSampleBuilderNewRoute = AdminSampleBuilderNewRouteImport.update({
@@ -227,6 +245,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/blog-sidebar-cards': typeof AdminBlogSidebarCardsRoute
   '/admin/builder-settings': typeof AdminBuilderSettingsRoute
   '/admin/integrations': typeof AdminIntegrationsRoute
@@ -254,6 +273,8 @@ export interface FileRoutesByFullPath {
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/sample-builder/$id': typeof AdminSampleBuilderIdRoute
   '/admin/sample-builder/new': typeof AdminSampleBuilderNewRoute
+  '/api/public/track-heartbeat': typeof ApiPublicTrackHeartbeatRoute
+  '/api/public/track-visit': typeof ApiPublicTrackVisitRoute
   '/admin/blog/': typeof AdminBlogIndexRoute
   '/admin/projects/': typeof AdminProjectsIndexRoute
   '/admin/sample-builder/': typeof AdminSampleBuilderIndexRoute
@@ -264,6 +285,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/blog-sidebar-cards': typeof AdminBlogSidebarCardsRoute
   '/admin/builder-settings': typeof AdminBuilderSettingsRoute
   '/admin/integrations': typeof AdminIntegrationsRoute
@@ -291,6 +313,8 @@ export interface FileRoutesByTo {
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/sample-builder/$id': typeof AdminSampleBuilderIdRoute
   '/admin/sample-builder/new': typeof AdminSampleBuilderNewRoute
+  '/api/public/track-heartbeat': typeof ApiPublicTrackHeartbeatRoute
+  '/api/public/track-visit': typeof ApiPublicTrackVisitRoute
   '/admin/blog': typeof AdminBlogIndexRoute
   '/admin/projects': typeof AdminProjectsIndexRoute
   '/admin/sample-builder': typeof AdminSampleBuilderIndexRoute
@@ -302,6 +326,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/blog-sidebar-cards': typeof AdminBlogSidebarCardsRoute
   '/admin/builder-settings': typeof AdminBuilderSettingsRoute
   '/admin/integrations': typeof AdminIntegrationsRoute
@@ -329,6 +354,8 @@ export interface FileRoutesById {
   '/admin/projects/new': typeof AdminProjectsNewRoute
   '/admin/sample-builder/$id': typeof AdminSampleBuilderIdRoute
   '/admin/sample-builder/new': typeof AdminSampleBuilderNewRoute
+  '/api/public/track-heartbeat': typeof ApiPublicTrackHeartbeatRoute
+  '/api/public/track-visit': typeof ApiPublicTrackVisitRoute
   '/admin/blog/': typeof AdminBlogIndexRoute
   '/admin/projects/': typeof AdminProjectsIndexRoute
   '/admin/sample-builder/': typeof AdminSampleBuilderIndexRoute
@@ -341,6 +368,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/llms.txt'
     | '/robots.txt'
+    | '/admin/analytics'
     | '/admin/blog-sidebar-cards'
     | '/admin/builder-settings'
     | '/admin/integrations'
@@ -368,6 +396,8 @@ export interface FileRouteTypes {
     | '/admin/projects/new'
     | '/admin/sample-builder/$id'
     | '/admin/sample-builder/new'
+    | '/api/public/track-heartbeat'
+    | '/api/public/track-visit'
     | '/admin/blog/'
     | '/admin/projects/'
     | '/admin/sample-builder/'
@@ -378,6 +408,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/llms.txt'
     | '/robots.txt'
+    | '/admin/analytics'
     | '/admin/blog-sidebar-cards'
     | '/admin/builder-settings'
     | '/admin/integrations'
@@ -405,6 +436,8 @@ export interface FileRouteTypes {
     | '/admin/projects/new'
     | '/admin/sample-builder/$id'
     | '/admin/sample-builder/new'
+    | '/api/public/track-heartbeat'
+    | '/api/public/track-visit'
     | '/admin/blog'
     | '/admin/projects'
     | '/admin/sample-builder'
@@ -415,6 +448,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/llms.txt'
     | '/robots.txt'
+    | '/admin/analytics'
     | '/admin/blog-sidebar-cards'
     | '/admin/builder-settings'
     | '/admin/integrations'
@@ -442,6 +476,8 @@ export interface FileRouteTypes {
     | '/admin/projects/new'
     | '/admin/sample-builder/$id'
     | '/admin/sample-builder/new'
+    | '/api/public/track-heartbeat'
+    | '/api/public/track-visit'
     | '/admin/blog/'
     | '/admin/projects/'
     | '/admin/sample-builder/'
@@ -453,6 +489,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   LlmsDottxtRoute: typeof LlmsDottxtRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
+  AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminBlogSidebarCardsRoute: typeof AdminBlogSidebarCardsRoute
   AdminBuilderSettingsRoute: typeof AdminBuilderSettingsRoute
   AdminIntegrationsRoute: typeof AdminIntegrationsRoute
@@ -480,6 +517,8 @@ export interface RootRouteChildren {
   AdminProjectsNewRoute: typeof AdminProjectsNewRoute
   AdminSampleBuilderIdRoute: typeof AdminSampleBuilderIdRoute
   AdminSampleBuilderNewRoute: typeof AdminSampleBuilderNewRoute
+  ApiPublicTrackHeartbeatRoute: typeof ApiPublicTrackHeartbeatRoute
+  ApiPublicTrackVisitRoute: typeof ApiPublicTrackVisitRoute
   AdminBlogIndexRoute: typeof AdminBlogIndexRoute
   AdminProjectsIndexRoute: typeof AdminProjectsIndexRoute
   AdminSampleBuilderIndexRoute: typeof AdminSampleBuilderIndexRoute
@@ -662,6 +701,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBlogSidebarCardsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/analytics': {
+      id: '/admin/analytics'
+      path: '/admin/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AdminAnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/sample-builder/': {
       id: '/admin/sample-builder/'
       path: '/admin/sample-builder'
@@ -681,6 +727,20 @@ declare module '@tanstack/react-router' {
       path: '/admin/blog'
       fullPath: '/admin/blog/'
       preLoaderRoute: typeof AdminBlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/track-visit': {
+      id: '/api/public/track-visit'
+      path: '/api/public/track-visit'
+      fullPath: '/api/public/track-visit'
+      preLoaderRoute: typeof ApiPublicTrackVisitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/track-heartbeat': {
+      id: '/api/public/track-heartbeat'
+      path: '/api/public/track-heartbeat'
+      fullPath: '/api/public/track-heartbeat'
+      preLoaderRoute: typeof ApiPublicTrackHeartbeatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/sample-builder/new': {
@@ -741,6 +801,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   LlmsDottxtRoute: LlmsDottxtRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
+  AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminBlogSidebarCardsRoute: AdminBlogSidebarCardsRoute,
   AdminBuilderSettingsRoute: AdminBuilderSettingsRoute,
   AdminIntegrationsRoute: AdminIntegrationsRoute,
@@ -768,6 +829,8 @@ const rootRouteChildren: RootRouteChildren = {
   AdminProjectsNewRoute: AdminProjectsNewRoute,
   AdminSampleBuilderIdRoute: AdminSampleBuilderIdRoute,
   AdminSampleBuilderNewRoute: AdminSampleBuilderNewRoute,
+  ApiPublicTrackHeartbeatRoute: ApiPublicTrackHeartbeatRoute,
+  ApiPublicTrackVisitRoute: ApiPublicTrackVisitRoute,
   AdminBlogIndexRoute: AdminBlogIndexRoute,
   AdminProjectsIndexRoute: AdminProjectsIndexRoute,
   AdminSampleBuilderIndexRoute: AdminSampleBuilderIndexRoute,
