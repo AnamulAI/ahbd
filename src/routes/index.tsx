@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { createFileRoute, isRedirect, Link, redirect } from "@tanstack/react-router";
 import { getPageAssignments } from "@/lib/pages-settings.functions";
 import { ArrowRight, MessageCircle, Globe, Bot, TrendingUp, Mic, Check, Target, ShieldCheck, Zap, Users } from "lucide-react";
 import { SiteHeader } from "@/components/site/SiteHeader";
@@ -67,7 +67,7 @@ export const Route = createFileRoute("/")({
       }
     } catch (err) {
       // Re-throw redirects; swallow any lookup errors and fall back to the real home.
-      if (err && typeof err === "object" && "statusCode" in (err as Record<string, unknown>)) {
+      if (isRedirect(err)) {
         throw err;
       }
     }
