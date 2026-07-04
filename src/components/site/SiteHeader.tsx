@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { ChevronDown, Code2, Menu, MessageCircle, Mic, Sparkles, X } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 type NavLink = {
   label: string;
   to: string;
+  dynamicKey?: "services";
   children?: ReadonlyArray<{
     label: string;
     to: string;
@@ -34,10 +37,28 @@ const SERVICE_ITEMS = [
   },
 ] as const;
 
+const DEFAULT_SERVICES_ROUTE = "/services/web-development";
+
+function useServicesRoute(): string {
+  const { data } = useQuery({
+    queryKey: ["site-settings", "services_page_route"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("site_settings")
+        .select("setting_value")
+        .eq("setting_key", "services_page_route")
+        .maybeSingle();
+      return (data?.setting_value as string | undefined) ?? DEFAULT_SERVICES_ROUTE;
+    },
+    staleTime: 60_000,
+  });
+  return data ?? DEFAULT_SERVICES_ROUTE;
+}
+
 const NAV_LINKS: ReadonlyArray<NavLink> = [
   { label: "Home", to: "/" },
   { label: "About", to: "/about" },
-  { label: "Services", to: "/services/web-development", children: SERVICE_ITEMS }, // TODO: revert to "/services" once a proper services overview/index page is built (after AI Integrator and AI Podcast service pages are complete)
+  { label: "Services", to: "/services/web-development", dynamicKey: "services", children: SERVICE_ITEMS },
   { label: "Projects", to: "/projects" },
   { label: "Blog", to: "/blog" },
   { label: "Contact", to: "/contact" },
@@ -66,10 +87,13 @@ function isLinkActive(pathname: string, to: string): boolean {
 function ServicesDropdown({
   pathname,
   isActive,
+  servicesRoute,
 }: {
   pathname: string;
   isActive: boolean;
+  servicesRoute: string;
 }) {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wrapperRef = useRef<HTMLLIElement | null>(null);
@@ -118,7 +142,13 @@ function ServicesDropdown({
         aria-haspopup="menu"
         aria-expanded={open}
         aria-current={isActive ? "page" : undefined}
-        onClick={() => setOpen((v) => !v)}
+        onClick={(e) => {
+          // Desktop: navigate to the assigned Services page; open dropdown alongside
+          if (e.detail !== 0) {
+            navigate({ to: servicesRoute as string });
+          }
+          setOpen((v) => !v);
+        }}
         onFocus={() => {
           cancelClose();
           setOpen(true);
@@ -215,6 +245,7 @@ export type SiteHeaderProps = {
 
 export function SiteHeader({ onCtaClick, ctaLabel = "Let's Talk" }: SiteHeaderProps) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const servicesRoute = useServicesRoute();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(() =>
     pathname.startsWith("/services"),
@@ -240,6 +271,7 @@ export function SiteHeader({ onCtaClick, ctaLabel = "Let's Talk" }: SiteHeaderPr
                     key={link.to}
                     pathname={pathname}
                     isActive={isActive}
+                    servicesRoute={servicesRoute}
                   />
                 );
               }

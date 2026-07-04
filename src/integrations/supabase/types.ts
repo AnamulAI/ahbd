@@ -1039,6 +1039,66 @@ export type Database = {
         }
         Relationships: []
       }
+      user_permissions: {
+        Row: {
+          created_at: string
+          has_access: boolean
+          id: string
+          section_key: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          has_access?: boolean
+          id?: string
+          section_key: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          has_access?: boolean
+          id?: string
+          section_key?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          is_primary_owner: boolean
+          phone: string | null
+          role_label: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id: string
+          is_primary_owner?: boolean
+          phone?: string | null
+          role_label?: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          is_primary_owner?: boolean
+          phone?: string | null
+          role_label?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -1099,6 +1159,11 @@ export type Database = {
         }
         Returns: boolean
       }
+      has_section_access: {
+        Args: { _section: string; _user_id: string }
+        Returns: boolean
+      }
+      is_primary_owner: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
