@@ -104,7 +104,7 @@ function Editor({ editId }: { editId?: string }) {
   const isEditing = !!editId;
 
   const [businessName, setBusinessName] = useState("");
-  const [audienceCategory, setAudienceCategory] = useState<AudienceCategory>("businesses");
+  const [audienceCategory, setAudienceCategory] = useState<string>("Businesses");
   const [episodeTitle, setEpisodeTitle] = useState("");
   const [topic, setTopic] = useState("");
   const [platforms, setPlatforms] = useState<string[]>(["spotify", "apple", "youtube"]);
