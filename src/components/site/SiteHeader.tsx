@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { ChevronDown, Code2, Menu, MessageCircle, Mic, Sparkles, X } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 type NavLink = {
   label: string;
   to: string;
+  dynamicKey?: "services";
   children?: ReadonlyArray<{
     label: string;
     to: string;
@@ -34,10 +37,28 @@ const SERVICE_ITEMS = [
   },
 ] as const;
 
+const DEFAULT_SERVICES_ROUTE = "/services/web-development";
+
+function useServicesRoute(): string {
+  const { data } = useQuery({
+    queryKey: ["site-settings", "services_page_route"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("site_settings")
+        .select("setting_value")
+        .eq("setting_key", "services_page_route")
+        .maybeSingle();
+      return (data?.setting_value as string | undefined) ?? DEFAULT_SERVICES_ROUTE;
+    },
+    staleTime: 60_000,
+  });
+  return data ?? DEFAULT_SERVICES_ROUTE;
+}
+
 const NAV_LINKS: ReadonlyArray<NavLink> = [
   { label: "Home", to: "/" },
   { label: "About", to: "/about" },
-  { label: "Services", to: "/services/web-development", children: SERVICE_ITEMS }, // TODO: revert to "/services" once a proper services overview/index page is built (after AI Integrator and AI Podcast service pages are complete)
+  { label: "Services", to: "/services/web-development", dynamicKey: "services", children: SERVICE_ITEMS },
   { label: "Projects", to: "/projects" },
   { label: "Blog", to: "/blog" },
   { label: "Contact", to: "/contact" },
