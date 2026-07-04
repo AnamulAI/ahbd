@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { createFileRoute, isRedirect, Link, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { getPageAssignments } from "@/lib/pages-settings.functions";
 import { ArrowRight, MessageCircle, Globe, Bot, TrendingUp, Mic, Check, Target, ShieldCheck, Zap, Users } from "lucide-react";
 import { SiteHeader } from "@/components/site/SiteHeader";
@@ -20,6 +20,13 @@ import {
 } from "@/components/ui/accordion";
 import anamAvatar from "@/assets/anam-avatar.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
+import { Route as AboutRouteDef } from "./about";
+import { Route as BlogIndexRouteDef } from "./blog.index";
+import { Route as ContactRouteDef } from "./contact";
+import { Route as ProjectsIndexRouteDef } from "./projects.index";
+import { Route as WebDevRouteDef } from "./services.web-development";
+import { Route as AiIntegratorRouteDef } from "./services.ai-integrator";
+import { Route as AiPodcastRouteDef } from "./services.ai-podcast";
 
 type SignaturePackage = {
   web_dev_label: string;
@@ -57,39 +64,66 @@ const SIGNATURE_DEFAULTS: SignaturePackage = {
 const fmtUsd = (n: number) =>
   `$${Math.round(n).toLocaleString("en-US")}`;
 
+const SITE_ORIGIN = "https://ahbd.lovable.app";
+
+// Map admin-assignable Home-page routes to that route's component. When the
+// admin sets "Home Page" to one of these, the root "/" URL renders the
+// target page's content in place — the URL bar stays at "/", no server
+// redirect happens, and the "Home" nav item remains active.
+const HOME_ROUTE_COMPONENTS: Record<string, React.ComponentType | undefined> = {
+  "/about": AboutRouteDef.options.component,
+  "/blog": BlogIndexRouteDef.options.component,
+  "/contact": ContactRouteDef.options.component,
+  "/projects": ProjectsIndexRouteDef.options.component,
+  "/services/web-development": WebDevRouteDef.options.component,
+  "/services/ai-integrator": AiIntegratorRouteDef.options.component,
+  "/services/ai-podcast": AiPodcastRouteDef.options.component,
+};
 
 export const Route = createFileRoute("/")({
-  beforeLoad: async () => {
+  loader: async () => {
     try {
       const assignments = await getPageAssignments();
-      if (assignments.home_page_route && assignments.home_page_route !== "/") {
-        throw redirect({ href: assignments.home_page_route, statusCode: 302 });
-      }
-    } catch (err) {
-      // Re-throw redirects; swallow any lookup errors and fall back to the real home.
-      if (isRedirect(err)) {
-        throw err;
-      }
+      return { homeRoute: assignments.home_page_route || "/" };
+    } catch {
+      return { homeRoute: "/" };
     }
   },
-  head: () => ({
-    meta: [
-      { title: "AnamDev — Mohammad Anamul Hoque" },
-      {
-        name: "description",
-        content:
-          "Freelance developer & AI specialist building modern websites, AI automations, and AI-powered podcasts.",
-      },
-      { property: "og:title", content: "AnamDev — Mohammad Anamul Hoque" },
-      {
-        property: "og:description",
-        content:
-          "Freelance developer & AI specialist building modern websites, AI automations, and AI-powered podcasts.",
-      },
-    ],
-  }),
-  component: Index,
+  head: ({ loaderData }) => {
+    const substituted =
+      !!loaderData?.homeRoute && loaderData.homeRoute !== "/";
+    return {
+      meta: [
+        { title: "AnamDev — Mohammad Anamul Hoque" },
+        {
+          name: "description",
+          content:
+            "Freelance developer & AI specialist building modern websites, AI automations, and AI-powered podcasts.",
+        },
+        { property: "og:title", content: "AnamDev — Mohammad Anamul Hoque" },
+        {
+          property: "og:description",
+          content:
+            "Freelance developer & AI specialist building modern websites, AI automations, and AI-powered podcasts.",
+        },
+      ],
+      // When we substitute another page's content at "/", declare "/" as
+      // canonical so search engines don't treat this as a duplicate of the
+      // target page's own dedicated URL (which keeps its own canonical).
+      links: substituted
+        ? [{ rel: "canonical", href: `${SITE_ORIGIN}/` }]
+        : [],
+    };
+  },
+  component: RootDispatcher,
 });
+
+function RootDispatcher() {
+  const { homeRoute } = Route.useLoaderData();
+  const Substituted = HOME_ROUTE_COMPONENTS[homeRoute];
+  if (Substituted) return <Substituted />;
+  return <Index />;
+}
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
