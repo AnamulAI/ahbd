@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { StaticPageSeo } from "@/lib/seo-runtime";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -479,6 +480,11 @@ function ContactPage() {
 
   return (
     <div className="min-h-dvh bg-background text-foreground">
+      <StaticPageSeo
+        pageKey="contact"
+        defaultTitle="Contact — AnamDev | Mohammad Anamul Hoque"
+        defaultDescription="Get in touch with AnamDev about your project."
+      />
       <SiteHeader onCtaClick={scrollToForm} />
 
       <main>

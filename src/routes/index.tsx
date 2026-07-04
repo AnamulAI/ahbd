@@ -8,6 +8,7 @@ import { RevealBorder, RevealBorderCircle } from "@/components/site/RevealBorder
 import { PackageBuilder } from "@/components/site/PackageBuilder";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { BlogCard } from "@/components/site/BlogCard";
+import { StaticPageSeo } from "@/lib/seo-runtime";
 import { getLatestProjects } from "@/lib/projects-data";
 import { getPostBySlug } from "@/lib/blog-data";
 import {
@@ -262,6 +263,11 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <StaticPageSeo
+        pageKey="home"
+        defaultTitle="AnamDev — Mohammad Anamul Hoque"
+        defaultDescription="Freelance developer & AI specialist building modern websites, AI automations, and AI-powered podcasts."
+      />
       <SiteHeader />
       <main>
         {/* Hero */}
