@@ -548,35 +548,6 @@ export function SeoTrackingPage() {
         </div>
       </section>
 
-      {/* ------ Email Marketing Integration ------ */}
-      <section className="mt-8 space-y-5 rounded-xl border border-white/[0.08] bg-[#11162A] p-6">
-        <header className="flex items-center gap-2 border-l-2 border-[#F97316] pl-3">
-          <Send className="h-4 w-4 text-[#F97316]" />
-          <h2 className="text-sm font-mono uppercase tracking-wider text-[#F97316]">
-            Email Marketing Integration
-          </h2>
-        </header>
-
-        <div>
-          <label className={labelCls}>Webhook URL (optional)</label>
-          <input
-            value={settings.newsletter_webhook_url}
-            onChange={(e) => updateSetting("newsletter_webhook_url", e.target.value)}
-            className={inputCls}
-            placeholder="https://hooks.zapier.com/... or any webhook endpoint"
-          />
-          <p className={helperCls}>
-            Whenever someone subscribes to your newsletter, their email will also be POSTed to this
-            URL as JSON ({"{ email, subscribed_at }"}). Use this to connect any email marketing
-            tool (Mailchimp, ConvertKit, Brevo, etc.) via Zapier, Make.com, or a direct webhook —
-            no code changes needed.
-          </p>
-        </div>
-
-        <div className="flex justify-end">
-          <SaveBtn onClick={() => saveKeys(["newsletter_webhook_url"])} />
-        </div>
-      </section>
 
       {/* ------ AI Crawler Access ------ */}
       <section className="mt-8 space-y-5 rounded-xl border border-white/[0.08] bg-[#11162A] p-6">
