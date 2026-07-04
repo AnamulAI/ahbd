@@ -1771,7 +1771,7 @@ function WebDevPage() {
         id="web-development"
         name="Web Development"
         description="Modern, fast, SEO-ready websites and web apps built with production-grade tooling."
-        url="https://ahbd.lovable.app/services/web-development"
+        path="/services/web-development"
         serviceType="Web Development"
       />
       <SiteHeader />
