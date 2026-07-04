@@ -211,20 +211,24 @@ function AdminDashboard() {
           .select("visitor_id")
           .eq("is_bot", false)
           .eq("is_admin", false)
-          .gte("visited_at", weekAgoDate.toISOString()),
+          .gte("visited_at", weekAgoDate.toISOString())
+          .limit(50000),
         supabase
           .from("page_visits")
           .select("visitor_id")
           .eq("is_bot", false)
           .eq("is_admin", false)
           .gte("visited_at", prevWeekStart.toISOString())
-          .lt("visited_at", weekAgoDate.toISOString()),
+          .lt("visited_at", weekAgoDate.toISOString())
+          .limit(50000),
         supabase
           .from("page_visits")
           .select("path")
           .eq("is_bot", false)
           .eq("is_admin", false)
-          .like("path", "/sample/%"),
+          .like("path", "/sample/%")
+          .limit(50000),
+
       ]);
 
       const leads = leadsRes.data ?? [];
