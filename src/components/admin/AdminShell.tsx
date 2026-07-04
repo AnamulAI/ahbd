@@ -35,6 +35,7 @@ type NavItem = {
   icon: LucideIcon;
   comingSoon?: boolean;
   badgeKey?: "leads";
+  sectionKey?: SectionKey;
 };
 
 type NavGroup = { label: string; items: NavItem[] };
@@ -43,47 +44,38 @@ const NAV: NavGroup[] = [
   {
     label: "Overview",
     items: [
-      { label: "Dashboard", to: "/admin", icon: LayoutDashboard },
-      { label: "Leads", to: "/admin/leads", icon: Target, badgeKey: "leads" },
-      { label: "Sample Builder", to: "/admin/sample-builder", icon: Wand2 },
+      { label: "Dashboard", to: "/admin", icon: LayoutDashboard, sectionKey: "dashboard" },
+      { label: "Leads", to: "/admin/leads", icon: Target, badgeKey: "leads", sectionKey: "leads" },
+      { label: "Sample Builder", to: "/admin/sample-builder", icon: Wand2, sectionKey: "sample_builder" },
     ],
-
   },
   {
     label: "Builder",
     items: [
-      { label: "Builder Settings", to: "/admin/builder-settings", icon: Settings2 },
+      { label: "Builder Settings", to: "/admin/builder-settings", icon: Settings2, sectionKey: "builder_settings" },
     ],
   },
   {
     label: "Content",
     items: [
-      { label: "Blog Posts", to: "/admin/blog", icon: FileText },
-      { label: "Sidebar Cards", to: "/admin/blog-sidebar-cards", icon: PanelRight },
-      { label: "__projects_tree__", to: "/admin/projects", icon: FolderKanban },
-      { label: "Newsletter", to: "/admin/newsletter", icon: Mail },
+      { label: "Blog Posts", to: "/admin/blog", icon: FileText, sectionKey: "blog_posts" },
+      { label: "Sidebar Cards", to: "/admin/blog-sidebar-cards", icon: PanelRight, sectionKey: "sidebar_cards" },
+      { label: "__projects_tree__", to: "/admin/projects", icon: FolderKanban, sectionKey: "projects" },
+      { label: "Newsletter", to: "/admin/newsletter", icon: Mail, sectionKey: "newsletter" },
     ],
   },
   {
     label: "Site",
     items: [
-      { label: "Pages", to: "/admin/coming-soon/pages", icon: Layout, comingSoon: true },
+      { label: "Pages", to: "/admin/pages", icon: Layout, sectionKey: "pages" },
       {
         label: "Visibility Control",
         to: "/admin/coming-soon/visibility",
         icon: Eye,
         comingSoon: true,
       },
-      {
-        label: "SEO & Tracking",
-        to: "/admin/seo",
-        icon: Search,
-      },
-      {
-        label: "Integrations",
-        to: "/admin/integrations",
-        icon: Plug,
-      },
+      { label: "SEO & Tracking", to: "/admin/seo", icon: Search, sectionKey: "seo_tracking" },
+      { label: "Integrations", to: "/admin/integrations", icon: Plug, sectionKey: "integrations" },
       { label: "Branding", to: "/admin/coming-soon/branding", icon: Palette, comingSoon: true },
     ],
   },
