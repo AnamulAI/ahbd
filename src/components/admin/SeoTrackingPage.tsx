@@ -312,6 +312,21 @@ export function SeoTrackingPage() {
         </header>
 
         <div>
+          <label className={labelCls}>Site Base URL</label>
+          <input
+            value={settings.site_base_url}
+            onChange={(e) => updateSetting("site_base_url", e.target.value)}
+            className={inputCls}
+            placeholder="https://yourdomain.com"
+          />
+          <p className={helperCls}>
+            Used to generate all absolute URLs across the site (llms.txt, structured data,
+            sitemap, canonical tags, Open Graph tags). Update this the moment you connect your
+            custom domain.
+          </p>
+        </div>
+
+        <div>
           <label className={labelCls}>Default Meta Title Template</label>
           <input
             value={settings.default_meta_title_template}
@@ -345,6 +360,7 @@ export function SeoTrackingPage() {
           <SaveBtn
             onClick={() =>
               saveKeys([
+                "site_base_url",
                 "default_meta_title_template",
                 "default_meta_description",
                 "default_og_image_url",
