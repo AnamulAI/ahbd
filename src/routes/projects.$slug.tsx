@@ -83,7 +83,7 @@ import {
   type ProjectResult,
 } from "@/lib/projects-data";
 import { supabase } from "@/integrations/supabase/client";
-import { PageSeo, JsonLd } from "@/lib/seo-runtime";
+import { PageSeo, JsonLd, useSiteSettings, resolveSiteBaseUrl } from "@/lib/seo-runtime";
 
 const CATEGORY_LABEL_MAP: Record<string, string> = {
   web_development: "Web Development",
