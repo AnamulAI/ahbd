@@ -1411,6 +1411,13 @@ function AiIntegratorPage() {
 
   return (
     <div className="min-h-dvh bg-background text-foreground">
+      <ServiceJsonLd
+        id="ai-integrator"
+        name="AI Integrator"
+        description="Connect AI to your business without building from scratch. Custom GPT assistants, Microsoft Copilot agents, and API integrations into your real systems."
+        url="https://ahbd.lovable.app/services/ai-integrator"
+        serviceType="AI Integration"
+      />
       <SiteHeader />
       <main>
         <HeroSection onSamplesClick={scrollToSamples} />
