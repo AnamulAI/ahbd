@@ -727,11 +727,18 @@ function Index() {
               </p>
             </div>
 
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {getLatestProjects(3).map((project) => (
-                <ProjectCard key={project.slug} project={project} />
-              ))}
-            </div>
+            {latestProjects.length === 0 ? (
+              <div className="mt-12 rounded-2xl border border-dashed border-white/[0.08] bg-[#11162A]/40 p-10 text-center">
+                <p className="text-sm text-muted-foreground">No projects published yet — check back soon.</p>
+              </div>
+            ) : (
+              <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {latestProjects.map((project) => (
+                  <ProjectCard key={project.slug} project={project} />
+                ))}
+              </div>
+            )}
+
 
 
             <div className="mt-12 text-center">
