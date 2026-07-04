@@ -41,16 +41,14 @@ import {
   createSample,
   getSampleForEdit,
   updateSample,
-  AUDIENCE_CATEGORIES,
-  type AudienceCategory,
 } from "@/lib/sample-builder.functions";
 
-const AUDIENCE_LABELS: Record<AudienceCategory, string> = {
-  marketers: "Marketers",
-  creators: "Content Creators",
-  businesses: "Businesses",
-  educators: "Educators",
-};
+const AUDIENCE_SUGGESTIONS: { value: string; label: string }[] = [
+  { value: "marketers", label: "Marketers" },
+  { value: "creators", label: "Content Creators" },
+  { value: "businesses", label: "Businesses" },
+  { value: "educators", label: "Educators" },
+];
 
 const ALL_PLATFORMS = [
   { id: "spotify", label: "Spotify" },
@@ -104,7 +102,7 @@ function Editor({ editId }: { editId?: string }) {
   const isEditing = !!editId;
 
   const [businessName, setBusinessName] = useState("");
-  const [audienceCategory, setAudienceCategory] = useState<AudienceCategory>("businesses");
+  const [audienceCategory, setAudienceCategory] = useState<string>("Businesses");
   const [episodeTitle, setEpisodeTitle] = useState("");
   const [topic, setTopic] = useState("");
   const [platforms, setPlatforms] = useState<string[]>(["spotify", "apple", "youtube"]);
@@ -176,9 +174,9 @@ function Editor({ editId }: { editId?: string }) {
         const s = res.sample as any;
         setBusinessName(s.business_name || "");
         setAudienceCategory(
-          (AUDIENCE_CATEGORIES as readonly string[]).includes(s.audience_category)
-            ? (s.audience_category as AudienceCategory)
-            : "businesses",
+          typeof s.audience_category === "string" && s.audience_category.trim()
+            ? s.audience_category
+            : "Businesses",
         );
         setEpisodeTitle(s.episode_title || "");
         setTopic(s.topic || "");
@@ -376,25 +374,27 @@ function Editor({ editId }: { editId?: string }) {
 
             <div>
               <label className={labelCls}>Target Audience *</label>
-              <div className="grid grid-cols-2 gap-2">
-                {AUDIENCE_CATEGORIES.map((cat) => {
-                  const active = audienceCategory === cat;
-                  return (
-                    <button
-                      key={cat}
-                      type="button"
-                      onClick={() => setAudienceCategory(cat)}
-                      className={cn(
-                        "rounded-md border px-4 py-3 text-sm text-left transition-colors",
-                        active
-                          ? "border-[#3B82F6]/50 bg-[#3B82F6]/[0.12] text-white"
-                          : "border-white/[0.1] bg-[#16181D] text-white/70 hover:border-white/[0.2] hover:text-white",
-                      )}
-                    >
-                      {AUDIENCE_LABELS[cat]}
-                    </button>
-                  );
-                })}
+              <input
+                value={audienceCategory}
+                onChange={(e) => setAudienceCategory(e.target.value)}
+                required
+                placeholder="First-Time Homebuyers, Self-Employed Borrowers…"
+                className={inputCls}
+              />
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-white/40 self-center mr-1">
+                  Quick fill:
+                </span>
+                {AUDIENCE_SUGGESTIONS.map((s) => (
+                  <button
+                    key={s.value}
+                    type="button"
+                    onClick={() => setAudienceCategory(s.label)}
+                    className="rounded-full border border-white/[0.1] bg-[#16181D] px-2.5 py-1 text-[11px] text-white/70 transition-colors hover:border-[#3B82F6]/50 hover:bg-[#3B82F6]/[0.12] hover:text-white"
+                  >
+                    {s.label}
+                  </button>
+                ))}
               </div>
               <p className="mt-1.5 text-[11px] text-white/40">
                 Drives the hero description and closing CTA copy on the public preview.

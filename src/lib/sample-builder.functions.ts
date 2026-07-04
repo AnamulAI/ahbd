@@ -219,19 +219,19 @@ export const createMediaUploadUrl = createServerFn({ method: "POST" })
     }
   });
 
-export type AudienceCategory = "marketers" | "creators" | "businesses" | "educators";
+export type AudienceCategory = string;
 
-export const AUDIENCE_CATEGORIES: AudienceCategory[] = ["marketers", "creators", "businesses", "educators"];
+/** Legacy quick-select suggestions (also the historical fixed values). */
+export const AUDIENCE_CATEGORIES: string[] = ["marketers", "creators", "businesses", "educators"];
 
-function normalizeAudience(value: unknown): AudienceCategory {
-  return AUDIENCE_CATEGORIES.includes(value as AudienceCategory)
-    ? (value as AudienceCategory)
-    : "businesses";
+function normalizeAudience(value: unknown): string {
+  const s = typeof value === "string" ? value.trim() : "";
+  return s || "businesses";
 }
 
 export type SamplePayload = {
   business_name: string;
-  audience_category: AudienceCategory;
+  audience_category: string;
   episode_title: string;
   topic: string;
   platforms: string[];
