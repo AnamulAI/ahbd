@@ -364,16 +364,30 @@ function SamplePage() {
 
   const platforms = (data.platforms as string[]) ?? [];
   const moduleOrder = (data.module_order as string[]) ?? [];
-  const audience = normalizeAudience((data as any).audience_category);
+  const audienceRaw = ((data as any).audience_category ?? "").toString().trim();
+  const audienceKey = knownAudienceKey(audienceRaw);
+  const audienceLabel = audienceDisplay(audienceRaw);
   const industry: string = ((data as any).client_industry ?? "").toString().trim();
-  const baseHero = AUDIENCE_HERO_COPY[audience];
-  const heroCopy = industry
-    ? baseHero.replace(/^(B2B and content marketers|Content creators|SMBs and growing brands|Teachers, course creators, and trainers)/,
-        (m) => `${m} in the ${industry} space`)
-    : baseHero;
-  const ctaCopy = AUDIENCE_CTA_COPY[audience];
+
+  const heroCopy = audienceKey
+    ? (industry
+        ? AUDIENCE_HERO_COPY[audienceKey].replace(
+            /^(B2B and content marketers|Content creators|SMBs and growing brands|Teachers, course creators, and trainers)/,
+            (m) => `${m} in the ${industry} space`,
+          )
+        : AUDIENCE_HERO_COPY[audienceKey])
+    : `${audienceLabel}${industry ? ` in the ${industry} space` : ""} use this service to turn existing content — blog posts, videos, and written material — into professional podcast episodes published to Spotify, Apple Podcasts, and 10+ platforms in one click.`;
+
+  const ctaCopy: CtaCopy = audienceKey
+    ? AUDIENCE_CTA_COPY[audienceKey]
+    : {
+        headlinePrefix: "Your Content Is Ready to Become a ",
+        emphasis: "Podcast",
+        subheadline:
+          "Launch your show today — professional quality, zero production overhead, published everywhere your audience already listens.",
+      };
   const ctaSubheadline = industry
-    ? `${ctaCopy.subheadline} Built for teams in the ${industry} space.`
+    ? `${ctaCopy.subheadline} Built for ${audienceLabel.toLowerCase()} in the ${industry} space.`
     : ctaCopy.subheadline;
   const episodeTitle =
     data.episode_title?.trim() ||
