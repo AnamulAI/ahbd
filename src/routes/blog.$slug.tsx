@@ -924,6 +924,7 @@ function SidebarCard({ card }: { card: SidebarCardRow }) {
       return;
     }
     toast.success("Thanks for subscribing!");
+    fireNewsletterWebhook(value);
     setEmail("");
   }
 
