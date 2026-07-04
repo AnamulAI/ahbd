@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  getAllProjects,
-  type Project,
-  type ProjectCategory,
-} from "@/lib/projects-data";
+import type { Project, ProjectCategory } from "@/lib/projects-data";
+
 
 type DbProjectRow = {
   id: string;
@@ -74,21 +71,14 @@ export async function fetchDbProjects(): Promise<Project[]> {
   return (data as DbProjectRow[]).map(dbRowToProject);
 }
 
-function merge(dbProjects: Project[]): Project[] {
-  const seen = new Set(dbProjects.map((p) => p.slug));
-  const staticExtras = getAllProjects().filter((p) => !seen.has(p.slug));
-  // DB projects first (newest admin work), then static seed projects.
-  return [...dbProjects, ...staticExtras];
-}
-
 export function useAllProjects(): { projects: Project[]; loading: boolean } {
-  const [projects, setProjects] = useState<Project[]>(() => merge([]));
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     let active = true;
     fetchDbProjects().then((db) => {
       if (!active) return;
-      setProjects(merge(db));
+      setProjects(db);
       setLoading(false);
     });
     return () => {
@@ -97,3 +87,4 @@ export function useAllProjects(): { projects: Project[]; loading: boolean } {
   }, []);
   return { projects, loading };
 }
+

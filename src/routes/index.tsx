@@ -10,8 +10,9 @@ import { PackageBuilder } from "@/components/site/PackageBuilder";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { BlogCard } from "@/components/site/BlogCard";
 import { StaticPageSeo } from "@/lib/seo-runtime";
-import { getLatestProjects } from "@/lib/projects-data";
-import { getPostBySlug } from "@/lib/blog-data";
+import { useAllProjects } from "@/lib/projects-loader";
+import { useAllBlogPosts } from "@/lib/blog-loader";
+
 import {
   Accordion,
   AccordionContent,
@@ -241,6 +242,10 @@ function PhaseCard({
 
 
 function Index() {
+  const { projects: allProjects } = useAllProjects();
+  const { posts: allPosts } = useAllBlogPosts();
+  const latestProjects = allProjects.slice(0, 3);
+  const latestPosts = allPosts.slice(0, 3);
   const [journeyBadge1, setJourneyBadge1] = useState(false);
   const [journeyLine1, setJourneyLine1] = useState(false);
   const [journeyBadge2, setJourneyBadge2] = useState(false);
@@ -248,6 +253,7 @@ function Index() {
   const [journeyBadge3, setJourneyBadge3] = useState(false);
   const [sig, setSig] = useState<SignaturePackage>(SIGNATURE_DEFAULTS);
   const [dividerText, setDividerText] = useState<string>("— or build your own —");
+
 
   useEffect(() => {
     let cancelled = false;
@@ -721,11 +727,18 @@ function Index() {
               </p>
             </div>
 
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {getLatestProjects(3).map((project) => (
-                <ProjectCard key={project.slug} project={project} />
-              ))}
-            </div>
+            {latestProjects.length === 0 ? (
+              <div className="mt-12 rounded-2xl border border-dashed border-white/[0.08] bg-[#11162A]/40 p-10 text-center">
+                <p className="text-sm text-muted-foreground">No projects published yet — check back soon.</p>
+              </div>
+            ) : (
+              <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {latestProjects.map((project) => (
+                  <ProjectCard key={project.slug} project={project} />
+                ))}
+              </div>
+            )}
+
 
 
             <div className="mt-12 text-center">
@@ -752,18 +765,18 @@ function Index() {
               </p>
             </div>
 
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {[
-                "custom-code-vs-wordpress-2026",
-                "custom-gpt-vs-chatgpt-plus-business",
-                "ai-voice-cloning-guide-for-podcasters",
-              ]
-                .map((slug) => getPostBySlug(slug))
-                .filter((p): p is NonNullable<typeof p> => Boolean(p))
-                .map((post) => (
+            {latestPosts.length === 0 ? (
+              <div className="mt-12 rounded-2xl border border-dashed border-white/[0.08] bg-[#11162A]/40 p-10 text-center">
+                <p className="text-sm text-muted-foreground">No posts published yet — check back soon.</p>
+              </div>
+            ) : (
+              <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {latestPosts.map((post) => (
                   <BlogCard key={post.slug} post={post} />
                 ))}
-            </div>
+              </div>
+            )}
+
 
             <div className="mt-12 text-center">
               <Link
