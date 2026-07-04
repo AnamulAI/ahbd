@@ -24,15 +24,54 @@ async function assertAnalyticsAccess(context: any) {
   if (!data) throw new Error("Forbidden");
 }
 
-async function baseVisitsQuery(context: any, range: Range) {
+async function fetchVisitsBetween(
+  context: any,
+  fromIso: string | null,
+  toIso: string | null,
+  includeAdmin: boolean,
+) {
   const sb = context.supabase as any;
   let q = sb.from("page_visits").select("*").eq("is_bot", false);
-  if (!range.includeAdmin) q = q.eq("is_admin", false);
-  const since = sinceIso(range.days ?? null);
-  if (since) q = q.gte("visited_at", since);
+  if (!includeAdmin) q = q.eq("is_admin", false);
+  if (fromIso) q = q.gte("visited_at", fromIso);
+  if (toIso) q = q.lt("visited_at", toIso);
   const { data, error } = await q.order("visited_at", { ascending: false }).limit(50000);
   if (error) throw new Error(error.message);
   return (data ?? []) as any[];
+}
+
+async function baseVisitsQuery(context: any, range: Range) {
+  const since = range.days ? new Date(Date.now() - range.days * 24 * 60 * 60 * 1000).toISOString() : null;
+  return fetchVisitsBetween(context, since, null, Boolean(range.includeAdmin));
+}
+
+function computeTotals(visits: any[]) {
+  const uniqueVisitors = new Set(visits.map((v) => v.visitor_id)).size;
+  const newVisitors = visits.filter((v) => v.is_new_visitor).length;
+  const returningVisitors = visits.length - newVisitors;
+  const bySession = new Map<string, any[]>();
+  for (const v of visits) {
+    const arr = bySession.get(v.session_id) ?? [];
+    arr.push(v);
+    bySession.set(v.session_id, arr);
+  }
+  let totalDuration = 0;
+  let countedSessions = 0;
+  let bouncedSessions = 0;
+  for (const [, rows] of bySession) {
+    const dur = rows.reduce((acc, r) => acc + (r.time_on_page_seconds || 0), 0);
+    if (rows.length > 0) countedSessions++;
+    totalDuration += dur;
+    if (rows.length === 1) bouncedSessions++;
+  }
+  return {
+    pageviews: visits.length,
+    uniqueVisitors,
+    newVisitors,
+    returningVisitors,
+    avgSessionSeconds: countedSessions > 0 ? Math.round(totalDuration / countedSessions) : 0,
+    bounceRate: bySession.size > 0 ? bouncedSessions / bySession.size : 0,
+  };
 }
 
 export const getAnalyticsOverview = createServerFn({ method: "POST" })
