@@ -97,6 +97,7 @@ export function SeoTrackingPage() {
   const [editDesc, setEditDesc] = useState("");
 
   const [settings, setSettings] = useState<Record<SettingKey, string>>({
+    site_base_url: "",
     default_meta_title_template: "{page} | AnamDev",
     default_meta_description: "",
     default_og_image_url: "",
@@ -111,7 +112,6 @@ export function SeoTrackingPage() {
     pinterest_tag_id: "",
     pinterest_domain_verification: "",
     linkedin_partner_id: "",
-    newsletter_webhook_url: "",
     allow_gptbot: "true",
     allow_google_extended: "true",
     allow_claudebot: "true",
