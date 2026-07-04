@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { ChevronDown, Code2, Menu, MessageCircle, Mic, Sparkles, X } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { getPageAssignments } from "@/lib/pages-settings.functions";
 
 type NavLink = {
   label: string;
@@ -40,17 +41,16 @@ const SERVICE_ITEMS = [
 const DEFAULT_SERVICES_ROUTE = "/services/web-development";
 
 function useServicesRoute(): string {
+  const fetchAssignments = useServerFn(getPageAssignments);
   const { data } = useQuery({
     queryKey: ["site-settings", "services_page_route"],
     queryFn: async () => {
-      const { data } = await supabase
-        .from("site_settings")
-        .select("setting_value")
-        .eq("setting_key", "services_page_route")
-        .maybeSingle();
-      return (data?.setting_value as string | undefined) ?? DEFAULT_SERVICES_ROUTE;
+      const assignments = await fetchAssignments();
+      return assignments.services_page_route || DEFAULT_SERVICES_ROUTE;
     },
-    staleTime: 60_000,
+    staleTime: 0,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
   return data ?? DEFAULT_SERVICES_ROUTE;
 }
@@ -93,7 +93,6 @@ function ServicesDropdown({
   isActive: boolean;
   servicesRoute: string;
 }) {
-  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wrapperRef = useRef<HTMLLIElement | null>(null);
@@ -137,18 +136,11 @@ function ServicesDropdown({
       }}
       onMouseLeave={scheduleClose}
     >
-      <button
-        type="button"
+      <Link
+        to={servicesRoute}
         aria-haspopup="menu"
         aria-expanded={open}
         aria-current={isActive ? "page" : undefined}
-        onClick={(e) => {
-          // Desktop: navigate to the assigned Services page; open dropdown alongside
-          if (e.detail !== 0) {
-            navigate({ to: servicesRoute as string });
-          }
-          setOpen((v) => !v);
-        }}
         onFocus={() => {
           cancelClose();
           setOpen(true);
@@ -175,7 +167,7 @@ function ServicesDropdown({
             className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-[color:var(--primary)] shadow-[0_0_12px_var(--primary)]"
           />
         )}
-      </button>
+      </Link>
 
       <div
         role="menu"
@@ -264,7 +256,9 @@ export function SiteHeader({ onCtaClick, ctaLabel = "Let's Talk" }: SiteHeaderPr
         <nav aria-label="Primary" className="hidden md:block">
           <ul className="flex items-center gap-1">
             {NAV_LINKS.map((link) => {
-              const isActive = isLinkActive(pathname, link.to);
+              const isActive = link.dynamicKey === "services"
+                ? pathname.startsWith("/services") || isLinkActive(pathname, servicesRoute)
+                : isLinkActive(pathname, link.to);
               if (link.children) {
                 return (
                   <ServicesDropdown
@@ -344,30 +338,44 @@ export function SiteHeader({ onCtaClick, ctaLabel = "Let's Talk" }: SiteHeaderPr
         <nav aria-label="Mobile" className="mx-auto max-w-6xl px-4 py-3 sm:px-6">
           <ul className="flex flex-col gap-1">
             {NAV_LINKS.map((link) => {
-              const isActive = isLinkActive(pathname, link.to);
+              const isActive = link.dynamicKey === "services"
+                ? pathname.startsWith("/services") || isLinkActive(pathname, servicesRoute)
+                : isLinkActive(pathname, link.to);
               if (link.children) {
                 return (
                   <li key={link.to} className="flex flex-col">
-                    <button
-                      type="button"
-                      aria-expanded={mobileServicesOpen}
-                      onClick={() => setMobileServicesOpen((v) => !v)}
+                    <div
                       className={[
-                        "flex h-11 items-center justify-between rounded-xl px-3 text-sm transition-colors duration-200 motion-reduce:transition-none",
+                        "flex h-11 items-center rounded-xl text-sm transition-colors duration-200 motion-reduce:transition-none",
                         isActive
                           ? "font-semibold text-white"
                           : "font-medium text-muted-foreground hover:text-white",
                       ].join(" ")}
                     >
-                      <span>Services</span>
-                      <ChevronDown
-                        className={[
-                          "h-4 w-4 transition-transform duration-200 motion-reduce:transition-none",
-                          mobileServicesOpen ? "rotate-180" : "rotate-0",
-                        ].join(" ")}
-                        aria-hidden
-                      />
-                    </button>
+                      <Link
+                        to={servicesRoute}
+                        aria-current={isActive ? "page" : undefined}
+                        onClick={() => setMobileOpen(false)}
+                        className="flex h-full min-w-0 flex-1 items-center px-3"
+                      >
+                        Services
+                      </Link>
+                      <button
+                        type="button"
+                        aria-label="Toggle services menu"
+                        aria-expanded={mobileServicesOpen}
+                        onClick={() => setMobileServicesOpen((v) => !v)}
+                        className="flex h-full w-11 shrink-0 items-center justify-center rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ring)]"
+                      >
+                        <ChevronDown
+                          className={[
+                            "h-4 w-4 transition-transform duration-200 motion-reduce:transition-none",
+                            mobileServicesOpen ? "rotate-180" : "rotate-0",
+                          ].join(" ")}
+                          aria-hidden
+                        />
+                      </button>
+                    </div>
                     <div
                       className={[
                         "overflow-hidden transition-[max-height,opacity] duration-300 motion-reduce:transition-none",
