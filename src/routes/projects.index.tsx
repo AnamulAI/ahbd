@@ -66,77 +66,8 @@ function StatItem({ value, label }: { value: string; label: string }) {
   );
 }
 
-function FeaturedSpotlight() {
-  const project = getProjectBySlug(FEATURED_PROJECT_SLUG);
-  if (!project) return null;
-  return (
-    <section className="pt-4 sm:pt-8">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="group/reveal relative">
-          <RevealBorder rounded="rounded-3xl" radius={24} />
-          <Link
-            to="/projects/$slug"
-            params={{ slug: project.slug }}
-            aria-label={`Featured project: ${project.title}`}
-            className="group relative grid overflow-hidden rounded-3xl bg-[#16181D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ring)] md:grid-cols-2"
-          >
-            {/* Image */}
-          <div className="relative aspect-[16/10] w-full overflow-hidden md:aspect-auto md:h-full">
-            <img
-              src={project.coverImage}
-              alt={project.title}
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-            />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 to-transparent md:bg-gradient-to-r md:from-transparent md:to-[#16181D]/40" />
-          </div>
 
-          {/* Content */}
-          <div className="relative flex flex-col gap-5 p-6 sm:p-8 md:p-10">
-            <div className="flex flex-wrap items-center gap-2">
-              <span
-                className="inline-flex items-center rounded-full px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.18em] text-white"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(90deg, var(--primary) 0%, var(--orange) 100%)",
-                }}
-              >
-                Featured Project
-              </span>
-              <ProjectCategoryBadge category={project.category} />
-            </div>
 
-            <h2 className="font-display text-2xl font-bold leading-tight text-white sm:text-3xl md:text-[2rem]">
-              {project.title}
-            </h2>
-            <p className="text-base leading-relaxed text-muted-foreground">
-              {project.shortDescription}
-            </p>
-
-            <div className="mt-2 flex items-center justify-center gap-3 ">
-              <div className="text-gradient-vo font-display text-5xl font-bold leading-none sm:text-6xl">
-                58%
-              </div>
-              <div className="max-w-[14rem] text-xs leading-snug text-muted-foreground">
-                of total sales now online within 90 days
-              </div>
-            </div>
-
-            <div className="mt-2 flex justify-center ">
-              <span className="inline-flex items-center gap-2 rounded-full btn-gradient min-h-9 text-center px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_36px_-10px_var(--vo-glow)] transition-all duration-200 group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100">
-                View Case Study{" "}
-                <ArrowRight
-                  className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
-                  aria-hidden
-                />
-              </span>
-            </div>
-          </div>
-        </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
 
 function ProjectsIndexPage() {
   const { projects } = useAllProjects();
