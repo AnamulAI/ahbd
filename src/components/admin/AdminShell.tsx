@@ -76,6 +76,11 @@ const NAV: NavGroup[] = [
         to: "/admin/seo",
         icon: Search,
       },
+      {
+        label: "Integrations",
+        to: "/admin/integrations",
+        icon: Plug,
+      },
       { label: "Branding", to: "/admin/coming-soon/branding", icon: Palette, comingSoon: true },
     ],
   },
