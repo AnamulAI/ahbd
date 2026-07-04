@@ -10,14 +10,14 @@ const AI_BOTS: Array<{ key: string; agents: string[] }> = [
   { key: "allow_ccbot", agents: ["CCBot"] },
 ];
 
-async function loadAiSettings(): Promise<Record<string, string>> {
+async function loadSettings(): Promise<Record<string, string>> {
   const url = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL;
   const key = process.env.SUPABASE_PUBLISHABLE_KEY ?? process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
   if (!url || !key) return {};
   const supabase = createClient<Database>(url, key, {
     auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
   });
-  const keys = AI_BOTS.map((b) => b.key);
+  const keys = [...AI_BOTS.map((b) => b.key), "site_base_url"];
   const { data } = await supabase
     .from("site_settings")
     .select("setting_key,setting_value")
@@ -33,8 +33,8 @@ async function loadAiSettings(): Promise<Record<string, string>> {
 export const Route = createFileRoute("/robots.txt")({
   server: {
     handlers: {
-      GET: async () => {
-        const settings = await loadAiSettings();
+      GET: async ({ request }) => {
+        const settings = await loadSettings();
         const lines: string[] = [];
 
         for (const bot of AI_BOTS) {
@@ -49,7 +49,10 @@ export const Route = createFileRoute("/robots.txt")({
         lines.push("User-agent: *");
         lines.push("Allow: /");
         lines.push("");
-        lines.push("Sitemap: https://ahbd.lovable.app/sitemap.xml");
+
+        const stored = (settings.site_base_url ?? "").trim().replace(/\/+$/, "");
+        const base = stored || new URL(request.url).origin;
+        lines.push(`Sitemap: ${base}/sitemap.xml`);
 
         return new Response(lines.join("\n"), {
           headers: {
