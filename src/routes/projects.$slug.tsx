@@ -141,6 +141,8 @@ type DbProject = {
   trigger_text: string | null;
   action_text: string | null;
   output_text: string | null;
+  seo_title?: string | null;
+  seo_description?: string | null;
 };
 
 
