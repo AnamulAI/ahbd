@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  BLOG_POSTS,
-  type BlogCategory,
-  type BlogPost,
-  type ServicePath,
-} from "@/lib/blog-data";
+import type { BlogCategory, BlogPost, ServicePath } from "@/lib/blog-data";
+
 
 type DbBlogRow = {
   slug: string;
