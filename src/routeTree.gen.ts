@@ -36,6 +36,7 @@ import { Route as AdminBlogSidebarCardsRouteImport } from './routes/admin.blog-s
 import { Route as AdminProjectsIndexRouteImport } from './routes/admin.projects.index'
 import { Route as AdminBlogIndexRouteImport } from './routes/admin.blog.index'
 import { Route as AdminSampleBuilderNewRouteImport } from './routes/admin.sample-builder.new'
+import { Route as AdminSampleBuilderIdRouteImport } from './routes/admin.sample-builder.$id'
 import { Route as AdminProjectsNewRouteImport } from './routes/admin.projects.new'
 import { Route as AdminProjectsIdRouteImport } from './routes/admin.projects.$id'
 import { Route as AdminComingSoonKeyRouteImport } from './routes/admin.coming-soon.$key'
@@ -177,6 +178,11 @@ const AdminSampleBuilderNewRoute = AdminSampleBuilderNewRouteImport.update({
   path: '/new',
   getParentRoute: () => AdminSampleBuilderRoute,
 } as any)
+const AdminSampleBuilderIdRoute = AdminSampleBuilderIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminSampleBuilderRoute,
+} as any)
 const AdminProjectsNewRoute = AdminProjectsNewRouteImport.update({
   id: '/admin/projects/new',
   path: '/admin/projects/new',
@@ -233,6 +239,7 @@ export interface FileRoutesByFullPath {
   '/admin/coming-soon/$key': typeof AdminComingSoonKeyRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/admin/projects/new': typeof AdminProjectsNewRoute
+  '/admin/sample-builder/$id': typeof AdminSampleBuilderIdRoute
   '/admin/sample-builder/new': typeof AdminSampleBuilderNewRoute
   '/admin/blog/': typeof AdminBlogIndexRoute
   '/admin/projects/': typeof AdminProjectsIndexRoute
@@ -267,6 +274,7 @@ export interface FileRoutesByTo {
   '/admin/coming-soon/$key': typeof AdminComingSoonKeyRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/admin/projects/new': typeof AdminProjectsNewRoute
+  '/admin/sample-builder/$id': typeof AdminSampleBuilderIdRoute
   '/admin/sample-builder/new': typeof AdminSampleBuilderNewRoute
   '/admin/blog': typeof AdminBlogIndexRoute
   '/admin/projects': typeof AdminProjectsIndexRoute
@@ -302,6 +310,7 @@ export interface FileRoutesById {
   '/admin/coming-soon/$key': typeof AdminComingSoonKeyRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/admin/projects/new': typeof AdminProjectsNewRoute
+  '/admin/sample-builder/$id': typeof AdminSampleBuilderIdRoute
   '/admin/sample-builder/new': typeof AdminSampleBuilderNewRoute
   '/admin/blog/': typeof AdminBlogIndexRoute
   '/admin/projects/': typeof AdminProjectsIndexRoute
@@ -338,6 +347,7 @@ export interface FileRouteTypes {
     | '/admin/coming-soon/$key'
     | '/admin/projects/$id'
     | '/admin/projects/new'
+    | '/admin/sample-builder/$id'
     | '/admin/sample-builder/new'
     | '/admin/blog/'
     | '/admin/projects/'
@@ -372,6 +382,7 @@ export interface FileRouteTypes {
     | '/admin/coming-soon/$key'
     | '/admin/projects/$id'
     | '/admin/projects/new'
+    | '/admin/sample-builder/$id'
     | '/admin/sample-builder/new'
     | '/admin/blog'
     | '/admin/projects'
@@ -406,6 +417,7 @@ export interface FileRouteTypes {
     | '/admin/coming-soon/$key'
     | '/admin/projects/$id'
     | '/admin/projects/new'
+    | '/admin/sample-builder/$id'
     | '/admin/sample-builder/new'
     | '/admin/blog/'
     | '/admin/projects/'
@@ -636,6 +648,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSampleBuilderNewRouteImport
       parentRoute: typeof AdminSampleBuilderRoute
     }
+    '/admin/sample-builder/$id': {
+      id: '/admin/sample-builder/$id'
+      path: '/$id'
+      fullPath: '/admin/sample-builder/$id'
+      preLoaderRoute: typeof AdminSampleBuilderIdRouteImport
+      parentRoute: typeof AdminSampleBuilderRoute
+    }
     '/admin/projects/new': {
       id: '/admin/projects/new'
       path: '/admin/projects/new'
@@ -675,10 +694,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminSampleBuilderRouteChildren {
+  AdminSampleBuilderIdRoute: typeof AdminSampleBuilderIdRoute
   AdminSampleBuilderNewRoute: typeof AdminSampleBuilderNewRoute
 }
 
 const AdminSampleBuilderRouteChildren: AdminSampleBuilderRouteChildren = {
+  AdminSampleBuilderIdRoute: AdminSampleBuilderIdRoute,
   AdminSampleBuilderNewRoute: AdminSampleBuilderNewRoute,
 }
 
