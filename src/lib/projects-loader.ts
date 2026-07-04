@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  getAllProjects,
-  type Project,
-  type ProjectCategory,
-} from "@/lib/projects-data";
+import type { Project, ProjectCategory } from "@/lib/projects-data";
+
 
 type DbProjectRow = {
   id: string;
