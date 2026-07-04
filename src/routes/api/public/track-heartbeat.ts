@@ -1,6 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createClient } from "@supabase/supabase-js";
-import type { Database } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/api/public/track-heartbeat")({
   server: {
@@ -16,16 +14,8 @@ export const Route = createFileRoute("/api/public/track-heartbeat")({
         const seconds = Number.isFinite(body.seconds) ? Math.min(60 * 60 * 6, Math.max(0, Math.round(body.seconds as number))) : null;
         if (!id || seconds === null) return new Response("Bad request", { status: 400 });
 
-        const SUPABASE_URL = process.env.SUPABASE_URL;
-        const SUPABASE_PUBLISHABLE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY;
-        if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
-          return new Response("Server misconfigured", { status: 500 });
-        }
-        const supa = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-          auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
-        });
-
-        await supa.from("page_visits").update({ time_on_page_seconds: seconds }).eq("id", id);
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        await supabaseAdmin.from("page_visits").update({ time_on_page_seconds: seconds }).eq("id", id);
         return new Response("ok");
       },
     },

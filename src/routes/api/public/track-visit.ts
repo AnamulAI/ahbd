@@ -1,6 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createClient } from "@supabase/supabase-js";
-import type { Database } from "@/integrations/supabase/types";
 
 function truncateIp(ip: string | null): string | null {
   if (!ip) return null;
@@ -57,14 +55,8 @@ export const Route = createFileRoute("/api/public/track-visit")({
         const ip = pickClientIp(request);
         const geo = await geoLookup(ip);
 
-        const SUPABASE_URL = process.env.SUPABASE_URL;
-        const SUPABASE_PUBLISHABLE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY;
-        if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
-          return new Response("Server misconfigured", { status: 500 });
-        }
-        const supa = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-          auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
-        });
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const supa = supabaseAdmin;
 
         const str = (v: unknown): string | null =>
           typeof v === "string" && v.length > 0 ? v.slice(0, 500) : null;
