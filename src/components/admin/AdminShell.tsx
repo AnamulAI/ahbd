@@ -72,9 +72,8 @@ const NAV: NavGroup[] = [
       },
       {
         label: "SEO & Tracking",
-        to: "/admin/coming-soon/seo",
+        to: "/admin/seo",
         icon: Search,
-        comingSoon: true,
       },
       { label: "Branding", to: "/admin/coming-soon/branding", icon: Palette, comingSoon: true },
     ],

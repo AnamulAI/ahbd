@@ -50,6 +50,8 @@ export type BlogPost = {
   bodyHtml?: string;
   faq: FaqItem[];
   sidebarCta: SidebarCta;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
 };
 
 export const CATEGORY_STYLES: Record<
