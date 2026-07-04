@@ -176,9 +176,9 @@ function Editor({ editId }: { editId?: string }) {
         const s = res.sample as any;
         setBusinessName(s.business_name || "");
         setAudienceCategory(
-          (AUDIENCE_CATEGORIES as readonly string[]).includes(s.audience_category)
-            ? (s.audience_category as AudienceCategory)
-            : "businesses",
+          typeof s.audience_category === "string" && s.audience_category.trim()
+            ? s.audience_category
+            : "Businesses",
         );
         setEpisodeTitle(s.episode_title || "");
         setTopic(s.topic || "");
