@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Loader2, Pencil, Save, X, Info, Search, Share2, Send, Bot, FileText } from "lucide-react";
+import { Loader2, Pencil, Save, X, Info, Search, Share2, Bot, FileText } from "lucide-react";
 import { AdminShell, useAdminGate } from "@/components/admin/AdminShell";
 import { ImageUploader } from "@/components/admin/ImageUploader";
 import { Switch } from "@/components/ui/switch";
