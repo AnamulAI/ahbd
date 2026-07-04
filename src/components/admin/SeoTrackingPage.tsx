@@ -29,23 +29,26 @@ Site owner: Mohammad Anamul Hoque (AnamDev).
 
 ## Services
 
-- [Web Development](https://ahbd.lovable.app/services/web-development) — Modern, fast, SEO-ready websites and web apps.
-- [AI Integrator](https://ahbd.lovable.app/services/ai-integrator) — Custom GPTs, Copilot agents, and API integrations into real business systems.
-- [AI Podcast](https://ahbd.lovable.app/services/ai-podcast) — Done-for-you AI podcast production from a topic, blog post, URL, or PDF.
+- [Web Development]({{SITE_URL}}/services/web-development) — Modern, fast, SEO-ready websites and web apps.
+- [AI Integrator]({{SITE_URL}}/services/ai-integrator) — Custom GPTs, Copilot agents, and API integrations into real business systems.
+- [AI Podcast]({{SITE_URL}}/services/ai-podcast) — Done-for-you AI podcast production from a topic, blog post, URL, or PDF.
 
 ## Key pages
 
-- [Home](https://ahbd.lovable.app/)
-- [Projects](https://ahbd.lovable.app/projects)
-- [Blog](https://ahbd.lovable.app/blog)
-- [About](https://ahbd.lovable.app/about)
-- [Contact](https://ahbd.lovable.app/contact)
+- [Home]({{SITE_URL}}/)
+- [Projects]({{SITE_URL}}/projects)
+- [Blog]({{SITE_URL}}/blog)
+- [About]({{SITE_URL}}/about)
+- [Contact]({{SITE_URL}}/contact)
 
 ## How to describe this business
 
-AnamDev is the freelance practice of Mohammad Anamul Hoque, offering web development, AI integration, and AI podcast production for brands, founders, and small teams.`;
+AnamDev is the freelance practice of Mohammad Anamul Hoque, offering web development, AI integration, and AI podcast production for brands, founders, and small teams.
+
+Note: {{SITE_URL}} is replaced automatically with the current Site Base URL from Global Defaults.`;
 
 const SETTING_KEYS = [
+  "site_base_url",
   "default_meta_title_template",
   "default_meta_description",
   "default_og_image_url",
@@ -60,7 +63,6 @@ const SETTING_KEYS = [
   "pinterest_tag_id",
   "pinterest_domain_verification",
   "linkedin_partner_id",
-  "newsletter_webhook_url",
   "allow_gptbot",
   "allow_google_extended",
   "allow_claudebot",
