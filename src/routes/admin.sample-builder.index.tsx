@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SampleBuilderListPage } from "@/components/admin/SampleBuilderListPage";
 
-export const Route = createFileRoute("/admin/sample-builder")({
+export const Route = createFileRoute("/admin/sample-builder/")({
   ssr: false,
   head: () => ({
     meta: [

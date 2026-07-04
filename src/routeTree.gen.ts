@@ -26,13 +26,13 @@ import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
 import { Route as InternalBuilderDataTestRouteImport } from './routes/internal.builder-data-test'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AdminSeoRouteImport } from './routes/admin.seo'
-import { Route as AdminSampleBuilderRouteImport } from './routes/admin.sample-builder'
 import { Route as AdminNewsletterRouteImport } from './routes/admin.newsletter'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminIntegrationsRouteImport } from './routes/admin.integrations'
 import { Route as AdminBuilderSettingsRouteImport } from './routes/admin.builder-settings'
 import { Route as AdminBlogSidebarCardsRouteImport } from './routes/admin.blog-sidebar-cards'
+import { Route as AdminSampleBuilderIndexRouteImport } from './routes/admin.sample-builder.index'
 import { Route as AdminProjectsIndexRouteImport } from './routes/admin.projects.index'
 import { Route as AdminBlogIndexRouteImport } from './routes/admin.blog.index'
 import { Route as AdminSampleBuilderNewRouteImport } from './routes/admin.sample-builder.new'
@@ -128,11 +128,6 @@ const AdminSeoRoute = AdminSeoRouteImport.update({
   path: '/admin/seo',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminSampleBuilderRoute = AdminSampleBuilderRouteImport.update({
-  id: '/admin/sample-builder',
-  path: '/admin/sample-builder',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AdminNewsletterRoute = AdminNewsletterRouteImport.update({
   id: '/admin/newsletter',
   path: '/admin/newsletter',
@@ -163,6 +158,11 @@ const AdminBlogSidebarCardsRoute = AdminBlogSidebarCardsRouteImport.update({
   path: '/admin/blog-sidebar-cards',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSampleBuilderIndexRoute = AdminSampleBuilderIndexRouteImport.update({
+  id: '/admin/sample-builder/',
+  path: '/admin/sample-builder/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminProjectsIndexRoute = AdminProjectsIndexRouteImport.update({
   id: '/admin/projects/',
   path: '/admin/projects/',
@@ -174,14 +174,14 @@ const AdminBlogIndexRoute = AdminBlogIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminSampleBuilderNewRoute = AdminSampleBuilderNewRouteImport.update({
-  id: '/new',
-  path: '/new',
-  getParentRoute: () => AdminSampleBuilderRoute,
+  id: '/admin/sample-builder/new',
+  path: '/admin/sample-builder/new',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminSampleBuilderIdRoute = AdminSampleBuilderIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminSampleBuilderRoute,
+  id: '/admin/sample-builder/$id',
+  path: '/admin/sample-builder/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminProjectsNewRoute = AdminProjectsNewRouteImport.update({
   id: '/admin/projects/new',
@@ -221,7 +221,6 @@ export interface FileRoutesByFullPath {
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
-  '/admin/sample-builder': typeof AdminSampleBuilderRouteWithChildren
   '/admin/seo': typeof AdminSeoRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/internal/builder-data-test': typeof InternalBuilderDataTestRoute
@@ -243,6 +242,7 @@ export interface FileRoutesByFullPath {
   '/admin/sample-builder/new': typeof AdminSampleBuilderNewRoute
   '/admin/blog/': typeof AdminBlogIndexRoute
   '/admin/projects/': typeof AdminProjectsIndexRoute
+  '/admin/sample-builder/': typeof AdminSampleBuilderIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -256,7 +256,6 @@ export interface FileRoutesByTo {
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
-  '/admin/sample-builder': typeof AdminSampleBuilderRouteWithChildren
   '/admin/seo': typeof AdminSeoRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/internal/builder-data-test': typeof InternalBuilderDataTestRoute
@@ -278,6 +277,7 @@ export interface FileRoutesByTo {
   '/admin/sample-builder/new': typeof AdminSampleBuilderNewRoute
   '/admin/blog': typeof AdminBlogIndexRoute
   '/admin/projects': typeof AdminProjectsIndexRoute
+  '/admin/sample-builder': typeof AdminSampleBuilderIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -292,7 +292,6 @@ export interface FileRoutesById {
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
-  '/admin/sample-builder': typeof AdminSampleBuilderRouteWithChildren
   '/admin/seo': typeof AdminSeoRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/internal/builder-data-test': typeof InternalBuilderDataTestRoute
@@ -314,6 +313,7 @@ export interface FileRoutesById {
   '/admin/sample-builder/new': typeof AdminSampleBuilderNewRoute
   '/admin/blog/': typeof AdminBlogIndexRoute
   '/admin/projects/': typeof AdminProjectsIndexRoute
+  '/admin/sample-builder/': typeof AdminSampleBuilderIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -329,7 +329,6 @@ export interface FileRouteTypes {
     | '/admin/leads'
     | '/admin/login'
     | '/admin/newsletter'
-    | '/admin/sample-builder'
     | '/admin/seo'
     | '/blog/$slug'
     | '/internal/builder-data-test'
@@ -351,6 +350,7 @@ export interface FileRouteTypes {
     | '/admin/sample-builder/new'
     | '/admin/blog/'
     | '/admin/projects/'
+    | '/admin/sample-builder/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -364,7 +364,6 @@ export interface FileRouteTypes {
     | '/admin/leads'
     | '/admin/login'
     | '/admin/newsletter'
-    | '/admin/sample-builder'
     | '/admin/seo'
     | '/blog/$slug'
     | '/internal/builder-data-test'
@@ -386,6 +385,7 @@ export interface FileRouteTypes {
     | '/admin/sample-builder/new'
     | '/admin/blog'
     | '/admin/projects'
+    | '/admin/sample-builder'
   id:
     | '__root__'
     | '/'
@@ -399,7 +399,6 @@ export interface FileRouteTypes {
     | '/admin/leads'
     | '/admin/login'
     | '/admin/newsletter'
-    | '/admin/sample-builder'
     | '/admin/seo'
     | '/blog/$slug'
     | '/internal/builder-data-test'
@@ -421,6 +420,7 @@ export interface FileRouteTypes {
     | '/admin/sample-builder/new'
     | '/admin/blog/'
     | '/admin/projects/'
+    | '/admin/sample-builder/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -435,7 +435,6 @@ export interface RootRouteChildren {
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminNewsletterRoute: typeof AdminNewsletterRoute
-  AdminSampleBuilderRoute: typeof AdminSampleBuilderRouteWithChildren
   AdminSeoRoute: typeof AdminSeoRoute
   BlogSlugRoute: typeof BlogSlugRoute
   InternalBuilderDataTestRoute: typeof InternalBuilderDataTestRoute
@@ -453,8 +452,11 @@ export interface RootRouteChildren {
   AdminComingSoonKeyRoute: typeof AdminComingSoonKeyRoute
   AdminProjectsIdRoute: typeof AdminProjectsIdRoute
   AdminProjectsNewRoute: typeof AdminProjectsNewRoute
+  AdminSampleBuilderIdRoute: typeof AdminSampleBuilderIdRoute
+  AdminSampleBuilderNewRoute: typeof AdminSampleBuilderNewRoute
   AdminBlogIndexRoute: typeof AdminBlogIndexRoute
   AdminProjectsIndexRoute: typeof AdminProjectsIndexRoute
+  AdminSampleBuilderIndexRoute: typeof AdminSampleBuilderIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -578,13 +580,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSeoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/sample-builder': {
-      id: '/admin/sample-builder'
-      path: '/admin/sample-builder'
-      fullPath: '/admin/sample-builder'
-      preLoaderRoute: typeof AdminSampleBuilderRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/admin/newsletter': {
       id: '/admin/newsletter'
       path: '/admin/newsletter'
@@ -627,6 +622,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBlogSidebarCardsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/sample-builder/': {
+      id: '/admin/sample-builder/'
+      path: '/admin/sample-builder'
+      fullPath: '/admin/sample-builder/'
+      preLoaderRoute: typeof AdminSampleBuilderIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/projects/': {
       id: '/admin/projects/'
       path: '/admin/projects'
@@ -643,17 +645,17 @@ declare module '@tanstack/react-router' {
     }
     '/admin/sample-builder/new': {
       id: '/admin/sample-builder/new'
-      path: '/new'
+      path: '/admin/sample-builder/new'
       fullPath: '/admin/sample-builder/new'
       preLoaderRoute: typeof AdminSampleBuilderNewRouteImport
-      parentRoute: typeof AdminSampleBuilderRoute
+      parentRoute: typeof rootRouteImport
     }
     '/admin/sample-builder/$id': {
       id: '/admin/sample-builder/$id'
-      path: '/$id'
+      path: '/admin/sample-builder/$id'
       fullPath: '/admin/sample-builder/$id'
       preLoaderRoute: typeof AdminSampleBuilderIdRouteImport
-      parentRoute: typeof AdminSampleBuilderRoute
+      parentRoute: typeof rootRouteImport
     }
     '/admin/projects/new': {
       id: '/admin/projects/new'
@@ -693,19 +695,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AdminSampleBuilderRouteChildren {
-  AdminSampleBuilderIdRoute: typeof AdminSampleBuilderIdRoute
-  AdminSampleBuilderNewRoute: typeof AdminSampleBuilderNewRoute
-}
-
-const AdminSampleBuilderRouteChildren: AdminSampleBuilderRouteChildren = {
-  AdminSampleBuilderIdRoute: AdminSampleBuilderIdRoute,
-  AdminSampleBuilderNewRoute: AdminSampleBuilderNewRoute,
-}
-
-const AdminSampleBuilderRouteWithChildren =
-  AdminSampleBuilderRoute._addFileChildren(AdminSampleBuilderRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
@@ -718,7 +707,6 @@ const rootRouteChildren: RootRouteChildren = {
   AdminLeadsRoute: AdminLeadsRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminNewsletterRoute: AdminNewsletterRoute,
-  AdminSampleBuilderRoute: AdminSampleBuilderRouteWithChildren,
   AdminSeoRoute: AdminSeoRoute,
   BlogSlugRoute: BlogSlugRoute,
   InternalBuilderDataTestRoute: InternalBuilderDataTestRoute,
@@ -736,8 +724,11 @@ const rootRouteChildren: RootRouteChildren = {
   AdminComingSoonKeyRoute: AdminComingSoonKeyRoute,
   AdminProjectsIdRoute: AdminProjectsIdRoute,
   AdminProjectsNewRoute: AdminProjectsNewRoute,
+  AdminSampleBuilderIdRoute: AdminSampleBuilderIdRoute,
+  AdminSampleBuilderNewRoute: AdminSampleBuilderNewRoute,
   AdminBlogIndexRoute: AdminBlogIndexRoute,
   AdminProjectsIndexRoute: AdminProjectsIndexRoute,
+  AdminSampleBuilderIndexRoute: AdminSampleBuilderIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
