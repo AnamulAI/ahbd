@@ -87,10 +87,13 @@ function isLinkActive(pathname: string, to: string): boolean {
 function ServicesDropdown({
   pathname,
   isActive,
+  servicesRoute,
 }: {
   pathname: string;
   isActive: boolean;
+  servicesRoute: string;
 }) {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wrapperRef = useRef<HTMLLIElement | null>(null);
