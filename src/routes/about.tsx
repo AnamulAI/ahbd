@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { StaticPageSeo } from "@/lib/seo-runtime";
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
@@ -522,6 +523,11 @@ function ClosingCTA() {
 function AboutPage() {
   return (
     <div className="min-h-dvh bg-background text-foreground">
+      <StaticPageSeo
+        pageKey="about"
+        defaultTitle="About — AnamDev | Mohammad Anamul Hoque"
+        defaultDescription="About Mohammad Anamul Hoque (AnamDev) — helping service brands build authority through AI-powered podcast content and modern websites."
+      />
       <SiteHeader />
       <main>
         <HeroSection />

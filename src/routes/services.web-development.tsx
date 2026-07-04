@@ -82,6 +82,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { CtaRevealCard } from "@/components/site/CtaRevealCard";
 import { BrandIcon, brandColor } from "@/components/site/BrandIcon";
 import { ShareQuoteButton } from "@/components/site/ShareQuoteButton";
+import { StaticPageSeo } from "@/lib/seo-runtime";
 
 import {
   Accordion,
@@ -1761,6 +1762,11 @@ function WebDevPage() {
 
   return (
     <div className="min-h-dvh bg-background text-foreground">
+      <StaticPageSeo
+        pageKey="services"
+        defaultTitle="Services — AnamDev"
+        defaultDescription="Web Development, AI Integrator, and AI Podcast services by Mohammad Anamul Hoque."
+      />
       <SiteHeader />
       <main>
         <HeroSection onSamplesClick={scrollToSamples} />

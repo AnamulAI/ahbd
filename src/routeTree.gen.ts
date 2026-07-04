@@ -23,6 +23,7 @@ import { Route as SampleSlugRouteImport } from './routes/sample.$slug'
 import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
 import { Route as InternalBuilderDataTestRouteImport } from './routes/internal.builder-data-test'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AdminSeoRouteImport } from './routes/admin.seo'
 import { Route as AdminSampleBuilderRouteImport } from './routes/admin.sample-builder'
 import { Route as AdminNewsletterRouteImport } from './routes/admin.newsletter'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
@@ -107,6 +108,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSeoRoute = AdminSeoRouteImport.update({
+  id: '/admin/seo',
+  path: '/admin/seo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminSampleBuilderRoute = AdminSampleBuilderRouteImport.update({
   id: '/admin/sample-builder',
   path: '/admin/sample-builder',
@@ -183,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/admin/login': typeof AdminLoginRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/sample-builder': typeof AdminSampleBuilderRoute
+  '/admin/seo': typeof AdminSeoRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/internal/builder-data-test': typeof InternalBuilderDataTestRoute
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -212,6 +219,7 @@ export interface FileRoutesByTo {
   '/admin/login': typeof AdminLoginRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/sample-builder': typeof AdminSampleBuilderRoute
+  '/admin/seo': typeof AdminSeoRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/internal/builder-data-test': typeof InternalBuilderDataTestRoute
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -242,6 +250,7 @@ export interface FileRoutesById {
   '/admin/login': typeof AdminLoginRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/sample-builder': typeof AdminSampleBuilderRoute
+  '/admin/seo': typeof AdminSeoRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/internal/builder-data-test': typeof InternalBuilderDataTestRoute
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -273,6 +282,7 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/newsletter'
     | '/admin/sample-builder'
+    | '/admin/seo'
     | '/blog/$slug'
     | '/internal/builder-data-test'
     | '/projects/$slug'
@@ -302,6 +312,7 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/newsletter'
     | '/admin/sample-builder'
+    | '/admin/seo'
     | '/blog/$slug'
     | '/internal/builder-data-test'
     | '/projects/$slug'
@@ -331,6 +342,7 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/newsletter'
     | '/admin/sample-builder'
+    | '/admin/seo'
     | '/blog/$slug'
     | '/internal/builder-data-test'
     | '/projects/$slug'
@@ -361,6 +373,7 @@ export interface RootRouteChildren {
   AdminLoginRoute: typeof AdminLoginRoute
   AdminNewsletterRoute: typeof AdminNewsletterRoute
   AdminSampleBuilderRoute: typeof AdminSampleBuilderRoute
+  AdminSeoRoute: typeof AdminSeoRoute
   BlogSlugRoute: typeof BlogSlugRoute
   InternalBuilderDataTestRoute: typeof InternalBuilderDataTestRoute
   ProjectsSlugRoute: typeof ProjectsSlugRoute
@@ -481,6 +494,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/seo': {
+      id: '/admin/seo'
+      path: '/admin/seo'
+      fullPath: '/admin/seo'
+      preLoaderRoute: typeof AdminSeoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/sample-builder': {
       id: '/admin/sample-builder'
       path: '/admin/sample-builder'
@@ -585,6 +605,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminLoginRoute: AdminLoginRoute,
   AdminNewsletterRoute: AdminNewsletterRoute,
   AdminSampleBuilderRoute: AdminSampleBuilderRoute,
+  AdminSeoRoute: AdminSeoRoute,
   BlogSlugRoute: BlogSlugRoute,
   InternalBuilderDataTestRoute: InternalBuilderDataTestRoute,
   ProjectsSlugRoute: ProjectsSlugRoute,
@@ -607,13 +628,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -18,6 +18,8 @@ type DbBlogRow = {
   published_at: string | null;
   created_at: string;
   status: string;
+  seo_title?: string | null;
+  seo_description?: string | null;
 };
 
 const DEFAULT_COVER =
@@ -55,6 +57,8 @@ function dbRowToPost(row: DbBlogRow): BlogPost {
       ctaLabel: "Start a Conversation",
       href: CATEGORY_SERVICE[category],
     },
+    seoTitle: row.seo_title ?? null,
+    seoDescription: row.seo_description ?? null,
   };
 }
 
@@ -62,7 +66,7 @@ export async function fetchDbPublishedPosts(): Promise<BlogPost[]> {
   const { data, error } = await supabase
     .from("blog_posts")
     .select(
-      "slug,title,category,cover_image_url,excerpt,body_html,read_time_minutes,published_at,created_at,status",
+      "slug,title,category,cover_image_url,excerpt,body_html,read_time_minutes,published_at,created_at,status,seo_title,seo_description",
     )
     .eq("status", "published")
     .order("published_at", { ascending: false });
@@ -118,7 +122,7 @@ export function useBlogPostBySlug(slug: string): {
       const { data, error } = await supabase
         .from("blog_posts")
         .select(
-          "slug,title,category,cover_image_url,excerpt,body_html,read_time_minutes,published_at,created_at,status",
+          "slug,title,category,cover_image_url,excerpt,body_html,read_time_minutes,published_at,created_at,status,seo_title,seo_description",
         )
         .eq("slug", slug)
         .eq("status", "published")

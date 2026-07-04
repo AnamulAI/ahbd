@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { ScrollUX } from "@/components/site/ScrollUX";
+import { SiteHeadInjector, OrganizationJsonLd } from "@/lib/seo-runtime";
 
 function NotFoundComponent() {
   return (
@@ -131,6 +132,8 @@ function RootComponent() {
       <Outlet />
       <ScrollUX />
       <Toaster position="top-center" theme="dark" richColors />
+      <SiteHeadInjector />
+      <OrganizationJsonLd />
     </QueryClientProvider>
   );
 }

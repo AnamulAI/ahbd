@@ -83,6 +83,40 @@ import {
   type ProjectResult,
 } from "@/lib/projects-data";
 import { supabase } from "@/integrations/supabase/client";
+import { PageSeo, JsonLd } from "@/lib/seo-runtime";
+
+const CATEGORY_LABEL_MAP: Record<string, string> = {
+  web_development: "Web Development",
+  ai_integrator: "AI Integrator",
+  ai_podcast: "AI Podcast",
+};
+
+function ProjectSeoBundle({ db }: { db: DbProject }) {
+  const title = (db.seo_title?.trim() || db.title) ?? "";
+  const description =
+    db.seo_description?.trim() || (db.description ?? "").split(/\n\s*\n/)[0] || "";
+  const image = db.cover_image_url || undefined;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: db.title,
+    headline: db.title,
+    description,
+    ...(image ? { image } : {}),
+    genre: CATEGORY_LABEL_MAP[db.main_category] ?? db.main_category,
+    author: {
+      "@type": "Person",
+      name: "Mohammad Anamul Hoque",
+    },
+    datePublished: db.created_at,
+  };
+  return (
+    <>
+      <PageSeo title={title} description={description} image={image} />
+      <JsonLd id={`project-${db.slug}`} data={jsonLd} />
+    </>
+  );
+}
 
 export const Route = createFileRoute("/projects/$slug")({
   ssr: false,
@@ -141,6 +175,8 @@ type DbProject = {
   trigger_text: string | null;
   action_text: string | null;
   output_text: string | null;
+  seo_title?: string | null;
+  seo_description?: string | null;
 };
 
 
@@ -236,32 +272,47 @@ function ProjectDetailRoute() {
 
   // 1) DB project takes precedence.
   if (dbProject) {
+    const seoNode = <ProjectSeoBundle db={dbProject} />;
     if (dbProject.main_category === "web_development") {
       return (
-        <WebDevDetail
-          db={dbProject}
-          related={relatedDb.filter((p) => p.main_category === "web_development")}
-        />
+        <>
+          {seoNode}
+          <WebDevDetail
+            db={dbProject}
+            related={relatedDb.filter((p) => p.main_category === "web_development")}
+          />
+        </>
       );
     }
     if (dbProject.main_category === "ai_podcast") {
       return (
-        <PodcastDetail
-          db={dbProject}
-          related={relatedDb.filter((p) => p.main_category === "ai_podcast")}
-        />
+        <>
+          {seoNode}
+          <PodcastDetail
+            db={dbProject}
+            related={relatedDb.filter((p) => p.main_category === "ai_podcast")}
+          />
+        </>
       );
     }
     if (dbProject.main_category === "ai_integrator") {
       return (
-        <IntegratorDetail
-          db={dbProject}
-          related={relatedDb.filter((p) => p.main_category === "ai_integrator")}
-        />
+        <>
+          {seoNode}
+          <IntegratorDetail
+            db={dbProject}
+            related={relatedDb.filter((p) => p.main_category === "ai_integrator")}
+          />
+        </>
       );
     }
     // Any unknown category: Coming Soon
-    return <ComingSoonDetail title={dbProject.title} />;
+    return (
+      <>
+        {seoNode}
+        <ComingSoonDetail title={dbProject.title} />
+      </>
+    );
   }
 
   // 2) Fall back to static seeded projects.

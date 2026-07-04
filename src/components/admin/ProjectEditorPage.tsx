@@ -9,6 +9,7 @@ import {
   Upload,
   GripVertical,
   Trash2,
+  Info,
 } from "lucide-react";
 import {
   DndContext,
@@ -84,6 +85,8 @@ type Project = {
   trigger_text: string;
   action_text: string;
   output_text: string;
+  seo_title: string;
+  seo_description: string;
 };
 
 const DEFAULT_PROCESS_STEPS: ProcessStep[] = [
@@ -132,6 +135,8 @@ const EMPTY: Project = {
   trigger_text: "",
   action_text: "",
   output_text: "",
+  seo_title: "",
+  seo_description: "",
 };
 
 
@@ -218,6 +223,8 @@ export function ProjectEditorPage({
           trigger_text: s("trigger_text"),
           action_text: s("action_text"),
           output_text: s("output_text"),
+          seo_title: s("seo_title"),
+          seo_description: s("seo_description"),
         } as Project);
         setSlugDirty(true);
       }
@@ -287,6 +294,8 @@ export function ProjectEditorPage({
       trigger_text: isIntegrator ? (project.trigger_text || null) : null,
       action_text: isIntegrator ? (project.action_text || null) : null,
       output_text: isIntegrator ? (project.output_text || null) : null,
+      seo_title: project.seo_title.trim() || null,
+      seo_description: project.seo_description.trim() || null,
     };
     let error;
     if (id) {
@@ -719,6 +728,38 @@ export function ProjectEditorPage({
               className="h-4 w-4 accent-[#3B82F6]"
             />
           </label>
+
+          <div className="space-y-3 border-t border-white/[0.06] pt-4">
+            <div className="flex items-center gap-2 border-l-2 border-[#3B82F6] pl-3">
+              <h3 className="text-xs font-mono uppercase tracking-wider text-[#3B82F6]">
+                SEO
+              </h3>
+            </div>
+            <div className="rounded-md border border-[#3B82F6]/20 bg-[#3B82F6]/[0.06] p-3 text-[11px] text-white/65 flex gap-2">
+              <Info className="h-3.5 w-3.5 mt-0.5 text-[#3B82F6] shrink-0" />
+              Used for search engine and social sharing previews. Leave empty to use the default
+              fallback.
+            </div>
+            <div>
+              <label className={labelCls}>SEO Title</label>
+              <input
+                value={project.seo_title}
+                onChange={(e) => update("seo_title", e.target.value)}
+                className={inputCls}
+                placeholder={project.title || "Project title used if empty"}
+              />
+            </div>
+            <div>
+              <label className={labelCls}>SEO Description</label>
+              <textarea
+                value={project.seo_description}
+                onChange={(e) => update("seo_description", e.target.value)}
+                rows={3}
+                className={`${inputCls} resize-y`}
+                placeholder="Short summary shown in search results and social previews."
+              />
+            </div>
+          </div>
         </aside>
       </div>
     </AdminShell>
