@@ -142,7 +142,13 @@ function ServicesDropdown({
         aria-haspopup="menu"
         aria-expanded={open}
         aria-current={isActive ? "page" : undefined}
-        onClick={() => setOpen((v) => !v)}
+        onClick={(e) => {
+          // Desktop: navigate to the assigned Services page; open dropdown alongside
+          if (e.detail !== 0) {
+            navigate({ to: servicesRoute as string });
+          }
+          setOpen((v) => !v);
+        }}
         onFocus={() => {
           cancelClose();
           setOpen(true);
