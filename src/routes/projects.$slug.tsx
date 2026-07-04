@@ -319,14 +319,8 @@ function ProjectDetailRoute() {
     );
   }
 
-  // 2) Fall back to static seeded projects.
-  const staticProject = getProjectBySlug(slug);
-  if (staticProject) {
-    if (staticProject.category === "Web Development") {
-      return <StaticProjectDetail project={staticProject} />;
-    }
-    return <ComingSoonDetail title={staticProject.title} />;
-  }
+  // Static seed fallback removed — all projects must come from the database.
+
 
 
 
