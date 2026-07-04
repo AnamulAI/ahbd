@@ -88,4 +88,3 @@ export function useAllProjects(): { projects: Project[]; loading: boolean } {
   return { projects, loading };
 }
 
-}
