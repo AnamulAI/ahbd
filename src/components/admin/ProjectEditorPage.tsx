@@ -84,6 +84,8 @@ type Project = {
   trigger_text: string;
   action_text: string;
   output_text: string;
+  seo_title: string;
+  seo_description: string;
 };
 
 const DEFAULT_PROCESS_STEPS: ProcessStep[] = [
@@ -132,6 +134,8 @@ const EMPTY: Project = {
   trigger_text: "",
   action_text: "",
   output_text: "",
+  seo_title: "",
+  seo_description: "",
 };
 
 
@@ -218,6 +222,8 @@ export function ProjectEditorPage({
           trigger_text: s("trigger_text"),
           action_text: s("action_text"),
           output_text: s("output_text"),
+          seo_title: s("seo_title"),
+          seo_description: s("seo_description"),
         } as Project);
         setSlugDirty(true);
       }
@@ -287,6 +293,8 @@ export function ProjectEditorPage({
       trigger_text: isIntegrator ? (project.trigger_text || null) : null,
       action_text: isIntegrator ? (project.action_text || null) : null,
       output_text: isIntegrator ? (project.output_text || null) : null,
+      seo_title: project.seo_title.trim() || null,
+      seo_description: project.seo_description.trim() || null,
     };
     let error;
     if (id) {
