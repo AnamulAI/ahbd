@@ -141,6 +141,7 @@ export function AdminShell({
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { data: profile } = useMyProfile();
+  const avatarUrl = useAvatarUrl(profile?.avatar_url ?? null);
 
   async function handleLogout() {
     await supabase.auth.signOut();
