@@ -27,6 +27,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { ProjectsSidebarSection } from "@/components/admin/ProjectsSidebarSection";
 import { useMyProfile } from "@/hooks/use-my-permissions";
+import { useAvatarUrl } from "@/hooks/use-avatar-url";
 import type { SectionKey } from "@/lib/profile.functions";
 
 
