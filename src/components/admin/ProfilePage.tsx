@@ -150,7 +150,7 @@ function YourProfileCard() {
         data: {
           full_name: fullName || null,
           phone: phone || null,
-          avatar_url: avatarPath,
+          avatar_url: avatarUrl,
         },
       }),
     onSuccess: async () => {
