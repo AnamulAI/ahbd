@@ -256,7 +256,10 @@ function BuilderSettingsPage() {
   return (
     <AdminShell email={gate.email}>
       <header className="mb-6">
-        <h1 className="font-display text-2xl font-bold tracking-tight text-white">
+        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#3B82F6]">
+          // builder settings
+        </div>
+        <h1 className="mt-1 font-display text-2xl font-bold tracking-tight text-white">
           Builder Settings
         </h1>
         <p className="mt-1 text-sm text-white/55">
@@ -407,7 +410,7 @@ function TextField({
         if (e.key === "Enter") (e.target as HTMLInputElement).blur();
       }}
       placeholder={placeholder}
-      className={`rounded-md border border-white/[0.1] bg-[#16181D] px-2 py-1 text-sm text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none ${
+      className={`rounded-md border border-white/[0.1] bg-[#16181D] px-2 py-1 text-sm text-white placeholder:text-white/30 transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20 ${
         className ?? ""
       }`}
     />
@@ -430,7 +433,7 @@ function Toggle({
         role="switch"
         aria-checked={value}
         onClick={() => onChange(!value)}
-        className={`relative h-5 w-9 rounded-full transition-colors ${
+        className={`relative h-5 w-9 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0E1A] ${
           value ? "bg-[#3B82F6]" : "bg-white/15"
         }`}
       >
@@ -1250,7 +1253,7 @@ function PromoCardEditor({
           <select
             value={card.visibility_condition}
             onChange={(e) => onUpdate({ visibility_condition: e.target.value })}
-            className="w-full rounded-md border border-white/[0.1] bg-[#0F1320] px-2 py-1.5 text-sm text-white"
+            className="w-full rounded-md border border-white/[0.1] bg-[#0F1320] px-2 py-1.5 text-sm text-white transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20"
           >
             {VISIBILITY_OPTIONS.map((v) => (
               <option key={v.value} value={v.value}>
@@ -1298,7 +1301,7 @@ function PromoCardEditor({
             }
           }}
           rows={2}
-          className="w-full rounded-md border border-white/[0.1] bg-[#0F1320] px-2 py-1.5 text-sm text-white"
+          className="w-full rounded-md border border-white/[0.1] bg-[#0F1320] px-2 py-1.5 text-sm text-white transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20"
         />
       </Labeled>
 
@@ -1387,7 +1390,7 @@ function PackagePaymentTab({
 
   if (!signature || !paymentPlan) {
     return (
-      <div className="text-sm text-white/55">
+      <div className="card-elevated p-8 text-center text-sm text-white/55">
         Settings rows not found. Please run the latest migration.
       </div>
     );
@@ -1509,7 +1512,7 @@ function PackagePaymentTab({
                   updateSig({ disclosure_text: e.target.value });
               }}
               rows={3}
-              className="w-full rounded-md border border-white/[0.1] bg-[#16181D] px-2 py-1.5 text-sm text-white focus:border-[#3B82F6]/60 focus:outline-none"
+              className="w-full rounded-md border border-white/[0.1] bg-[#16181D] px-2 py-1.5 text-sm text-white transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20"
             />
           </Labeled>
 
@@ -1764,7 +1767,7 @@ function BuilderCopySection({
                               if (e.target.value !== row.value) updateRow(row.id, e.target.value);
                             }}
                             rows={3}
-                            className="w-full rounded-md border border-white/[0.1] bg-[#0F1320] px-2 py-1.5 text-sm text-white focus:border-[#3B82F6]/60 focus:outline-none"
+                            className="w-full rounded-md border border-white/[0.1] bg-[#0F1320] px-2 py-1.5 text-sm text-white transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20"
                           />
                         ) : (
                           <TextField
