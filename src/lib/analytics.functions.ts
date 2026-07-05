@@ -182,6 +182,7 @@ export const getAnalyticsOverview = createServerFn({ method: "POST" })
       devices,
       browsers,
       sources,
+      referralDomains,
       topPages,
       overTime,
       campaigns,
