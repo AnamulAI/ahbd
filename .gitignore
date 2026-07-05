@@ -16,6 +16,12 @@ dist-ssr
 .nitro
 *.local
 
+# This project uses bun.lock as the source of truth — never commit npm's lockfile
+package-lock.json
+
+# Local Claude Code launch config (dev-server settings for previewing this project)
+.claude/
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars
