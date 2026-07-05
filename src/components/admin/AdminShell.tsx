@@ -27,7 +27,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { ProjectsSidebarSection } from "@/components/admin/ProjectsSidebarSection";
 import { useMyProfile } from "@/hooks/use-my-permissions";
-import { useAvatarUrl } from "@/hooks/use-avatar-url";
+
 import type { SectionKey } from "@/lib/profile.functions";
 
 
@@ -141,7 +141,7 @@ export function AdminShell({
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { data: profile } = useMyProfile();
-  const avatarUrl = useAvatarUrl(profile?.avatar_url ?? null);
+  const avatarUrl = profile?.avatar_url ?? null;
 
   async function handleLogout() {
     await supabase.auth.signOut();

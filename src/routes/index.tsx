@@ -19,7 +19,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import anamAvatar from "@/assets/anam-avatar.png.asset.json";
+const anamAvatar = { url: "https://kuqqfgngrwduzxrffyhj.supabase.co/storage/v1/object/public/profile-avatars/3385e755-f7f8-4cd0-9f7f-9470d1cbb28d/1783155552606.png" };
 import { supabase } from "@/integrations/supabase/client";
 import { Route as AboutRouteDef } from "./about";
 import { Route as BlogIndexRouteDef } from "./blog.index";

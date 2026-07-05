@@ -13,7 +13,7 @@ import { FaLinkedin } from "react-icons/fa";
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { toast } from "sonner";
 import { marked } from "marked";
-import anamAvatar from "@/assets/anam-avatar.png.asset.json";
+const anamAvatar = { url: "https://kuqqfgngrwduzxrffyhj.supabase.co/storage/v1/object/public/profile-avatars/3385e755-f7f8-4cd0-9f7f-9470d1cbb28d/1783155552606.png" };
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { CtaRevealCard } from "@/components/site/CtaRevealCard";
