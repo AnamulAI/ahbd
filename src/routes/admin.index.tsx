@@ -442,7 +442,12 @@ function AdminDashboard() {
               // pipeline
             </div>
             <div className="mt-1 flex items-center justify-between">
-              <h2 className="font-display text-lg font-semibold">Recent Leads</h2>
+              <h2 className="flex items-center gap-2 font-display text-lg font-semibold">
+                <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[#3B82F6]/15 text-[#3B82F6] ring-1 ring-[#3B82F6]/30">
+                  <Target className="h-3.5 w-3.5" />
+                </span>
+                Recent Leads
+              </h2>
               <Link
                 to="/admin/leads"
                 className="text-xs text-[#3B82F6] hover:underline inline-flex items-center gap-1"
@@ -455,8 +460,14 @@ function AdminDashboard() {
             {loading ? (
               <div className="p-8 text-center text-sm text-white/50">Loading…</div>
             ) : recent.length === 0 ? (
-              <div className="p-8 text-center text-sm text-white/50">
-                No leads yet — they'll appear here when someone uses the builder.
+              <div className="flex flex-col items-center justify-center px-6 py-10 text-center">
+                <div className="grid h-10 w-10 place-items-center rounded-full bg-white/[0.04] text-white/50">
+                  <Target className="h-5 w-5" />
+                </div>
+                <div className="mt-3 text-sm font-medium text-white/70">No leads yet</div>
+                <div className="mt-1 max-w-xs text-xs text-white/45">
+                  They'll appear here when someone uses the builder.
+                </div>
               </div>
             ) : (
               <ul className="divide-y divide-white/[0.06]">
@@ -494,9 +505,14 @@ function AdminDashboard() {
             <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#3B82F6]">
               // shortcuts
             </div>
-            <h2 className="mt-1 font-display text-lg font-semibold">Quick Actions</h2>
+            <h2 className="mt-1 flex items-center gap-2 font-display text-lg font-semibold">
+              <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[#3B82F6]/15 text-[#3B82F6] ring-1 ring-[#3B82F6]/30">
+                <Sparkles className="h-3.5 w-3.5" />
+              </span>
+              Quick Actions
+            </h2>
           </div>
-          <div className="card-elevated space-y-2 p-4">
+          <div className="card-elevated card-elevated-hover space-y-2 p-4 transition">
             <Link
               to="/admin/leads"
               className="flex items-center justify-between rounded-md bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_10px_30px_-12px_rgba(59,130,246,0.5)] transition hover:brightness-110"
