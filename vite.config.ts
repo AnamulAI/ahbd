@@ -12,4 +12,9 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  // Hostinger runs a plain Node.js process, not Cloudflare Workers,
+  // so override the default cloudflare-module preset.
+  nitro: {
+    preset: "node-server",
+  },
 });
