@@ -709,6 +709,70 @@ export function AnalyticsPage() {
             </SectionCard>
           </div>
 
+          {/* Referral Sources — external backlinks */}
+          <div className="mt-4">
+            <SectionCard title="Referral Sources" eyebrow="// backlinks">
+              {(() => {
+                const referrals = overview.data?.referralDomains ?? [];
+                if (referrals.length === 0) {
+                  return (
+                    <EmptyState
+                      icon={Link2}
+                      title="No referral traffic yet"
+                      hint="Visits from other websites that link to yours will appear here with the referring domain."
+                    />
+                  );
+                }
+                const max = referrals[0]?.count ?? 1;
+                const total = referrals.reduce((a, r) => a + r.count, 0);
+                return (
+                  <div className="space-y-3">
+                    {referrals.map((r, i) => {
+                      const pct = total > 0 ? Math.round((r.count / total) * 100) : 0;
+                      const widthPct = Math.max(4, (r.count / max) * 100);
+                      const gradient =
+                        i === 0
+                          ? "linear-gradient(90deg, #3B82F6 0%, #F97316 100%)"
+                          : "linear-gradient(90deg, #3B82F6 0%, #60A5FA 100%)";
+                      return (
+                        <div key={r.domain} className="text-xs">
+                          <div className="mb-1 flex items-center justify-between">
+                            <span className="inline-flex items-center gap-2 text-white/85">
+                              <Link2 className="h-3 w-3 text-white/40" />
+                              <a
+                                href={`https://${r.domain}`}
+                                target="_blank"
+                                rel="noreferrer nofollow"
+                                className="truncate font-mono hover:text-[#3B82F6]"
+                              >
+                                {r.domain}
+                              </a>
+                            </span>
+                            <span className="font-mono text-white/50">{r.count}</span>
+                          </div>
+                          <div className="relative h-2 overflow-hidden rounded-full bg-white/[0.05]">
+                            <div
+                              className="h-full rounded-full transition-all"
+                              style={{
+                                width: `${widthPct}%`,
+                                background: gradient,
+                                boxShadow: "0 0 12px -3px rgba(59,130,246,0.5)",
+                              }}
+                            />
+                            <span className="absolute right-2 top-1/2 -translate-y-1/2 font-mono text-[9px] font-medium text-white/85 mix-blend-plus-lighter">
+                              {pct}%
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })()}
+            </SectionCard>
+          </div>
+
+
           {/* Top pages */}
           <div className="mt-4">
             <SectionCard title="Top Pages" eyebrow="// content">
