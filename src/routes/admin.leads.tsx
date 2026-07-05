@@ -7,6 +7,7 @@ import {
   AdminShell,
   StatusBadge,
   STATUS_OPTIONS,
+  STATUS_STYLES,
   useAdminGate,
 } from "@/components/admin/AdminShell";
 
@@ -127,7 +128,10 @@ function LeadsPage() {
   return (
     <AdminShell email={gate.email} newLeadsCount={newCount}>
       <header className="mb-6">
-        <h1 className="font-display text-3xl font-bold tracking-tight">Leads</h1>
+        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#3B82F6]">
+          // leads
+        </div>
+        <h1 className="mt-1 font-display text-3xl font-bold tracking-tight">Leads</h1>
         <p className="mt-1 text-sm text-white/55">
           Everyone who's built a custom quote.
         </p>
@@ -168,12 +172,17 @@ function LeadsPage() {
       </div>
 
       {/* Table */}
-      <div className="rounded-xl border border-white/[0.08] bg-[#0F1320] overflow-hidden">
+      <div className="card-elevated card-elevated-hover overflow-hidden p-0">
         {loading ? (
           <div className="p-8 text-center text-sm text-white/50">Loading leads…</div>
         ) : filtered.length === 0 ? (
-          <div className="p-8 text-center text-sm text-white/50">
-            No leads match your filters.
+          <div className="flex flex-col items-center justify-center px-6 py-10 text-center">
+            <div className="grid h-10 w-10 place-items-center rounded-full bg-white/[0.04] text-white/50">
+              <Search className="h-5 w-5" />
+            </div>
+            <div className="mt-3 text-sm font-medium text-white/70">
+              No leads match your filters.
+            </div>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -193,7 +202,7 @@ function LeadsPage() {
                   <tr
                     key={lead.id}
                     onClick={() => setSelected(lead)}
-                    className="cursor-pointer transition-colors hover:bg-white/[0.03]"
+                    className="cursor-pointer transition-colors hover:bg-white/[0.04]"
                   >
                     <td className="px-4 py-3 text-white">
                       {lead.name || <span className="text-white/40">—</span>}
@@ -209,10 +218,12 @@ function LeadsPage() {
                       <select
                         value={lead.status}
                         onChange={(e) => updateStatus(lead.id, e.target.value)}
-                        className="rounded-md border border-white/10 bg-transparent px-2 py-1 text-xs text-white"
+                        className={`rounded-md border px-2 py-1 text-xs ${
+                          STATUS_STYLES[lead.status] ?? "border-white/10 bg-transparent text-white"
+                        }`}
                       >
                         {STATUS_OPTIONS.map((s) => (
-                          <option key={s} value={s} className="bg-[#0F1320]">
+                          <option key={s} value={s} className="bg-[#0F1320] text-white">
                             {s}
                           </option>
                         ))}
@@ -303,10 +314,12 @@ function LeadDetailModal({
             <select
               value={lead.status}
               onChange={(e) => onStatusChange(e.target.value)}
-              className="w-full rounded-md border border-white/10 bg-[#16181D] px-2 py-1.5 text-sm text-white"
+              className={`w-full rounded-md border px-2 py-1.5 text-sm ${
+                STATUS_STYLES[lead.status] ?? "border-white/10 bg-[#16181D] text-white"
+              }`}
             >
               {STATUS_OPTIONS.map((s) => (
-                <option key={s} value={s}>
+                <option key={s} value={s} className="bg-[#0F1320] text-white">
                   {s}
                 </option>
               ))}
