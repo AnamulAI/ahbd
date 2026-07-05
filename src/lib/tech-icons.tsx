@@ -13,6 +13,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { IconType } from "react-icons";
+import { FaRobot } from "react-icons/fa";
 import {
   SiNextdotjs,
   SiTailwindcss,
@@ -20,7 +21,6 @@ import {
   SiVercel,
   SiReact,
   SiTypescript,
-  SiOpenai,
   SiStripe,
   SiNodedotjs,
   SiPython,
@@ -52,10 +52,10 @@ const BRAND_ICONS: Record<string, { Icon: IconType; color: string }> = {
   vercel: { Icon: SiVercel, color: "#FFFFFF" },
   react: { Icon: SiReact, color: "#61DAFB" },
   typescript: { Icon: SiTypescript, color: "#3178C6" },
-  openai: { Icon: SiOpenai, color: "#FFFFFF" },
-  "openai api": { Icon: SiOpenai, color: "#FFFFFF" },
-  "openai custom gpt": { Icon: SiOpenai, color: "#FFFFFF" },
-  "gpt-4": { Icon: SiOpenai, color: "#FFFFFF" },
+  openai: { Icon: FaRobot, color: "#FFFFFF" },
+  "openai api": { Icon: FaRobot, color: "#FFFFFF" },
+  "openai custom gpt": { Icon: FaRobot, color: "#FFFFFF" },
+  "gpt-4": { Icon: FaRobot, color: "#FFFFFF" },
   stripe: { Icon: SiStripe, color: "#635BFF" },
   "node.js": { Icon: SiNodedotjs, color: "#5FA04E" },
   nodejs: { Icon: SiNodedotjs, color: "#5FA04E" },

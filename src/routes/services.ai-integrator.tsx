@@ -66,7 +66,6 @@ import {
 } from "@/components/ui/accordion";
 
 import {
-  SiOpenai,
   SiGithubcopilot,
   SiPython,
   SiLangchain,
@@ -76,6 +75,7 @@ import {
   SiMake,
   SiN8N,
 } from "react-icons/si";
+import { FaRobot } from "react-icons/fa";
 import type { IconType } from "react-icons";
 
 export const Route = createFileRoute("/services/ai-integrator")({
@@ -179,8 +179,8 @@ function SecondaryButton({
 type TechBadge = { name: string; Icon: IconType; color: string };
 
 const TECH_BADGES: TechBadge[] = [
-  { name: "OpenAI", Icon: SiOpenai, color: "#10A37F" },
-  { name: "ChatGPT", Icon: SiOpenai, color: "#10A37F" },
+  { name: "OpenAI", Icon: FaRobot, color: "#10A37F" },
+  { name: "ChatGPT", Icon: FaRobot, color: "#10A37F" },
   { name: "Microsoft Copilot", Icon: SiGithubcopilot, color: "#0078D4" },
   { name: "Python", Icon: SiPython, color: "#3776AB" },
   { name: "LangChain", Icon: SiLangchain, color: "#1C3C3C" },
@@ -332,7 +332,7 @@ type Build = {
 const BUILDS: Build[] = [
   {
     id: "gpt",
-    icon: SiOpenai,
+    icon: FaRobot,
     brandColor: "#10A37F",
     title: "Custom GPT Assistant",
     desc: "A focused AI assistant trained on your business documents — pricing, services, policies, FAQs — deployable instantly via a shareable link or the GPT Store.",
@@ -759,8 +759,8 @@ const CONCEPTS: ConceptCardData[] = [
     description:
       "A concept example of a Custom GPT trained on tour packages, pricing, and booking flow — answering customer questions instantly and guiding them through the booking process.",
     tags: [
-      { name: "OpenAI", icon: SiOpenai, color: "#10A37F" },
-      { name: "ChatGPT", icon: SiOpenai, color: "#10A37F" },
+      { name: "OpenAI", icon: FaRobot, color: "#10A37F" },
+      { name: "ChatGPT", icon: FaRobot, color: "#10A37F" },
       { name: "GPT Store", icon: Sparkles, color: "#10A37F" },
     ],
   },
@@ -786,7 +786,7 @@ const CONCEPTS: ConceptCardData[] = [
       "A concept example connecting AI directly to WhatsApp Business — handling customer questions about pricing, availability, and bookings automatically.",
     tags: [
       { name: "WhatsApp", icon: SiWhatsapp, color: "#25D366" },
-      { name: "OpenAI", icon: SiOpenai, color: "#10A37F" },
+      { name: "OpenAI", icon: FaRobot, color: "#10A37F" },
       { name: "API", icon: Code2, color: "#3B82F6" },
     ],
   },
@@ -901,7 +901,7 @@ type ServiceType = {
 };
 
 const SERVICE_TYPES: ServiceType[] = [
-  { id: "gpt", name: "Custom GPT Assistant", base: 300, icon: SiOpenai, brandColor: "#10A37F" },
+  { id: "gpt", name: "Custom GPT Assistant", base: 300, icon: FaRobot, brandColor: "#10A37F" },
   { id: "copilot", name: "Microsoft Copilot Agent", base: 700, icon: SiGithubcopilot, brandColor: "#0078D4" },
   { id: "api", name: "API Integration", base: 500, icon: PlugZap },
 ];
