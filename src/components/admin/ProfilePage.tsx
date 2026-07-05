@@ -214,8 +214,9 @@ function YourProfileCard() {
             className="group relative flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-white/20 bg-[#0A0E1A] hover:border-[#3B82F6]/50 transition-colors"
             disabled={uploading}
           >
-            {avatarDisplayUrl ? (
-              <img src={avatarDisplayUrl} alt="Avatar" className="h-full w-full object-cover" />
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="Avatar" className="h-full w-full object-cover" />
+
             ) : (
               <div className="flex flex-col items-center gap-1 text-white/40">
                 {uploading ? (
