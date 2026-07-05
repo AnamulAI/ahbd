@@ -65,13 +65,16 @@ const MODULE_LABELS: Record<string, string> = {
 type MediaKind = "audio" | "video" | "clip";
 
 const inputCls =
-  "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none";
+  "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20";
+const inputClsSmall =
+  "flex-1 rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-1.5 text-xs text-white placeholder:text-white/30 transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20";
 const labelCls =
   "block text-xs font-mono uppercase tracking-wider text-white/60 mb-1.5";
-const cardCls =
-  "space-y-5 rounded-xl border border-white/[0.08] bg-[#11162A] p-6";
+const cardCls = "space-y-5 card-elevated p-6";
+const cardClsOptional =
+  "space-y-5 rounded-xl border border-dashed border-white/[0.12] bg-[#11162A]/70 p-6";
 const sectionTitleCls =
-  "text-[11px] font-mono uppercase tracking-[0.2em] text-white/45";
+  "text-[11px] font-mono uppercase tracking-[0.2em] text-[#3B82F6]";
 
 export function SampleEditorPage({ id: editId }: { id?: string }) {
   const gate = useAdminGate();
@@ -331,7 +334,10 @@ function Editor({ editId }: { editId?: string }) {
 
       <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl font-bold">
+          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#3B82F6]">
+            // sample builder
+          </div>
+          <h1 className="mt-1 font-display text-2xl font-bold">
             {isEditing ? "Edit Sample" : "New Sample"}
           </h1>
           <p className="mt-1 text-sm text-white/60">
@@ -447,7 +453,7 @@ function Editor({ editId }: { editId?: string }) {
           </div>
 
           {/* Scarcity */}
-          <div className={cardCls}>
+          <div className={cardClsOptional}>
             <div className={sectionTitleCls}>// Scarcity Badge (optional)</div>
             <ToggleRow
               label="Show Scarcity Badge"
@@ -583,7 +589,7 @@ function Editor({ editId }: { editId?: string }) {
 
           {/* SMM clips */}
           {showSmm && (
-            <div className={cardCls}>
+            <div className={cardClsOptional}>
               <div className={sectionTitleCls}>// SMM Clips (optional)</div>
 
               <MediaDropzone
@@ -661,7 +667,7 @@ function Editor({ editId }: { editId?: string }) {
           </div>
 
           {/* ROI */}
-          <div className={cardCls}>
+          <div className={cardClsOptional}>
             <div className={sectionTitleCls}>// ROI / Impact Estimator (optional)</div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
@@ -680,7 +686,7 @@ function Editor({ editId }: { editId?: string }) {
           </div>
 
           {/* Before / After */}
-          <div className={cardCls}>
+          <div className={cardClsOptional}>
             <div className={sectionTitleCls}>// Before vs After (optional)</div>
             <div>
               <label className={labelCls}>Current State (Before)</label>
@@ -693,7 +699,7 @@ function Editor({ editId }: { editId?: string }) {
           </div>
 
           {/* Contact */}
-          <div className={cardCls}>
+          <div className={cardClsOptional}>
             <div className={sectionTitleCls}>// Claim This Setup (optional)</div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
@@ -765,7 +771,7 @@ function ImageDropzone({
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          className="flex aspect-[3/1] w-full flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-white/[0.12] bg-[#0B0F1A] text-white/50 hover:border-[#3B82F6]/40 hover:text-white/80"
+          className="flex aspect-[3/1] w-full flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-white/[0.12] bg-[#0B0F1A] text-white/50 transition-colors duration-[250ms] ease hover:border-[#3B82F6]/60 hover:bg-[#3B82F6]/[0.05] hover:text-[#3B82F6]"
         >
           <ImagePlus className="h-6 w-6" />
           <span className="text-xs">Click to upload</span>
@@ -777,7 +783,7 @@ function ImageDropzone({
           placeholder="…or paste a public image URL"
           value={linkUrl}
           onChange={(e) => onLinkChange(e.target.value)}
-          className="flex-1 rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-1.5 text-xs text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none"
+          className={inputClsSmall}
         />
         <button
           type="button"
@@ -879,7 +885,7 @@ function MediaDropzone({
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={busy}
-          className="flex w-full flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-white/[0.12] bg-[#0B0F1A] px-3 py-6 text-white/50 hover:border-[#3B82F6]/40 hover:text-white/80 disabled:opacity-60"
+          className="flex w-full flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-white/[0.12] bg-[#0B0F1A] px-3 py-6 text-white/50 transition-colors duration-[250ms] ease hover:border-[#3B82F6]/60 hover:bg-[#3B82F6]/[0.05] hover:text-[#3B82F6] disabled:opacity-60"
         >
           {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : <Icon className="h-5 w-5" />}
           <span className="text-xs">Click to upload {isAudio ? "audio" : "video"}</span>
@@ -892,7 +898,7 @@ function MediaDropzone({
           placeholder="…or paste a public URL (YouTube, .mp4, .mp3)"
           value={value ?? ""}
           onChange={(e) => onChange(e.target.value || null)}
-          className="flex-1 rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-1.5 text-xs text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none"
+          className={inputClsSmall}
         />
         <button
           type="button"

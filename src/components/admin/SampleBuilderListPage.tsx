@@ -108,7 +108,10 @@ function ListInner() {
     <>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl font-bold tracking-tight text-white">
+          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#3B82F6]">
+            // samples
+          </div>
+          <h1 className="mt-1 font-display text-2xl font-bold tracking-tight text-white">
             Sample Builder
           </h1>
           <p className="mt-1 text-sm text-white/55">
@@ -133,14 +136,16 @@ function ListInner() {
         />
       </div>
 
-      <div className="mt-5 overflow-hidden rounded-xl border border-white/[0.08] bg-[#11162A]">
+      <div className="mt-5 card-elevated card-elevated-hover overflow-hidden p-0">
         {loading ? (
           <div className="flex items-center justify-center py-16">
             <Loader2 className="h-6 w-6 animate-spin text-white/60" />
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
-            <Wand2 className="h-10 w-10 text-white/30" />
+            <div className="grid h-10 w-10 place-items-center rounded-full bg-white/[0.04] text-white/50">
+              <Wand2 className="h-5 w-5" />
+            </div>
             <p className="text-sm text-white/60">
               {samples.length === 0 ? "No samples yet." : "No samples match your search."}
             </p>
@@ -207,7 +212,7 @@ function SampleRow({
   onDelete: () => void;
 }) {
   return (
-    <li className="flex items-center gap-3 px-4 py-3 hover:bg-white/[0.02]">
+    <li className="flex items-center gap-3 px-4 py-3 hover:bg-white/[0.04]">
       <div className="h-12 w-16 shrink-0 overflow-hidden rounded-md border border-white/[0.06] bg-[#0B0F1A] flex items-center justify-center">
         {sample.logo_url ? (
           <img src={sample.logo_url} alt="" className="h-full w-full object-contain p-1" />
@@ -325,7 +330,10 @@ function SocialProofLogosPanel() {
     <section className="mt-8">
       <div className="mb-3 flex items-end justify-between gap-3">
         <div>
-          <h2 className="font-display text-lg font-semibold">Social Proof Logos</h2>
+          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#3B82F6]">
+            // social proof
+          </div>
+          <h2 className="mt-1 font-display text-lg font-semibold">Social Proof Logos</h2>
           <p className="text-xs text-white/50">
             Shown on all sample pages. Global list, not per-sample.
           </p>
@@ -351,15 +359,20 @@ function SocialProofLogosPanel() {
           }}
         />
       </div>
-      <div className="rounded-xl border border-white/[0.08] bg-[#11162A] p-4">
+      <div className="card-elevated card-elevated-hover p-4">
         {logos.length === 0 ? (
-          <p className="py-8 text-center text-sm text-white/50">No logos yet.</p>
+          <div className="flex flex-col items-center justify-center gap-3 py-8 text-center">
+            <div className="grid h-10 w-10 place-items-center rounded-full bg-white/[0.04] text-white/50">
+              <Upload className="h-5 w-5" />
+            </div>
+            <p className="text-sm text-white/50">No logos yet.</p>
+          </div>
         ) : (
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {logos.map((l, i) => (
               <li
                 key={l.id}
-                className="flex items-center gap-3 rounded-md border border-white/[0.08] bg-[#16181D] p-3"
+                className="flex items-center gap-3 rounded-md border border-white/[0.08] bg-[#16181D] p-3 transition-colors hover:bg-white/[0.04]"
               >
                 <img src={l.logo_url} alt="" className="h-10 w-24 rounded bg-white object-contain p-1" />
                 <div className="ml-auto flex items-center gap-1">
