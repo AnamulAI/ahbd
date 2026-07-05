@@ -15,6 +15,6 @@ export default defineConfig({
   // Hostinger runs a plain Node.js process, not Cloudflare Workers,
   // so override the default cloudflare-module preset.
   nitro: {
-    preset: "node-server",
+    preset: "vercel",
   },
 });
