@@ -590,7 +590,9 @@ export function AnalyticsPage() {
                   {(() => {
                     const max = countries[0]?.count ?? 1;
                     return countries.map((c, i) => {
-                      const isLocal = c.name === "Local" || c.name === "Unknown";
+                      const isLocal = c.name === "Local";
+                      const isUnknown = c.name === "Unknown";
+                      const isMuted = isLocal || isUnknown;
                       const pct = countryTotal > 0 ? Math.round((c.count / countryTotal) * 100) : 0;
                       const widthPct = Math.max(4, (c.count / max) * 100);
                       const gradient =
@@ -601,13 +603,18 @@ export function AnalyticsPage() {
                         <div key={c.name} className="text-xs">
                           <div className="mb-1 flex items-center justify-between">
                             <span
-                              className={`inline-flex items-center gap-2 ${isLocal ? "text-white/40" : "text-white/80"}`}
+                              className={`inline-flex items-center gap-2 ${isMuted ? "text-white/40" : "text-white/80"}`}
                             >
                               <Globe className="h-3 w-3 text-white/40" />
                               <span className="truncate">{c.name}</span>
                               {isLocal && (
                                 <span className="rounded-sm bg-white/[0.05] px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-white/40">
                                   local/preview
+                                </span>
+                              )}
+                              {isUnknown && (
+                                <span className="rounded-sm bg-amber-500/10 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-amber-300/70">
+                                  geo unresolved
                                 </span>
                               )}
                             </span>
@@ -618,10 +625,10 @@ export function AnalyticsPage() {
                               className="h-full rounded-full transition-all"
                               style={{
                                 width: `${widthPct}%`,
-                                background: isLocal
+                                background: isMuted
                                   ? "linear-gradient(90deg, #475569 0%, #64748B 100%)"
                                   : gradient,
-                                boxShadow: isLocal ? "none" : "0 0 12px -3px rgba(59,130,246,0.5)",
+                                boxShadow: isMuted ? "none" : "0 0 12px -3px rgba(59,130,246,0.5)",
                               }}
                             />
                             <span className="absolute right-2 top-1/2 -translate-y-1/2 font-mono text-[9px] font-medium text-white/85 mix-blend-plus-lighter">
