@@ -175,19 +175,21 @@ function YourProfileCard() {
         });
       if (upErr) throw upErr;
 
-      // Persist the new avatar path immediately so it survives a refresh
-      // without needing the user to click Save.
+      // Bucket is public — build the permanent public URL and persist it.
+      const { data: pub } = supabase.storage
+        .from("profile-avatars")
+        .getPublicUrl(path);
+      const publicUrl = pub.publicUrl;
+
       const saved = await saveProfile({
         data: {
           full_name: fullName || null,
           phone: phone || null,
-          avatar_url: path,
+          avatar_url: publicUrl,
         },
       });
-      // Reflect the newly saved path locally and refresh the profile query so
-      // any other consumer re-reads. The path change triggers the signed-URL
-      // effect and the avatar re-renders without a page reload.
-      setAvatarPath(saved.avatar_url ?? path);
+      setAvatarUrl(saved.avatar_url ?? publicUrl);
+
       qc.invalidateQueries({ queryKey: ["my-profile"] });
       toast.success("Avatar updated");
     } catch (e) {
