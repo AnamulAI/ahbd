@@ -12,9 +12,11 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
-  // Hostinger runs a plain Node.js process, not Cloudflare Workers,
-  // so override the default cloudflare-module preset.
+  // Vercel automatically sets process.env.VERCEL during its build step.
+  // Use the "vercel" Nitro preset only on Vercel; fall back to Lovable's
+  // default "cloudflare-module" preset everywhere else (Lovable's own
+  // Live Preview build), so both environments work without manual switching.
   nitro: {
-    preset: "vercel",
+    preset: process.env.VERCEL ? "vercel" : "cloudflare-module",
   },
 });
