@@ -119,6 +119,19 @@ export const getAnalyticsOverview = createServerFn({ method: "POST" })
     // sources
     const sources = bucket(visits, "referrer_category");
 
+    // per-domain breakdown of external referrals (backlinks from other sites)
+    const referralDomainMap = new Map<string, number>();
+    for (const v of visits) {
+      if (v.referrer_category !== "referral") continue;
+      const host = (v.referrer_raw as string | null) || "(unknown)";
+      referralDomainMap.set(host, (referralDomainMap.get(host) ?? 0) + 1);
+    }
+    const referralDomains = [...referralDomainMap.entries()]
+      .map(([domain, count]) => ({ domain, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 20);
+
+
     // top pages
     const pageMap = new Map<string, { count: number; totalTime: number; timeCount: number }>();
     for (const v of visits) {
@@ -169,6 +182,7 @@ export const getAnalyticsOverview = createServerFn({ method: "POST" })
       devices,
       browsers,
       sources,
+      referralDomains,
       topPages,
       overTime,
       campaigns,

@@ -27,6 +27,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { ProjectsSidebarSection } from "@/components/admin/ProjectsSidebarSection";
 import { useMyProfile } from "@/hooks/use-my-permissions";
+import { useAvatarUrl } from "@/hooks/use-avatar-url";
 import type { SectionKey } from "@/lib/profile.functions";
 
 
@@ -140,6 +141,7 @@ export function AdminShell({
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { data: profile } = useMyProfile();
+  const avatarUrl = useAvatarUrl(profile?.avatar_url ?? null);
 
   async function handleLogout() {
     await supabase.auth.signOut();
@@ -252,8 +254,8 @@ export function AdminShell({
           className="flex items-center gap-3 rounded-md px-2 py-2 hover:bg-white/[0.05] transition-colors"
         >
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#3B82F6] to-[#F97316] text-sm font-bold text-white overflow-hidden">
-            {profile?.avatar_url ? (
-              <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" />
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
             ) : (
               initial
             )}

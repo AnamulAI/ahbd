@@ -66,6 +66,7 @@ async function fetchWithTimeout(url: string, ms: number, init?: RequestInit) {
 async function geoLookup(
   ip: string | null,
 ): Promise<{ country: string | null; city: string | null }> {
+  // No IP or private/loopback: local/preview traffic, distinct from "Unknown".
   if (!ip || isPrivateIp(ip)) return { country: "Local", city: null };
   try {
     // ip-api.com free tier — no key required, HTTP only for the free endpoint.
@@ -74,12 +75,15 @@ async function geoLookup(
       2500,
       { headers: { Accept: "application/json" } },
     );
-    if (!res.ok) return { country: "Local", city: null };
+    // Public IP but lookup couldn't resolve (VPN, data center, rate limit,
+    // timeout, etc.) → "Unknown" so the visit is still counted transparently
+    // instead of silently dropped from geography stats.
+    if (!res.ok) return { country: "Unknown", city: null };
     const j = (await res.json()) as { status?: string; country?: string; city?: string };
-    if (j.status !== "success" || !j.country) return { country: "Local", city: null };
+    if (j.status !== "success" || !j.country) return { country: "Unknown", city: null };
     return { country: j.country, city: j.city || null };
   } catch {
-    return { country: "Local", city: null };
+    return { country: "Unknown", city: null };
   }
 }
 
