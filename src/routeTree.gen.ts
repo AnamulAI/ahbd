@@ -29,6 +29,7 @@ import { Route as AdminSeoRouteImport } from './routes/admin.seo'
 import { Route as AdminProfileRouteImport } from './routes/admin.profile'
 import { Route as AdminPagesRouteImport } from './routes/admin.pages'
 import { Route as AdminNewsletterRouteImport } from './routes/admin.newsletter'
+import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminIntegrationsRouteImport } from './routes/admin.integrations'
@@ -150,6 +151,11 @@ const AdminNewsletterRoute = AdminNewsletterRouteImport.update({
   path: '/admin/newsletter',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminMediaRoute = AdminMediaRouteImport.update({
+  id: '/admin/media',
+  path: '/admin/media',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
@@ -264,6 +270,7 @@ export interface FileRoutesByFullPath {
   '/admin/integrations': typeof AdminIntegrationsRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/media': typeof AdminMediaRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/pages': typeof AdminPagesRoute
   '/admin/profile': typeof AdminProfileRoute
@@ -306,6 +313,7 @@ export interface FileRoutesByTo {
   '/admin/integrations': typeof AdminIntegrationsRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/media': typeof AdminMediaRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/pages': typeof AdminPagesRoute
   '/admin/profile': typeof AdminProfileRoute
@@ -349,6 +357,7 @@ export interface FileRoutesById {
   '/admin/integrations': typeof AdminIntegrationsRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/media': typeof AdminMediaRoute
   '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/pages': typeof AdminPagesRoute
   '/admin/profile': typeof AdminProfileRoute
@@ -393,6 +402,7 @@ export interface FileRouteTypes {
     | '/admin/integrations'
     | '/admin/leads'
     | '/admin/login'
+    | '/admin/media'
     | '/admin/newsletter'
     | '/admin/pages'
     | '/admin/profile'
@@ -435,6 +445,7 @@ export interface FileRouteTypes {
     | '/admin/integrations'
     | '/admin/leads'
     | '/admin/login'
+    | '/admin/media'
     | '/admin/newsletter'
     | '/admin/pages'
     | '/admin/profile'
@@ -477,6 +488,7 @@ export interface FileRouteTypes {
     | '/admin/integrations'
     | '/admin/leads'
     | '/admin/login'
+    | '/admin/media'
     | '/admin/newsletter'
     | '/admin/pages'
     | '/admin/profile'
@@ -520,6 +532,7 @@ export interface RootRouteChildren {
   AdminIntegrationsRoute: typeof AdminIntegrationsRoute
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  AdminMediaRoute: typeof AdminMediaRoute
   AdminNewsletterRoute: typeof AdminNewsletterRoute
   AdminPagesRoute: typeof AdminPagesRoute
   AdminProfileRoute: typeof AdminProfileRoute
@@ -694,6 +707,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNewsletterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/media': {
+      id: '/admin/media'
+      path: '/admin/media'
+      fullPath: '/admin/media'
+      preLoaderRoute: typeof AdminMediaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/login': {
       id: '/admin/login'
       path: '/admin/login'
@@ -848,6 +868,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminIntegrationsRoute: AdminIntegrationsRoute,
   AdminLeadsRoute: AdminLeadsRoute,
   AdminLoginRoute: AdminLoginRoute,
+  AdminMediaRoute: AdminMediaRoute,
   AdminNewsletterRoute: AdminNewsletterRoute,
   AdminPagesRoute: AdminPagesRoute,
   AdminProfileRoute: AdminProfileRoute,

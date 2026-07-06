@@ -652,7 +652,7 @@ function WebsiteTab({
 
   return (
     <>
-      /* Tech Approaches */
+      {/* Tech Approaches */}
       <Section
         title="Tech Approaches"
         description="The two tracks customers can choose to build on."
@@ -686,7 +686,7 @@ function WebsiteTab({
         </div>
       </Section>
 
-      /* Use Cases & Pricing */
+      {/* Use Cases & Pricing */}
       <Section
         title="Use Cases & Pricing"
         description="Per use case, edit base price for each tech approach."
@@ -707,7 +707,7 @@ function WebsiteTab({
         </div>
       </Section>
 
-      /* Scope Tiers */
+      {/* Scope Tiers */}
       <Section
         title="Scope Tiers"
         description="Per use case, granular scope-based pricing add-ons."
@@ -777,7 +777,7 @@ function WebsiteTab({
         </div>
       </Section>
 
-      /* Sub-Options */
+      {/* Sub-Options */}
       <Section
         title="Sub-Options"
         description="Add-on selections for website builds."

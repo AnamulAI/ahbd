@@ -45,9 +45,7 @@ export async function uploadContentImage(file: File): Promise<string> {
     .from(BUCKET)
     .upload(path, file, { cacheControl: "31536000", upsert: false });
   if (upErr) throw upErr;
-  const { data, error } = await supabase.storage
-    .from(BUCKET)
-    .createSignedUrl(path, ONE_YEAR * 10);
+  const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(path, ONE_YEAR * 10);
   if (error) throw error;
   return data.signedUrl;
 }
@@ -57,7 +55,11 @@ export async function uploadPodcastMedia(file: File): Promise<string> {
   const path = `${crypto.randomUUID()}.${ext.toLowerCase()}`;
   const { error: upErr } = await supabase.storage
     .from(PODCAST_BUCKET)
-    .upload(path, file, { cacheControl: "31536000", upsert: false, contentType: file.type || undefined });
+    .upload(path, file, {
+      cacheControl: "31536000",
+      upsert: false,
+      contentType: file.type || undefined,
+    });
   if (upErr) throw upErr;
   const { data, error } = await supabase.storage
     .from(PODCAST_BUCKET)
@@ -65,7 +67,6 @@ export async function uploadPodcastMedia(file: File): Promise<string> {
   if (error) throw error;
   return data.signedUrl;
 }
-
 
 export function fmtDate(iso: string | null | undefined) {
   if (!iso) return "—";
@@ -75,4 +76,12 @@ export function fmtDate(iso: string | null | undefined) {
     month: "short",
     day: "numeric",
   });
+}
+
+export function fmtBytes(bytes: number): string {
+  if (!bytes) return "0 B";
+  const units = ["B", "KB", "MB", "GB", "TB"];
+  const i = Math.min(units.length - 1, Math.floor(Math.log(bytes) / Math.log(1024)));
+  const value = bytes / 1024 ** i;
+  return `${i === 0 ? value : value.toFixed(value < 10 ? 1 : 0)} ${units[i]}`;
 }

@@ -19,6 +19,7 @@ import {
   X,
   Wand2,
   BarChart3,
+  Images,
   type LucideIcon,
   UserCircle,
 } from "lucide-react";
@@ -64,6 +65,7 @@ const NAV: NavGroup[] = [
       { label: "Sidebar Cards", to: "/admin/blog-sidebar-cards", icon: PanelRight, sectionKey: "sidebar_cards" },
       { label: "__projects_tree__", to: "/admin/projects", icon: FolderKanban, sectionKey: "projects" },
       { label: "Newsletter", to: "/admin/newsletter", icon: Mail, sectionKey: "newsletter" },
+      { label: "Media Manager", to: "/admin/media", icon: Images, sectionKey: "media_manager" },
     ],
   },
   {
@@ -117,6 +119,7 @@ function pathToSection(pathname: string): SectionKey | null {
   if (pathname.startsWith("/admin/blog")) return "blog_posts";
   if (pathname.startsWith("/admin/projects")) return "projects";
   if (pathname.startsWith("/admin/newsletter")) return "newsletter";
+  if (pathname.startsWith("/admin/media")) return "media_manager";
   if (pathname.startsWith("/admin/pages")) return "pages";
   if (pathname.startsWith("/admin/seo")) return "seo_tracking";
   if (pathname.startsWith("/admin/analytics")) return "analytics";

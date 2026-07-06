@@ -8,6 +8,7 @@ import {
   Trash2,
   Star,
   FileText,
+  ExternalLink,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -197,6 +198,7 @@ export function BlogListPage() {
                 <th className="px-2 py-3">Category</th>
                 <th className="px-2 py-3">Status</th>
                 <th className="px-2 py-3">Date</th>
+                <th className="px-2 py-3"></th>
                 <th className="px-2 py-3 text-center">Featured</th>
                 <th className="px-4 py-3 w-24 text-right">Actions</th>
               </tr>
@@ -237,6 +239,18 @@ export function BlogListPage() {
                     )}
                   </td>
                   <td className="px-2 py-3 text-xs text-white/60">{fmtDate(p.published_at ?? p.created_at)}</td>
+                  <td className="px-2 py-3">
+                    <a
+                      href={`/blog/${p.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hidden sm:inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-white/50 transition-colors hover:text-[#3B82F6]"
+                      aria-label={`View ${p.title} live in a new tab`}
+                    >
+                      <ExternalLink className="h-3.5 w-3.5" />
+                      <span>View Live</span>
+                    </a>
+                  </td>
                   <td className="px-2 py-3 text-center">
                     <button
                       type="button"
