@@ -78,7 +78,7 @@ export function MediaUploader({
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={busy}
-          className="flex w-full flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-white/[0.12] bg-[#0B0F1A] px-3 py-6 text-white/50 hover:border-[#3B82F6]/40 hover:text-white/80 disabled:opacity-60"
+          className="flex w-full flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-white/[0.12] bg-[#0B0F1A] px-3 py-6 text-white/50 transition-colors duration-[250ms] ease hover:border-[#3B82F6]/60 hover:bg-[#3B82F6]/[0.05] hover:text-[#3B82F6] disabled:opacity-60"
         >
           {busy ? (
             <Loader2 className="h-5 w-5 animate-spin" />
@@ -97,7 +97,7 @@ export function MediaUploader({
           placeholder="…or paste a public URL"
           value={value ?? ""}
           onChange={(e) => onChange(e.target.value || null)}
-          className="flex-1 rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-1.5 text-xs text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none"
+          className="flex-1 rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-1.5 text-xs text-white placeholder:text-white/30 transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20"
         />
         <button
           type="button"

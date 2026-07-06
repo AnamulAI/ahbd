@@ -88,7 +88,10 @@ function NewsletterPage() {
     <AdminShell email={gate.email}>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl font-bold">Newsletter</h1>
+          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#3B82F6]">
+            // newsletter
+          </div>
+          <h1 className="mt-1 font-display text-2xl font-bold">Newsletter</h1>
           <p className="mt-1 text-sm text-white/60">View-only — subscribers come from the website signup form.</p>
         </div>
         <button
@@ -102,10 +105,10 @@ function NewsletterPage() {
       </div>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard icon={<Users className="h-4 w-4" />} label="Total Subscribers" value={stats.total} />
-        <StatCard icon={<UserPlus className="h-4 w-4" />} label="New This Week" value={stats.newWeek} accent="#3B82F6" />
-        <StatCard icon={<UserCheck className="h-4 w-4" />} label="Active" value={stats.active} accent="#22C55E" />
-        <StatCard icon={<UserMinus className="h-4 w-4" />} label="Unsubscribed" value={stats.unsubscribed} accent="#94A3B8" />
+        <StatCard icon={<Users className="h-5 w-5" />} label="Total Subscribers" value={stats.total} />
+        <StatCard icon={<UserPlus className="h-5 w-5" />} label="New This Week" value={stats.newWeek} accent="#3B82F6" />
+        <StatCard icon={<UserCheck className="h-5 w-5" />} label="Active" value={stats.active} accent="#22C55E" />
+        <StatCard icon={<UserMinus className="h-5 w-5" />} label="Unsubscribed" value={stats.unsubscribed} accent="#94A3B8" />
       </div>
 
       <div className="mt-6 max-w-sm relative">
@@ -114,18 +117,20 @@ function NewsletterPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search email…"
-          className="w-full rounded-md border border-white/[0.1] bg-[#16181D] pl-9 pr-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none"
+          className="w-full rounded-md border border-white/[0.1] bg-[#16181D] pl-9 pr-3 py-2 text-sm text-white placeholder:text-white/30 transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20"
         />
       </div>
 
-      <div className="mt-4 overflow-hidden rounded-xl border border-white/[0.08] bg-[#11162A]">
+      <div className="mt-4 card-elevated card-elevated-hover overflow-hidden">
         {loading ? (
           <div className="flex items-center justify-center py-16">
             <Loader2 className="h-6 w-6 animate-spin text-white/60" />
           </div>
         ) : filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-2 py-16 text-center">
-            <Users className="h-10 w-10 text-white/30" />
+          <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
+            <div className="grid h-10 w-10 place-items-center rounded-full bg-white/[0.04] text-white/50">
+              <Users className="h-5 w-5" />
+            </div>
             <p className="text-sm text-white/60">
               {subs.length === 0 ? "No subscribers yet." : "No matches for that search."}
             </p>
@@ -173,12 +178,25 @@ function StatCard({
   accent?: string;
 }) {
   return (
-    <div className="rounded-xl border border-white/[0.08] bg-[#11162A] p-4">
-      <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-white/55">
-        <span style={{ color: accent }}>{icon}</span>
-        {label}
+    <div className="card-elevated card-elevated-hover relative overflow-hidden p-5 transition">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/45">
+            {label}
+          </div>
+          <div className="mt-3 font-display text-3xl font-bold text-white">{value}</div>
+        </div>
+        <div
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-full"
+          style={{
+            color: accent,
+            background: `${accent}26`,
+            boxShadow: `inset 0 0 0 1px ${accent}4d`,
+          }}
+        >
+          {icon}
+        </div>
       </div>
-      <div className="mt-2 font-display text-2xl font-bold text-white">{value}</div>
     </div>
   );
 }

@@ -123,7 +123,10 @@ export function BlogListPage() {
     <AdminShell email={gate.email}>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl font-bold">Blog Posts</h1>
+          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#3B82F6]">
+            // blog posts
+          </div>
+          <h1 className="mt-1 font-display text-2xl font-bold">Blog Posts</h1>
           <p className="mt-1 text-sm text-white/60">
             {counts.total} posts — {counts.pub} published, {counts.draft} draft
           </p>
@@ -143,13 +146,13 @@ export function BlogListPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search title…"
-            className="w-full rounded-md border border-white/[0.1] bg-[#16181D] pl-9 pr-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none"
+            className="w-full rounded-md border border-white/[0.1] bg-[#16181D] pl-9 pr-3 py-2 text-sm text-white placeholder:text-white/30 transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20"
           />
         </div>
         <select
           value={catFilter}
           onChange={(e) => setCatFilter(e.target.value)}
-          className="rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white focus:border-[#3B82F6]/60 focus:outline-none"
+          className="rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20"
         >
           <option value="all">All categories</option>
           {CATEGORY_OPTIONS.map((c) => (
@@ -159,7 +162,7 @@ export function BlogListPage() {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white focus:border-[#3B82F6]/60 focus:outline-none"
+          className="rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20"
         >
           <option value="all">All statuses</option>
           <option value="published">Published</option>
@@ -167,14 +170,16 @@ export function BlogListPage() {
         </select>
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-xl border border-white/[0.08] bg-[#11162A]">
+      <div className="mt-6 card-elevated card-elevated-hover overflow-hidden">
         {loading ? (
           <div className="flex items-center justify-center py-16">
             <Loader2 className="h-6 w-6 animate-spin text-white/60" />
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
-            <FileText className="h-10 w-10 text-white/30" />
+            <div className="grid h-10 w-10 place-items-center rounded-full bg-white/[0.04] text-white/50">
+              <FileText className="h-5 w-5" />
+            </div>
             <p className="text-sm text-white/60">No posts yet — create your first one.</p>
             <Link
               to="/admin/blog/new"

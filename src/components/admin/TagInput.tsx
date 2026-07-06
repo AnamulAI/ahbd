@@ -29,7 +29,7 @@ export function TagInput({
   }
 
   return (
-    <div className="flex flex-wrap gap-1.5 rounded-md border border-white/[0.1] bg-[#16181D] px-2 py-1.5">
+    <div className="flex flex-wrap gap-1.5 rounded-md border border-white/[0.1] bg-[#16181D] px-2 py-1.5 transition-colors duration-[250ms] ease hover:border-white/20 focus-within:border-[#3B82F6]/60 focus-within:ring-2 focus-within:ring-[#3B82F6]/20">
       {value.map((tag, i) => (
         <span
           key={`${tag}-${i}`}

@@ -120,7 +120,7 @@ export function BlogEditorPage({ id }: { id?: string }) {
   }
 
   const inputCls =
-    "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none";
+    "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20";
   const labelCls = "block text-xs font-mono uppercase tracking-wider text-white/60 mb-1.5";
 
   return (
@@ -154,7 +154,7 @@ export function BlogEditorPage({ id }: { id?: string }) {
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr,340px]">
-        <div className="space-y-5 rounded-xl border border-white/[0.08] bg-[#11162A] p-6">
+        <div className="space-y-5 card-elevated p-6">
           <div>
             <label className={labelCls}>Title</label>
             <input
@@ -189,7 +189,7 @@ export function BlogEditorPage({ id }: { id?: string }) {
           </div>
         </div>
 
-        <aside className="space-y-5 rounded-xl border border-white/[0.08] bg-[#11162A] p-5 h-fit">
+        <aside className="space-y-5 card-elevated p-5 h-fit">
           <ImageUploader
             value={post.cover_image_url}
             onChange={(url) => update("cover_image_url", url)}

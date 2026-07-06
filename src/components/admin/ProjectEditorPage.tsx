@@ -328,7 +328,7 @@ export function ProjectEditorPage({
   }
 
   const inputCls =
-    "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none";
+    "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20";
   const labelCls = "block text-xs font-mono uppercase tracking-wider text-white/60 mb-1.5";
   const isPodcast = project.main_category === "ai_podcast";
   const isIntegrator = project.main_category === "ai_integrator";
@@ -373,7 +373,7 @@ export function ProjectEditorPage({
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr,340px]">
         <div className="space-y-5">
-          <div className="space-y-5 rounded-xl border border-white/[0.08] bg-[#11162A] p-6">
+          <div className="space-y-5 card-elevated p-6">
             <div>
               <label className={labelCls}>Title</label>
               <input
@@ -542,7 +542,7 @@ export function ProjectEditorPage({
                 />
               </CaseStudyCard>
 
-              <CaseStudyCard title="SMM Clips (Optional)">
+              <CaseStudyCard title="SMM Clips (Optional)" variant="optional">
                 <ClipCard
                   platform="Instagram Reel"
                   captionLabel="Instagram Caption"
@@ -710,7 +710,7 @@ export function ProjectEditorPage({
 
         </div>
 
-        <aside className="space-y-5 rounded-xl border border-white/[0.08] bg-[#11162A] p-5 h-fit">
+        <aside className="space-y-5 card-elevated p-5 h-fit">
           <ImageUploader
             value={project.cover_image_url}
             onChange={(url) => update("cover_image_url", url)}
@@ -769,12 +769,20 @@ export function ProjectEditorPage({
 function CaseStudyCard({
   title,
   children,
+  variant = "default",
 }: {
   title: string;
   children: React.ReactNode;
+  variant?: "default" | "optional";
 }) {
   return (
-    <div className="space-y-5 rounded-xl border border-white/[0.08] bg-[#11162A] p-6">
+    <div
+      className={
+        variant === "optional"
+          ? "space-y-5 rounded-xl border border-dashed border-white/[0.12] bg-[#11162A]/70 p-6"
+          : "space-y-5 card-elevated p-6"
+      }
+    >
       <div className="flex items-center gap-2 border-l-2 border-[#3B82F6] pl-3">
         <h2 className="text-sm font-mono uppercase tracking-wider text-[#3B82F6]">
           {title}
@@ -803,7 +811,7 @@ function ClipCard({
   onCaption: (c: string) => void;
 }) {
   const inputCls =
-    "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none";
+    "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20";
   return (
     <div className="space-y-3 rounded-lg border border-white/[0.06] bg-[#0B0F1A] p-4">
       <div className="flex items-center gap-2 border-l-2 border-[#F97316] pl-2">
@@ -905,7 +913,7 @@ function IntegrationMapEditor({
             }
           }}
           placeholder="Add a tool node (e.g. Gmail)…"
-          className="flex-1 rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none"
+          className="flex-1 rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20"
         />
         <button
           type="button"
@@ -993,7 +1001,7 @@ function SortableStepRow({
     opacity: isDragging ? 0.6 : 1,
   };
   const inputCls =
-    "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none";
+    "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20";
   return (
     <div
       ref={setNodeRef}
@@ -1047,7 +1055,7 @@ function ResultStatsEditor({
   onChange: (v: ResultStat[]) => void;
 }) {
   const inputCls =
-    "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#3B82F6]/60 focus:outline-none";
+    "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20";
   return (
     <div className="space-y-3">
       {value.map((stat, i) => (
@@ -1162,8 +1170,13 @@ function GalleryEditor({
         />
       </div>
       {value.length === 0 ? (
-        <div className="rounded-md border border-dashed border-white/[0.1] bg-[#0B0F1A] px-3 py-6 text-center text-xs text-white/40">
-          No gallery images yet — drag & drop after uploading to reorder.
+        <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-white/[0.1] bg-[#0B0F1A] px-3 py-6 text-center">
+          <div className="grid h-8 w-8 place-items-center rounded-full bg-white/[0.04] text-white/40">
+            <Upload className="h-4 w-4" />
+          </div>
+          <p className="text-xs text-white/40">
+            No gallery images yet — drag & drop after uploading to reorder.
+          </p>
         </div>
       ) : (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
