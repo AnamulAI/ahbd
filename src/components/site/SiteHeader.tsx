@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { ChevronDown, Code2, Menu, MessageCircle, Mic, Sparkles, X } from "lucide-react";
 import { getPageAssignments } from "@/lib/pages-settings.functions";
+import { useSiteContent } from "@/hooks/use-site-content";
 
 type NavLink = {
   label: string;
@@ -55,7 +56,10 @@ function useServicesRoute(): string {
   return data ?? DEFAULT_SERVICES_ROUTE;
 }
 
-const NAV_LINKS: ReadonlyArray<NavLink> = [
+// Fallback used if the site_nav_links table has no active header_nav rows
+// (e.g. nothing seeded yet, or a fetch error) — the header must never render
+// with an empty nav bar.
+const DEFAULT_NAV_LINKS: ReadonlyArray<NavLink> = [
   { label: "Home", to: "/" },
   { label: "About", to: "/about" },
   { label: "Services", to: "/services/web-development", dynamicKey: "services", children: SERVICE_ITEMS },
@@ -63,6 +67,29 @@ const NAV_LINKS: ReadonlyArray<NavLink> = [
   { label: "Blog", to: "/blog" },
   { label: "Contact", to: "/contact" },
 ];
+
+// Admin-editable nav links, merged with the Services dropdown/Page-Assignment
+// behavior that must keep working regardless of what the admin renames the
+// label to. Rows are matched by the stable `link_key` column, not by label
+// text, so renaming "Services" in the admin UI can't break this override.
+function useHeaderNavLinks(servicesRoute: string): ReadonlyArray<NavLink> {
+  const { linksFor, isLoading } = useSiteContent();
+  const rows = linksFor("header_nav");
+
+  if (isLoading || rows.length === 0) return DEFAULT_NAV_LINKS;
+
+  return rows.map((row) => {
+    if (row.link_key === "services") {
+      return {
+        label: row.label,
+        to: servicesRoute,
+        dynamicKey: "services" as const,
+        children: SERVICE_ITEMS,
+      };
+    }
+    return { label: row.label, to: row.href };
+  });
+}
 
 function Logo() {
   return (
@@ -238,6 +265,8 @@ export type SiteHeaderProps = {
 export function SiteHeader({ onCtaClick, ctaLabel = "Let's Talk" }: SiteHeaderProps) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const servicesRoute = useServicesRoute();
+  const navLinks = useHeaderNavLinks(servicesRoute);
+  const { text } = useSiteContent();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(() =>
     pathname.startsWith("/services"),
@@ -251,11 +280,18 @@ export function SiteHeader({ onCtaClick, ctaLabel = "Let's Talk" }: SiteHeaderPr
   return (
     <header className="sticky top-0 z-40 border-b border-white/5 bg-background/70 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-        <Logo />
+        <div className="flex min-w-0 items-center gap-3">
+          <Logo />
+          {text.header_tagline_text && (
+            <span className="hidden truncate text-xs text-muted-foreground lg:inline">
+              {text.header_tagline_text}
+            </span>
+          )}
+        </div>
 
         <nav aria-label="Primary" className="hidden md:block">
           <ul className="flex items-center gap-1">
-            {NAV_LINKS.map((link) => {
+            {navLinks.map((link) => {
               const isActive = link.dynamicKey === "services"
                 ? pathname.startsWith("/services") || isLinkActive(pathname, servicesRoute)
                 : isLinkActive(pathname, link.to);
@@ -337,7 +373,7 @@ export function SiteHeader({ onCtaClick, ctaLabel = "Let's Talk" }: SiteHeaderPr
       >
         <nav aria-label="Mobile" className="mx-auto max-w-6xl px-4 py-3 sm:px-6">
           <ul className="flex flex-col gap-1">
-            {NAV_LINKS.map((link) => {
+            {navLinks.map((link) => {
               const isActive = link.dynamicKey === "services"
                 ? pathname.startsWith("/services") || isLinkActive(pathname, servicesRoute)
                 : isLinkActive(pathname, link.to);

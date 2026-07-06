@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { getPageAssignments, updatePageAssignments } from "@/lib/pages-settings.functions";
 import { useMyProfile } from "@/hooks/use-my-permissions";
 import { Link } from "@tanstack/react-router";
+import { NavFooterSection } from "@/components/admin/NavFooterSection";
 
 const PAGE_OPTIONS: { label: string; value: string }[] = [
   { label: "Home", value: "/" },
@@ -132,6 +133,8 @@ export function PagesAssignmentPage() {
           </Button>
         </div>
       </div>
+
+      <NavFooterSection />
     </AdminShell>
   );
 }
