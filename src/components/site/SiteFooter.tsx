@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Heart, Link2, Mail, MapPin, Phone } from "lucide-react";
+import { Heart, Mail, MapPin, Phone } from "lucide-react";
 import { useSiteContent } from "@/hooks/use-site-content";
 import type { NavLinkRow } from "@/lib/site-content.functions";
+import { SocialIcon } from "@/lib/social-icons";
 
 type FooterLink = { label: string; href: string };
 
@@ -205,7 +206,7 @@ export function SiteFooter() {
                     aria-label={s.label}
                     className="text-muted-foreground transition-colors hover:text-[color:var(--primary)]"
                   >
-                    <Link2 className="h-4 w-4" aria-hidden />
+                    <SocialIcon name={s.icon_name} className="h-4 w-4" />
                   </a>
                 ))}
               </div>

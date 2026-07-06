@@ -23,6 +23,7 @@ import {
   type NavPlacement,
   type SiteContentText,
 } from "@/lib/site-content.functions";
+import { SOCIAL_ICON_OPTIONS, SocialIcon } from "@/lib/social-icons";
 
 const textInputCls =
   "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20";
@@ -184,6 +185,31 @@ function NavLinkGroupEditor({
                 )}
               </div>
 
+              {placement === "footer_social" && (
+                <div className="flex items-center gap-1">
+                  {SOCIAL_ICON_OPTIONS.map((opt) => {
+                    const active = row.icon_name === opt.name;
+                    return (
+                      <button
+                        key={opt.name}
+                        type="button"
+                        onClick={() => onSave({ ...row, icon_name: opt.name })}
+                        aria-label={opt.name}
+                        aria-pressed={active}
+                        title={opt.name}
+                        className={`flex h-7 w-7 items-center justify-center rounded-md border transition-colors ${
+                          active
+                            ? "border-[#3B82F6]/50 bg-[#3B82F6]/[0.15] text-white"
+                            : "border-white/[0.1] bg-[#16181D] text-white/50 hover:text-white/80"
+                        }`}
+                      >
+                        <SocialIcon name={opt.name} className="h-3.5 w-3.5" />
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
               <label className="inline-flex items-center gap-2 cursor-pointer select-none">
                 <button
                   type="button"
@@ -205,8 +231,14 @@ function NavLinkGroupEditor({
 
               <button
                 type="button"
+                disabled={row.link_key != null}
                 onClick={() => onDelete(row.id)}
-                className="inline-flex h-7 w-7 items-center justify-center rounded-md text-white/40 hover:bg-red-500/10 hover:text-red-400"
+                title={
+                  row.link_key != null
+                    ? "This link is required for site navigation and can't be deleted here."
+                    : undefined
+                }
+                className="inline-flex h-7 w-7 items-center justify-center rounded-md text-white/40 hover:bg-red-500/10 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-25 disabled:hover:bg-transparent disabled:hover:text-white/40"
                 aria-label="Delete"
               >
                 <Trash2 className="h-3.5 w-3.5" />
