@@ -3,13 +3,10 @@ import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import type { Database } from "@/integrations/supabase/types";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { DeviceVisibility } from "@/lib/site-section-visibility.functions";
 
 export type NavPlacement =
-  | "header_nav"
-  | "footer_explore"
-  | "footer_services"
-  | "footer_legal"
-  | "footer_social";
+  "header_nav" | "footer_explore" | "footer_services" | "footer_legal" | "footer_social";
 
 export type NavLinkRow = {
   id: string;
@@ -20,6 +17,7 @@ export type NavLinkRow = {
   link_key: string | null;
   display_order: number;
   is_active: boolean;
+  device_visibility: DeviceVisibility;
 };
 
 export type SiteContentText = {
@@ -44,8 +42,7 @@ const TEXT_KEYS = [
 // empty row never breaks rendering. `{year}` is substituted at render time.
 export const DEFAULT_SITE_CONTENT_TEXT: SiteContentText = {
   footer_copyright_text: "© {year} Mohammad Anamul Hoque. All rights reserved.",
-  footer_tagline_text:
-    "Building authority brands through AI-powered podcasts and modern websites.",
+  footer_tagline_text: "Building authority brands through AI-powered podcasts and modern websites.",
   footer_address_text: "",
   footer_contact_email: "",
   footer_contact_phone: "",
@@ -53,16 +50,15 @@ export const DEFAULT_SITE_CONTENT_TEXT: SiteContentText = {
 };
 
 function serverPublicClient() {
-  return createClient<Database>(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_PUBLISHABLE_KEY!,
-    {
-      auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
-    },
-  );
+  return createClient<Database>(process.env.SUPABASE_URL!, process.env.SUPABASE_PUBLISHABLE_KEY!, {
+    auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
+  });
 }
 
-async function assertAdmin(context: { supabase: ReturnType<typeof serverPublicClient>; userId: string }) {
+async function assertAdmin(context: {
+  supabase: ReturnType<typeof serverPublicClient>;
+  userId: string;
+}) {
   const { data: roleRow } = await context.supabase
     .from("user_roles")
     .select("role")
@@ -73,9 +69,13 @@ async function assertAdmin(context: { supabase: ReturnType<typeof serverPublicCl
 }
 
 export const getSiteContent = createServerFn({ method: "GET" }).handler(
-  async (): Promise<{ text: SiteContentText; navLinks: NavLinkRow[] }> => {
+  async (): Promise<{
+    text: SiteContentText;
+    navLinks: NavLinkRow[];
+    sectionVisibility: Record<string, DeviceVisibility>;
+  }> => {
     const sb = serverPublicClient();
-    const [textRes, navRes] = await Promise.all([
+    const [textRes, navRes, visRes] = await Promise.all([
       sb
         .from("site_settings")
         .select("setting_key, setting_value")
@@ -86,6 +86,7 @@ export const getSiteContent = createServerFn({ method: "GET" }).handler(
         .eq("is_active", true)
         .order("placement", { ascending: true })
         .order("display_order", { ascending: true }),
+      sb.from("site_section_visibility" as never).select("section_key, device_visibility"),
     ]);
 
     const text: SiteContentText = { ...DEFAULT_SITE_CONTENT_TEXT };
@@ -97,7 +98,16 @@ export const getSiteContent = createServerFn({ method: "GET" }).handler(
     }
 
     const navLinks = (navRes.data ?? []) as unknown as NavLinkRow[];
-    return { text, navLinks };
+
+    const sectionVisibility: Record<string, DeviceVisibility> = {};
+    for (const row of (visRes.data ?? []) as unknown as {
+      section_key: string;
+      device_visibility: DeviceVisibility;
+    }[]) {
+      sectionVisibility[row.section_key] = row.device_visibility;
+    }
+
+    return { text, navLinks, sectionVisibility };
   },
 );
 
@@ -158,6 +168,7 @@ const NavLinkSchema = z.object({
   link_key: z.string().nullable().optional(),
   display_order: z.number(),
   is_active: z.boolean(),
+  device_visibility: z.enum(["both", "desktop", "mobile"]).default("both"),
 });
 
 // Create (no id) or update (with id) a single nav/footer link row. Used for

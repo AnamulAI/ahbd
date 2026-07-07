@@ -1,7 +1,19 @@
 import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { getPageAssignments } from "@/lib/pages-settings.functions";
-import { ArrowRight, MessageCircle, Globe, Bot, TrendingUp, Mic, Check, Target, ShieldCheck, Zap, Users } from "lucide-react";
+import {
+  ArrowRight,
+  MessageCircle,
+  Globe,
+  Bot,
+  TrendingUp,
+  Mic,
+  Check,
+  Target,
+  ShieldCheck,
+  Zap,
+  Users,
+} from "lucide-react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { CtaRevealCard } from "@/components/site/CtaRevealCard";
@@ -12,6 +24,8 @@ import { BlogCard } from "@/components/site/BlogCard";
 import { StaticPageSeo } from "@/lib/seo-runtime";
 import { useAllProjects } from "@/lib/projects-loader";
 import { useAllBlogPosts } from "@/lib/blog-loader";
+import { useSiteContent } from "@/hooks/use-site-content";
+import { sectionVisibilityClass } from "@/lib/site-section-visibility.functions";
 
 import {
   Accordion,
@@ -19,7 +33,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-const anamAvatar = { url: "https://kuqqfgngrwduzxrffyhj.supabase.co/storage/v1/object/public/profile-avatars/3385e755-f7f8-4cd0-9f7f-9470d1cbb28d/1783155552606.png" };
+const anamAvatar = {
+  url: "https://kuqqfgngrwduzxrffyhj.supabase.co/storage/v1/object/public/profile-avatars/3385e755-f7f8-4cd0-9f7f-9470d1cbb28d/1783155552606.png",
+};
 import { supabase } from "@/integrations/supabase/client";
 import { Route as AboutRouteDef } from "./about";
 import { Route as BlogIndexRouteDef } from "./blog.index";
@@ -62,8 +78,7 @@ const SIGNATURE_DEFAULTS: SignaturePackage = {
   cta_label: "Start Your Brand Build",
 };
 
-const fmtUsd = (n: number) =>
-  `$${Math.round(n).toLocaleString("en-US")}`;
+const fmtUsd = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
 
 const SITE_ORIGIN = "https://ahbd.lovable.app";
 
@@ -91,8 +106,7 @@ export const Route = createFileRoute("/")({
     }
   },
   head: ({ loaderData }) => {
-    const substituted =
-      !!loaderData?.homeRoute && loaderData.homeRoute !== "/";
+    const substituted = !!loaderData?.homeRoute && loaderData.homeRoute !== "/";
     return {
       meta: [
         { title: "AnamDev — Mohammad Anamul Hoque" },
@@ -111,9 +125,7 @@ export const Route = createFileRoute("/")({
       // When we substitute another page's content at "/", declare "/" as
       // canonical so search engines don't treat this as a duplicate of the
       // target page's own dedicated URL (which keeps its own canonical).
-      links: substituted
-        ? [{ rel: "canonical", href: `${SITE_ORIGIN}/` }]
-        : [],
+      links: substituted ? [{ rel: "canonical", href: `${SITE_ORIGIN}/` }] : [],
     };
   },
   component: RootDispatcher,
@@ -137,14 +149,11 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 function StatItem({ value, label }: { value: string; label: string }) {
   return (
     <div className="flex flex-col items-center gap-1 px-2 sm:px-7">
-      <div className="font-display text-xl font-bold text-white sm:text-3xl">
-        {value}
-      </div>
+      <div className="font-display text-xl font-bold text-white sm:text-3xl">{value}</div>
       <div className="text-center font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground sm:text-[10px] sm:tracking-[0.18em]">
         {label}
       </div>
     </div>
-
   );
 }
 
@@ -163,9 +172,7 @@ function ProblemCard({
         <Icon className="h-6 w-6 text-[color:var(--primary)]" />
       </span>
       <h3 className="mt-4 text-base font-semibold text-white">{title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-        {description}
-      </p>
+      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p>
     </div>
   );
 }
@@ -190,13 +197,15 @@ function PhaseCard({
   connectorVisible?: boolean;
 }) {
   return (
-    <div className={`relative flex flex-col items-center text-center gap-5 transition-all duration-[750ms] ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90'} motion-reduce:opacity-100 motion-reduce:scale-100`}>
+    <div
+      className={`relative flex flex-col items-center text-center gap-5 transition-all duration-[750ms] ${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-90"} motion-reduce:opacity-100 motion-reduce:scale-100`}
+    >
       {/* Mobile-only vertical connector — sits in the gap BETWEEN this card
           and the previous card so it never overlaps the icon container. */}
       {showTopConnector && (
         <span
           aria-hidden
-          className={`md:hidden absolute -top-10 left-1/2 h-10 w-px -translate-x-1/2 origin-top bg-gradient-to-b from-[#3B82F6] to-[#F97316] transition-transform duration-[950ms] ${connectorVisible ? 'scale-y-100' : 'scale-y-0'} motion-reduce:scale-y-100`}
+          className={`md:hidden absolute -top-10 left-1/2 h-10 w-px -translate-x-1/2 origin-top bg-gradient-to-b from-[#3B82F6] to-[#F97316] transition-transform duration-[950ms] ${connectorVisible ? "scale-y-100" : "scale-y-0"} motion-reduce:scale-y-100`}
         />
       )}
       {/* Numbered badge */}
@@ -221,9 +230,7 @@ function PhaseCard({
 
       <div className="flex-1 flex flex-col items-center text-center">
         <h3 className="text-lg font-semibold text-white">{title}</h3>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          {description}
-        </p>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p>
         <Link
           to={href}
           className="group mt-4 inline-flex items-center justify-center gap-1.5 text-sm font-semibold text-[color:var(--primary)] transition-colors hover:text-[#F97316]"
@@ -239,11 +246,10 @@ function PhaseCard({
   );
 }
 
-
-
 function Index() {
   const { projects: allProjects } = useAllProjects();
   const { posts: allPosts } = useAllBlogPosts();
+  const { visibilityFor } = useSiteContent();
   const latestProjects = allProjects.slice(0, 3);
   const latestPosts = allPosts.slice(0, 3);
   const [journeyBadge1, setJourneyBadge1] = useState(false);
@@ -253,7 +259,6 @@ function Index() {
   const [journeyBadge3, setJourneyBadge3] = useState(false);
   const [sig, setSig] = useState<SignaturePackage>(SIGNATURE_DEFAULTS);
   const [dividerText, setDividerText] = useState<string>("— or build your own —");
-
 
   useEffect(() => {
     let cancelled = false;
@@ -267,9 +272,10 @@ function Index() {
       const v = (data as { value?: string }).value;
       if (v) setDividerText(v);
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
-
 
   useEffect(() => {
     let cancelled = false;
@@ -284,8 +290,12 @@ function Index() {
       setSig({
         web_dev_label: String(r.web_dev_label ?? SIGNATURE_DEFAULTS.web_dev_label),
         web_dev_price: Number(r.web_dev_price ?? SIGNATURE_DEFAULTS.web_dev_price),
-        ai_integrator_label: String(r.ai_integrator_label ?? SIGNATURE_DEFAULTS.ai_integrator_label),
-        ai_integrator_price: Number(r.ai_integrator_price ?? SIGNATURE_DEFAULTS.ai_integrator_price),
+        ai_integrator_label: String(
+          r.ai_integrator_label ?? SIGNATURE_DEFAULTS.ai_integrator_label,
+        ),
+        ai_integrator_price: Number(
+          r.ai_integrator_price ?? SIGNATURE_DEFAULTS.ai_integrator_price,
+        ),
         podcast_label: String(r.podcast_label ?? SIGNATURE_DEFAULTS.podcast_label),
         podcast_price: Number(r.podcast_price ?? SIGNATURE_DEFAULTS.podcast_price),
         bundle_price: Number(r.bundle_price ?? SIGNATURE_DEFAULTS.bundle_price),
@@ -301,8 +311,7 @@ function Index() {
     };
   }, []);
 
-  const sigTotalValue =
-    sig.web_dev_price + sig.ai_integrator_price + sig.podcast_price;
+  const sigTotalValue = sig.web_dev_price + sig.ai_integrator_price + sig.podcast_price;
   const sigSavings = sigTotalValue - sig.bundle_price;
 
   useEffect(() => {
@@ -329,14 +338,12 @@ function Index() {
           <div className="mx-auto max-w-5xl px-4 py-20 text-center sm:px-6 sm:py-28">
             <Eyebrow>// DONE-FOR-YOU BRAND AUTHORITY</Eyebrow>
             <h1 className="mt-4 text-4xl font-bold leading-[1.05] text-white sm:text-5xl md:text-6xl">
-              From Zero to a Brand People{" "}
-              <span className="text-gradient-vo">Trust</span>
+              From Zero to a Brand People <span className="text-gradient-vo">Trust</span>
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              I take your idea or local business from invisible to authoritative
-              — building your website, integrating a custom AI agent, and
-              launching a podcast that builds trust in your niche. One person,
-              one process, one outcome.
+              I take your idea or local business from invisible to authoritative — building your
+              website, integrating a custom AI agent, and launching a podcast that builds trust in
+              your niche. One person, one process, one outcome.
             </p>
 
             {/* Stats strip */}
@@ -345,7 +352,6 @@ function Index() {
               <StatItem value="3" label="SERVICE LINES" />
               <StatItem value="100%" label="CLIENT SATISFACTION" />
             </div>
-
 
             {/* Dual CTAs */}
             <div className="mx-auto mt-9 flex w-full max-w-md flex-col gap-3 sm:mt-10 sm:flex-row sm:justify-center">
@@ -373,17 +379,17 @@ function Index() {
         </section>
 
         {/* The Problem */}
-        <section className="relative bg-background py-20 sm:py-28">
+        <section
+          className={`relative bg-background py-20 sm:py-28 ${sectionVisibilityClass(visibilityFor("home.the_problem"))}`}
+        >
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <div className="text-center">
               <Eyebrow>// THE PROBLEM</Eyebrow>
               <h2 className="mt-4 text-3xl font-bold leading-[1.1] text-white sm:text-4xl md:text-5xl">
-                Most Businesses Stay{" "}
-                <span className="text-gradient-vo">Invisible</span>
+                Most Businesses Stay <span className="text-gradient-vo">Invisible</span>
               </h2>
               <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-                Not because the idea is bad — because nothing online proves it's
-                worth trusting yet.
+                Not because the idea is bad — because nothing online proves it's worth trusting yet.
               </p>
             </div>
 
@@ -408,13 +414,14 @@ function Index() {
         </section>
 
         {/* The Journey — 3 Phases */}
-        <section className="relative bg-background py-20 sm:py-28">
+        <section
+          className={`relative bg-background py-20 sm:py-28 ${sectionVisibilityClass(visibilityFor("home.the_journey"))}`}
+        >
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <div className="text-center">
               <Eyebrow>// THE JOURNEY</Eyebrow>
               <h2 className="mt-4 text-3xl font-bold leading-[1.1] text-white sm:text-4xl md:text-5xl">
-                From Idea to Brand{" "}
-                <span className="text-gradient-vo">Authority</span>
+                From Idea to Brand <span className="text-gradient-vo">Authority</span>
               </h2>
               <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
                 Three connected phases. One process. Each one builds on the last.
@@ -426,14 +433,14 @@ function Index() {
               {/* Desktop line segment 1→2 */}
               <div
                 aria-hidden
-                className={`hidden md:block absolute top-6 h-px bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] origin-left transition-transform duration-[950ms] ${journeyLine1 ? 'scale-x-100' : 'scale-x-0'} motion-reduce:scale-x-100`}
-                style={{ left: 'calc((100% - 4rem) / 6)', right: '50%' }}
+                className={`hidden md:block absolute top-6 h-px bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] origin-left transition-transform duration-[950ms] ${journeyLine1 ? "scale-x-100" : "scale-x-0"} motion-reduce:scale-x-100`}
+                style={{ left: "calc((100% - 4rem) / 6)", right: "50%" }}
               />
               {/* Desktop line segment 2→3 */}
               <div
                 aria-hidden
-                className={`hidden md:block absolute top-6 h-px bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] origin-left transition-transform duration-[950ms] ${journeyLine2 ? 'scale-x-100' : 'scale-x-0'} motion-reduce:scale-x-100`}
-                style={{ left: '50%', right: 'calc((100% - 4rem) / 6)' }}
+                className={`hidden md:block absolute top-6 h-px bg-gradient-to-r from-[#3B82F6] via-[#3B82F6]/50 to-[#F97316] origin-left transition-transform duration-[950ms] ${journeyLine2 ? "scale-x-100" : "scale-x-0"} motion-reduce:scale-x-100`}
+                style={{ left: "50%", right: "calc((100% - 4rem) / 6)" }}
               />
               {/* Mobile vertical connectors are rendered INSIDE each PhaseCard
                   (in the grid gap above the badge) so they never overlap the
@@ -469,7 +476,6 @@ function Index() {
                   connectorVisible={journeyLine2}
                 />
               </div>
-
             </div>
 
             <p className="mx-auto mt-14 max-w-2xl text-center font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
@@ -501,20 +507,16 @@ function Index() {
          * Whenever a future prompt says "use the Pricing Reveal Card pattern,"
          * apply this exact structure with new content substituted in.
          */}
-        <section
-          id="dfy-bundle"
-          className="relative section-glow-cta py-20 sm:py-28"
-        >
+        <section id="dfy-bundle" className="relative section-glow-cta py-20 sm:py-28">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <div className="text-center">
               <Eyebrow>// THE COMPLETE PACKAGE</Eyebrow>
               <h2 className="mt-4 text-3xl font-bold leading-[1.1] text-white sm:text-4xl md:text-5xl">
-                The Complete Brand{" "}
-                <span className="text-gradient-vo">Authority</span> Build
+                The Complete Brand <span className="text-gradient-vo">Authority</span> Build
               </h2>
               <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-                Everything it takes to go from idea to a brand people trust —
-                built and launched as one connected package.
+                Everything it takes to go from idea to a brand people trust — built and launched as
+                one connected package.
               </p>
             </div>
 
@@ -617,7 +619,6 @@ function Index() {
               <div className="h-px flex-1 bg-white/10" />
               <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                 {dividerText}
-
               </span>
               <div className="h-px flex-1 bg-white/10" />
             </div>
@@ -630,16 +631,18 @@ function Index() {
         </section>
 
         {/* Why This Works */}
-        <section className="relative bg-background py-20 sm:py-28">
+        <section
+          className={`relative bg-background py-20 sm:py-28 ${sectionVisibilityClass(visibilityFor("home.why_this_works"))}`}
+        >
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <div className="text-center">
               <Eyebrow>// WHY THIS WORKS</Eyebrow>
               <h2 className="mt-4 text-3xl font-bold leading-[1.1] text-white sm:text-4xl md:text-5xl">
-                Built to Make This an{" "}
-                <span className="text-gradient-vo">Easy</span> Decision
+                Built to Make This an <span className="text-gradient-vo">Easy</span> Decision
               </h2>
               <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-                Four reasons working with one person, on one connected process, beats hiring separately.
+                Four reasons working with one person, on one connected process, beats hiring
+                separately.
               </p>
             </div>
 
@@ -668,9 +671,10 @@ function Index() {
           </div>
         </section>
 
-
         {/* Section 7 — About (condensed) */}
-        <section className="relative bg-background py-20 sm:py-28">
+        <section
+          className={`relative bg-background py-20 sm:py-28 ${sectionVisibilityClass(visibilityFor("home.about_condensed"))}`}
+        >
           <div className="mx-auto max-w-5xl px-4 sm:px-6">
             <div className="grid items-center gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:gap-14">
               <div className="order-1 mx-auto w-full max-w-sm md:order-none">
@@ -690,23 +694,27 @@ function Index() {
                     loading="lazy"
                   />
                 </div>
-
               </div>
               <div className="order-2 md:order-none">
                 <Eyebrow>// THE PERSON BEHIND THIS</Eyebrow>
                 <h2 className="mt-4 font-display text-3xl font-bold leading-[1.1] text-white sm:text-4xl">
-                  Built by One{" "}
-                  <span className="text-gradient-vo">Person</span>, Not an Agency
+                  Built by One <span className="text-gradient-vo">Person</span>, Not an Agency
                 </h2>
                 <p className="mt-5 text-base leading-relaxed text-muted-foreground">
-                  I'm Mohammad Anamul Hoque — a web developer and AI integrator based in Chattogram, Bangladesh, working with clients internationally. I handle every phase of this process myself, from first conversation to final delivery, so nothing gets lost in translation between vendors.
+                  I'm Mohammad Anamul Hoque — a web developer and AI integrator based in Chattogram,
+                  Bangladesh, working with clients internationally. I handle every phase of this
+                  process myself, from first conversation to final delivery, so nothing gets lost in
+                  translation between vendors.
                 </p>
                 <Link
                   to="/about"
                   className="group mt-6 inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)] hover:opacity-80"
                 >
                   Read My Full Story
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" aria-hidden />
+                  <ArrowRight
+                    className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
+                    aria-hidden
+                  />
                 </Link>
               </div>
             </div>
@@ -714,22 +722,26 @@ function Index() {
         </section>
 
         {/* Section 8 — Selected Work */}
-        <section className="relative bg-background py-20 sm:py-28">
+        <section
+          className={`relative bg-background py-20 sm:py-28 ${sectionVisibilityClass(visibilityFor("home.selected_work"))}`}
+        >
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <div className="text-center">
               <Eyebrow>// SELECTED WORK</Eyebrow>
               <h2 className="mt-4 font-display text-3xl font-bold leading-[1.1] text-white sm:text-4xl">
-                See the Work Behind the{" "}
-                <span className="text-gradient-vo">Process</span>
+                See the Work Behind the <span className="text-gradient-vo">Process</span>
               </h2>
               <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-                A look at real projects across web development, AI integration, and podcast production.
+                A look at real projects across web development, AI integration, and podcast
+                production.
               </p>
             </div>
 
             {latestProjects.length === 0 ? (
               <div className="mt-12 rounded-2xl border border-dashed border-white/[0.08] bg-[#11162A]/40 p-10 text-center">
-                <p className="text-sm text-muted-foreground">No projects published yet — check back soon.</p>
+                <p className="text-sm text-muted-foreground">
+                  No projects published yet — check back soon.
+                </p>
               </div>
             ) : (
               <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -738,8 +750,6 @@ function Index() {
                 ))}
               </div>
             )}
-
-
 
             <div className="mt-12 text-center">
               <Link
@@ -753,7 +763,9 @@ function Index() {
         </section>
 
         {/* Section 9 — From the Blog */}
-        <section className="relative bg-background py-20 sm:py-28">
+        <section
+          className={`relative bg-background py-20 sm:py-28 ${sectionVisibilityClass(visibilityFor("home.from_the_blog"))}`}
+        >
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <div className="text-center">
               <Eyebrow>// FROM THE BLOG</Eyebrow>
@@ -767,7 +779,9 @@ function Index() {
 
             {latestPosts.length === 0 ? (
               <div className="mt-12 rounded-2xl border border-dashed border-white/[0.08] bg-[#11162A]/40 p-10 text-center">
-                <p className="text-sm text-muted-foreground">No posts published yet — check back soon.</p>
+                <p className="text-sm text-muted-foreground">
+                  No posts published yet — check back soon.
+                </p>
               </div>
             ) : (
               <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -776,7 +790,6 @@ function Index() {
                 ))}
               </div>
             )}
-
 
             <div className="mt-12 text-center">
               <Link
@@ -790,7 +803,9 @@ function Index() {
         </section>
 
         {/* Section 10 — FAQ */}
-        <section className="relative bg-background py-20 sm:py-28">
+        <section
+          className={`relative bg-background py-20 sm:py-28 ${sectionVisibilityClass(visibilityFor("home.faq"))}`}
+        >
           <div className="mx-auto max-w-3xl px-4 sm:px-6">
             <div className="text-center">
               <Eyebrow>// FAQ</Eyebrow>
@@ -798,7 +813,8 @@ function Index() {
                 Common <span className="text-gradient-vo">Questions</span>
               </h2>
               <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-                If you don't see your question here, the full breakdown is in the custom builder above, or just ask directly.
+                If you don't see your question here, the full breakdown is in the custom builder
+                above, or just ask directly.
               </p>
             </div>
 
@@ -822,18 +838,19 @@ function Index() {
         </section>
 
         {/* Section 11 — Closing CTA */}
-        <section className="py-20 sm:py-28">
+        <section
+          className={`py-20 sm:py-28 ${sectionVisibilityClass(visibilityFor("home.closing_cta"))}`}
+        >
           <div className="mx-auto max-w-4xl px-4 sm:px-6">
             <CtaRevealCard>
               <div className="flex flex-col items-center text-center">
                 <Eyebrow>// LET'S BUILD</Eyebrow>
                 <h2 className="mt-4 font-display text-3xl font-bold leading-[1.1] text-white sm:text-4xl md:text-5xl">
-                  Ready to Build a Brand People{" "}
-                  <span className="text-gradient-vo">Trust</span>?
+                  Ready to Build a Brand People <span className="text-gradient-vo">Trust</span>?
                 </h2>
                 <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-                  Start with the full DFY package, or just one phase — either way,
-                  let's talk about what you're building.
+                  Start with the full DFY package, or just one phase — either way, let's talk about
+                  what you're building.
                 </p>
                 <div className="mx-auto mt-9 flex w-full max-w-md flex-col gap-3 sm:mt-10 sm:flex-row sm:justify-center">
                   <a

@@ -72,12 +72,7 @@ const NAV: NavGroup[] = [
     label: "Site",
     items: [
       { label: "Pages", to: "/admin/pages", icon: Layout, sectionKey: "pages" },
-      {
-        label: "Visibility Control",
-        to: "/admin/coming-soon/visibility",
-        icon: Eye,
-        comingSoon: true,
-      },
+      { label: "Visibility Control", to: "/admin/visibility", icon: Eye, sectionKey: "visibility_control" },
       { label: "SEO & Tracking", to: "/admin/seo", icon: Search, sectionKey: "seo_tracking" },
       { label: "Analytics", to: "/admin/analytics", icon: BarChart3, sectionKey: "analytics" },
       { label: "Integrations", to: "/admin/integrations", icon: Plug, sectionKey: "integrations" },
@@ -120,6 +115,7 @@ function pathToSection(pathname: string): SectionKey | null {
   if (pathname.startsWith("/admin/projects")) return "projects";
   if (pathname.startsWith("/admin/newsletter")) return "newsletter";
   if (pathname.startsWith("/admin/media")) return "media_manager";
+  if (pathname.startsWith("/admin/visibility")) return "visibility_control";
   if (pathname.startsWith("/admin/pages")) return "pages";
   if (pathname.startsWith("/admin/seo")) return "seo_tracking";
   if (pathname.startsWith("/admin/analytics")) return "analytics";

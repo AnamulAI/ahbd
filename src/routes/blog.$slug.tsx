@@ -1,19 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Clock,
-  Loader2,
-  Mail,
-  Sparkles,
-  ShieldAlert,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, Loader2, Mail, Sparkles, ShieldAlert } from "lucide-react";
 import { SiFacebook, SiX } from "react-icons/si";
 import { FaLinkedin } from "react-icons/fa";
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { toast } from "sonner";
 import { marked } from "marked";
-const anamAvatar = { url: "https://kuqqfgngrwduzxrffyhj.supabase.co/storage/v1/object/public/profile-avatars/3385e755-f7f8-4cd0-9f7f-9470d1cbb28d/1783155552606.png" };
+const anamAvatar = {
+  url: "https://kuqqfgngrwduzxrffyhj.supabase.co/storage/v1/object/public/profile-avatars/3385e755-f7f8-4cd0-9f7f-9470d1cbb28d/1783155552606.png",
+};
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { CtaRevealCard } from "@/components/site/CtaRevealCard";
@@ -25,25 +19,35 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-import {
-  formatPublishedDate,
-  type BlogPost,
-  type ContentBlock,
-} from "@/lib/blog-data";
+import { formatPublishedDate, type BlogPost, type ContentBlock } from "@/lib/blog-data";
 import { useAllBlogPosts, useBlogPostBySlug } from "@/lib/blog-loader";
 import { supabase } from "@/integrations/supabase/client";
-import { PageSeo, JsonLd, extractFaqFromHtml, fireNewsletterWebhook, useSiteSettings, resolveSiteBaseUrl } from "@/lib/seo-runtime";
+import {
+  PageSeo,
+  JsonLd,
+  extractFaqFromHtml,
+  fireNewsletterWebhook,
+  useSiteSettings,
+  resolveSiteBaseUrl,
+} from "@/lib/seo-runtime";
+import { useSiteContent } from "@/hooks/use-site-content";
+import {
+  sectionVisibilityClass,
+  type DeviceVisibility,
+} from "@/lib/site-section-visibility.functions";
 
 type TocHeading = { id: string; text: string; level: 2 | 3 };
 
 function slugifyHeading(text: string): string {
-  return text
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-")
-    .slice(0, 80) || "section";
+  return (
+    text
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .slice(0, 80) || "section"
+  );
 }
 
 /** Convert markdown → HTML. Content saved before markdown support starts with a
@@ -63,7 +67,6 @@ type HtmlSegment =
   | { kind: "quickanswer"; text: string }
   | { kind: "rule"; html: string };
 
-
 const FAQ_RE = /(frequently\s*asked|faq|common\s*questions)/i;
 const CHECKLIST_RE = /checklist/i;
 
@@ -73,7 +76,8 @@ function processHtmlWithHeadings(html: string): {
   headings: TocHeading[];
   segments: HtmlSegment[];
 } {
-  if (typeof window === "undefined" || !html) return { headings: [], segments: html ? [{ kind: "html", html }] : [] };
+  if (typeof window === "undefined" || !html)
+    return { headings: [], segments: html ? [{ kind: "html", html }] : [] };
   const doc = new DOMParser().parseFromString(html, "text/html");
   const headings: TocHeading[] = [];
   const used = new Set<string>();
@@ -94,7 +98,6 @@ function processHtmlWithHeadings(html: string): {
     }
     headings.push({ id, text, level: 2 });
   });
-
 
   const children = Array.from(doc.body.children) as HTMLElement[];
   const segments: HtmlSegment[] = [];
@@ -135,9 +138,9 @@ function processHtmlWithHeadings(html: string): {
     ) {
       flush();
       const list = children[i + 1];
-      const items = Array.from(list.querySelectorAll(":scope > li")).map(
-        (li) => (li.textContent ?? "").trim(),
-      ).filter(Boolean);
+      const items = Array.from(list.querySelectorAll(":scope > li"))
+        .map((li) => (li.textContent ?? "").trim())
+        .filter(Boolean);
       if (items.length > 0) {
         segments.push({ kind: "checklist", id: el.id, title: text, items });
         sawHeading = true;
@@ -173,7 +176,6 @@ function processHtmlWithHeadings(html: string): {
   flush();
   return { headings, segments };
 }
-
 
 function extractFaqItems(nodes: HTMLElement[]): { q: string; a: string }[] {
   const items: { q: string; a: string }[] = [];
@@ -327,23 +329,10 @@ const PROSE_STYLE = `
 `;
 
 function HtmlChunk({ html }: { html: string }) {
-  return (
-    <div
-      className={PROSE_CLASSES}
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
-  );
+  return <div className={PROSE_CLASSES} dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
-function ChecklistSection({
-  id,
-  title,
-  items,
-}: {
-  id: string;
-  title: string;
-  items: string[];
-}) {
+function ChecklistSection({ id, title, items }: { id: string; title: string; items: string[] }) {
   const label = title.trim().toUpperCase();
   return (
     <section
@@ -353,9 +342,7 @@ function ChecklistSection({
       <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[color:var(--primary)]">
         // {label}
       </p>
-      <h3 className="mt-3 text-xl font-bold text-white sm:text-2xl">
-        {title}
-      </h3>
+      <h3 className="mt-3 text-xl font-bold text-white sm:text-2xl">{title}</h3>
       <ol className="mt-6 space-y-4">
         {items.map((raw, i) => {
           // Split on em-dash, en-dash, hyphen with spaces, or colon → main + sub
@@ -372,9 +359,7 @@ function ChecklistSection({
                   {main}
                 </p>
                 {sub && (
-                  <p className="mt-1 text-sm leading-relaxed text-white/60 sm:text-[15px]">
-                    {sub}
-                  </p>
+                  <p className="mt-1 text-sm leading-relaxed text-white/60 sm:text-[15px]">{sub}</p>
                 )}
               </div>
             </li>
@@ -385,13 +370,7 @@ function ChecklistSection({
   );
 }
 
-function AutoFaqSection({
-  id,
-  items,
-}: {
-  id: string;
-  items: { q: string; a: string }[];
-}) {
+function AutoFaqSection({ id, items }: { id: string; items: { q: string; a: string }[] }) {
   return (
     <section id={id} className="mt-16 scroll-mt-28">
       <p className="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--primary)]">
@@ -402,11 +381,7 @@ function AutoFaqSection({
       </h2>
       <Accordion type="single" collapsible className="mt-8 space-y-3">
         {items.map((f, i) => (
-          <AccordionItem
-            key={i}
-            value={`item-${i}`}
-            className="card-elevated border-b-0 px-5"
-          >
+          <AccordionItem key={i} value={`item-${i}`} className="card-elevated border-b-0 px-5">
             <AccordionTrigger className="py-5 text-left text-base font-semibold text-white hover:no-underline">
               {f.q}
             </AccordionTrigger>
@@ -443,25 +418,14 @@ function ArticleSegments({ segments }: { segments: HtmlSegment[] }) {
       {segments.map((seg, idx) => {
         if (seg.kind === "html") return <HtmlChunk key={idx} html={seg.html} />;
         if (seg.kind === "checklist")
-          return (
-            <ChecklistSection
-              key={idx}
-              id={seg.id}
-              title={seg.title}
-              items={seg.items}
-            />
-          );
-        if (seg.kind === "faq")
-          return <AutoFaqSection key={idx} id={seg.id} items={seg.items} />;
-        if (seg.kind === "quickanswer")
-          return <QuickAnswer key={idx} text={seg.text} />;
+          return <ChecklistSection key={idx} id={seg.id} title={seg.title} items={seg.items} />;
+        if (seg.kind === "faq") return <AutoFaqSection key={idx} id={seg.id} items={seg.items} />;
+        if (seg.kind === "quickanswer") return <QuickAnswer key={idx} text={seg.text} />;
         return <RuleCallout key={idx} html={seg.html} />;
       })}
     </>
   );
 }
-
-
 
 export const Route = createFileRoute("/blog/$slug")({
   ssr: false,
@@ -489,7 +453,6 @@ export const Route = createFileRoute("/blog/$slug")({
   ),
   component: BlogPostRoute,
 });
-
 
 /** Inline parser: **bold**, *italic*, [label](url). */
 function renderInline(text: string, keyPrefix: string): ReactNode[] {
@@ -551,17 +514,12 @@ function QuickAnswer({ text }: { text: string }) {
       className="my-8 rounded-xl border border-white/8 border-l-[3px] border-l-[color:var(--primary)] bg-[color:var(--primary)]/[0.06] p-5 sm:p-6"
     >
       <div className="flex items-start gap-3">
-        <Sparkles
-          className="mt-0.5 h-5 w-5 shrink-0 text-[color:var(--primary)]"
-          aria-hidden
-        />
+        <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-[color:var(--primary)]" aria-hidden />
         <div>
           <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--primary)]">
             Quick Answer
           </p>
-          <p className="mt-2 text-[15px] leading-relaxed text-white/90 sm:text-base">
-            {text}
-          </p>
+          <p className="mt-2 text-[15px] leading-relaxed text-white/90 sm:text-base">{text}</p>
         </div>
       </div>
     </aside>
@@ -604,10 +562,7 @@ function DataTable({
                 className="border-b border-white/[0.06] last:border-0 odd:bg-white/[0.015]"
               >
                 {row.map((cell, ci) => (
-                  <td
-                    key={ci}
-                    className="px-4 py-3 align-top text-muted-foreground"
-                  >
+                  <td key={ci} className="px-4 py-3 align-top text-muted-foreground">
                     {renderInline(cell, `td-${ri}-${ci}`)}
                   </td>
                 ))}
@@ -664,9 +619,7 @@ function PullQuote({ text }: { text: string }) {
         aria-hidden
         className="absolute left-0 top-0 h-full w-[3px] rounded-full bg-gradient-to-b from-[color:var(--primary)] to-[color:var(--orange)]"
       />
-      <p className="font-display text-xl italic leading-snug text-white sm:text-2xl">
-        "{text}"
-      </p>
+      <p className="font-display text-xl italic leading-snug text-white sm:text-2xl">"{text}"</p>
     </blockquote>
   );
 }
@@ -723,18 +676,9 @@ function RenderBlocks({ blocks }: { blocks: ContentBlock[] }) {
           case "pullquote":
             return <PullQuote key={idx} text={b.text} />;
           case "table":
-            return (
-              <DataTable
-                key={idx}
-                title={b.title}
-                headers={b.headers}
-                rows={b.rows}
-              />
-            );
+            return <DataTable key={idx} title={b.title} headers={b.headers} rows={b.rows} />;
           case "infographic":
-            return (
-              <Infographic key={idx} title={b.title} items={b.items} />
-            );
+            return <Infographic key={idx} title={b.title} items={b.items} />;
         }
       })}
     </>
@@ -752,11 +696,7 @@ function FaqSection({ items }: { items: BlogPost["faq"] }) {
       </h2>
       <Accordion type="single" collapsible className="mt-8 space-y-3">
         {items.map((f, i) => (
-          <AccordionItem
-            key={f.q}
-            value={`item-${i}`}
-            className="card-elevated border-b-0 px-5"
-          >
+          <AccordionItem key={f.q} value={`item-${i}`} className="card-elevated border-b-0 px-5">
             <AccordionTrigger className="py-5 text-left text-base font-semibold text-white hover:no-underline">
               {f.q}
             </AccordionTrigger>
@@ -780,12 +720,10 @@ function AuthorShareRow({ post }: { post: BlogPost }) {
           className="h-12 w-12 shrink-0 rounded-full object-cover ring-1 ring-white/10"
         />
         <div>
-          <p className="text-sm font-semibold text-white">
-            Mohammad Anamul Hoque
-          </p>
+          <p className="text-sm font-semibold text-white">Mohammad Anamul Hoque</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            Web developer & AI integrator helping service-based brands build
-            stronger digital presence.
+            Web developer & AI integrator helping service-based brands build stronger digital
+            presence.
           </p>
         </div>
       </div>
@@ -865,6 +803,7 @@ type SidebarCardRow = {
   input_placeholder: string;
   display_order: number;
   show_on_categories: string[] | null;
+  device_visibility: DeviceVisibility;
 };
 
 const CATEGORY_TO_SLUG: Record<string, string> = {
@@ -938,21 +877,19 @@ function SidebarCard({ card }: { card: SidebarCardRow }) {
       : "inline-flex items-center justify-center gap-1.5 rounded-full btn-gradient min-h-9 px-4 py-2 text-xs font-semibold text-white transition-all duration-200 hover:scale-[1.02] disabled:opacity-60";
 
   return (
-    <div className="rounded-2xl border border-white/8 bg-[#121A2E] p-5 text-center">
+    <div
+      className={`rounded-2xl border border-white/8 bg-[#121A2E] p-5 text-center ${sectionVisibilityClass(card.device_visibility)}`}
+    >
       {card.eyebrow_text && (
         <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[color:var(--orange)]">
           {card.eyebrow_text}
         </p>
       )}
       {card.heading && (
-        <h3 className="mt-3 text-base font-bold leading-snug text-white">
-          {card.heading}
-        </h3>
+        <h3 className="mt-3 text-base font-bold leading-snug text-white">{card.heading}</h3>
       )}
       {card.body_text && (
-        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-          {card.body_text}
-        </p>
+        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{card.body_text}</p>
       )}
       {card.input_type === "email" ? (
         <form onSubmit={onEmailSubmit} className="mt-4 flex flex-col gap-2">
@@ -975,7 +912,12 @@ function SidebarCard({ card }: { card: SidebarCardRow }) {
           </button>
         </form>
       ) : card.cta_label && card.cta_url ? (
-        <a href={card.cta_url} target="_blank" rel="noopener noreferrer" className={`mt-4 w-full ${btnCls}`}>
+        <a
+          href={card.cta_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`mt-4 w-full ${btnCls}`}
+        >
           {card.cta_label}
         </a>
       ) : null}
@@ -983,13 +925,7 @@ function SidebarCard({ card }: { card: SidebarCardRow }) {
   );
 }
 
-function StickySidebar({
-  headings,
-  category,
-}: {
-  headings: TocHeading[];
-  category: string;
-}) {
+function StickySidebar({ headings, category }: { headings: TocHeading[]; category: string }) {
   const active = useScrollSpy(headings.map((h) => h.id));
   const cards = useSidebarCards(category);
 
@@ -1003,12 +939,8 @@ function StickySidebar({
   }
 
   return (
-    <aside
-      className="hidden lg:block lg:sticky lg:top-24 lg:self-start"
-    >
+    <aside className="hidden lg:block lg:sticky lg:top-24 lg:self-start">
       <div className="space-y-6">
-
-
         {headings.length > 0 && (
           <div className="rounded-2xl border border-white/8 bg-[#121A2E] p-5">
             <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[color:var(--primary)]">
@@ -1029,7 +961,6 @@ function StickySidebar({
                             ? "border-[#3B82F6] bg-[#3B82F6]/[0.10] text-[#3B82F6] font-medium"
                             : "border-transparent text-muted-foreground hover:border-white/15 hover:text-white",
                         ].join(" ")}
-
                       >
                         {h.text}
                       </a>
@@ -1048,8 +979,6 @@ function StickySidebar({
     </aside>
   );
 }
-
-
 
 function BlogPostRoute() {
   const { slug } = Route.useParams();
@@ -1081,9 +1010,7 @@ function NotFoundPost() {
           // 404
         </p>
         <h1 className="mt-4 text-4xl font-bold text-white">Post not found</h1>
-        <p className="mt-4 text-muted-foreground">
-          That article doesn't exist or has been moved.
-        </p>
+        <p className="mt-4 text-muted-foreground">That article doesn't exist or has been moved.</p>
         <Link
           to="/blog"
           className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/10 px-5 py-2.5 text-sm text-white hover:bg-white/[0.04]"
@@ -1098,6 +1025,7 @@ function NotFoundPost() {
 
 function BlogPostPage({ post }: { post: BlogPost }) {
   const { posts: allPosts } = useAllBlogPosts();
+  const { visibilityFor } = useSiteContent();
   const sameCat = allPosts.filter((p) => p.slug !== post.slug && p.category === post.category);
   const otherCat = allPosts.filter((p) => p.slug !== post.slug && p.category !== post.category);
   const related = [...sameCat, ...otherCat].slice(0, 3);
@@ -1124,7 +1052,9 @@ function BlogPostPage({ post }: { post: BlogPost }) {
     () => ({
       "@context": "https://schema.org",
       "@type": "Article",
-      ...(canonicalUrl ? { "@id": canonicalUrl, url: canonicalUrl, mainEntityOfPage: canonicalUrl } : {}),
+      ...(canonicalUrl
+        ? { "@id": canonicalUrl, url: canonicalUrl, mainEntityOfPage: canonicalUrl }
+        : {}),
       headline: post.title,
       description: seoDescription,
       ...(post.coverImage ? { image: post.coverImage } : {}),
@@ -1182,21 +1112,21 @@ function BlogPostPage({ post }: { post: BlogPost }) {
                 {post.title}
               </h1>
               <div className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
-              <span className="inline-flex items-center gap-2">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-[color:var(--primary)] to-[color:var(--orange)] font-mono text-[10px] font-bold text-white">
-                  MA
+                <span className="inline-flex items-center gap-2">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-[color:var(--primary)] to-[color:var(--orange)] font-mono text-[10px] font-bold text-white">
+                    MA
+                  </span>
+                  <span className="text-white/85">Mohammad Anamul Hoque</span>
                 </span>
-                <span className="text-white/85">Mohammad Anamul Hoque</span>
-              </span>
-              <span aria-hidden>·</span>
-              <span>{formatPublishedDate(post.publishedDate)}</span>
-              <span aria-hidden>·</span>
-              <span className="inline-flex items-center gap-1.5">
-                <Clock className="h-3.5 w-3.5" aria-hidden />
-                {post.readTime}
-              </span>
+                <span aria-hidden>·</span>
+                <span>{formatPublishedDate(post.publishedDate)}</span>
+                <span aria-hidden>·</span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Clock className="h-3.5 w-3.5" aria-hidden />
+                  {post.readTime}
+                </span>
+              </div>
             </div>
-          </div>
           </div>
         </section>
 
@@ -1227,7 +1157,9 @@ function BlogPostPage({ post }: { post: BlogPost }) {
 
               <InlineShareBar title={post.title} image={post.coverImage} />
 
-              <AuthorShareRow post={post} />
+              <div className={sectionVisibilityClass(visibilityFor("blog_detail.author_bio"))}>
+                <AuthorShareRow post={post} />
+              </div>
             </article>
 
             {/* RIGHT: sticky sidebar */}
@@ -1237,12 +1169,12 @@ function BlogPostPage({ post }: { post: BlogPost }) {
 
         {/* Related */}
         {related.length > 0 && (
-          <section className="pb-20">
+          <section
+            className={`pb-20 ${sectionVisibilityClass(visibilityFor("blog_detail.related_posts"))}`}
+          >
             <div className="mx-auto max-w-6xl px-4 sm:px-6">
               <div className="mb-6 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-white sm:text-2xl">
-                  Related Posts
-                </h2>
+                <h2 className="text-xl font-bold text-white sm:text-2xl">Related Posts</h2>
                 <Link
                   to="/blog"
                   className="inline-flex items-center gap-1 text-sm text-[color:var(--primary)]"
@@ -1262,7 +1194,9 @@ function BlogPostPage({ post }: { post: BlogPost }) {
         )}
 
         {/* Closing CTA */}
-        <section className="py-20 sm:py-28">
+        <section
+          className={`py-20 sm:py-28 ${sectionVisibilityClass(visibilityFor("blog_detail.closing_cta"))}`}
+        >
           <div className="mx-auto max-w-4xl px-4 sm:px-6">
             <CtaRevealCard>
               <div className="flex flex-col items-center text-center">
@@ -1270,8 +1204,7 @@ function BlogPostPage({ post }: { post: BlogPost }) {
                   Have a <span className="text-gradient-vo">Project</span> in Mind?
                 </h2>
                 <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-                  Let's talk about what you're building — web, AI, or podcast
-                  production.
+                  Let's talk about what you're building — web, AI, or podcast production.
                 </p>
                 <div className="mt-8">
                   <Link

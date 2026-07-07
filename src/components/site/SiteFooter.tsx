@@ -3,34 +3,52 @@ import { Link } from "@tanstack/react-router";
 import { Heart, Mail, MapPin, Phone } from "lucide-react";
 import { useSiteContent } from "@/hooks/use-site-content";
 import type { NavLinkRow } from "@/lib/site-content.functions";
+import {
+  sectionVisibilityClass,
+  type DeviceVisibility,
+} from "@/lib/site-section-visibility.functions";
 import { SocialIcon } from "@/lib/social-icons";
 
-type FooterLink = { label: string; href: string };
+type FooterLink = { label: string; href: string; device_visibility: DeviceVisibility };
 
 // Fallbacks used if site_nav_links has no active rows for a given placement
 // (e.g. nothing seeded yet, or a fetch error) — the footer must never render
 // with empty columns.
 const DEFAULT_EXPLORE: FooterLink[] = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Projects", href: "/projects" },
+  { label: "Home", href: "/", device_visibility: "both" },
+  { label: "About", href: "/about", device_visibility: "both" },
+  { label: "Projects", href: "/projects", device_visibility: "both" },
 ];
 
 const DEFAULT_SERVICES: FooterLink[] = [
-  { label: "Web Development", href: "/services/web-development" },
-  { label: "AI Integrator", href: "/services/ai-integrator" },
-  { label: "AI Podcast", href: "/services/ai-podcast" },
+  { label: "Web Development", href: "/services/web-development", device_visibility: "both" },
+  { label: "AI Integrator", href: "/services/ai-integrator", device_visibility: "both" },
+  { label: "AI Podcast", href: "/services/ai-podcast", device_visibility: "both" },
 ];
 
 const DEFAULT_LEGAL: FooterLink[] = [
-  { label: "Privacy Policy", href: "/privacy" },
-  { label: "Terms of Service", href: "/terms" },
-  { label: "Contact", href: "/contact" },
+  { label: "Privacy Policy", href: "/privacy", device_visibility: "both" },
+  { label: "Terms of Service", href: "/terms", device_visibility: "both" },
+  { label: "Contact", href: "/contact", device_visibility: "both" },
 ];
 
 function toFooterLinks(rows: NavLinkRow[], fallback: FooterLink[]): FooterLink[] {
   if (rows.length === 0) return fallback;
-  return rows.map((r) => ({ label: r.label, href: r.href }));
+  return rows.map((r) => ({
+    label: r.label,
+    href: r.href,
+    device_visibility: r.device_visibility,
+  }));
+}
+
+// Column-level (site_section_visibility) and per-link (site_nav_links) toggles
+// compose: a column can be hidden entirely on one device, and/or individual
+// links within it can be hidden independently of the column.
+function filterForDesktop(links: FooterLink[]): FooterLink[] {
+  return links.filter((l) => l.device_visibility !== "mobile");
+}
+function filterForMobile(links: FooterLink[]): FooterLink[] {
+  return links.filter((l) => l.device_visibility !== "desktop");
 }
 
 function LinkCol({
@@ -65,21 +83,20 @@ function LinkCol({
   );
 }
 
-function MobileColumnsCarousel({
-  columns,
-}: {
-  columns: { title: string; links: FooterLink[] }[];
-}) {
+function MobileColumnsCarousel({ columns }: { columns: { title: string; links: FooterLink[] }[] }) {
   const [index, setIndex] = useState(0);
   const pausedRef = useRef(false);
 
   useEffect(() => {
+    if (columns.length === 0) return;
     const id = window.setInterval(() => {
       if (pausedRef.current) return;
       setIndex((i) => (i + 1) % columns.length);
     }, 3000);
     return () => window.clearInterval(id);
   }, [columns.length]);
+
+  if (columns.length === 0) return null;
 
   const pauseBriefly = () => {
     pausedRef.current = true;
@@ -102,7 +119,11 @@ function MobileColumnsCarousel({
           ))}
         </div>
       </div>
-      <div className="mt-5 flex items-center justify-center gap-2" role="tablist" aria-label="Footer sections">
+      <div
+        className="mt-5 flex items-center justify-center gap-2"
+        role="tablist"
+        aria-label="Footer sections"
+      >
         {columns.map((c, i) => (
           <button
             key={c.title}
@@ -115,9 +136,7 @@ function MobileColumnsCarousel({
               setIndex(i);
             }}
             className={`h-1.5 rounded-full transition-all duration-300 ${
-              i === index
-                ? "w-6 bg-[color:var(--primary)]"
-                : "w-1.5 bg-white/20 hover:bg-white/40"
+              i === index ? "w-6 bg-[color:var(--primary)]" : "w-1.5 bg-white/20 hover:bg-white/40"
             }`}
           />
         ))}
@@ -130,19 +149,36 @@ function formatCopyright(template: string): string {
   return template.replace("{year}", String(new Date().getFullYear()));
 }
 
+// Desktop-only column is already gated to md+ via "hidden md:block"; a
+// column set to "mobile" (mobile-only) should never show on desktop at all.
+function desktopColClass(v: DeviceVisibility): string {
+  return v === "mobile" ? "hidden" : "hidden md:block";
+}
+
 export function SiteFooter() {
-  const { text, linksFor } = useSiteContent();
+  const { text, linksFor, visibilityFor } = useSiteContent();
 
   const explore = toFooterLinks(linksFor("footer_explore"), DEFAULT_EXPLORE);
   const services = toFooterLinks(linksFor("footer_services"), DEFAULT_SERVICES);
   const legal = toFooterLinks(linksFor("footer_legal"), DEFAULT_LEGAL);
   const socialLinks = linksFor("footer_social");
 
-  const columns: { title: string; links: FooterLink[] }[] = [
-    { title: "Explore", links: explore },
-    { title: "Services", links: services },
-    { title: "Legal", links: legal },
-  ];
+  const brandVis = visibilityFor("footer.brand_blurb");
+  const socialVis = visibilityFor("footer.social_icons");
+  const exploreColVis = visibilityFor("footer.explore_column");
+  const servicesColVis = visibilityFor("footer.services_column");
+  const legalColVis = visibilityFor("footer.legal_column");
+  const copyrightVis = visibilityFor("footer.copyright");
+
+  // Mobile carousel: omit columns hidden on mobile entirely (a variable-length
+  // slide list, unlike the fixed 3-track desktop grid below).
+  const columns: { title: string; links: FooterLink[] }[] = (
+    [
+      exploreColVis !== "desktop" ? { title: "Explore", links: filterForMobile(explore) } : null,
+      servicesColVis !== "desktop" ? { title: "Services", links: filterForMobile(services) } : null,
+      legalColVis !== "desktop" ? { title: "Legal", links: filterForMobile(legal) } : null,
+    ] as const
+  ).filter((c): c is { title: string; links: FooterLink[] } => c !== null);
 
   const hasContactInfo =
     text.footer_address_text || text.footer_contact_email || text.footer_contact_phone;
@@ -152,51 +188,55 @@ export function SiteFooter() {
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div className="grid gap-10 max-md:text-center md:grid-cols-[1.2fr_1fr_1fr_1fr]">
           <div>
-            <Link
-              to="/"
-              aria-label="AnamDev home"
-              className="inline-block font-mono text-base font-bold tracking-tight transition-colors"
-            >
-              <span className="text-muted-foreground">{"{"}</span>
-              <span className="text-white">Anam</span>
-              <span className="text-[color:var(--primary)]">Dev</span>
-              <span className="text-muted-foreground">{"}"}</span>
-            </Link>
-            <p className="mx-auto mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground max-md:mx-auto md:mx-0">
-              {text.footer_tagline_text}
-            </p>
+            <div className={sectionVisibilityClass(brandVis)}>
+              <Link
+                to="/"
+                aria-label="AnamDev home"
+                className="inline-block font-mono text-base font-bold tracking-tight transition-colors"
+              >
+                <span className="text-muted-foreground">{"{"}</span>
+                <span className="text-white">Anam</span>
+                <span className="text-[color:var(--primary)]">Dev</span>
+                <span className="text-muted-foreground">{"}"}</span>
+              </Link>
+              <p className="mx-auto mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground max-md:mx-auto md:mx-0">
+                {text.footer_tagline_text}
+              </p>
 
-            {hasContactInfo && (
-              <div className="mx-auto mt-4 max-w-xs space-y-1.5 max-md:mx-auto md:mx-0">
-                {text.footer_address_text && (
-                  <p className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground md:justify-start">
-                    <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                    {text.footer_address_text}
-                  </p>
-                )}
-                {text.footer_contact_email && (
-                  <a
-                    href={`mailto:${text.footer_contact_email}`}
-                    className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-[color:var(--primary)] md:justify-start"
-                  >
-                    <Mail className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                    {text.footer_contact_email}
-                  </a>
-                )}
-                {text.footer_contact_phone && (
-                  <a
-                    href={`tel:${text.footer_contact_phone}`}
-                    className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-[color:var(--primary)] md:justify-start"
-                  >
-                    <Phone className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                    {text.footer_contact_phone}
-                  </a>
-                )}
-              </div>
-            )}
+              {hasContactInfo && (
+                <div className="mx-auto mt-4 max-w-xs space-y-1.5 max-md:mx-auto md:mx-0">
+                  {text.footer_address_text && (
+                    <p className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground md:justify-start">
+                      <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                      {text.footer_address_text}
+                    </p>
+                  )}
+                  {text.footer_contact_email && (
+                    <a
+                      href={`mailto:${text.footer_contact_email}`}
+                      className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-[color:var(--primary)] md:justify-start"
+                    >
+                      <Mail className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                      {text.footer_contact_email}
+                    </a>
+                  )}
+                  {text.footer_contact_phone && (
+                    <a
+                      href={`tel:${text.footer_contact_phone}`}
+                      className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-[color:var(--primary)] md:justify-start"
+                    >
+                      <Phone className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                      {text.footer_contact_phone}
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
 
             {socialLinks.length > 0 && (
-              <div className="mt-4 flex items-center justify-center gap-3 max-md:mx-auto md:justify-start">
+              <div
+                className={`mt-4 flex items-center justify-center gap-3 max-md:mx-auto md:justify-start ${sectionVisibilityClass(socialVis, "flex")}`}
+              >
                 {socialLinks.map((s) => (
                   <a
                     key={s.id}
@@ -204,7 +244,7 @@ export function SiteFooter() {
                     target="_blank"
                     rel="noreferrer"
                     aria-label={s.label}
-                    className="text-muted-foreground transition-colors hover:text-[color:var(--primary)]"
+                    className={`text-muted-foreground transition-colors hover:text-[color:var(--primary)] ${sectionVisibilityClass(s.device_visibility, "inline-block")}`}
                   >
                     <SocialIcon name={s.icon_name} className="h-4 w-4" />
                   </a>
@@ -214,9 +254,21 @@ export function SiteFooter() {
           </div>
 
           {/* Desktop/tablet: three columns side by side */}
-          <LinkCol title="Explore" links={explore} className="hidden md:block" />
-          <LinkCol title="Services" links={services} className="hidden md:block" />
-          <LinkCol title="Legal" links={legal} className="hidden md:block" />
+          <LinkCol
+            title="Explore"
+            links={filterForDesktop(explore)}
+            className={desktopColClass(exploreColVis)}
+          />
+          <LinkCol
+            title="Services"
+            links={filterForDesktop(services)}
+            className={desktopColClass(servicesColVis)}
+          />
+          <LinkCol
+            title="Legal"
+            links={filterForDesktop(legal)}
+            className={desktopColClass(legalColVis)}
+          />
 
           {/* Mobile: auto-sliding carousel */}
           <MobileColumnsCarousel columns={columns} />
@@ -225,10 +277,16 @@ export function SiteFooter() {
         <div className="my-10 h-px bg-white/5" />
 
         <div className="flex flex-col items-center justify-center gap-3 text-center text-xs text-muted-foreground md:flex-row md:justify-between md:text-left">
-          <p>{formatCopyright(text.footer_copyright_text)}</p>
+          <p className={sectionVisibilityClass(copyrightVis)}>
+            {formatCopyright(text.footer_copyright_text)}
+          </p>
           <p className="inline-flex items-center gap-1.5">
             Built with
-            <Heart className="h-3.5 w-3.5 text-[color:var(--orange)]" aria-hidden="true" strokeWidth={2} />
+            <Heart
+              className="h-3.5 w-3.5 text-[color:var(--orange)]"
+              aria-hidden="true"
+              strokeWidth={2}
+            />
             &amp; AI
           </p>
         </div>

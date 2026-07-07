@@ -25,6 +25,7 @@ import { Route as SampleSlugRouteImport } from './routes/sample.$slug'
 import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
 import { Route as InternalBuilderDataTestRouteImport } from './routes/internal.builder-data-test'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AdminVisibilityRouteImport } from './routes/admin.visibility'
 import { Route as AdminSeoRouteImport } from './routes/admin.seo'
 import { Route as AdminProfileRouteImport } from './routes/admin.profile'
 import { Route as AdminPagesRouteImport } from './routes/admin.pages'
@@ -129,6 +130,11 @@ const InternalBuilderDataTestRoute = InternalBuilderDataTestRouteImport.update({
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/blog/$slug',
   path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminVisibilityRoute = AdminVisibilityRouteImport.update({
+  id: '/admin/visibility',
+  path: '/admin/visibility',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminSeoRoute = AdminSeoRouteImport.update({
@@ -275,6 +281,7 @@ export interface FileRoutesByFullPath {
   '/admin/pages': typeof AdminPagesRoute
   '/admin/profile': typeof AdminProfileRoute
   '/admin/seo': typeof AdminSeoRoute
+  '/admin/visibility': typeof AdminVisibilityRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/internal/builder-data-test': typeof InternalBuilderDataTestRoute
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -318,6 +325,7 @@ export interface FileRoutesByTo {
   '/admin/pages': typeof AdminPagesRoute
   '/admin/profile': typeof AdminProfileRoute
   '/admin/seo': typeof AdminSeoRoute
+  '/admin/visibility': typeof AdminVisibilityRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/internal/builder-data-test': typeof InternalBuilderDataTestRoute
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -362,6 +370,7 @@ export interface FileRoutesById {
   '/admin/pages': typeof AdminPagesRoute
   '/admin/profile': typeof AdminProfileRoute
   '/admin/seo': typeof AdminSeoRoute
+  '/admin/visibility': typeof AdminVisibilityRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/internal/builder-data-test': typeof InternalBuilderDataTestRoute
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -407,6 +416,7 @@ export interface FileRouteTypes {
     | '/admin/pages'
     | '/admin/profile'
     | '/admin/seo'
+    | '/admin/visibility'
     | '/blog/$slug'
     | '/internal/builder-data-test'
     | '/projects/$slug'
@@ -450,6 +460,7 @@ export interface FileRouteTypes {
     | '/admin/pages'
     | '/admin/profile'
     | '/admin/seo'
+    | '/admin/visibility'
     | '/blog/$slug'
     | '/internal/builder-data-test'
     | '/projects/$slug'
@@ -493,6 +504,7 @@ export interface FileRouteTypes {
     | '/admin/pages'
     | '/admin/profile'
     | '/admin/seo'
+    | '/admin/visibility'
     | '/blog/$slug'
     | '/internal/builder-data-test'
     | '/projects/$slug'
@@ -537,6 +549,7 @@ export interface RootRouteChildren {
   AdminPagesRoute: typeof AdminPagesRoute
   AdminProfileRoute: typeof AdminProfileRoute
   AdminSeoRoute: typeof AdminSeoRoute
+  AdminVisibilityRoute: typeof AdminVisibilityRoute
   BlogSlugRoute: typeof BlogSlugRoute
   InternalBuilderDataTestRoute: typeof InternalBuilderDataTestRoute
   ProjectsSlugRoute: typeof ProjectsSlugRoute
@@ -677,6 +690,13 @@ declare module '@tanstack/react-router' {
       path: '/blog/$slug'
       fullPath: '/blog/$slug'
       preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/visibility': {
+      id: '/admin/visibility'
+      path: '/admin/visibility'
+      fullPath: '/admin/visibility'
+      preLoaderRoute: typeof AdminVisibilityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/seo': {
@@ -873,6 +893,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminPagesRoute: AdminPagesRoute,
   AdminProfileRoute: AdminProfileRoute,
   AdminSeoRoute: AdminSeoRoute,
+  AdminVisibilityRoute: AdminVisibilityRoute,
   BlogSlugRoute: BlogSlugRoute,
   InternalBuilderDataTestRoute: InternalBuilderDataTestRoute,
   ProjectsSlugRoute: ProjectsSlugRoute,

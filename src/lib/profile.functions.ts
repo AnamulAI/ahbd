@@ -16,6 +16,7 @@ export const SECTION_KEYS = [
   "analytics",
   "integrations",
   "media_manager",
+  "visibility_control",
   "profile",
 ] as const;
 export type SectionKey = (typeof SECTION_KEYS)[number];
@@ -34,6 +35,7 @@ export const SECTION_LABELS: Record<SectionKey, string> = {
   analytics: "Analytics",
   integrations: "Integrations",
   media_manager: "Media Manager",
+  visibility_control: "Visibility Control",
   profile: "Profile",
 };
 

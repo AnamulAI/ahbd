@@ -1,16 +1,7 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import {
-  ArrowDown,
-  ArrowUp,
-  Link2,
-  Menu,
-  Plus,
-  Share2,
-  Trash2,
-  Type,
-} from "lucide-react";
+import { ArrowDown, ArrowUp, Link2, Menu, Plus, Share2, Trash2, Type } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -24,11 +15,13 @@ import {
   type SiteContentText,
 } from "@/lib/site-content.functions";
 import { SOCIAL_ICON_OPTIONS, SocialIcon } from "@/lib/social-icons";
+import { DeviceVisibilityToggle } from "@/components/admin/DeviceVisibilityToggle";
 
 const textInputCls =
   "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20";
 const cardCls = "space-y-4 card-elevated p-5";
-const eyebrowCls = "flex items-center gap-2 text-[11px] font-mono uppercase tracking-[0.2em] text-[#3B82F6]";
+const eyebrowCls =
+  "flex items-center gap-2 text-[11px] font-mono uppercase tracking-[0.2em] text-[#3B82F6]";
 
 function IconBadge({ icon: Icon }: { icon: typeof Link2 }) {
   return (
@@ -229,6 +222,11 @@ function NavLinkGroupEditor({
                 <span className="text-xs text-white/65">Active</span>
               </label>
 
+              <DeviceVisibilityToggle
+                value={row.device_visibility}
+                onChange={(v) => onSave({ ...row, device_visibility: v })}
+              />
+
               <button
                 type="button"
                 disabled={row.link_key != null}
@@ -293,6 +291,7 @@ export function NavFooterSection() {
           link_key: row.link_key,
           display_order: row.display_order,
           is_active: row.is_active,
+          device_visibility: row.device_visibility,
         },
       }),
     onSuccess: () => {
@@ -314,6 +313,7 @@ export function NavFooterSection() {
           link_key: null,
           display_order: existing.length + 1,
           is_active: true,
+          device_visibility: "both",
         },
       });
     },
@@ -346,6 +346,7 @@ export function NavFooterSection() {
             link_key: a.link_key,
             display_order: b.display_order,
             is_active: a.is_active,
+            device_visibility: a.device_visibility,
           },
         }),
         saveLinkFn({
@@ -358,6 +359,7 @@ export function NavFooterSection() {
             link_key: b.link_key,
             display_order: a.display_order,
             is_active: b.is_active,
+            device_visibility: b.device_visibility,
           },
         }),
       ]),

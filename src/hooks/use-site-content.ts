@@ -6,6 +6,7 @@ import {
   type NavLinkRow,
   type NavPlacement,
 } from "@/lib/site-content.functions";
+import type { DeviceVisibility } from "@/lib/site-section-visibility.functions";
 
 export function useSiteContent() {
   const fetchContent = useServerFn(getSiteContent);
@@ -19,9 +20,16 @@ export function useSiteContent() {
     return (data?.navLinks ?? []).filter((l) => l.placement === placement);
   }
 
+  // Defaults to "both" (fully visible) if a section has no row yet — additive,
+  // never breaks rendering for sections not (yet) covered by Visibility Control.
+  function visibilityFor(sectionKey: string): DeviceVisibility {
+    return data?.sectionVisibility?.[sectionKey] ?? "both";
+  }
+
   return {
     text: data?.text ?? DEFAULT_SITE_CONTENT_TEXT,
     linksFor,
+    visibilityFor,
     isLoading,
   };
 }

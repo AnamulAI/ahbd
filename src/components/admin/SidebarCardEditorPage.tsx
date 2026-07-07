@@ -4,6 +4,8 @@ import { Loader2, ArrowLeft, Save } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminShell, useAdminGate } from "@/components/admin/AdminShell";
+import { DeviceVisibilityToggle } from "@/components/admin/DeviceVisibilityToggle";
+import type { DeviceVisibility } from "@/lib/site-section-visibility.functions";
 
 type Card = {
   id?: string;
@@ -18,6 +20,7 @@ type Card = {
   display_order: number;
   is_active: boolean;
   show_on_categories: string[];
+  device_visibility: DeviceVisibility;
 };
 
 const CATEGORIES = ["web_development", "ai_integrator", "ai_podcast"] as const;
@@ -34,6 +37,7 @@ const EMPTY: Card = {
   display_order: 0,
   is_active: true,
   show_on_categories: [],
+  device_visibility: "both",
 };
 
 const inputCls =
@@ -90,12 +94,16 @@ export function SidebarCardEditorPage({ id }: { id?: string }) {
       display_order: card.display_order,
       is_active: card.is_active,
       show_on_categories: card.show_on_categories,
+      device_visibility: card.device_visibility,
     };
     let error;
     if (id) {
-      ({ error } = await supabase.from("blog_sidebar_cards").update(payload).eq("id", id));
+      ({ error } = await supabase
+        .from("blog_sidebar_cards")
+        .update(payload as never)
+        .eq("id", id));
     } else {
-      ({ error } = await supabase.from("blog_sidebar_cards").insert(payload));
+      ({ error } = await supabase.from("blog_sidebar_cards").insert(payload as never));
     }
     setSaving(false);
     if (error) return toast.error(error.message);
@@ -221,7 +229,7 @@ export function SidebarCardEditorPage({ id }: { id?: string }) {
               />
             </div>
           )}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 flex flex-wrap items-center gap-6">
             <label className="inline-flex items-center gap-2 text-xs text-white/75">
               <input
                 type="checkbox"
@@ -231,6 +239,13 @@ export function SidebarCardEditorPage({ id }: { id?: string }) {
               />
               Active
             </label>
+            <div>
+              <label className={labelCls}>Device Visibility</label>
+              <DeviceVisibilityToggle
+                value={card.device_visibility}
+                onChange={(v) => update("device_visibility", v)}
+              />
+            </div>
           </div>
           <div className="lg:col-span-2">
             <label className={labelCls}>Show on categories (empty = all)</label>

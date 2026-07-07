@@ -5,11 +5,13 @@ import { useServerFn } from "@tanstack/react-start";
 import { ChevronDown, Code2, Menu, MessageCircle, Mic, Sparkles, X } from "lucide-react";
 import { getPageAssignments } from "@/lib/pages-settings.functions";
 import { useSiteContent } from "@/hooks/use-site-content";
+import type { DeviceVisibility } from "@/lib/site-section-visibility.functions";
 
 type NavLink = {
   label: string;
   to: string;
   dynamicKey?: "services";
+  device_visibility: DeviceVisibility;
   children?: ReadonlyArray<{
     label: string;
     to: string;
@@ -60,12 +62,18 @@ function useServicesRoute(): string {
 // (e.g. nothing seeded yet, or a fetch error) — the header must never render
 // with an empty nav bar.
 const DEFAULT_NAV_LINKS: ReadonlyArray<NavLink> = [
-  { label: "Home", to: "/" },
-  { label: "About", to: "/about" },
-  { label: "Services", to: "/services/web-development", dynamicKey: "services", children: SERVICE_ITEMS },
-  { label: "Projects", to: "/projects" },
-  { label: "Blog", to: "/blog" },
-  { label: "Contact", to: "/contact" },
+  { label: "Home", to: "/", device_visibility: "both" },
+  { label: "About", to: "/about", device_visibility: "both" },
+  {
+    label: "Services",
+    to: "/services/web-development",
+    dynamicKey: "services",
+    children: SERVICE_ITEMS,
+    device_visibility: "both",
+  },
+  { label: "Projects", to: "/projects", device_visibility: "both" },
+  { label: "Blog", to: "/blog", device_visibility: "both" },
+  { label: "Contact", to: "/contact", device_visibility: "both" },
 ];
 
 // Admin-editable nav links, merged with the Services dropdown/Page-Assignment
@@ -85,9 +93,10 @@ function useHeaderNavLinks(servicesRoute: string): ReadonlyArray<NavLink> {
         to: servicesRoute,
         dynamicKey: "services" as const,
         children: SERVICE_ITEMS,
+        device_visibility: row.device_visibility,
       };
     }
-    return { label: row.label, to: row.href };
+    return { label: row.label, to: row.href, device_visibility: row.device_visibility };
   });
 }
 
@@ -291,44 +300,47 @@ export function SiteHeader({ onCtaClick, ctaLabel = "Let's Talk" }: SiteHeaderPr
 
         <nav aria-label="Primary" className="hidden md:block">
           <ul className="flex items-center gap-1">
-            {navLinks.map((link) => {
-              const isActive = link.dynamicKey === "services"
-                ? pathname.startsWith("/services") || isLinkActive(pathname, servicesRoute)
-                : isLinkActive(pathname, link.to);
-              if (link.children) {
+            {navLinks
+              .filter((link) => link.device_visibility !== "mobile")
+              .map((link) => {
+                const isActive =
+                  link.dynamicKey === "services"
+                    ? pathname.startsWith("/services") || isLinkActive(pathname, servicesRoute)
+                    : isLinkActive(pathname, link.to);
+                if (link.children) {
+                  return (
+                    <ServicesDropdown
+                      key={link.to}
+                      pathname={pathname}
+                      isActive={isActive}
+                      servicesRoute={servicesRoute}
+                    />
+                  );
+                }
                 return (
-                  <ServicesDropdown
-                    key={link.to}
-                    pathname={pathname}
-                    isActive={isActive}
-                    servicesRoute={servicesRoute}
-                  />
+                  <li key={link.to}>
+                    <Link
+                      to={link.to}
+                      aria-current={isActive ? "page" : undefined}
+                      className={[
+                        "relative inline-flex h-9 items-center rounded-full px-3 text-sm transition-colors duration-200 motion-reduce:transition-none",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ring)]",
+                        isActive
+                          ? "font-semibold text-white"
+                          : "font-medium text-muted-foreground hover:text-[color:var(--primary)]",
+                      ].join(" ")}
+                    >
+                      {link.label}
+                      {isActive && (
+                        <span
+                          aria-hidden
+                          className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-[color:var(--primary)] shadow-[0_0_12px_var(--primary)]"
+                        />
+                      )}
+                    </Link>
+                  </li>
                 );
-              }
-              return (
-                <li key={link.to}>
-                  <Link
-                    to={link.to}
-                    aria-current={isActive ? "page" : undefined}
-                    className={[
-                      "relative inline-flex h-9 items-center rounded-full px-3 text-sm transition-colors duration-200 motion-reduce:transition-none",
-                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ring)]",
-                      isActive
-                        ? "font-semibold text-white"
-                        : "font-medium text-muted-foreground hover:text-[color:var(--primary)]",
-                    ].join(" ")}
-                  >
-                    {link.label}
-                    {isActive && (
-                      <span
-                        aria-hidden
-                        className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-[color:var(--primary)] shadow-[0_0_12px_var(--primary)]"
-                      />
-                    )}
-                  </Link>
-                </li>
-              );
-            })}
+              })}
           </ul>
         </nav>
 
@@ -373,109 +385,115 @@ export function SiteHeader({ onCtaClick, ctaLabel = "Let's Talk" }: SiteHeaderPr
       >
         <nav aria-label="Mobile" className="mx-auto max-w-6xl px-4 py-3 sm:px-6">
           <ul className="flex flex-col gap-1">
-            {navLinks.map((link) => {
-              const isActive = link.dynamicKey === "services"
-                ? pathname.startsWith("/services") || isLinkActive(pathname, servicesRoute)
-                : isLinkActive(pathname, link.to);
-              if (link.children) {
+            {navLinks
+              .filter((link) => link.device_visibility !== "desktop")
+              .map((link) => {
+                const isActive =
+                  link.dynamicKey === "services"
+                    ? pathname.startsWith("/services") || isLinkActive(pathname, servicesRoute)
+                    : isLinkActive(pathname, link.to);
+                if (link.children) {
+                  return (
+                    <li key={link.to} className="flex flex-col">
+                      <div
+                        className={[
+                          "flex h-11 items-center rounded-xl text-sm transition-colors duration-200 motion-reduce:transition-none",
+                          isActive
+                            ? "font-semibold text-white"
+                            : "font-medium text-muted-foreground hover:text-white",
+                        ].join(" ")}
+                      >
+                        <Link
+                          to={servicesRoute}
+                          aria-current={isActive ? "page" : undefined}
+                          onClick={() => setMobileOpen(false)}
+                          className="flex h-full min-w-0 flex-1 items-center px-3"
+                        >
+                          Services
+                        </Link>
+                        <button
+                          type="button"
+                          aria-label="Toggle services menu"
+                          aria-expanded={mobileServicesOpen}
+                          onClick={() => setMobileServicesOpen((v) => !v)}
+                          className="flex h-full w-11 shrink-0 items-center justify-center rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ring)]"
+                        >
+                          <ChevronDown
+                            className={[
+                              "h-4 w-4 transition-transform duration-200 motion-reduce:transition-none",
+                              mobileServicesOpen ? "rotate-180" : "rotate-0",
+                            ].join(" ")}
+                            aria-hidden
+                          />
+                        </button>
+                      </div>
+                      <div
+                        className={[
+                          "overflow-hidden transition-[max-height,opacity] duration-300 motion-reduce:transition-none",
+                          mobileServicesOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0",
+                        ].join(" ")}
+                      >
+                        <ul className="ml-3 mt-1 flex flex-col gap-1 border-l border-white/10 pl-3">
+                          {SERVICE_ITEMS.map((item) => {
+                            const Icon = item.icon;
+                            const subActive = isLinkActive(pathname, item.to);
+                            return (
+                              <li key={item.to}>
+                                <Link
+                                  to={item.to}
+                                  onClick={() => setMobileOpen(false)}
+                                  className={[
+                                    "flex items-start gap-3 rounded-lg px-2 py-2 transition-colors duration-200 motion-reduce:transition-none",
+                                    "hover:bg-white/[0.04]",
+                                    subActive ? "bg-white/[0.03]" : "",
+                                  ].join(" ")}
+                                >
+                                  <Icon
+                                    className="mt-0.5 h-4 w-4 text-[color:var(--primary)]"
+                                    aria-hidden
+                                  />
+                                  <span className="flex flex-col">
+                                    <span
+                                      className={[
+                                        "text-sm",
+                                        subActive
+                                          ? "font-semibold text-white"
+                                          : "font-medium text-white/90",
+                                      ].join(" ")}
+                                    >
+                                      {item.label}
+                                    </span>
+                                    <span className="text-xs text-muted-foreground">
+                                      {item.subtitle}
+                                    </span>
+                                  </span>
+                                </Link>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    </li>
+                  );
+                }
                 return (
-                  <li key={link.to} className="flex flex-col">
-                    <div
+                  <li key={link.to}>
+                    <Link
+                      to={link.to}
+                      aria-current={isActive ? "page" : undefined}
+                      onClick={() => setMobileOpen(false)}
                       className={[
-                        "flex h-11 items-center rounded-xl text-sm transition-colors duration-200 motion-reduce:transition-none",
+                        "flex h-11 items-center rounded-xl px-3 text-sm transition-colors duration-200 motion-reduce:transition-none",
                         isActive
                           ? "font-semibold text-white"
                           : "font-medium text-muted-foreground hover:text-white",
                       ].join(" ")}
                     >
-                      <Link
-                        to={servicesRoute}
-                        aria-current={isActive ? "page" : undefined}
-                        onClick={() => setMobileOpen(false)}
-                        className="flex h-full min-w-0 flex-1 items-center px-3"
-                      >
-                        Services
-                      </Link>
-                      <button
-                        type="button"
-                        aria-label="Toggle services menu"
-                        aria-expanded={mobileServicesOpen}
-                        onClick={() => setMobileServicesOpen((v) => !v)}
-                        className="flex h-full w-11 shrink-0 items-center justify-center rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ring)]"
-                      >
-                        <ChevronDown
-                          className={[
-                            "h-4 w-4 transition-transform duration-200 motion-reduce:transition-none",
-                            mobileServicesOpen ? "rotate-180" : "rotate-0",
-                          ].join(" ")}
-                          aria-hidden
-                        />
-                      </button>
-                    </div>
-                    <div
-                      className={[
-                        "overflow-hidden transition-[max-height,opacity] duration-300 motion-reduce:transition-none",
-                        mobileServicesOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0",
-                      ].join(" ")}
-                    >
-                      <ul className="ml-3 mt-1 flex flex-col gap-1 border-l border-white/10 pl-3">
-                        {SERVICE_ITEMS.map((item) => {
-                          const Icon = item.icon;
-                          const subActive = isLinkActive(pathname, item.to);
-                          return (
-                            <li key={item.to}>
-                              <Link
-                                to={item.to}
-                                onClick={() => setMobileOpen(false)}
-                                className={[
-                                  "flex items-start gap-3 rounded-lg px-2 py-2 transition-colors duration-200 motion-reduce:transition-none",
-                                  "hover:bg-white/[0.04]",
-                                  subActive ? "bg-white/[0.03]" : "",
-                                ].join(" ")}
-                              >
-                                <Icon className="mt-0.5 h-4 w-4 text-[color:var(--primary)]" aria-hidden />
-                                <span className="flex flex-col">
-                                  <span
-                                    className={[
-                                      "text-sm",
-                                      subActive
-                                        ? "font-semibold text-white"
-                                        : "font-medium text-white/90",
-                                    ].join(" ")}
-                                  >
-                                    {item.label}
-                                  </span>
-                                  <span className="text-xs text-muted-foreground">
-                                    {item.subtitle}
-                                  </span>
-                                </span>
-                              </Link>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
+                      {link.label}
+                    </Link>
                   </li>
                 );
-              }
-              return (
-                <li key={link.to}>
-                  <Link
-                    to={link.to}
-                    aria-current={isActive ? "page" : undefined}
-                    onClick={() => setMobileOpen(false)}
-                    className={[
-                      "flex h-11 items-center rounded-xl px-3 text-sm transition-colors duration-200 motion-reduce:transition-none",
-                      isActive
-                        ? "font-semibold text-white"
-                        : "font-medium text-muted-foreground hover:text-white",
-                    ].join(" ")}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              );
-            })}
+              })}
           </ul>
         </nav>
       </div>
