@@ -144,7 +144,8 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
+  loader: async () => ({ ssrMeta: await loadSsrSeoMeta() }),
+  head: ({ loaderData }) => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -161,6 +162,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/beb83e00-1058-4240-9aef-fb329e64d5c7" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/beb83e00-1058-4240-9aef-fb329e64d5c7" },
       { name: "theme-color", content: "#0A0E1A" },
+      ...(loaderData?.ssrMeta ?? []),
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
