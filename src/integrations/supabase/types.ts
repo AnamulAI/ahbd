@@ -105,6 +105,7 @@ export type Database = {
           cta_label: string
           cta_style: string
           cta_url: string
+          device_visibility: string
           display_order: number
           eyebrow_text: string
           heading: string
@@ -121,6 +122,7 @@ export type Database = {
           cta_label?: string
           cta_style?: string
           cta_url?: string
+          device_visibility?: string
           display_order?: number
           eyebrow_text?: string
           heading?: string
@@ -137,6 +139,7 @@ export type Database = {
           cta_label?: string
           cta_style?: string
           cta_url?: string
+          device_visibility?: string
           display_order?: number
           eyebrow_text?: string
           heading?: string
@@ -1036,6 +1039,78 @@ export type Database = {
           web_dev_label?: string
           web_dev_price?: number
           whats_included?: Json
+        }
+        Relationships: []
+      }
+      site_nav_links: {
+        Row: {
+          created_at: string
+          device_visibility: string
+          display_order: number
+          href: string
+          icon_name: string | null
+          id: string
+          is_active: boolean
+          label: string
+          link_key: string | null
+          placement: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          device_visibility?: string
+          display_order?: number
+          href: string
+          icon_name?: string | null
+          id?: string
+          is_active?: boolean
+          label: string
+          link_key?: string | null
+          placement: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          device_visibility?: string
+          display_order?: number
+          href?: string
+          icon_name?: string | null
+          id?: string
+          is_active?: boolean
+          label?: string
+          link_key?: string | null
+          placement?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      site_section_visibility: {
+        Row: {
+          created_at: string
+          device_visibility: string
+          display_order: number
+          label: string
+          page: string
+          section_key: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          device_visibility?: string
+          display_order?: number
+          label: string
+          page: string
+          section_key: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          device_visibility?: string
+          display_order?: number
+          label?: string
+          page?: string
+          section_key?: string
+          updated_at?: string
         }
         Relationships: []
       }
