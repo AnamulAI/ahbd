@@ -41,13 +41,6 @@ function extractMetaTagsFromHtml(html: string): SsrHeadMeta[] {
     while ((a = attrRe.exec(m[1])) !== null) {
       attrs[a[1].toLowerCase()] = a[2] ?? a[3] ?? a[4] ?? "";
     }
-    if (
-      attrs.name === "impact-site-verification" &&
-      attrs.value &&
-      !attrs.content
-    ) {
-      attrs.content = attrs.value;
-    }
     if (Object.keys(attrs).length) tags.push(attrs);
   }
   return tags;
