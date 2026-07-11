@@ -16,6 +16,72 @@ import { Toaster } from "@/components/ui/sonner";
 import { ScrollUX } from "@/components/site/ScrollUX";
 import { VisitorTrackerMount } from "@/components/site/VisitorTrackerMount";
 import { SiteHeadInjector, OrganizationJsonLd } from "@/lib/seo-runtime";
+import { supabase } from "@/integrations/supabase/client";
+
+type SsrHeadMeta = Record<string, string>;
+
+/**
+ * Parse the raw HTML in `custom_head_scripts` and extract any <meta> tags
+ * so they can be emitted into the SSR head. Verification bots (Impact
+ * Radius, some Search Console flows) fetch the raw HTML and do not execute
+ * JavaScript, so client-side injection via <SiteHeadInjector> is invisible
+ * to them. We keep <SiteHeadInjector> for scripts (GA4, pixels) and mirror
+ * only <meta> tags server-side.
+ */
+function extractMetaTagsFromHtml(html: string): SsrHeadMeta[] {
+  if (!html) return [];
+  const tags: SsrHeadMeta[] = [];
+  const metaRe = /<meta\s+([^>]*?)\/?>/gi;
+  const attrRe = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))/g;
+  let m: RegExpExecArray | null;
+  while ((m = metaRe.exec(html)) !== null) {
+    const attrs: SsrHeadMeta = {};
+    let a: RegExpExecArray | null;
+    attrRe.lastIndex = 0;
+    while ((a = attrRe.exec(m[1])) !== null) {
+      attrs[a[1].toLowerCase()] = a[2] ?? a[3] ?? a[4] ?? "";
+    }
+    if (Object.keys(attrs).length) tags.push(attrs);
+  }
+  return tags;
+}
+
+async function loadSsrSeoMeta(): Promise<SsrHeadMeta[]> {
+  try {
+    const { data } = await supabase
+      .from("site_settings")
+      .select("setting_key,setting_value")
+      .in("setting_key", [
+        "custom_head_scripts",
+        "google_site_verification",
+        "bing_site_verification",
+        "facebook_domain_verification",
+        "pinterest_domain_verification",
+      ]);
+    const map = new Map<string, string>();
+    for (const row of data ?? []) {
+      map.set(
+        (row as { setting_key: string }).setting_key,
+        (row as { setting_value: string | null }).setting_value ?? "",
+      );
+    }
+    const out: SsrHeadMeta[] = [];
+    const g = map.get("google_site_verification")?.trim();
+    if (g) out.push({ name: "google-site-verification", content: g });
+    const b = map.get("bing_site_verification")?.trim();
+    if (b) out.push({ name: "msvalidate.01", content: b });
+    const f = map.get("facebook_domain_verification")?.trim();
+    if (f) out.push({ name: "facebook-domain-verification", content: f });
+    const p = map.get("pinterest_domain_verification")?.trim();
+    if (p) out.push({ name: "p:domain_verify", content: p });
+    for (const t of extractMetaTagsFromHtml(map.get("custom_head_scripts") ?? "")) {
+      out.push(t);
+    }
+    return out;
+  } catch {
+    return [];
+  }
+}
 
 function NotFoundComponent() {
   return (
