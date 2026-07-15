@@ -41,6 +41,8 @@ export type BlogPost = {
   title: string;
   excerpt: string;
   category: BlogCategory;
+  /** Raw DB category key (slug), e.g. "web_development" or a user-created key. */
+  categoryKey?: string;
   readTime: string;
   publishedDate: string; // ISO date string
   coverImage: string;
@@ -53,6 +55,7 @@ export type BlogPost = {
   seoTitle?: string | null;
   seoDescription?: string | null;
 };
+
 
 export const CATEGORY_STYLES: Record<
   BlogCategory,

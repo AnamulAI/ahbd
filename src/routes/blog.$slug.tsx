@@ -806,13 +806,10 @@ type SidebarCardRow = {
   device_visibility: DeviceVisibility;
 };
 
-const CATEGORY_TO_SLUG: Record<string, string> = {
-  "Web Development": "web_development",
-  "AI Integrator": "ai_integrator",
-  "AI Podcast": "ai_podcast",
-};
+// Category slug is stored directly on the post as `categoryKey`.
 
-function useSidebarCards(categoryLabel: string): SidebarCardRow[] {
+
+function useSidebarCards(categoryKey: string): SidebarCardRow[] {
   const [cards, setCards] = useState<SidebarCardRow[]>([]);
   useEffect(() => {
     let active = true;
@@ -823,19 +820,19 @@ function useSidebarCards(categoryLabel: string): SidebarCardRow[] {
         .eq("is_active", true)
         .order("display_order", { ascending: true });
       if (!active || !data) return;
-      const slug = CATEGORY_TO_SLUG[categoryLabel] ?? "";
       const filtered = (data as any[]).filter((c) => {
         const arr = Array.isArray(c.show_on_categories) ? c.show_on_categories : [];
-        return arr.length === 0 || arr.includes(slug);
+        return arr.length === 0 || (categoryKey && arr.includes(categoryKey));
       });
       setCards(filtered as SidebarCardRow[]);
     })();
     return () => {
       active = false;
     };
-  }, [categoryLabel]);
+  }, [categoryKey]);
   return cards;
 }
+
 
 function SidebarCard({ card }: { card: SidebarCardRow }) {
   const [email, setEmail] = useState("");
@@ -1163,7 +1160,7 @@ function BlogPostPage({ post }: { post: BlogPost }) {
             </article>
 
             {/* RIGHT: sticky sidebar */}
-            <StickySidebar headings={headings} category={post.category} />
+            <StickySidebar headings={headings} category={post.categoryKey ?? ""} />
           </div>
         </section>
 
