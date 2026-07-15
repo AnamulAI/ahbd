@@ -79,6 +79,7 @@ export function BlogEditorPage({ id }: { id?: string }) {
     setNewCatLabel("");
     setNewCatColor("#3B82F6");
     await reloadCategories();
+    window.dispatchEvent(new Event("blog-categories:changed"));
     setPost((p) => ({ ...p, category: key }));
   }
 

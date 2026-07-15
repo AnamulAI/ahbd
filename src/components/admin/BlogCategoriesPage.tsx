@@ -84,6 +84,7 @@ export function BlogCategoriesPage() {
     setNewKeyDirty(false);
     setNewColor("#3B82F6");
     setNewSort(100);
+    window.dispatchEvent(new Event("blog-categories:changed"));
     load();
   }
 
@@ -100,6 +101,7 @@ export function BlogCategoriesPage() {
     if (error) return toast.error(error.message);
     toast.success("Saved");
     setEditing(null);
+    window.dispatchEvent(new Event("blog-categories:changed"));
     load();
   }
 
@@ -110,6 +112,7 @@ export function BlogCategoriesPage() {
     const { error } = await supabase.from("blog_categories").delete().eq("key", key);
     if (error) return toast.error(error.message);
     toast.success("Category deleted");
+    window.dispatchEvent(new Event("blog-categories:changed"));
     load();
   }
 

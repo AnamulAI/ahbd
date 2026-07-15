@@ -30,6 +30,25 @@ export function useBlogCategories() {
 
   useEffect(() => {
     load();
+    const channel = supabase
+      .channel("blog_categories_changes")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "blog_categories" },
+        () => {
+          load();
+        },
+      )
+      .subscribe();
+    const onFocus = () => load();
+    const onCustom = () => load();
+    window.addEventListener("focus", onFocus);
+    window.addEventListener("blog-categories:changed", onCustom);
+    return () => {
+      supabase.removeChannel(channel);
+      window.removeEventListener("focus", onFocus);
+      window.removeEventListener("blog-categories:changed", onCustom);
+    };
   }, [load]);
 
   const labelOf = (key: string) =>
