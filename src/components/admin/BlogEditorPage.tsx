@@ -230,12 +230,22 @@ export function BlogEditorPage({ id }: { id?: string }) {
             <label className={labelCls}>Category</label>
             <select
               value={post.category}
-              onChange={(e) => update("category", e.target.value)}
+              onChange={(e) => {
+                if (e.target.value === "__new__") {
+                  setNewCatOpen(true);
+                  return;
+                }
+                update("category", e.target.value);
+              }}
               className={inputCls}
             >
-              {CATEGORY_OPTIONS.map((c) => (
+              {categories.map((c) => (
                 <option key={c.key} value={c.key}>{c.label}</option>
               ))}
+              {!categories.some((c) => c.key === post.category) && post.category && (
+                <option value={post.category}>{post.category}</option>
+              )}
+              <option value="__new__">+ New category…</option>
             </select>
           </div>
           <div>
