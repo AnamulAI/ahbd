@@ -252,7 +252,8 @@ export function SidebarCardEditorPage({ id }: { id?: string }) {
           <div className="lg:col-span-2">
             <label className={labelCls}>Show on categories (empty = all)</label>
             <div className="flex flex-wrap gap-2">
-              {CATEGORIES.map((c) => {
+              {categories.map((cat) => {
+                const c = cat.key;
                 const on = card.show_on_categories.includes(c);
                 return (
                   <button
@@ -272,10 +273,11 @@ export function SidebarCardEditorPage({ id }: { id?: string }) {
                         : "border-white/15 text-white/60 hover:text-white"
                     }`}
                   >
-                    {c.replace(/_/g, " ")}
+                    {cat.label}
                   </button>
                 );
               })}
+
             </div>
           </div>
         </div>
