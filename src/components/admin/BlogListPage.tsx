@@ -16,12 +16,9 @@ import {
   AdminShell,
   useAdminGate,
 } from "@/components/admin/AdminShell";
-import {
-  CATEGORY_OPTIONS,
-  CATEGORY_LABEL,
-  CATEGORY_COLOR,
-  fmtDate,
-} from "@/lib/admin-content-helpers";
+import { fmtDate } from "@/lib/admin-content-helpers";
+import { useBlogCategories } from "@/hooks/use-blog-categories";
+import { Tags } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
