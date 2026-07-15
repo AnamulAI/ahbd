@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AdminShell, useAdminGate } from "@/components/admin/AdminShell";
 import { DeviceVisibilityToggle } from "@/components/admin/DeviceVisibilityToggle";
 import type { DeviceVisibility } from "@/lib/site-section-visibility.functions";
+import { useBlogCategories } from "@/hooks/use-blog-categories";
 
 type Card = {
   id?: string;
@@ -23,7 +24,6 @@ type Card = {
   device_visibility: DeviceVisibility;
 };
 
-const CATEGORIES = ["web_development", "ai_integrator", "ai_podcast"] as const;
 
 const EMPTY: Card = {
   eyebrow_text: "// NEW CARD",
