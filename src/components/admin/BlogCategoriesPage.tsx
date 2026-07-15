@@ -101,6 +101,7 @@ export function BlogCategoriesPage() {
     if (error) return toast.error(error.message);
     toast.success("Saved");
     setEditing(null);
+    window.dispatchEvent(new Event("blog-categories:changed"));
     load();
   }
 
