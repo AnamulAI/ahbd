@@ -154,7 +154,7 @@ export function BlogListPage() {
           className="rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20"
         >
           <option value="all">All categories</option>
-          {CATEGORY_OPTIONS.map((c) => (
+          {categories.map((c) => (
             <option key={c.key} value={c.key}>{c.label}</option>
           ))}
         </select>
