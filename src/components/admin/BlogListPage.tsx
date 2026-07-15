@@ -130,12 +130,20 @@ export function BlogListPage() {
             {counts.total} posts — {counts.pub} published, {counts.draft} draft
           </p>
         </div>
-        <Link
-          to="/admin/blog/new"
-          className="inline-flex h-10 items-center gap-2 rounded-md bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-4 text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 hover:opacity-95"
-        >
-          <Plus className="h-4 w-4" /> New Post
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            to="/admin/blog/categories"
+            className="inline-flex h-10 items-center gap-2 rounded-md border border-white/[0.12] bg-white/[0.04] px-4 text-sm font-medium text-white hover:bg-white/[0.08]"
+          >
+            <Tags className="h-4 w-4" /> Categories
+          </Link>
+          <Link
+            to="/admin/blog/new"
+            className="inline-flex h-10 items-center gap-2 rounded-md bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-4 text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 hover:opacity-95"
+          >
+            <Plus className="h-4 w-4" /> New Post
+          </Link>
+        </div>
       </div>
 
       <div className="mt-6 flex flex-wrap items-center gap-2">
