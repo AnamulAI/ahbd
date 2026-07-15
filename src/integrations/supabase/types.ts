@@ -44,6 +44,33 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_categories: {
+        Row: {
+          color: string
+          created_at: string
+          key: string
+          label: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          key: string
+          label: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          key?: string
+          label?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       blog_posts: {
         Row: {
           body_html: string | null
