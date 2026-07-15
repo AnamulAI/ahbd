@@ -43,6 +43,7 @@ type BlogPost = {
 };
 
 export function BlogListPage() {
+  const { categories, labelOf, colorOf } = useBlogCategories();
   const gate = useAdminGate();
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState<BlogPost[]>([]);
