@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AdminShell, useAdminGate } from "@/components/admin/AdminShell";
 import { DeviceVisibilityToggle } from "@/components/admin/DeviceVisibilityToggle";
 import type { DeviceVisibility } from "@/lib/site-section-visibility.functions";
+import { useBlogCategories } from "@/hooks/use-blog-categories";
 
 type Card = {
   id?: string;
@@ -23,7 +24,6 @@ type Card = {
   device_visibility: DeviceVisibility;
 };
 
-const CATEGORIES = ["web_development", "ai_integrator", "ai_podcast"] as const;
 
 const EMPTY: Card = {
   eyebrow_text: "// NEW CARD",
@@ -45,6 +45,8 @@ const inputCls =
 const labelCls = "block text-[10px] font-mono uppercase tracking-wider text-[#3B82F6] mb-1.5";
 
 export function SidebarCardEditorPage({ id }: { id?: string }) {
+  const { categories } = useBlogCategories();
+
   const gate = useAdminGate();
   const navigate = useNavigate();
   const isEditing = !!id;
@@ -250,7 +252,8 @@ export function SidebarCardEditorPage({ id }: { id?: string }) {
           <div className="lg:col-span-2">
             <label className={labelCls}>Show on categories (empty = all)</label>
             <div className="flex flex-wrap gap-2">
-              {CATEGORIES.map((c) => {
+              {categories.map((cat) => {
+                const c = cat.key;
                 const on = card.show_on_categories.includes(c);
                 return (
                   <button
@@ -270,10 +273,11 @@ export function SidebarCardEditorPage({ id }: { id?: string }) {
                         : "border-white/15 text-white/60 hover:text-white"
                     }`}
                   >
-                    {c.replace(/_/g, " ")}
+                    {cat.label}
                   </button>
                 );
               })}
+
             </div>
           </div>
         </div>
