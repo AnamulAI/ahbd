@@ -112,6 +112,7 @@ export function BlogCategoriesPage() {
     const { error } = await supabase.from("blog_categories").delete().eq("key", key);
     if (error) return toast.error(error.message);
     toast.success("Category deleted");
+    window.dispatchEvent(new Event("blog-categories:changed"));
     load();
   }
 
