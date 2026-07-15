@@ -54,6 +54,33 @@ export function BlogEditorPage({ id }: { id?: string }) {
   const [loading, setLoading] = useState(!!id);
   const [saving, setSaving] = useState(false);
   const [slugDirty, setSlugDirty] = useState(false);
+  const { categories, reload: reloadCategories } = useBlogCategories();
+  const [newCatOpen, setNewCatOpen] = useState(false);
+  const [newCatLabel, setNewCatLabel] = useState("");
+  const [newCatColor, setNewCatColor] = useState("#3B82F6");
+  const [creatingCat, setCreatingCat] = useState(false);
+
+  async function createInlineCategory() {
+    const label = newCatLabel.trim();
+    if (!label) return toast.error("Label required");
+    const key = slugify(label);
+    if (!key) return toast.error("Invalid label");
+    setCreatingCat(true);
+    const { error } = await supabase.from("blog_categories").insert({
+      key,
+      label,
+      color: newCatColor,
+      sort_order: 100,
+    });
+    setCreatingCat(false);
+    if (error) return toast.error(error.message);
+    toast.success("Category added");
+    setNewCatOpen(false);
+    setNewCatLabel("");
+    setNewCatColor("#3B82F6");
+    await reloadCategories();
+    setPost((p) => ({ ...p, category: key }));
+  }
 
   useEffect(() => {
     if (gate.status !== "ok" || !id) return;
