@@ -40,6 +40,7 @@ function dbRowToPost(row: DbBlogRow): BlogPost {
     title: row.title,
     excerpt: row.excerpt ?? "",
     category,
+    categoryKey: row.category,
     readTime: `${row.read_time_minutes ?? 3} min read`,
     publishedDate: row.published_at ?? row.created_at,
     coverImage: row.cover_image_url || DEFAULT_COVER,
@@ -57,6 +58,7 @@ function dbRowToPost(row: DbBlogRow): BlogPost {
     seoDescription: row.seo_description ?? null,
   };
 }
+
 
 export async function fetchDbPublishedPosts(): Promise<BlogPost[]> {
   const { data, error } = await supabase
