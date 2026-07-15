@@ -48,6 +48,7 @@ import { Route as AdminProjectsNewRouteImport } from './routes/admin.projects.ne
 import { Route as AdminProjectsIdRouteImport } from './routes/admin.projects.$id'
 import { Route as AdminComingSoonKeyRouteImport } from './routes/admin.coming-soon.$key'
 import { Route as AdminBlogNewRouteImport } from './routes/admin.blog.new'
+import { Route as AdminBlogCategoriesRouteImport } from './routes/admin.blog.categories'
 import { Route as AdminBlogIdRouteImport } from './routes/admin.blog.$id'
 import { Route as AdminBlogSidebarCardsNewRouteImport } from './routes/admin.blog-sidebar-cards.new'
 import { Route as AdminBlogSidebarCardsIdRouteImport } from './routes/admin.blog-sidebar-cards.$id'
@@ -248,6 +249,11 @@ const AdminBlogNewRoute = AdminBlogNewRouteImport.update({
   path: '/admin/blog/new',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminBlogCategoriesRoute = AdminBlogCategoriesRouteImport.update({
+  id: '/admin/blog/categories',
+  path: '/admin/blog/categories',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminBlogIdRoute = AdminBlogIdRouteImport.update({
   id: '/admin/blog/$id',
   path: '/admin/blog/$id',
@@ -296,6 +302,7 @@ export interface FileRoutesByFullPath {
   '/admin/blog-sidebar-cards/$id': typeof AdminBlogSidebarCardsIdRoute
   '/admin/blog-sidebar-cards/new': typeof AdminBlogSidebarCardsNewRoute
   '/admin/blog/$id': typeof AdminBlogIdRoute
+  '/admin/blog/categories': typeof AdminBlogCategoriesRoute
   '/admin/blog/new': typeof AdminBlogNewRoute
   '/admin/coming-soon/$key': typeof AdminComingSoonKeyRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
@@ -340,6 +347,7 @@ export interface FileRoutesByTo {
   '/admin/blog-sidebar-cards/$id': typeof AdminBlogSidebarCardsIdRoute
   '/admin/blog-sidebar-cards/new': typeof AdminBlogSidebarCardsNewRoute
   '/admin/blog/$id': typeof AdminBlogIdRoute
+  '/admin/blog/categories': typeof AdminBlogCategoriesRoute
   '/admin/blog/new': typeof AdminBlogNewRoute
   '/admin/coming-soon/$key': typeof AdminComingSoonKeyRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
@@ -385,6 +393,7 @@ export interface FileRoutesById {
   '/admin/blog-sidebar-cards/$id': typeof AdminBlogSidebarCardsIdRoute
   '/admin/blog-sidebar-cards/new': typeof AdminBlogSidebarCardsNewRoute
   '/admin/blog/$id': typeof AdminBlogIdRoute
+  '/admin/blog/categories': typeof AdminBlogCategoriesRoute
   '/admin/blog/new': typeof AdminBlogNewRoute
   '/admin/coming-soon/$key': typeof AdminComingSoonKeyRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
@@ -431,6 +440,7 @@ export interface FileRouteTypes {
     | '/admin/blog-sidebar-cards/$id'
     | '/admin/blog-sidebar-cards/new'
     | '/admin/blog/$id'
+    | '/admin/blog/categories'
     | '/admin/blog/new'
     | '/admin/coming-soon/$key'
     | '/admin/projects/$id'
@@ -475,6 +485,7 @@ export interface FileRouteTypes {
     | '/admin/blog-sidebar-cards/$id'
     | '/admin/blog-sidebar-cards/new'
     | '/admin/blog/$id'
+    | '/admin/blog/categories'
     | '/admin/blog/new'
     | '/admin/coming-soon/$key'
     | '/admin/projects/$id'
@@ -519,6 +530,7 @@ export interface FileRouteTypes {
     | '/admin/blog-sidebar-cards/$id'
     | '/admin/blog-sidebar-cards/new'
     | '/admin/blog/$id'
+    | '/admin/blog/categories'
     | '/admin/blog/new'
     | '/admin/coming-soon/$key'
     | '/admin/projects/$id'
@@ -564,6 +576,7 @@ export interface RootRouteChildren {
   AdminBlogSidebarCardsIdRoute: typeof AdminBlogSidebarCardsIdRoute
   AdminBlogSidebarCardsNewRoute: typeof AdminBlogSidebarCardsNewRoute
   AdminBlogIdRoute: typeof AdminBlogIdRoute
+  AdminBlogCategoriesRoute: typeof AdminBlogCategoriesRoute
   AdminBlogNewRoute: typeof AdminBlogNewRoute
   AdminComingSoonKeyRoute: typeof AdminComingSoonKeyRoute
   AdminProjectsIdRoute: typeof AdminProjectsIdRoute
@@ -853,6 +866,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBlogNewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/blog/categories': {
+      id: '/admin/blog/categories'
+      path: '/admin/blog/categories'
+      fullPath: '/admin/blog/categories'
+      preLoaderRoute: typeof AdminBlogCategoriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/blog/$id': {
       id: '/admin/blog/$id'
       path: '/admin/blog/$id'
@@ -908,6 +928,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminBlogSidebarCardsIdRoute: AdminBlogSidebarCardsIdRoute,
   AdminBlogSidebarCardsNewRoute: AdminBlogSidebarCardsNewRoute,
   AdminBlogIdRoute: AdminBlogIdRoute,
+  AdminBlogCategoriesRoute: AdminBlogCategoriesRoute,
   AdminBlogNewRoute: AdminBlogNewRoute,
   AdminComingSoonKeyRoute: AdminComingSoonKeyRoute,
   AdminProjectsIdRoute: AdminProjectsIdRoute,

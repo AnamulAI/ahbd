@@ -6,11 +6,15 @@ import { toast } from "sonner";
 import { AdminShell, useAdminGate } from "@/components/admin/AdminShell";
 import { ImageUploader } from "@/components/admin/ImageUploader";
 import { MarkdownEditor } from "@/components/admin/MarkdownEditor";
+import { estimateReadMinutes, slugify } from "@/lib/admin-content-helpers";
+import { useBlogCategories } from "@/hooks/use-blog-categories";
 import {
-  CATEGORY_OPTIONS,
-  estimateReadMinutes,
-  slugify,
-} from "@/lib/admin-content-helpers";
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 type Post = {
   id?: string;
@@ -50,6 +54,33 @@ export function BlogEditorPage({ id }: { id?: string }) {
   const [loading, setLoading] = useState(!!id);
   const [saving, setSaving] = useState(false);
   const [slugDirty, setSlugDirty] = useState(false);
+  const { categories, reload: reloadCategories } = useBlogCategories();
+  const [newCatOpen, setNewCatOpen] = useState(false);
+  const [newCatLabel, setNewCatLabel] = useState("");
+  const [newCatColor, setNewCatColor] = useState("#3B82F6");
+  const [creatingCat, setCreatingCat] = useState(false);
+
+  async function createInlineCategory() {
+    const label = newCatLabel.trim();
+    if (!label) return toast.error("Label required");
+    const key = slugify(label);
+    if (!key) return toast.error("Invalid label");
+    setCreatingCat(true);
+    const { error } = await supabase.from("blog_categories").insert({
+      key,
+      label,
+      color: newCatColor,
+      sort_order: 100,
+    });
+    setCreatingCat(false);
+    if (error) return toast.error(error.message);
+    toast.success("Category added");
+    setNewCatOpen(false);
+    setNewCatLabel("");
+    setNewCatColor("#3B82F6");
+    await reloadCategories();
+    setPost((p) => ({ ...p, category: key }));
+  }
 
   useEffect(() => {
     if (gate.status !== "ok" || !id) return;
@@ -199,12 +230,22 @@ export function BlogEditorPage({ id }: { id?: string }) {
             <label className={labelCls}>Category</label>
             <select
               value={post.category}
-              onChange={(e) => update("category", e.target.value)}
+              onChange={(e) => {
+                if (e.target.value === "__new__") {
+                  setNewCatOpen(true);
+                  return;
+                }
+                update("category", e.target.value);
+              }}
               className={inputCls}
             >
-              {CATEGORY_OPTIONS.map((c) => (
+              {categories.map((c) => (
                 <option key={c.key} value={c.key}>{c.label}</option>
               ))}
+              {!categories.some((c) => c.key === post.category) && post.category && (
+                <option value={post.category}>{post.category}</option>
+              )}
+              <option value="__new__">+ New category…</option>
             </select>
           </div>
           <div>
@@ -273,6 +314,65 @@ export function BlogEditorPage({ id }: { id?: string }) {
           </div>
         </aside>
       </div>
+
+      <Dialog open={newCatOpen} onOpenChange={setNewCatOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>New category</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <label className={labelCls}>Label</label>
+              <input
+                autoFocus
+                value={newCatLabel}
+                onChange={(e) => setNewCatLabel(e.target.value)}
+                placeholder="e.g. Case Studies"
+                className={inputCls}
+              />
+              {newCatLabel && (
+                <p className="mt-1 text-[11px] text-white/40">
+                  Key: <span className="font-mono">{slugify(newCatLabel)}</span>
+                </p>
+              )}
+            </div>
+            <div>
+              <label className={labelCls}>Color</label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="color"
+                  value={newCatColor}
+                  onChange={(e) => setNewCatColor(e.target.value)}
+                  className="h-10 w-14 cursor-pointer rounded border border-white/10 bg-transparent"
+                />
+                <input
+                  value={newCatColor}
+                  onChange={(e) => setNewCatColor(e.target.value)}
+                  className={inputCls}
+                />
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <button
+              type="button"
+              onClick={() => setNewCatOpen(false)}
+              className="inline-flex h-10 items-center gap-2 rounded-md border border-white/[0.12] bg-white/[0.04] px-4 text-sm font-medium text-white hover:bg-white/[0.08]"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={createInlineCategory}
+              disabled={creatingCat || !newCatLabel.trim()}
+              className="inline-flex h-10 items-center gap-2 rounded-md bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-4 text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 hover:opacity-95 disabled:opacity-60"
+            >
+              {creatingCat ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+              Add category
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </AdminShell>
   );
 }

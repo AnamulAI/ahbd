@@ -16,12 +16,9 @@ import {
   AdminShell,
   useAdminGate,
 } from "@/components/admin/AdminShell";
-import {
-  CATEGORY_OPTIONS,
-  CATEGORY_LABEL,
-  CATEGORY_COLOR,
-  fmtDate,
-} from "@/lib/admin-content-helpers";
+import { fmtDate } from "@/lib/admin-content-helpers";
+import { useBlogCategories } from "@/hooks/use-blog-categories";
+import { Tags } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -46,6 +43,7 @@ type BlogPost = {
 };
 
 export function BlogListPage() {
+  const { categories, labelOf, colorOf } = useBlogCategories();
   const gate = useAdminGate();
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -132,12 +130,20 @@ export function BlogListPage() {
             {counts.total} posts — {counts.pub} published, {counts.draft} draft
           </p>
         </div>
-        <Link
-          to="/admin/blog/new"
-          className="inline-flex h-10 items-center gap-2 rounded-md bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-4 text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 hover:opacity-95"
-        >
-          <Plus className="h-4 w-4" /> New Post
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            to="/admin/blog/categories"
+            className="inline-flex h-10 items-center gap-2 rounded-md border border-white/[0.12] bg-white/[0.04] px-4 text-sm font-medium text-white hover:bg-white/[0.08]"
+          >
+            <Tags className="h-4 w-4" /> Categories
+          </Link>
+          <Link
+            to="/admin/blog/new"
+            className="inline-flex h-10 items-center gap-2 rounded-md bg-gradient-to-r from-[#3B82F6] to-[#F97316] px-4 text-sm font-semibold text-white shadow-lg shadow-[#3B82F6]/20 hover:opacity-95"
+          >
+            <Plus className="h-4 w-4" /> New Post
+          </Link>
+        </div>
       </div>
 
       <div className="mt-6 flex flex-wrap items-center gap-2">
@@ -156,7 +162,7 @@ export function BlogListPage() {
           className="rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20"
         >
           <option value="all">All categories</option>
-          {CATEGORY_OPTIONS.map((c) => (
+          {categories.map((c) => (
             <option key={c.key} value={c.key}>{c.label}</option>
           ))}
         </select>
@@ -223,12 +229,12 @@ export function BlogListPage() {
                     <span
                       className="inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider"
                       style={{
-                        color: CATEGORY_COLOR[p.category],
-                        borderColor: `${CATEGORY_COLOR[p.category]}66`,
-                        background: `${CATEGORY_COLOR[p.category]}1a`,
+                        color: colorOf(p.category),
+                        borderColor: `${colorOf(p.category)}66`,
+                        background: `${colorOf(p.category)}1a`,
                       }}
                     >
-                      {CATEGORY_LABEL[p.category]}
+                      {labelOf(p.category)}
                     </span>
                   </td>
                   <td className="px-2 py-3">
