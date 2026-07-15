@@ -45,6 +45,8 @@ const inputCls =
 const labelCls = "block text-[10px] font-mono uppercase tracking-wider text-[#3B82F6] mb-1.5";
 
 export function SidebarCardEditorPage({ id }: { id?: string }) {
+  const { categories } = useBlogCategories();
+
   const gate = useAdminGate();
   const navigate = useNavigate();
   const isEditing = !!id;
