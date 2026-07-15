@@ -128,7 +128,9 @@ export const Route = createFileRoute("/api/public/track-visit")({
           typeof v === "string" && v.length > 0 ? v.slice(0, 500) : null;
         const bool = (v: unknown): boolean => v === true;
 
+        const id = crypto.randomUUID();
         const row = {
+          id,
           session_id: str(payload.session_id) ?? "unknown",
           visitor_id: str(payload.visitor_id) ?? "unknown",
           path: str(payload.path) ?? "/",
@@ -148,18 +150,14 @@ export const Route = createFileRoute("/api/public/track-visit")({
           is_bot: bool(payload.is_bot),
         };
 
-        const { data, error } = await supa
-          .from("page_visits")
-          .insert(row)
-          .select("id")
-          .single();
+        const { error } = await supa.from("page_visits").insert(row);
         if (error) {
           return new Response(JSON.stringify({ error: error.message }), {
             status: 500,
             headers: { "Content-Type": "application/json" },
           });
         }
-        return Response.json({ id: data.id });
+        return Response.json({ id });
       },
     },
   },
