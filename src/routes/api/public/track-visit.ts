@@ -101,8 +101,28 @@ export const Route = createFileRoute("/api/public/track-visit")({
         const ip = pickClientIp(request);
         const geo = await geoLookup(ip);
 
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const supa = supabaseAdmin;
+        const { createClient } = await import("@supabase/supabase-js");
+        const url = process.env.SUPABASE_URL;
+        const key = process.env.SUPABASE_PUBLISHABLE_KEY;
+        if (!url || !key) {
+          return new Response(
+            JSON.stringify({ error: "Server not configured" }),
+            { status: 500, headers: { "Content-Type": "application/json" } },
+          );
+        }
+        const supa = createClient(url, key, {
+          auth: { persistSession: false, autoRefreshToken: false },
+          global: {
+            fetch: (input, init) => {
+              const h = new Headers(init?.headers);
+              if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`) {
+                h.delete("Authorization");
+              }
+              h.set("apikey", key);
+              return fetch(input, { ...init, headers: h });
+            },
+          },
+        });
 
         const str = (v: unknown): string | null =>
           typeof v === "string" && v.length > 0 ? v.slice(0, 500) : null;
