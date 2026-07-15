@@ -6,11 +6,15 @@ import { toast } from "sonner";
 import { AdminShell, useAdminGate } from "@/components/admin/AdminShell";
 import { ImageUploader } from "@/components/admin/ImageUploader";
 import { MarkdownEditor } from "@/components/admin/MarkdownEditor";
+import { estimateReadMinutes, slugify } from "@/lib/admin-content-helpers";
+import { useBlogCategories } from "@/hooks/use-blog-categories";
 import {
-  CATEGORY_OPTIONS,
-  estimateReadMinutes,
-  slugify,
-} from "@/lib/admin-content-helpers";
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 type Post = {
   id?: string;
