@@ -221,12 +221,12 @@ export function BlogListPage() {
                     <span
                       className="inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider"
                       style={{
-                        color: CATEGORY_COLOR[p.category],
-                        borderColor: `${CATEGORY_COLOR[p.category]}66`,
-                        background: `${CATEGORY_COLOR[p.category]}1a`,
+                        color: colorOf(p.category),
+                        borderColor: `${colorOf(p.category)}66`,
+                        background: `${colorOf(p.category)}1a`,
                       }}
                     >
-                      {CATEGORY_LABEL[p.category]}
+                      {labelOf(p.category)}
                     </span>
                   </td>
                   <td className="px-2 py-3">
