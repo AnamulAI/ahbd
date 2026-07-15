@@ -84,6 +84,7 @@ export function BlogCategoriesPage() {
     setNewKeyDirty(false);
     setNewColor("#3B82F6");
     setNewSort(100);
+    window.dispatchEvent(new Event("blog-categories:changed"));
     load();
   }
 
