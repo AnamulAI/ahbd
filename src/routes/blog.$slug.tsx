@@ -806,11 +806,8 @@ type SidebarCardRow = {
   device_visibility: DeviceVisibility;
 };
 
-const CATEGORY_TO_SLUG: Record<string, string> = {
-  "Web Development": "web_development",
-  "AI Integrator": "ai_integrator",
-  "AI Podcast": "ai_podcast",
-};
+// Category slug is stored directly on the post as `categoryKey`.
+
 
 function useSidebarCards(categoryKey: string): SidebarCardRow[] {
   const [cards, setCards] = useState<SidebarCardRow[]>([]);
