@@ -27,6 +27,8 @@ import {
   ImagePlus,
   Loader2,
   Save,
+  ToggleLeft,
+  ToggleRight,
   Upload,
   X,
 } from "lucide-react";
