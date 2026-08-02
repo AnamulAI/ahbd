@@ -25,6 +25,10 @@ const MEDIA_URL_FIELDS = [
   "clip_instagram_url",
   "clip_tiktok_url",
   "clip_linkedin_url",
+  "extra_video_1_url",
+  "extra_video_2_url",
+  "extra_video_3_url",
+  "extra_video_4_url",
 ] as const;
 
 function createPublicSupabaseClient() {
