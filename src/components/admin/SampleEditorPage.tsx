@@ -566,7 +566,7 @@ function Editor({ editId }: { editId?: string }) {
                   publish it.
                 </p>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid w-full grid-cols-1 gap-4">
                 {extraVideos.map((v, i) => (
                   <div
                     key={i}
