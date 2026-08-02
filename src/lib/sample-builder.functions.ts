@@ -250,6 +250,18 @@ export type SamplePayload = {
   logo_direct_url?: string | null;
   audio_url?: string | null;
   video_url?: string | null;
+  extra_video_1_url?: string | null;
+  extra_video_1_title?: string | null;
+  extra_video_1_enabled?: boolean;
+  extra_video_2_url?: string | null;
+  extra_video_2_title?: string | null;
+  extra_video_2_enabled?: boolean;
+  extra_video_3_url?: string | null;
+  extra_video_3_title?: string | null;
+  extra_video_3_enabled?: boolean;
+  extra_video_4_url?: string | null;
+  extra_video_4_title?: string | null;
+  extra_video_4_enabled?: boolean;
   clip_instagram_url?: string | null;
   clip_tiktok_url?: string | null;
   clip_linkedin_url?: string | null;
