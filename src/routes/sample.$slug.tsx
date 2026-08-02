@@ -486,6 +486,7 @@ function SamplePage() {
               businessName={data.business_name}
               episodeTitle={episodeTitle}
               videoUrl={data.video_url}
+              extraVideos={extraVideosOf(data)}
             />
           );
         }
@@ -876,7 +877,40 @@ function YouTubeMock({ businessName, logoUrl, episodeTitle, videoUrl }: {
   );
 }
 
-function VideoModule({ businessName, episodeTitle, videoUrl }: { businessName: string; episodeTitle: string; videoUrl: string | null }) {
+type ExtraVideo = { url: string; title: string | null };
+
+function extraVideosOf(data: Record<string, unknown>): ExtraVideo[] {
+  return [1, 2, 3, 4]
+    .map((i) => ({
+      url: (data[`extra_video_${i}_url`] as string | null) ?? null,
+      title: (data[`extra_video_${i}_title`] as string | null) ?? null,
+      enabled: !!data[`extra_video_${i}_enabled`],
+    }))
+    .filter((v): v is { url: string; title: string | null; enabled: boolean } =>
+      Boolean(v.enabled && v.url),
+    )
+    .map(({ url, title }) => ({ url, title }));
+}
+
+function ExtraVideoCard({ video }: { video: ExtraVideo }) {
+  const youtube = isYouTubeUrl(video.url) ? video.url : null;
+  return (
+    <div className="rounded-xl overflow-hidden border border-white/10 bg-neutral-900">
+      <div className="relative aspect-video bg-black">
+        {youtube ? (
+          <YouTubeEmbed url={youtube} className="absolute inset-0" minimal />
+        ) : (
+          <video src={video.url} controls preload="metadata" className="absolute inset-0 size-full object-contain bg-black" />
+        )}
+      </div>
+      {video.title?.trim() && (
+        <p className="px-4 py-3 text-sm text-white/80">{video.title.trim()}</p>
+      )}
+    </div>
+  );
+}
+
+function VideoModule({ businessName, episodeTitle, videoUrl, extraVideos = [] }: { businessName: string; episodeTitle: string; videoUrl: string | null; extraVideos?: ExtraVideo[] }) {
   const [playing, setPlaying] = useState(false);
   const youtube = videoUrl && isYouTubeUrl(videoUrl) ? videoUrl : null;
   return (
@@ -934,6 +968,13 @@ function VideoModule({ businessName, episodeTitle, videoUrl }: { businessName: s
             )}
           </div>
         </div>
+        {extraVideos.length > 0 && (
+          <div className="mt-6 grid gap-6 sm:grid-cols-2">
+            {extraVideos.map((v) => (
+              <ExtraVideoCard key={v.url} video={v} />
+            ))}
+          </div>
+        )}
         <p className="mt-6 text-center text-muted-foreground text-sm max-w-xl mx-auto">
           Every episode can also be delivered as a publish-ready video — formatted for YouTube,
           TikTok, Instagram Reels, and more.
