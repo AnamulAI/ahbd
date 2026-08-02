@@ -38,6 +38,7 @@ import { AdminShell, useAdminGate } from "@/components/admin/AdminShell";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { uploadContentImage } from "@/lib/admin-content-helpers";
 import {
   createMediaUploadUrl,
   createSample,
