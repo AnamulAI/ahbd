@@ -265,6 +265,12 @@ export type SamplePayload = {
   clip_instagram_url?: string | null;
   clip_tiktok_url?: string | null;
   clip_linkedin_url?: string | null;
+  clip_instagram_thumb_url?: string | null;
+  clip_instagram_thumb_enabled?: boolean;
+  clip_tiktok_thumb_url?: string | null;
+  clip_tiktok_thumb_enabled?: boolean;
+  clip_linkedin_thumb_url?: string | null;
+  clip_linkedin_thumb_enabled?: boolean;
   // New conversion-boosting fields
   client_industry?: string | null;
   scarcity_enabled?: boolean;
@@ -394,6 +400,12 @@ export const createSample = createServerFn({ method: "POST" })
           clip_instagram_url: data.clip_instagram_url || null,
           clip_tiktok_url: data.clip_tiktok_url || null,
           clip_linkedin_url: data.clip_linkedin_url || null,
+          clip_instagram_thumb_url: data.clip_instagram_thumb_url || null,
+          clip_instagram_thumb_enabled: !!data.clip_instagram_thumb_enabled,
+          clip_tiktok_thumb_url: data.clip_tiktok_thumb_url || null,
+          clip_tiktok_thumb_enabled: !!data.clip_tiktok_thumb_enabled,
+          clip_linkedin_thumb_url: data.clip_linkedin_thumb_url || null,
+          clip_linkedin_thumb_enabled: !!data.clip_linkedin_thumb_enabled,
           client_industry: data.client_industry ?? null,
           scarcity_enabled: !!data.scarcity_enabled,
           scarcity_message: data.scarcity_message ?? null,
@@ -489,6 +501,12 @@ export const updateSample = createServerFn({ method: "POST" })
           clip_instagram_url: data.clip_instagram_url || null,
           clip_tiktok_url: data.clip_tiktok_url || null,
           clip_linkedin_url: data.clip_linkedin_url || null,
+          clip_instagram_thumb_url: data.clip_instagram_thumb_url || null,
+          clip_instagram_thumb_enabled: !!data.clip_instagram_thumb_enabled,
+          clip_tiktok_thumb_url: data.clip_tiktok_thumb_url || null,
+          clip_tiktok_thumb_enabled: !!data.clip_tiktok_thumb_enabled,
+          clip_linkedin_thumb_url: data.clip_linkedin_thumb_url || null,
+          clip_linkedin_thumb_enabled: !!data.clip_linkedin_thumb_enabled,
           client_industry: data.client_industry ?? null,
           scarcity_enabled: !!data.scarcity_enabled,
           scarcity_message: data.scarcity_message ?? null,
