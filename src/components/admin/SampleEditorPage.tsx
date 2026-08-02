@@ -38,6 +38,7 @@ import { AdminShell, useAdminGate } from "@/components/admin/AdminShell";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { uploadContentImage } from "@/lib/admin-content-helpers";
 import {
   createMediaUploadUrl,
   createSample,
@@ -135,6 +136,12 @@ function Editor({ editId }: { editId?: string }) {
   const [clipIg, setClipIg] = useState<string | null>(null);
   const [clipTt, setClipTt] = useState<string | null>(null);
   const [clipLi, setClipLi] = useState<string | null>(null);
+  const [thumbIg, setThumbIg] = useState<string | null>(null);
+  const [thumbIgOn, setThumbIgOn] = useState(false);
+  const [thumbTt, setThumbTt] = useState<string | null>(null);
+  const [thumbTtOn, setThumbTtOn] = useState(false);
+  const [thumbLi, setThumbLi] = useState<string | null>(null);
+  const [thumbLiOn, setThumbLiOn] = useState(false);
 
   const [clientIndustry, setClientIndustry] = useState("");
   const [scarcityEnabled, setScarcityEnabled] = useState(false);
@@ -220,6 +227,12 @@ function Editor({ editId }: { editId?: string }) {
         setClipIg(s.clip_instagram_url);
         setClipTt(s.clip_tiktok_url);
         setClipLi(s.clip_linkedin_url);
+        setThumbIg((s as any).clip_instagram_thumb_url ?? null);
+        setThumbIgOn(!!(s as any).clip_instagram_thumb_enabled);
+        setThumbTt((s as any).clip_tiktok_thumb_url ?? null);
+        setThumbTtOn(!!(s as any).clip_tiktok_thumb_enabled);
+        setThumbLi((s as any).clip_linkedin_thumb_url ?? null);
+        setThumbLiOn(!!(s as any).clip_linkedin_thumb_enabled);
         setClientIndustry(s.client_industry ?? "");
         setScarcityEnabled(!!s.scarcity_enabled);
         setScarcityMessage(s.scarcity_message ?? "");
@@ -317,6 +330,12 @@ function Editor({ editId }: { editId?: string }) {
         clip_instagram_url: clipIg,
         clip_tiktok_url: clipTt,
         clip_linkedin_url: clipLi,
+        clip_instagram_thumb_url: thumbIg,
+        clip_instagram_thumb_enabled: thumbIgOn,
+        clip_tiktok_thumb_url: thumbTt,
+        clip_tiktok_thumb_enabled: thumbTtOn,
+        clip_linkedin_thumb_url: thumbLi,
+        clip_linkedin_thumb_enabled: thumbLiOn,
         client_industry: clientIndustry.trim() || null,
         scarcity_enabled: scarcityEnabled,
         scarcity_message: scarcityMessage.trim() || null,
@@ -687,6 +706,14 @@ function Editor({ editId }: { editId?: string }) {
                 onUpload={uploadMedia}
                 onChange={setClipIg}
               />
+              <ClipThumbnailField
+                platform="Instagram"
+                value={thumbIg}
+                onChange={setThumbIg}
+                enabled={thumbIgOn}
+                onEnabledChange={setThumbIgOn}
+              />
+
               <div>
                 <label className={labelCls}>Instagram Caption</label>
                 <textarea
@@ -706,6 +733,14 @@ function Editor({ editId }: { editId?: string }) {
                 onUpload={uploadMedia}
                 onChange={setClipTt}
               />
+              <ClipThumbnailField
+                platform="TikTok"
+                value={thumbTt}
+                onChange={setThumbTt}
+                enabled={thumbTtOn}
+                onEnabledChange={setThumbTtOn}
+              />
+
               <div>
                 <label className={labelCls}>TikTok Caption</label>
                 <textarea
@@ -725,6 +760,14 @@ function Editor({ editId }: { editId?: string }) {
                 onUpload={uploadMedia}
                 onChange={setClipLi}
               />
+              <ClipThumbnailField
+                platform="LinkedIn"
+                value={thumbLi}
+                onChange={setThumbLi}
+                enabled={thumbLiOn}
+                onEnabledChange={setThumbLiOn}
+              />
+
               <div>
                 <label className={labelCls}>LinkedIn Caption</label>
                 <textarea
@@ -1008,6 +1051,106 @@ function MediaDropzone({
         }}
       />
       {hint && <p className="text-[11px] text-white/40">{hint}</p>}
+    </div>
+  );
+}
+
+function ClipThumbnailField({
+  platform,
+  value,
+  onChange,
+  enabled,
+  onEnabledChange,
+}: {
+  platform: string;
+  value: string | null;
+  onChange: (url: string | null) => void;
+  enabled: boolean;
+  onEnabledChange: (b: boolean) => void;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function handleFile(file: File) {
+    setBusy(true);
+    try {
+      const url = await uploadContentImage(file);
+      onChange(url);
+      if (!enabled) onEnabledChange(true);
+      toast.success("Thumbnail uploaded");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Upload failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="space-y-2 rounded-md border border-white/[0.08] bg-[#121A2E] p-3">
+      <div className="flex items-center justify-between gap-3">
+        <label className={labelCls}>{platform} custom thumbnail</label>
+        <Switch checked={enabled} onCheckedChange={onEnabledChange} />
+      </div>
+
+      {value ? (
+        <div className="flex items-start gap-3">
+          <div className="relative w-24 shrink-0 overflow-hidden rounded-md border border-white/[0.08] bg-[#0B0F1A]">
+            <img src={value} alt="" className="aspect-[9/16] w-full object-cover" />
+            <button
+              type="button"
+              onClick={() => onChange(null)}
+              className="absolute right-1 top-1 inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/70 text-white/80 hover:bg-black/90 hover:text-white"
+              aria-label="Remove thumbnail"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+          <p className="text-[11px] leading-relaxed text-white/45">
+            {enabled
+              ? "Shown as the clip poster on the public page."
+              : "Saved, but hidden until the switch is on."}
+          </p>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          disabled={busy}
+          className="flex w-full flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-white/[0.12] bg-[#0B0F1A] px-3 py-5 text-white/50 transition-colors duration-[250ms] ease hover:border-[#3B82F6]/60 hover:bg-[#3B82F6]/[0.05] hover:text-[#3B82F6] disabled:opacity-60"
+        >
+          {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : <ImagePlus className="h-5 w-5" />}
+          <span className="text-xs">Click to upload a thumbnail (9:16 works best)</span>
+        </button>
+      )}
+
+      <div className="flex gap-2">
+        <input
+          type="text"
+          placeholder="…or paste an image URL"
+          value={value ?? ""}
+          onChange={(e) => onChange(e.target.value || null)}
+          className={inputClsSmall}
+        />
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          className="inline-flex items-center gap-1.5 rounded-md border border-white/[0.1] bg-white/[0.04] px-3 py-1.5 text-xs text-white/80 hover:bg-white/[0.08]"
+        >
+          <Upload className="h-3.5 w-3.5" /> Upload
+        </button>
+      </div>
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) handleFile(f);
+          e.target.value = "";
+        }}
+      />
     </div>
   );
 }

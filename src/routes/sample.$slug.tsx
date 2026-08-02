@@ -499,6 +499,9 @@ function SamplePage() {
               clipInstagram={data.clip_instagram_url}
               clipTiktok={data.clip_tiktok_url}
               clipLinkedin={data.clip_linkedin_url}
+              thumbInstagram={(data as any).clip_instagram_thumb_enabled ? ((data as any).clip_instagram_thumb_url ?? null) : null}
+              thumbTiktok={(data as any).clip_tiktok_thumb_enabled ? ((data as any).clip_tiktok_thumb_url ?? null) : null}
+              thumbLinkedin={(data as any).clip_linkedin_thumb_enabled ? ((data as any).clip_linkedin_thumb_url ?? null) : null}
               captionInstagram={(data as any).ig_reel_caption ?? null}
               captionTiktok={(data as any).tiktok_clip_caption ?? null}
               captionLinkedin={(data as any).linkedin_clip_caption ?? null}
@@ -987,7 +990,7 @@ function VideoModule({ businessName, episodeTitle, videoUrl, extraVideos = [] }:
 }
 
 function SmmClipCard({
-  brand, Icon, color, label, snippet, clipUrl, iconColor, iconBg, caption,
+  brand, Icon, color, label, snippet, clipUrl, iconColor, iconBg, caption, thumbUrl,
 }: {
   brand: string;
   Icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
@@ -998,6 +1001,7 @@ function SmmClipCard({
   iconColor?: string;
   iconBg?: string;
   caption?: string | null;
+  thumbUrl?: string | null;
 }) {
   const [playing, setPlaying] = useState(false);
   const youtube = clipUrl && isYouTubeUrl(clipUrl) ? clipUrl : null;
@@ -1029,9 +1033,16 @@ function SmmClipCard({
           )
         ) : (
           <>
-            {youtube && (
+            {thumbUrl ? (
+              <img
+                src={thumbUrl}
+                alt={`${label} thumbnail`}
+                loading="lazy"
+                className="absolute inset-0 size-full object-cover"
+              />
+            ) : youtube ? (
               <YouTubeThumb url={youtube} className="absolute inset-0 size-full" />
-            )}
+            ) : null}
             <div className="absolute inset-0 bg-black/30" />
             <button
               type="button"
@@ -1075,6 +1086,7 @@ function SmmClipCard({
 function SmmModule({
   topic, businessName, clipInstagram, clipTiktok, clipLinkedin,
   captionInstagram, captionTiktok, captionLinkedin,
+  thumbInstagram, thumbTiktok, thumbLinkedin,
 }: {
   topic: string;
   businessName: string;
@@ -1084,12 +1096,15 @@ function SmmModule({
   captionInstagram?: string | null;
   captionTiktok?: string | null;
   captionLinkedin?: string | null;
+  thumbInstagram?: string | null;
+  thumbTiktok?: string | null;
+  thumbLinkedin?: string | null;
 }) {
   const snippet = (topic || businessName).slice(0, 60);
   const cards = [
-    { brand: "instagram", Icon: SiInstagram, color: "linear-gradient(135deg, #F58529, #DD2A7B, #8134AF)", label: "Instagram Reel", clipUrl: clipInstagram, iconBg: "linear-gradient(135deg, #833AB4, #FD1D1D, #F56040)", iconColor: "#ffffff", caption: captionInstagram },
-    { brand: "tiktok", Icon: SiTiktok, color: "#000000", label: "TikTok", clipUrl: clipTiktok, iconBg: "#000000", iconColor: "#00F2EA", caption: captionTiktok },
-    { brand: "linkedin", Icon: SiLinkedin, color: "#0A66C2", label: "LinkedIn Clip", clipUrl: clipLinkedin, iconBg: "#ffffff", iconColor: "#0A66C2", caption: captionLinkedin },
+    { brand: "instagram", Icon: SiInstagram, color: "linear-gradient(135deg, #F58529, #DD2A7B, #8134AF)", label: "Instagram Reel", clipUrl: clipInstagram, iconBg: "linear-gradient(135deg, #833AB4, #FD1D1D, #F56040)", iconColor: "#ffffff", caption: captionInstagram, thumbUrl: thumbInstagram },
+    { brand: "tiktok", Icon: SiTiktok, color: "#000000", label: "TikTok", clipUrl: clipTiktok, iconBg: "#000000", iconColor: "#00F2EA", caption: captionTiktok, thumbUrl: thumbTiktok },
+    { brand: "linkedin", Icon: SiLinkedin, color: "#0A66C2", label: "LinkedIn Clip", clipUrl: clipLinkedin, iconBg: "#ffffff", iconColor: "#0A66C2", caption: captionLinkedin, thumbUrl: thumbLinkedin },
   ];
 
   return (
@@ -1109,6 +1124,7 @@ function SmmModule({
               iconColor={c.iconColor}
               iconBg={c.iconBg}
               caption={c.caption}
+              thumbUrl={c.thumbUrl}
             />
           ))}
         </div>
