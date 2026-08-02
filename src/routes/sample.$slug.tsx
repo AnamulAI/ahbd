@@ -968,13 +968,15 @@ function VideoModule({ businessName, episodeTitle, videoUrl, extraVideos = [] }:
             )}
           </div>
         </div>
-        {extraVideos.length > 0 && (
-          <div className="mt-6 grid gap-6 sm:grid-cols-2">
-            {extraVideos.map((v) => (
-              <ExtraVideoCard key={v.url} video={v} />
-            ))}
-          </div>
-        )}
+      </div>
+      {extraVideos.length > 0 && (
+        <div className="mx-auto max-w-6xl mt-6 grid gap-6 sm:grid-cols-2">
+          {extraVideos.map((v) => (
+            <ExtraVideoCard key={v.url} video={v} />
+          ))}
+        </div>
+      )}
+      <div className="mx-auto max-w-4xl">
         <p className="mt-6 text-center text-muted-foreground text-sm max-w-xl mx-auto">
           Every episode can also be delivered as a publish-ready video — formatted for YouTube,
           TikTok, Instagram Reels, and more.
