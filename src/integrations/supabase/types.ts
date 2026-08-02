@@ -926,6 +926,18 @@ export type Database = {
           estimated_listeners: string | null
           estimated_reach_growth: string | null
           estimated_time_saved: string | null
+          extra_video_1_enabled: boolean
+          extra_video_1_title: string | null
+          extra_video_1_url: string | null
+          extra_video_2_enabled: boolean
+          extra_video_2_title: string | null
+          extra_video_2_url: string | null
+          extra_video_3_enabled: boolean
+          extra_video_3_title: string | null
+          extra_video_3_url: string | null
+          extra_video_4_enabled: boolean
+          extra_video_4_title: string | null
+          extra_video_4_url: string | null
           id: string
           ig_reel_caption: string | null
           linkedin_clip_caption: string | null
@@ -963,6 +975,18 @@ export type Database = {
           estimated_listeners?: string | null
           estimated_reach_growth?: string | null
           estimated_time_saved?: string | null
+          extra_video_1_enabled?: boolean
+          extra_video_1_title?: string | null
+          extra_video_1_url?: string | null
+          extra_video_2_enabled?: boolean
+          extra_video_2_title?: string | null
+          extra_video_2_url?: string | null
+          extra_video_3_enabled?: boolean
+          extra_video_3_title?: string | null
+          extra_video_3_url?: string | null
+          extra_video_4_enabled?: boolean
+          extra_video_4_title?: string | null
+          extra_video_4_url?: string | null
           id?: string
           ig_reel_caption?: string | null
           linkedin_clip_caption?: string | null
@@ -1000,6 +1024,18 @@ export type Database = {
           estimated_listeners?: string | null
           estimated_reach_growth?: string | null
           estimated_time_saved?: string | null
+          extra_video_1_enabled?: boolean
+          extra_video_1_title?: string | null
+          extra_video_1_url?: string | null
+          extra_video_2_enabled?: boolean
+          extra_video_2_title?: string | null
+          extra_video_2_url?: string | null
+          extra_video_3_enabled?: boolean
+          extra_video_3_title?: string | null
+          extra_video_3_url?: string | null
+          extra_video_4_enabled?: boolean
+          extra_video_4_title?: string | null
+          extra_video_4_url?: string | null
           id?: string
           ig_reel_caption?: string | null
           linkedin_clip_caption?: string | null

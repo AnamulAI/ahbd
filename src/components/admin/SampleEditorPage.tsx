@@ -27,6 +27,8 @@ import {
   ImagePlus,
   Loader2,
   Save,
+  ToggleLeft,
+  ToggleRight,
   Upload,
   X,
 } from "lucide-react";
@@ -63,6 +65,13 @@ const MODULE_LABELS: Record<string, string> = {
 };
 
 type MediaKind = "audio" | "video" | "clip";
+
+type ExtraVideo = { url: string | null; title: string; enabled: boolean };
+const emptyExtraVideos: ExtraVideo[] = [0, 1, 2, 3].map(() => ({
+  url: null,
+  title: "",
+  enabled: false,
+}));
 
 const inputCls =
   "w-full rounded-md border border-white/[0.1] bg-[#16181D] px-3 py-2 text-sm text-white placeholder:text-white/30 transition-colors duration-[250ms] ease hover:border-white/20 focus:border-[#3B82F6]/60 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20";
@@ -122,6 +131,7 @@ function Editor({ editId }: { editId?: string }) {
 
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [extraVideos, setExtraVideos] = useState<ExtraVideo[]>(emptyExtraVideos);
   const [clipIg, setClipIg] = useState<string | null>(null);
   const [clipTt, setClipTt] = useState<string | null>(null);
   const [clipLi, setClipLi] = useState<string | null>(null);
@@ -197,6 +207,16 @@ function Editor({ editId }: { editId?: string }) {
         setLogoCleared(false);
         setAudioUrl(s.audio_url);
         setVideoUrl(s.video_url);
+        setExtraVideos(
+          [1, 2, 3, 4].map((i) => {
+            const row = s as unknown as Record<string, unknown>;
+            return {
+              url: (row[`extra_video_${i}_url`] as string | null) ?? null,
+              title: (row[`extra_video_${i}_title`] as string | null) ?? "",
+              enabled: !!row[`extra_video_${i}_enabled`],
+            };
+          }),
+        );
         setClipIg(s.clip_instagram_url);
         setClipTt(s.clip_tiktok_url);
         setClipLi(s.clip_linkedin_url);
@@ -226,6 +246,10 @@ function Editor({ editId }: { editId?: string }) {
   }, [editId]);
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+
+  const updateExtraVideo = (index: number, patch: Partial<ExtraVideo>) => {
+    setExtraVideos((prev) => prev.map((v, i) => (i === index ? { ...v, ...patch } : v)));
+  };
 
   const togglePlatform = (id: string) => {
     setPlatforms((prev) => (prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]));
@@ -283,6 +307,13 @@ function Editor({ editId }: { editId?: string }) {
         ...logoFields,
         audio_url: audioUrl,
         video_url: videoUrl,
+        ...Object.fromEntries(
+          extraVideos.flatMap((v, i) => [
+            [`extra_video_${i + 1}_url`, v.url],
+            [`extra_video_${i + 1}_title`, v.title.trim() || null],
+            [`extra_video_${i + 1}_enabled`, v.enabled],
+          ]),
+        ),
         clip_instagram_url: clipIg,
         clip_tiktok_url: clipTt,
         clip_linkedin_url: clipLi,
@@ -526,6 +557,62 @@ function Editor({ editId }: { editId?: string }) {
               onChange={setVideoUrl}
               hint="Optional — upload the full video episode to power the YouTube card and Video Podcast module."
             />
+
+            <div className="space-y-3">
+              <div>
+                <label className={labelCls}>Additional Episode Videos</label>
+                <p className="text-xs text-white/40">
+                  Optional — up to 4 extra videos shown below the main one. Turn a slot on to
+                  publish it.
+                </p>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {extraVideos.map((v, i) => (
+                  <div
+                    key={i}
+                    className="space-y-3 rounded-lg border border-white/[0.08] bg-[#121A2E] p-4"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-mono uppercase tracking-wider text-white/50">
+                        Video {i + 2}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => updateExtraVideo(i, { enabled: !v.enabled })}
+                        className={cn(
+                          "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors",
+                          v.enabled
+                            ? "border-[#3B82F6]/50 bg-[#3B82F6]/[0.15] text-white"
+                            : "border-white/[0.1] bg-white/[0.03] text-white/50 hover:text-white",
+                        )}
+                        aria-pressed={v.enabled}
+                      >
+                        {v.enabled ? (
+                          <ToggleRight className="size-3.5" />
+                        ) : (
+                          <ToggleLeft className="size-3.5" />
+                        )}
+                        {v.enabled ? "On" : "Off"}
+                      </button>
+                    </div>
+                    <MediaDropzone
+                      label="Video File"
+                      kind="video"
+                      accept=".mp4,.mov,.webm,video/*"
+                      value={v.url}
+                      onUpload={uploadMedia}
+                      onChange={(url) => updateExtraVideo(i, { url })}
+                    />
+                    <input
+                      value={v.title}
+                      onChange={(e) => updateExtraVideo(i, { title: e.target.value })}
+                      placeholder="Video title (optional)"
+                      className={inputCls}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
 
             <div>
               <label className={labelCls}>Podcast Platforms to Preview *</label>

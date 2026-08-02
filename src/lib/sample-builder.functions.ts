@@ -25,6 +25,10 @@ const MEDIA_URL_FIELDS = [
   "clip_instagram_url",
   "clip_tiktok_url",
   "clip_linkedin_url",
+  "extra_video_1_url",
+  "extra_video_2_url",
+  "extra_video_3_url",
+  "extra_video_4_url",
 ] as const;
 
 function createPublicSupabaseClient() {
@@ -246,6 +250,18 @@ export type SamplePayload = {
   logo_direct_url?: string | null;
   audio_url?: string | null;
   video_url?: string | null;
+  extra_video_1_url?: string | null;
+  extra_video_1_title?: string | null;
+  extra_video_1_enabled?: boolean;
+  extra_video_2_url?: string | null;
+  extra_video_2_title?: string | null;
+  extra_video_2_enabled?: boolean;
+  extra_video_3_url?: string | null;
+  extra_video_3_title?: string | null;
+  extra_video_3_enabled?: boolean;
+  extra_video_4_url?: string | null;
+  extra_video_4_title?: string | null;
+  extra_video_4_enabled?: boolean;
   clip_instagram_url?: string | null;
   clip_tiktok_url?: string | null;
   clip_linkedin_url?: string | null;
@@ -363,6 +379,18 @@ export const createSample = createServerFn({ method: "POST" })
           logo_url,
           audio_url: data.audio_url || null,
           video_url: data.video_url || null,
+          extra_video_1_url: data.extra_video_1_url || null,
+          extra_video_1_title: data.extra_video_1_title || null,
+          extra_video_1_enabled: !!data.extra_video_1_enabled,
+          extra_video_2_url: data.extra_video_2_url || null,
+          extra_video_2_title: data.extra_video_2_title || null,
+          extra_video_2_enabled: !!data.extra_video_2_enabled,
+          extra_video_3_url: data.extra_video_3_url || null,
+          extra_video_3_title: data.extra_video_3_title || null,
+          extra_video_3_enabled: !!data.extra_video_3_enabled,
+          extra_video_4_url: data.extra_video_4_url || null,
+          extra_video_4_title: data.extra_video_4_title || null,
+          extra_video_4_enabled: !!data.extra_video_4_enabled,
           clip_instagram_url: data.clip_instagram_url || null,
           clip_tiktok_url: data.clip_tiktok_url || null,
           clip_linkedin_url: data.clip_linkedin_url || null,
@@ -446,6 +474,18 @@ export const updateSample = createServerFn({ method: "POST" })
           logo_url,
           audio_url: data.audio_url || null,
           video_url: data.video_url || null,
+          extra_video_1_url: data.extra_video_1_url || null,
+          extra_video_1_title: data.extra_video_1_title || null,
+          extra_video_1_enabled: !!data.extra_video_1_enabled,
+          extra_video_2_url: data.extra_video_2_url || null,
+          extra_video_2_title: data.extra_video_2_title || null,
+          extra_video_2_enabled: !!data.extra_video_2_enabled,
+          extra_video_3_url: data.extra_video_3_url || null,
+          extra_video_3_title: data.extra_video_3_title || null,
+          extra_video_3_enabled: !!data.extra_video_3_enabled,
+          extra_video_4_url: data.extra_video_4_url || null,
+          extra_video_4_title: data.extra_video_4_title || null,
+          extra_video_4_enabled: !!data.extra_video_4_enabled,
           clip_instagram_url: data.clip_instagram_url || null,
           clip_tiktok_url: data.clip_tiktok_url || null,
           clip_linkedin_url: data.clip_linkedin_url || null,
