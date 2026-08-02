@@ -916,8 +916,14 @@ export type Database = {
           booking_link: string | null
           business_name: string
           client_industry: string | null
+          clip_instagram_thumb_enabled: boolean
+          clip_instagram_thumb_url: string | null
           clip_instagram_url: string | null
+          clip_linkedin_thumb_enabled: boolean
+          clip_linkedin_thumb_url: string | null
           clip_linkedin_url: string | null
+          clip_tiktok_thumb_enabled: boolean
+          clip_tiktok_thumb_url: string | null
           clip_tiktok_url: string | null
           created_at: string
           cta_link: string
@@ -965,8 +971,14 @@ export type Database = {
           booking_link?: string | null
           business_name: string
           client_industry?: string | null
+          clip_instagram_thumb_enabled?: boolean
+          clip_instagram_thumb_url?: string | null
           clip_instagram_url?: string | null
+          clip_linkedin_thumb_enabled?: boolean
+          clip_linkedin_thumb_url?: string | null
           clip_linkedin_url?: string | null
+          clip_tiktok_thumb_enabled?: boolean
+          clip_tiktok_thumb_url?: string | null
           clip_tiktok_url?: string | null
           created_at?: string
           cta_link?: string
@@ -1014,8 +1026,14 @@ export type Database = {
           booking_link?: string | null
           business_name?: string
           client_industry?: string | null
+          clip_instagram_thumb_enabled?: boolean
+          clip_instagram_thumb_url?: string | null
           clip_instagram_url?: string | null
+          clip_linkedin_thumb_enabled?: boolean
+          clip_linkedin_thumb_url?: string | null
           clip_linkedin_url?: string | null
+          clip_tiktok_thumb_enabled?: boolean
+          clip_tiktok_thumb_url?: string | null
           clip_tiktok_url?: string | null
           created_at?: string
           cta_link?: string
